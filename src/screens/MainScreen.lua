@@ -1,6 +1,13 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local Map = require( 'src.map.Map' );
 local Character = require( 'src.characters.Character' );
+local Walk = require( 'src.characters.actions.Walk' );
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local DIRECTION = require( 'src.enums.Direction' );
 
 -- ------------------------------------------------
 -- Module
@@ -49,6 +56,32 @@ function MainScreen.new()
                 end
             end
         end);
+    end
+
+    function self:update()
+        if player:getAction() then
+            player:getAction():perform();
+        end
+    end
+
+    function self:keypressed( key )
+        if key == 'w' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH] ));
+        elseif key == 'x' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH] ));
+        elseif key == 'a' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.WEST] ));
+        elseif key == 'd' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.EAST] ));
+        elseif key == 'q' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH_WEST] ));
+        elseif key == 'e' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH_EAST] ));
+        elseif key == 'y' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH_WEST] ));
+        elseif key == 'c' then
+            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH_EAST] ));
+        end
     end
 
     return self;

@@ -16,6 +16,10 @@ function BaseTile.new( type, x, y )
     local neighbours;
     local character;    -- Each tiles can hold one game character.
 
+    function self:removeCharacter()
+        character = nil;
+    end
+
     function self:setNeighbours( nneighbours )
         neighbours = nneighbours;
     end
