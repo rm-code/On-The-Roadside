@@ -14,6 +14,7 @@ function BaseTile.new( type, x, y )
     self:validateType( 'number', y );
 
     local neighbours;
+    local character;    -- Each tiles can hold one game character.
 
     function self:setNeighbours( nneighbours )
         neighbours = nneighbours;
@@ -37,6 +38,18 @@ function BaseTile.new( type, x, y )
 
     function self:getType()
         return type;
+    end
+
+    function self:getCharacter()
+        return character;
+    end
+
+    function self:isOccupied()
+        return character ~= nil;
+    end
+
+    function self:setCharacter( nchar )
+        character = nchar;
     end
 
     return self;
