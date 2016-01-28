@@ -7,8 +7,6 @@ function Character.new( tile )
 
     self:validateType( 'BaseTile', tile, true );
 
-    local action;
-
     -- Add character to the tile.
     tile:setCharacter( self );
 
@@ -18,14 +16,6 @@ function Character.new( tile )
 
     function self:getTile()
         return tile;
-    end
-
-    function self:setAction( naction )
-        action = naction;
-    end
-
-    function self:getAction()
-        return action;
     end
 
     return self;

@@ -1,13 +1,7 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local Map = require( 'src.map.Map' );
 local Character = require( 'src.characters.Character' );
-local Walk = require( 'src.characters.actions.Walk' );
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local DIRECTION = require( 'src.enums.Direction' );
+local TurnManager = require( 'src.combat.TurnManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -34,14 +28,25 @@ local TILE_SPRITES = {
 function MainScreen.new()
     local self = Screen.new();
 
-    local player;
+    local characters;
+    local turnManager;
     local map;
 
     function self:init()
         map = Map.new();
         map:init();
 
-        player = Character.new( map:getTileAt( 2, 2 ));
+        characters = {
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
+        };
+
+        turnManager = TurnManager.new( characters );
     end
 
     function self:draw()
@@ -58,31 +63,12 @@ function MainScreen.new()
         end);
     end
 
-    function self:update()
-        if player:getAction() then
-            player:getAction():perform();
-            player:setAction( nil );
-        end
+    function self:update( dt )
+        turnManager:update( dt )
     end
 
     function self:keypressed( key )
-        if key == 'w' then
-            player:setAction( Walk.new( player, DIRECTION.NORTH ));
-        elseif key == 'x' then
-            player:setAction( Walk.new( player, DIRECTION.SOUTH ));
-        elseif key == 'a' then
-            player:setAction( Walk.new( player, DIRECTION.WEST ));
-        elseif key == 'd' then
-            player:setAction( Walk.new( player, DIRECTION.EAST ));
-        elseif key == 'q' then
-            player:setAction( Walk.new( player, DIRECTION.NORTH_WEST ));
-        elseif key == 'e' then
-            player:setAction( Walk.new( player, DIRECTION.NORTH_EAST ));
-        elseif key == 'y' then
-            player:setAction( Walk.new( player, DIRECTION.SOUTH_WEST ));
-        elseif key == 'c' then
-            player:setAction( Walk.new( player, DIRECTION.SOUTH_EAST ));
-        end
+        turnManager:keypressed( key );
     end
 
     return self;
