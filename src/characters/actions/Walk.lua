@@ -2,15 +2,20 @@ local Object = require('src.Object');
 
 local Walk = {};
 
-function Walk.new( character, target )
+function Walk.new( character, direction )
     local self = Object.new():addInstance( 'Walk' );
 
     function self:perform()
-        -- Remove the character from the old tile, add it to the new one and
-        -- give it a reference to the new tile.
-        character:getTile():removeCharacter();
-        target:setCharacter( character );
-        character:setTile( target );
+        local currentTile = character:getTile();
+        local targetTile  = currentTile:getNeighbours()[direction];
+
+        if not targetTile:isOccupied() then
+            -- Remove the character from the old tile, add it to the new one and
+            -- give it a reference to the new tile.
+            currentTile:removeCharacter();
+            targetTile:setCharacter( character );
+            character:setTile( targetTile );
+        end
     end
 
     return self;

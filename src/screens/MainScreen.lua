@@ -61,26 +61,27 @@ function MainScreen.new()
     function self:update()
         if player:getAction() then
             player:getAction():perform();
+            player:setAction( nil );
         end
     end
 
     function self:keypressed( key )
         if key == 'w' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH] ));
+            player:setAction( Walk.new( player, DIRECTION.NORTH ));
         elseif key == 'x' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH] ));
+            player:setAction( Walk.new( player, DIRECTION.SOUTH ));
         elseif key == 'a' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.WEST] ));
+            player:setAction( Walk.new( player, DIRECTION.WEST ));
         elseif key == 'd' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.EAST] ));
+            player:setAction( Walk.new( player, DIRECTION.EAST ));
         elseif key == 'q' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH_WEST] ));
+            player:setAction( Walk.new( player, DIRECTION.NORTH_WEST ));
         elseif key == 'e' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.NORTH_EAST] ));
+            player:setAction( Walk.new( player, DIRECTION.NORTH_EAST ));
         elseif key == 'y' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH_WEST] ));
+            player:setAction( Walk.new( player, DIRECTION.SOUTH_WEST ));
         elseif key == 'c' then
-            player:setAction( Walk.new( player, player:getTile():getNeighbours()[DIRECTION.SOUTH_EAST] ));
+            player:setAction( Walk.new( player, DIRECTION.SOUTH_EAST ));
         end
     end
 
