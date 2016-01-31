@@ -46,7 +46,7 @@ function MainScreen.new()
             Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
         };
 
-        turnManager = TurnManager.new( characters );
+        turnManager = TurnManager.new( map, characters );
     end
 
     function self:draw()
@@ -72,6 +72,11 @@ function MainScreen.new()
 
     function self:keypressed( key )
         turnManager:keypressed( key );
+    end
+
+    function self:mousepressed( mx, my, button )
+        local gx, gy = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
+        turnManager:mousepressed( gx, gy, button );
     end
 
     return self;

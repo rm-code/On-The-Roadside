@@ -41,3 +41,7 @@ end
 function love.keypressed(key)
     ScreenManager.keypressed(key);
 end
+
+function love.mousepressed( mx, my, button, isTouch )
+    ScreenManager.mousepressed( mx, my, button, isTouch );
+end

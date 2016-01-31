@@ -21,6 +21,10 @@ function Queue.new()
         return #queue;
     end
 
+    function self:clear()
+        queue = {};
+    end
+
     return self;
 end
 
