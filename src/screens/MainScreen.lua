@@ -61,6 +61,9 @@ function MainScreen.new()
                 end
             end
         end);
+
+        local mx, my = love.mouse.getPosition();
+        love.graphics.rectangle( 'line', math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE )
     end
 
     function self:update( dt )
