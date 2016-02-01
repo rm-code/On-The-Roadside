@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local BaseTile = require( 'src.map.tiles.BaseTile' );
+local Tile = require( 'src.map.tiles.Tile' );
 
 local DIRECTION = require( 'src.enums.Direction' );
 
@@ -20,9 +20,9 @@ function Map.new()
             for y = 1, #grid[x] do
                 newTiles[x] = newTiles[x] or {};
                 if grid[x][y] == '.' then
-                    newTiles[x][y] = BaseTile.new( 'floor', x, y );
+                    newTiles[x][y] = Tile.new( 'floor', x, y );
                 elseif grid[x][y] == '#' then
-                    newTiles[x][y] = BaseTile.new( 'wall', x, y );
+                    newTiles[x][y] = Tile.new( 'wall', x, y );
                 end
             end
         end

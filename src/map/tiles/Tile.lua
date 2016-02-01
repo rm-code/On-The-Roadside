@@ -4,10 +4,10 @@ local Object = require( 'src.Object' );
 -- Module
 -- ------------------------------------------------
 
-local BaseTile = {};
+local Tile = {};
 
-function BaseTile.new( type, x, y )
-    local self = Object.new():addInstance( 'BaseTile' );
+function Tile.new( type, x, y )
+    local self = Object.new():addInstance( 'Tile' );
 
     self:validateType( 'string', type );
     self:validateType( 'number', x );
@@ -59,4 +59,4 @@ function BaseTile.new( type, x, y )
     return self;
 end
 
-return BaseTile;
+return Tile;
