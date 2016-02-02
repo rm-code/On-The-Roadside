@@ -33,15 +33,17 @@ function TurnManager.new( map, characters )
     -- Perform all actions on the queue
 
     local function setTarget( target )
-        local origin = characters[characterIndex]:getTile();
+        if target then
+            local origin = characters[characterIndex]:getTile();
+            local path = PathFinder.generatePath( origin, target );
 
-        local path = PathFinder.generatePath( origin, target );
-        if path then
-            for i = 1, #path do
-                actionQueue:enqueue( Walk.new( characters[characterIndex], path[i] ));
+            if path then
+                for i = 1, #path do
+                    actionQueue:enqueue( Walk.new( characters[characterIndex], path[i] ));
+                end
+            else
+                print( "Can't find path!");
             end
-        else
-            print( "Can't find path!");
         end
     end
 
