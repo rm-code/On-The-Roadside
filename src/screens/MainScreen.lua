@@ -52,14 +52,19 @@ function MainScreen.new()
     function self:draw()
         map:iterate( function( tile, x, y )
             if tile:isOccupied() then
+                love.graphics.setColor( 255, 180, 80 );
                 love.graphics.draw( TILESET, TILE_SPRITES.CHARACTER, x * TILE_SIZE, y * TILE_SIZE )
+                love.graphics.setColor( 255, 255, 255 );
             else
                 if tile:getWorldObject():getType() == 'Floor' then
+                    love.graphics.setColor( 150, 150, 150 );
                     love.graphics.draw( TILESET, TILE_SPRITES.FLOOR, x * TILE_SIZE, y * TILE_SIZE )
                 elseif tile:getWorldObject():getType() == 'Wall' then
+                    love.graphics.setColor( 190, 190, 190 );
                     love.graphics.draw( TILESET, TILE_SPRITES.WALL, x * TILE_SIZE, y * TILE_SIZE )
                 end
             end
+            love.graphics.setColor( 255, 255, 255 );
         end);
 
         local mx, my = love.mouse.getPosition();
