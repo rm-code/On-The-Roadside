@@ -105,7 +105,7 @@ function PathFinder.generatePath( origin, target )
             local f = g + calculateHeuristic( tile, target );
 
             -- Check if the tile is passable and not in the closed list.
-            if not tile:isOccupied() and not isInList( closedList, tile ) then
+            if tile:getWorldObject():isPassable() and not tile:isOccupied() and not isInList( closedList, tile ) then
                 -- Check if the tile is in the open list. If it is not, then
                 -- add it to the open list and proceed. If it already is in
                 -- the open list, update its cost and parent values.
