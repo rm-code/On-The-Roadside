@@ -6,10 +6,9 @@ local Object = require( 'src.Object' );
 
 local Square = {};
 
-function Square.new( type, x, y )
+function Square.new( x, y, worldObject )
     local self = Object.new():addInstance( 'Square' );
 
-    self:validateType( 'string', type );
     self:validateType( 'number', x );
     self:validateType( 'number', y );
 
@@ -40,8 +39,8 @@ function Square.new( type, x, y )
         return y;
     end
 
-    function self:getType()
-        return type;
+    function self:getWorldObject()
+        return worldObject;
     end
 
     function self:getCharacter()

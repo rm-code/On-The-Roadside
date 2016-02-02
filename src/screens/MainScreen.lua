@@ -54,9 +54,9 @@ function MainScreen.new()
             if tile:isOccupied() then
                 love.graphics.draw( TILESET, TILE_SPRITES.CHARACTER, x * TILE_SIZE, y * TILE_SIZE )
             else
-                if tile:getType() == 'floor' then
+                if tile:getWorldObject():getType() == 'Floor' then
                     love.graphics.draw( TILESET, TILE_SPRITES.FLOOR, x * TILE_SIZE, y * TILE_SIZE )
-                elseif tile:getType() == 'wall' then
+                elseif tile:getWorldObject():getType() == 'Wall' then
                     love.graphics.draw( TILESET, TILE_SPRITES.WALL, x * TILE_SIZE, y * TILE_SIZE )
                 end
             end
