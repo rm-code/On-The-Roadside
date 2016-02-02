@@ -2,8 +2,8 @@ local PathFinder = {};
 
 ---
 -- Calculates the heuristic between tiles a and b.
--- @param a (Tile)   The origin.
--- @param b (Tile)   The target.
+-- @param a (Square)   The origin.
+-- @param b (Square)   The target.
 -- @return  (number) The calculated heuristic.
 --
 local function calculateHeuristic( a, b )
@@ -30,7 +30,7 @@ end
 ---
 -- Checks if a tile is in a list and returns the A* node containing the tile.
 -- @param list   (table)   The list to search in.
--- @param tile   (Tile)    The tile to find in the list.
+-- @param tile   (Square)    The tile to find in the list.
 -- @param return (boolean) Wether the tile is in the list or not.
 --
 local function isInList( list, tile )
@@ -77,8 +77,8 @@ end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param origin (Tile)  The origin.
--- @param target (Tile)  The target.
+-- @param origin (Square)  The origin.
+-- @param target (Square)  The target.
 -- @param return (table) A sequence containing directions to form a path.
 --
 function PathFinder.generatePath( origin, target )

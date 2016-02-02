@@ -5,7 +5,7 @@ local Character = {};
 function Character.new( tile )
     local self = Object.new():addInstance( 'Character' );
 
-    self:validateType( 'Tile', tile, true );
+    self:validateType( 'Square', tile, true );
 
     -- Add character to the tile.
     tile:setCharacter( self );
