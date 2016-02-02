@@ -66,9 +66,11 @@ function TurnManager.new( map, characters )
         end
     end
 
-    function self:mousepressed( mx, my )
-        actionQueue:clear();
-        setTarget( map:getTileAt( mx, my ));
+    function self:mousepressed( mx, my, button )
+        if button == 1 then
+            actionQueue:clear();
+            setTarget( map:getTileAt( mx, my ));
+        end
     end
 
     return self;
