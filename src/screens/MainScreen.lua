@@ -4,6 +4,12 @@ local CharacterManager = require( 'src.characters.CharacterManager' );
 local TurnManager = require( 'src.combat.TurnManager' );
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local COLORS = require( 'src.Colors' );
+
+-- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
@@ -16,6 +22,7 @@ local MainScreen = {};
 local TILE_SIZE = 16;
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
+    EMPTY = love.graphics.newQuad( 0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FLOOR = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL  = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     CHARACTER = love.graphics.newQuad( 1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -28,8 +35,63 @@ local TILE_SPRITES = {
 function MainScreen.new()
     local self = Screen.new();
 
+    local spritebatch;
     local turnManager;
     local map;
+
+    ---
+    -- Adds an empty sprite for each tile in the map to the spritebatch, gives
+    -- each square a unique identifier and sets it to dirty for the first update.
+    --
+    local function initSpritebatch()
+        map:iterate( function( tile, x, y)
+            local id = spritebatch:add( TILE_SPRITES.EMPTY, x * TILE_SIZE, y * TILE_SIZE );
+            tile:setID( id );
+            tile:setDirty( true );
+        end)
+        print( string.format('Initialised %d tiles.', spritebatch:getCount()) );
+    end
+
+    ---
+    -- Selects a color which to use when a tile is drawn based on its contents.
+    -- @param tile (Tile)  The tile to choose a color for.
+    -- @return     (table) A table containing RGBA values.
+    --
+    local function selectTileColor( tile )
+        if tile:isOccupied() then
+            return COLORS.ORANGE;
+        end
+        return COLORS.GREY;
+    end
+
+    ---
+    -- Selects a sprite from the tileset based on the tile and its contents.
+    -- @param tile (Tile) The tile to choose a sprite for.
+    -- @return     (Quad) A quad pointing to a sprite on the tileset.
+    --
+    local function selectTileSprite( tile )
+        if tile:isOccupied() then
+            return TILE_SPRITES.CHARACTER;
+        elseif tile:getWorldObject():instanceOf( 'Wall' ) then
+            return TILE_SPRITES.WALL;
+        else
+            return TILE_SPRITES.FLOOR;
+        end
+    end
+
+    ---
+    -- Updates the spritebatch by going through every tile in the map. Only
+    -- tiles which have been marked as dirty will be sent to the spritebatch.
+    --
+    local function updateSpritebatch()
+        map:iterate( function( tile, x, y)
+            if tile:isDirty() then
+                spritebatch:setColor( selectTileColor( tile ) );
+                spritebatch:set( tile:getID(), selectTileSprite( tile ), x * TILE_SIZE, y * TILE_SIZE );
+                tile:setDirty( false );
+            end
+        end)
+    end
 
     function self:init()
         map = Map.new();
@@ -44,25 +106,13 @@ function MainScreen.new()
         CharacterManager.newCharacter( map:getTileAt( 2, 8 ));
 
         turnManager = TurnManager.new( map );
+
+        spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
+        initSpritebatch();
     end
 
     function self:draw()
-        map:iterate( function( tile, x, y )
-            if tile:isOccupied() then
-                love.graphics.setColor( 255, 180, 80 );
-                love.graphics.draw( TILESET, TILE_SPRITES.CHARACTER, x * TILE_SIZE, y * TILE_SIZE )
-                love.graphics.setColor( 255, 255, 255 );
-            else
-                if tile:getWorldObject():getType() == 'Floor' then
-                    love.graphics.setColor( 150, 150, 150 );
-                    love.graphics.draw( TILESET, TILE_SPRITES.FLOOR, x * TILE_SIZE, y * TILE_SIZE )
-                elseif tile:getWorldObject():getType() == 'Wall' then
-                    love.graphics.setColor( 190, 190, 190 );
-                    love.graphics.draw( TILESET, TILE_SPRITES.WALL, x * TILE_SIZE, y * TILE_SIZE )
-                end
-            end
-            love.graphics.setColor( 255, 255, 255 );
-        end);
+        love.graphics.draw( spritebatch, 0, 0 );
 
         local selectedCharX, selectedCharY = CharacterManager.getCurrentCharacter():getTile():getPosition();
         love.graphics.setColor( 0, 255, 0 );
@@ -74,6 +124,7 @@ function MainScreen.new()
     end
 
     function self:update( dt )
+        updateSpritebatch();
         turnManager:update( dt )
     end
 

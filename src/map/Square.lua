@@ -12,15 +12,34 @@ function Square.new( x, y, worldObject )
     self:validateType( 'number', x );
     self:validateType( 'number', y );
 
+    local id;
+    local dirty;
     local neighbours;
     local character;    -- Each tiles can hold one game character.
 
     function self:removeCharacter()
         character = nil;
+        self:setDirty( true );
+    end
+
+    function self:setDirty( ndirty )
+        dirty = ndirty;
+    end
+
+    function self:setID( nid )
+        id = nid;
     end
 
     function self:setNeighbours( nneighbours )
         neighbours = nneighbours;
+    end
+
+    function self:isDirty()
+        return dirty;
+    end
+
+    function self:getID()
+        return id;
     end
 
     function self:getNeighbours()
@@ -53,6 +72,7 @@ function Square.new( x, y, worldObject )
 
     function self:setCharacter( nchar )
         character = nchar;
+        self:setDirty( true );
     end
 
     return self;
