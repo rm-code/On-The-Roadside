@@ -7,7 +7,13 @@ local PathFinder = {};
 -- @return  (number) The calculated heuristic.
 --
 local function calculateHeuristic( a, b )
-    return math.abs( a:getX() - b:getX() ) + math.abs( a:getY() - b:getY() );
+    local distanceX = math.abs( a:getX() - b:getX() );
+    local distanceY = math.abs( a:getY() - b:getY() );
+    if distanceX > distanceY then
+        return 1.414 * distanceY + ( distanceX - distanceY );
+    else
+        return 1.414 * distanceX + ( distanceY - distanceX );
+    end
 end
 
 ---
