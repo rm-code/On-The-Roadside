@@ -3,12 +3,6 @@ local Walk = require( 'src.characters.actions.Walk' );
 local PathFinder = require( 'src.combat.PathFinder' );
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local DIRECTION = require( 'src.enums.Direction' );
-
--- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
