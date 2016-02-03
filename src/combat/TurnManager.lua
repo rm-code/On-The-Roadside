@@ -1,6 +1,7 @@
 local Queue = require('src.combat.Queue');
 local Walk = require( 'src.characters.actions.Walk' );
 local PathFinder = require( 'src.combat.PathFinder' );
+local CharacterManager = require( 'src.characters.CharacterManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -8,12 +9,10 @@ local PathFinder = require( 'src.combat.PathFinder' );
 
 local TurnManager = {};
 
-function TurnManager.new( map, characters )
+function TurnManager.new( map )
     local self = {};
 
-    -- TODO CharacterManager
     local actionQueue = Queue.new();
-    local characterIndex = 1;
     local actionTimer = 0;
 
     -- Needs to grab next character
@@ -28,21 +27,18 @@ function TurnManager.new( map, characters )
 
     local function setTarget( target )
         if target then
-            local origin = characters[characterIndex]:getTile();
+            local character = CharacterManager.getCurrentCharacter();
+            local origin = character:getTile();
             local path = PathFinder.generatePath( origin, target );
 
             if path then
                 for i = 1, #path do
-                    actionQueue:enqueue( Walk.new( characters[characterIndex], path[i] ));
+                    actionQueue:enqueue( Walk.new( character, path[i] ));
                 end
             else
                 print( "Can't find path!");
             end
         end
-    end
-
-    local function endTurn()
-        characterIndex = characterIndex == #characters and 1 or characterIndex + 1;
     end
 
     function self:update( dt )
@@ -56,7 +52,8 @@ function TurnManager.new( map, characters )
 
     function self:keypressed( key )
         if key == 'space' then
-            endTurn();
+            actionQueue:clear();
+            CharacterManager.nextCharacter();
         end
     end
 
@@ -64,6 +61,9 @@ function TurnManager.new( map, characters )
         if button == 1 then
             actionQueue:clear();
             setTarget( map:getTileAt( mx, my ));
+        elseif button == 2 then
+            actionQueue:clear();
+            CharacterManager.selectCharacter( map:getTileAt( mx, my ));
         end
     end
 

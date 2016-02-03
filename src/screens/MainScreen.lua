@@ -1,6 +1,6 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local Map = require( 'src.map.Map' );
-local Character = require( 'src.characters.Character' );
+local CharacterManager = require( 'src.characters.CharacterManager' );
 local TurnManager = require( 'src.combat.TurnManager' );
 
 -- ------------------------------------------------
@@ -28,7 +28,6 @@ local TILE_SPRITES = {
 function MainScreen.new()
     local self = Screen.new();
 
-    local characters;
     local turnManager;
     local map;
 
@@ -36,17 +35,15 @@ function MainScreen.new()
         map = Map.new();
         map:init();
 
-        characters = {
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-            Character.new( map:getTileAt( love.math.random( 2, 30 ), love.math.random( 2, 30 )));
-        };
+        CharacterManager.newCharacter( map:getTileAt( 2, 2 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 3 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 4 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 5 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 6 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 7 ));
+        CharacterManager.newCharacter( map:getTileAt( 2, 8 ));
 
-        turnManager = TurnManager.new( map, characters );
+        turnManager = TurnManager.new( map );
     end
 
     function self:draw()
