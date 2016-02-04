@@ -34,6 +34,14 @@ function Square.new( x, y, worldObject )
         neighbours = nneighbours;
     end
 
+    function self:isAdjacent( tile )
+        for _, neighbour in pairs( neighbours ) do
+            if neighbour == tile then
+                return true;
+            end
+        end
+    end
+
     function self:isDirty()
         return dirty;
     end

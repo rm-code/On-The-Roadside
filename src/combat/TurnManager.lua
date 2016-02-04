@@ -1,5 +1,6 @@
 local Queue = require('src.combat.Queue');
 local Walk = require( 'src.characters.actions.Walk' );
+local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local PathFinder = require( 'src.combat.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 
@@ -59,8 +60,13 @@ function TurnManager.new( map )
 
     function self:mousepressed( mx, my, button )
         if button == 1 then
-            actionQueue:clear();
-            setTarget( map:getTileAt( mx, my ));
+            local tile = map:getTileAt( mx, my )
+            if tile:getWorldObject():instanceOf( 'Door' ) then
+                actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+            else
+                actionQueue:clear();
+                setTarget( map:getTileAt( mx, my ));
+            end
         elseif button == 2 then
             actionQueue:clear();
             CharacterManager.selectCharacter( map:getTileAt( mx, my ));
