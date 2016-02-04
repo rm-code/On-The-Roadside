@@ -60,6 +60,16 @@ function MainScreen.new()
     -- @return     (table) A table containing RGBA values.
     --
     local function selectTileColor( tile )
+        -- Hide unexplored tiles.
+        if not tile:isExplored() then
+            return COLORS.INVISIBLE;
+        end
+
+        -- Dim tiles hidden from the player.
+        if not tile:isVisible() then
+            return COLORS.DARK_GREY;
+        end
+
         if tile:isOccupied() then
             return COLORS.ORANGE;
         elseif tile:getWorldObject():instanceOf( 'Door' ) then
@@ -103,6 +113,16 @@ function MainScreen.new()
         end)
     end
 
+    ---
+    -- Updates the field of view on the map.
+    --
+    local function updateFOV()
+        map:resetVisibility();
+        for _, char in ipairs( CharacterManager.getCharacters() ) do
+            map:calculateVisibility( char:getTile() );
+        end
+    end
+
     function self:init()
         map = Map.new();
         map:init();
@@ -135,6 +155,7 @@ function MainScreen.new()
 
     function self:update( dt )
         updateSpritebatch();
+        updateFOV();
         turnManager:update( dt )
     end
 

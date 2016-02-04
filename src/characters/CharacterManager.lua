@@ -26,4 +26,8 @@ function CharacterManager.selectCharacter( tile )
     end
 end
 
+function CharacterManager.getCharacters()
+    return characters;
+end
+
 return CharacterManager;

@@ -16,6 +16,8 @@ function Square.new( x, y, worldObject )
     local dirty;
     local neighbours;
     local character;    -- Each tiles can hold one game character.
+    local visible;
+    local explored;
 
     function self:removeCharacter()
         character = nil;
@@ -81,6 +83,22 @@ function Square.new( x, y, worldObject )
     function self:setCharacter( nchar )
         character = nchar;
         self:setDirty( true );
+    end
+
+    function self:setVisible( nvisible )
+        visible = nvisible;
+    end
+
+    function self:setExplored( nexplored )
+        explored = nexplored;
+    end
+
+    function self:isExplored()
+        return explored;
+    end
+
+    function self:isVisible()
+        return visible;
     end
 
     return self;

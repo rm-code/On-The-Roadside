@@ -80,6 +80,43 @@ function Map.new()
         end
     end
 
+    ---
+    -- Resets the visibility flags for all visible tiles in the map.
+    --
+    function self:resetVisibility()
+        self:iterate( function( tile )
+            if tile:isVisible() then
+                tile:setVisible( false );
+                tile:setDirty( true );
+            end
+        end)
+    end
+
+    ---
+    -- Cast rays in a 360° radius and marks tiles visible.
+    --
+    function self:calculateVisibility( tile )
+        local tx, ty = tile:getPosition();
+
+        for i = 1, 360 do
+            local ox, oy = tx + 0.5, ty + 0.5;
+            local rad    = math.rad( i );
+            local rx, ry = math.cos( rad ), math.sin( rad );
+
+            for _ = 1, 10 do
+                local target = squares[math.floor( ox )][math.floor( oy )];
+                target:setVisible( true );
+                target:setExplored( true );
+                target:setDirty( true ); -- Mark tile for updating.
+                if not target:getWorldObject():isPassable() then
+                    break;
+                end
+                ox = ox + rx;
+                oy = oy + ry;
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
