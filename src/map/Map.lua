@@ -3,6 +3,7 @@ local Square = require( 'src.map.Square' );
 
 local Floor = require( 'src.map.worldobjects.Floor' );
 local Wall  = require( 'src.map.worldobjects.Wall' );
+local Door  = require( 'src.map.worldobjects.Door' );
 
 local DIRECTION = require( 'src.enums.Direction' );
 
@@ -22,6 +23,8 @@ function Map.new()
             return Floor.new();
         elseif type == '#' then
             return Wall.new();
+        elseif type == '+' then
+            return Door.new();
         end
     end
 

@@ -26,6 +26,8 @@ local TILE_SPRITES = {
     FLOOR = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL  = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     CHARACTER = love.graphics.newQuad( 1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    DOOR_OPEN = love.graphics.newQuad( 15 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
 }
 
 -- ------------------------------------------------
@@ -60,6 +62,8 @@ function MainScreen.new()
     local function selectTileColor( tile )
         if tile:isOccupied() then
             return COLORS.ORANGE;
+        elseif tile:getWorldObject():instanceOf( 'Door' ) then
+            return COLORS.WHITE;
         end
         return COLORS.GREY;
     end
@@ -74,8 +78,14 @@ function MainScreen.new()
             return TILE_SPRITES.CHARACTER;
         elseif tile:getWorldObject():instanceOf( 'Wall' ) then
             return TILE_SPRITES.WALL;
-        else
+        elseif tile:getWorldObject():instanceOf( 'Floor' ) then
             return TILE_SPRITES.FLOOR;
+        elseif tile:getWorldObject():instanceOf( 'Door' ) then
+            if tile:getWorldObject():isOpen() then
+                return TILE_SPRITES.DOOR_OPEN;
+            else
+                return TILE_SPRITES.DOOR_CLOSED;
+            end
         end
     end
 
