@@ -1,6 +1,7 @@
 local Queue = require('src.combat.Queue');
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
+local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.combat.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 
@@ -62,7 +63,11 @@ function TurnManager.new( map )
         if button == 1 then
             local tile = map:getTileAt( mx, my )
             if tile:getWorldObject():instanceOf( 'Door' ) then
-                actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+                if not tile:getWorldObject():isPassable() then
+                    actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+                else
+                    actionQueue:enqueue( CloseDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+                end
             else
                 actionQueue:clear();
                 setTarget( map:getTileAt( mx, my ));
