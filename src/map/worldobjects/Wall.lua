@@ -9,10 +9,6 @@ function Wall.new()
         return false;
     end
 
-    function self:getType()
-        return 'Wall';
-    end
-
     return self;
 end
 

@@ -23,10 +23,6 @@ function Door.new()
         return open;
     end
 
-    function self:getType()
-        return 'Door';
-    end
-
     return self;
 end
 

@@ -9,10 +9,6 @@ function Floor.new()
         return true;
     end
 
-    function self:getType()
-        return 'Floor';
-    end
-
     return self;
 end
 
