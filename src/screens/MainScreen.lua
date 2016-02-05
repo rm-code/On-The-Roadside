@@ -7,7 +7,7 @@ local TurnManager = require( 'src.combat.TurnManager' );
 -- Constants
 -- ------------------------------------------------
 
-local COLORS = require( 'src.Colors' );
+local COLORS = require( 'src.constants.Colors' );
 
 -- ------------------------------------------------
 -- Module
