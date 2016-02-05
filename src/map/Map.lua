@@ -5,7 +5,7 @@ local Floor = require( 'src.map.worldobjects.Floor' );
 local Wall  = require( 'src.map.worldobjects.Wall' );
 local Door  = require( 'src.map.worldobjects.Door' );
 
-local DIRECTION = require( 'src.enums.Direction' );
+local DIRECTION = require( 'src.constants.Direction' );
 
 local Map = {};
 
