@@ -9,17 +9,6 @@ local TurnManager = require( 'src.combat.TurnManager' );
 
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
-
--- ------------------------------------------------
--- Module
--- ------------------------------------------------
-
-local MainScreen = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -29,6 +18,12 @@ local TILE_SPRITES = {
     FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
 }
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local MainScreen = {};
 
 -- ------------------------------------------------
 -- Constructor
