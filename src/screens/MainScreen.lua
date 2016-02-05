@@ -8,6 +8,7 @@ local TurnManager = require( 'src.combat.TurnManager' );
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Module
@@ -19,7 +20,6 @@ local MainScreen = {};
 -- Constants
 -- ------------------------------------------------
 
-local TILE_SIZE = 16;
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
