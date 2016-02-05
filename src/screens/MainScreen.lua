@@ -62,20 +62,27 @@ function MainScreen.new()
     local function selectTileColor( tile )
         -- Hide unexplored tiles.
         if not tile:isExplored() then
-            return COLORS.INVISIBLE;
+            return COLORS.BASE00;
         end
 
         -- Dim tiles hidden from the player.
         if not tile:isVisible() then
-            return COLORS.DARK_GREY;
+            return COLORS.BASE01;
         end
 
         if tile:isOccupied() then
-            return COLORS.ORANGE;
+            if tile:getCharacter() == CharacterManager.getCurrentCharacter() then
+                return COLORS.BASE0E;
+            else
+                return COLORS.BASE0B;
+            end
         elseif tile:getWorldObject():instanceOf( 'Door' ) then
-            return COLORS.WHITE;
+            return COLORS.BASE08;
+        elseif tile:getWorldObject():instanceOf( 'Floor' ) then
+            return COLORS.BASE03;
+        elseif tile:getWorldObject():instanceOf( 'Wall' ) then
+            return COLORS.BASE05;
         end
-        return COLORS.GREY;
     end
 
     ---
@@ -139,6 +146,8 @@ function MainScreen.new()
 
         spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
         initSpritebatch();
+
+        love.graphics.setBackgroundColor( COLORS.BASE00 );
     end
 
     function self:draw()
@@ -149,7 +158,7 @@ function MainScreen.new()
         love.graphics.rectangle( 'line', selectedCharX * TILE_SIZE, selectedCharY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
 
         local mx, my = love.mouse.getPosition();
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.setColor( COLORS.BASE07 );
         love.graphics.rectangle( 'line', math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE )
     end
 

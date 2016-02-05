@@ -1,13 +1,22 @@
 local COLORS = {};
 
-COLORS.INVISIBLE = {   0,   0,   0,   0 };
-COLORS.WHITE     = { 255, 255, 255, 255 };
-COLORS.GREY      = { 150, 150, 150, 255 };
-COLORS.DARK_GREY = {  50,  50,  50, 255 };
-COLORS.RED       = { 255,   0,   0, 255 };
-COLORS.GREEN     = {   0, 255,   0, 255 };
-COLORS.ORANGE    = { 255, 180,  80, 255 };
-COLORS.PURPLE    = { 148,   0, 211, 255 };
+-- Base 16 - Ashes (https://github.com/chriskempson/base16)
+COLORS.BASE00 = {  28,  32,  35, 255 };
+COLORS.BASE01 = {  57,  63,  69, 255 };
+COLORS.BASE02 = {  86,  94, 101, 255 };
+COLORS.BASE03 = { 116, 124, 132, 255 };
+COLORS.BASE04 = { 173, 179, 186, 255 };
+COLORS.BASE05 = { 199, 204, 209, 255 };
+COLORS.BASE06 = { 223, 226, 229, 255 };
+COLORS.BASE07 = { 243, 244, 245, 255 };
+COLORS.BASE08 = { 199, 174, 149, 255 };
+COLORS.BASE09 = { 199, 199, 149, 255 };
+COLORS.BASE0A = { 174, 199, 149, 255 };
+COLORS.BASE0B = { 149, 199, 174, 255 };
+COLORS.BASE0C = { 149, 174, 199, 255 };
+COLORS.BASE0D = { 174, 149, 199, 255 };
+COLORS.BASE0E = { 199, 149, 174, 255 };
+COLORS.BASE0F = { 199, 149, 149, 255 };
 
 -- Make table read-only.
 return setmetatable( COLORS, {
