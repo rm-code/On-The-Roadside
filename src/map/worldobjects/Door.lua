@@ -1,27 +1,9 @@
-local Object = require( 'src.Object' );
+local WorldObject = require( 'src.map.worldobjects.WorldObject' );
 
 local Door = {};
 
-function Door.new()
-    local self = Object.new():addInstance( 'Door' );
-
-    local open = false;
-
-    function self:open()
-        open = true;
-    end
-
-    function self:close()
-        open = false;
-    end
-
-    function self:isOpen()
-        return open;
-    end
-
-    function self:isPassable()
-        return open;
-    end
+function Door.new( passable )
+    local self = WorldObject.new( passable ):addInstance( 'Door' );
 
     return self;
 end

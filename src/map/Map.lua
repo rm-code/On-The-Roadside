@@ -20,11 +20,11 @@ function Map.new()
 
     local function createWorldObject( type )
         if type == '.' then
-            return Floor.new();
+            return Floor.new( true );
         elseif type == '#' then
-            return Wall.new();
+            return Wall.new( false );
         elseif type == '+' then
-            return Door.new();
+            return Door.new( false );
         end
     end
 

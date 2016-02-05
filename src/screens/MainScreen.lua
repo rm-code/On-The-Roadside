@@ -91,7 +91,7 @@ function MainScreen.new()
         elseif tile:getWorldObject():instanceOf( 'Floor' ) then
             return TILE_SPRITES.FLOOR;
         elseif tile:getWorldObject():instanceOf( 'Door' ) then
-            if tile:getWorldObject():isOpen() then
+            if tile:getWorldObject():isPassable() then
                 return TILE_SPRITES.DOOR_OPEN;
             else
                 return TILE_SPRITES.DOOR_CLOSED;

@@ -1,13 +1,9 @@
-local Object = require( 'src.Object' );
+local WorldObject = require( 'src.map.worldobjects.WorldObject' );
 
 local Wall = {};
 
-function Wall.new()
-    local self = Object.new():addInstance( 'Wall' );
-
-    function self:isPassable()
-        return false;
-    end
+function Wall.new( passable )
+    local self = WorldObject.new( passable ):addInstance( 'Wall' );
 
     return self;
 end
