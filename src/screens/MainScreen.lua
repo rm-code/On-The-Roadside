@@ -164,8 +164,7 @@ function MainScreen.new()
     end
 
     function self:mousepressed( mx, my, button )
-        local gx, gy = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
-        turnManager:mousepressed( gx, gy, button );
+        turnManager:mousepressed( mx, my, button );
     end
 
     return self;

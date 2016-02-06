@@ -6,6 +6,12 @@ local PathFinder = require( 'src.combat.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local TILE_SIZE = require( 'src.constants.TileSize' );
+
+-- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
@@ -60,8 +66,9 @@ function TurnManager.new( map )
     end
 
     function self:mousepressed( mx, my, button )
+        local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
         if button == 1 then
-            local tile = map:getTileAt( mx, my )
+            local tile = map:getTileAt( tx, ty )
             if tile:getWorldObject():instanceOf( 'Door' ) then
                 if not tile:getWorldObject():isPassable() then
                     actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
@@ -70,11 +77,11 @@ function TurnManager.new( map )
                 end
             else
                 actionQueue:clear();
-                setTarget( map:getTileAt( mx, my ));
+                setTarget( map:getTileAt( tx, ty ));
             end
         elseif button == 2 then
             actionQueue:clear();
-            CharacterManager.selectCharacter( map:getTileAt( mx, my ));
+            CharacterManager.selectCharacter( map:getTileAt( tx, ty ));
         end
     end
 
