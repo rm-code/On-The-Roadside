@@ -36,6 +36,23 @@ function WorldPainter.new( game )
     -- ------------------------------------------------
 
     ---
+    -- @param value (number) The cost of the node.
+    -- @param total (number) The total number of nodes in the path.
+    --
+    local function selectPathNodeColor( value, total )
+        local fraction = value / total;
+        if fraction <= 0.1 then
+            return COLORS.DB27;
+        elseif fraction <= 0.4 then
+            return COLORS.DB05;
+        elseif fraction <= 0.6 then
+            return COLORS.DB08;
+        elseif fraction <= 1.0 then
+            return COLORS.DB09;
+        end
+    end
+
+    ---
     -- Adds an empty sprite for each tile in the map to the spritebatch, gives
     -- each tile a unique identifier and sets it to dirty for the first update.
     -- @param map (Map) The game's world map.
@@ -58,6 +75,15 @@ function WorldPainter.new( game )
         -- Hide unexplored tiles.
         if not tile:isExplored() then
             return COLORS.DB00;
+        end
+
+        -- Change colors for tiles which are part of a character's path.
+        if CharacterManager.getCurrentCharacter():hasPath() then
+            local path = CharacterManager.getCurrentCharacter():getPath();
+            local index = path:contains( tile );
+            if index then
+                return selectPathNodeColor( index, path:getLength() );
+            end
         end
 
         -- Dim tiles hidden from the player.
@@ -139,6 +165,9 @@ function WorldPainter.new( game )
         map:resetVisibility();
         for _, char in ipairs( CharacterManager.getCharacters() ) do
             map:calculateVisibility( char:getTile() );
+            if char:hasPath() then
+                char:getPath():refresh();
+            end
         end
         updateSpritebatch( game:getMap() );
     end
