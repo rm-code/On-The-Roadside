@@ -56,26 +56,26 @@ function WorldPainter.new( map )
     local function selectTileColor( tile )
         -- Hide unexplored tiles.
         if not tile:isExplored() then
-            return COLORS.BASE00;
+            return COLORS.DB00;
         end
 
         -- Dim tiles hidden from the player.
         if not tile:isVisible() then
-            return COLORS.BASE01;
+            return COLORS.DB01;
         end
 
         if tile:isOccupied() then
             if tile:getCharacter() == CharacterManager.getCurrentCharacter() then
-                return COLORS.BASE0E;
+                return COLORS.DB17;
             else
-                return COLORS.BASE0B;
+                return COLORS.DB15;
             end
         elseif tile:getWorldObject():instanceOf( 'Door' ) then
-            return COLORS.BASE08;
+            return COLORS.DB03;
         elseif tile:getWorldObject():instanceOf( 'Floor' ) then
-            return COLORS.BASE03;
+            return COLORS.DB25;
         elseif tile:getWorldObject():instanceOf( 'Wall' ) then
-            return COLORS.BASE05;
+            return COLORS.DB23;
         end
     end
 
@@ -119,7 +119,7 @@ function WorldPainter.new( map )
     -- ------------------------------------------------
 
     function self:init()
-        love.graphics.setBackgroundColor( COLORS.BASE00 );
+        love.graphics.setBackgroundColor( COLORS.DB00 );
         spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
         initSpritebatch();
     end
