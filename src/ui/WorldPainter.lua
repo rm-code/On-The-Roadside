@@ -26,7 +26,7 @@ local WorldPainter = {};
 -- Constructor
 -- ------------------------------------------------
 
-function WorldPainter.new( map )
+function WorldPainter.new( game )
     local self = {};
 
     local spritebatch;
@@ -38,8 +38,9 @@ function WorldPainter.new( map )
     ---
     -- Adds an empty sprite for each tile in the map to the spritebatch, gives
     -- each tile a unique identifier and sets it to dirty for the first update.
+    -- @param map (Map) The game's world map.
     --
-    local function initSpritebatch()
+    local function initSpritebatch( map )
         map:iterate( function( tile, x, y)
             local id = spritebatch:add( TILE_SPRITES.EMPTY, x * TILE_SIZE, y * TILE_SIZE );
             tile:setID( id );
@@ -103,8 +104,9 @@ function WorldPainter.new( map )
     ---
     -- Updates the spritebatch by going through every tile in the map. Only
     -- tiles which have been marked as dirty will be sent to the spritebatch.
+    -- @param map (Map) The game's world map.
     --
-    local function updateSpritebatch()
+    local function updateSpritebatch( map )
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
                 spritebatch:setColor( selectTileColor( tile ) );
@@ -121,7 +123,7 @@ function WorldPainter.new( map )
     function self:init()
         love.graphics.setBackgroundColor( COLORS.DB00 );
         spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
-        initSpritebatch();
+        initSpritebatch( game:getMap() );
     end
 
     function self:draw()
@@ -133,7 +135,7 @@ function WorldPainter.new( map )
     end
 
     function self:update( dt )
-        updateSpritebatch();
+        updateSpritebatch( game:getMap() );
     end
 
     return self;

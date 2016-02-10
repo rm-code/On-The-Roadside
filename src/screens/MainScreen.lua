@@ -1,7 +1,5 @@
 local Screen = require( 'lib.screenmanager.Screen' );
-local Map = require( 'src.map.Map' );
-local CharacterManager = require( 'src.characters.CharacterManager' );
-local TurnManager = require( 'src.combat.TurnManager' );
+local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
 
 -- ------------------------------------------------
@@ -17,35 +15,14 @@ local MainScreen = {};
 function MainScreen.new()
     local self = Screen.new();
 
-    local map;
-    local turnManager;
+    local game;
     local worldPainter;
 
-    ---
-    -- Updates the field of view on the map.
-    --
-    local function updateFOV()
-        map:resetVisibility();
-        for _, char in ipairs( CharacterManager.getCharacters() ) do
-            map:calculateVisibility( char:getTile() );
-        end
-    end
-
     function self:init()
-        map = Map.new();
-        map:init();
+        game = Game.new();
+        game:init();
 
-        CharacterManager.newCharacter( map:getTileAt( 2, 2 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 3 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 4 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 5 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 6 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 7 ));
-        CharacterManager.newCharacter( map:getTileAt( 2, 8 ));
-
-        turnManager = TurnManager.new( map );
-
-        worldPainter = WorldPainter.new( map );
+        worldPainter = WorldPainter.new( game );
         worldPainter.init();
     end
 
@@ -54,17 +31,16 @@ function MainScreen.new()
     end
 
     function self:update( dt )
+        game:update( dt );
         worldPainter.update( dt );
-        updateFOV();
-        turnManager:update( dt )
     end
 
     function self:keypressed( key )
-        turnManager:keypressed( key );
+        game:keypressed( key );
     end
 
     function self:mousepressed( mx, my, button )
-        turnManager:mousepressed( mx, my, button );
+        game:mousepressed( mx, my, button );
     end
 
     return self;
