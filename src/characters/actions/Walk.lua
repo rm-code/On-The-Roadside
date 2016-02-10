@@ -9,7 +9,7 @@ function Walk.new( character, direction )
         local currentTile = character:getTile();
         local targetTile  = currentTile:getNeighbours()[direction];
 
-        if not targetTile:isOccupied() then
+        if targetTile:getWorldObject():isPassable() and not targetTile:isOccupied() then
             -- Remove the character from the old tile, add it to the new one and
             -- give it a reference to the new tile.
             currentTile:removeCharacter();
