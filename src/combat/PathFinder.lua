@@ -70,12 +70,12 @@ end
 -- Traces the closed list from the target to the starting point by going to the
 -- parents of each tile in the list.
 -- @param endNode (node)  The last node in the generated path.
--- @result        (table) A sequence containing directions to form a path.
+-- @result        (table) A sequence containing tiles to form a path.
 --
 local function finalizePath( endNode )
-    local result, parent = { endNode.direction }, endNode.parent;
-    while parent and parent.direction do
-        table.insert( result, 1, parent.direction );
+    local result, parent = { endNode.tile }, endNode.parent;
+    while parent and parent.tile do
+        table.insert( result, 1, parent.tile );
         parent = parent.parent;
     end
     return result;
