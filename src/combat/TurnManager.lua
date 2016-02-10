@@ -60,6 +60,7 @@ function TurnManager.new( map )
         if button == 1 then
             local tile = map:getTileAt( tx, ty )
             if tile:getWorldObject():instanceOf( 'Door' ) then
+                setTarget( map:getTileAt( tx, ty ));
                 if not tile:getWorldObject():isPassable() then
                     actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
                 else
