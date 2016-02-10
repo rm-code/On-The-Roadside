@@ -59,16 +59,14 @@ function TurnManager.new( map )
         local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
         if button == 1 then
             local tile = map:getTileAt( tx, ty )
+            actionQueue:clear();
+            setTarget( tile );
             if tile:getWorldObject():instanceOf( 'Door' ) then
-                setTarget( map:getTileAt( tx, ty ));
                 if not tile:getWorldObject():isPassable() then
                     actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
                 else
                     actionQueue:enqueue( CloseDoor.new( CharacterManager.getCurrentCharacter(), tile ));
                 end
-            else
-                actionQueue:clear();
-                setTarget( map:getTileAt( tx, ty ));
             end
         elseif button == 2 then
             actionQueue:clear();
