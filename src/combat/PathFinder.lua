@@ -74,7 +74,7 @@ end
 --
 local function finalizePath( endNode )
     local result, parent = { endNode.tile }, endNode.parent;
-    while parent and parent.tile do
+    while parent and parent.parent do
         table.insert( result, 1, parent.tile );
         parent = parent.parent;
     end
