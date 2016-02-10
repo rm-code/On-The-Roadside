@@ -23,16 +23,6 @@ function TurnManager.new( map )
     local actionQueue = Queue.new();
     local actionTimer = 0;
 
-    -- Needs to grab next character
-
-    -- ActionQueue for that actor
-
-    -- While turn is not done
-        -- Enqueue actions for the character if he has enough AP
-
-    -- When turn is done
-    -- Perform all actions on the queue
-
     local function setTarget( target )
         if target then
             local character = CharacterManager.getCurrentCharacter();

@@ -127,10 +127,6 @@ function WorldPainter.new( map )
     function self:draw()
         love.graphics.draw( spritebatch, 0, 0 );
 
-        -- local selectedCharX, selectedCharY = CharacterManager.getCurrentCharacter():getTile():getPosition();
-        -- love.graphics.setColor( 0, 255, 0 );
-        -- love.graphics.rectangle( 'line', selectedCharX * TILE_SIZE, selectedCharY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-
         local mx, my = love.mouse.getPosition();
         love.graphics.setColor( 255, 255, 255 );
         love.graphics.rectangle( 'line', math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE )
