@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local Square = require( 'src.map.Square' );
+local Tile = require( 'src.map.Tile' );
 
 local Floor = require( 'src.map.worldobjects.Floor' );
 local Wall  = require( 'src.map.worldobjects.Wall' );
@@ -12,7 +12,7 @@ local Map = {};
 function Map.new()
     local self = Object.new():addInstance( 'Map' );
 
-    local squares;
+    local tiles;
 
     -- ------------------------------------------------
     -- Public Functions
@@ -28,23 +28,23 @@ function Map.new()
         end
     end
 
-    local function createSquares( grid )
-        local newSquares = {};
+    local function createTiles( grid )
+        local newTiles = {};
         for x = 1, #grid do
             for y = 1, #grid[x] do
-                newSquares[x] = newSquares[x] or {};
-                newSquares[x][y] = Square.new( x, y, createWorldObject( grid[x][y] ));
+                newTiles[x] = newTiles[x] or {};
+                newTiles[x][y] = Tile.new( x, y, createWorldObject( grid[x][y] ));
             end
         end
-        return newSquares;
+        return newTiles;
     end
 
     ---
     -- Gives each tile a reference to its neighbours.
     --
     local function addNeighbours()
-        for x = 1, #squares do
-            for y = 1, #squares[x] do
+        for x = 1, #tiles do
+            for y = 1, #tiles[x] do
                 local neighbours = {};
 
                 neighbours[DIRECTION.NORTH]      = self:getTileAt( x    , y - 1 );
@@ -56,7 +56,7 @@ function Map.new()
                 neighbours[DIRECTION.EAST]       = self:getTileAt( x + 1, y     );
                 neighbours[DIRECTION.WEST]       = self:getTileAt( x - 1, y     );
 
-                squares[x][y]:setNeighbours( neighbours );
+                tiles[x][y]:setNeighbours( neighbours );
             end
         end
     end
@@ -68,14 +68,14 @@ function Map.new()
     function self:init()
         -- TODO Replace
         local grid = require( 'res.data.maps.example' );
-        squares = createSquares( grid );
+        tiles = createTiles( grid );
         addNeighbours();
     end
 
     function self:iterate( callback )
-        for x = 1, #squares do
-            for y = 1, #squares[x] do
-                callback( squares[x][y], x, y );
+        for x = 1, #tiles do
+            for y = 1, #tiles[x] do
+                callback( tiles[x][y], x, y );
             end
         end
     end
@@ -104,7 +104,7 @@ function Map.new()
             local rx, ry = math.cos( rad ), math.sin( rad );
 
             for _ = 1, 10 do
-                local target = squares[math.floor( ox )][math.floor( oy )];
+                local target = tiles[math.floor( ox )][math.floor( oy )];
                 target:setVisible( true );
                 target:setExplored( true );
                 target:setDirty( true ); -- Mark tile for updating.
@@ -122,7 +122,7 @@ function Map.new()
     -- ------------------------------------------------
 
     function self:getTileAt( x, y )
-        return squares[x] and squares[x][y];
+        return tiles[x] and tiles[x][y];
     end
 
     return self;

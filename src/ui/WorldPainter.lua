@@ -37,7 +37,7 @@ function WorldPainter.new( map )
 
     ---
     -- Adds an empty sprite for each tile in the map to the spritebatch, gives
-    -- each square a unique identifier and sets it to dirty for the first update.
+    -- each tile a unique identifier and sets it to dirty for the first update.
     --
     local function initSpritebatch()
         map:iterate( function( tile, x, y)
