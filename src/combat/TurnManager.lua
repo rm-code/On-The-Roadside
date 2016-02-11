@@ -1,4 +1,3 @@
-local Queue = require('src.combat.Queue');
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local CloseDoor = require( 'src.characters.actions.CloseDoor' );
@@ -21,8 +20,6 @@ function TurnManager.new( map )
     local self = {};
 
     local character = CharacterManager.getCurrentCharacter();
-
-    local actionQueue = Queue.new();
     local actionTimer = 0;
 
     local function setTarget( target )
@@ -32,7 +29,7 @@ function TurnManager.new( map )
 
             if path then
                 for i = 1, #path do
-                    actionQueue:enqueue( Walk.new( character, path[i] ));
+                    character:enqueueAction( Walk.new( character, path[i] ));
                 end
             else
                 print( "Can't find path!");
@@ -41,8 +38,8 @@ function TurnManager.new( map )
     end
 
     function self:update( dt )
-        if actionQueue:getSize() > 0 and actionTimer > 0.15 then
-            local action = actionQueue:dequeue();
+        if character:hasAction() and actionTimer > 0.15 then
+            local action = character:dequeueAction();
             action:perform();
             actionTimer = 0;
         end
@@ -51,27 +48,27 @@ function TurnManager.new( map )
 
     function self:keypressed( key )
         if key == 'space' then
-            actionQueue:clear();
             character = CharacterManager.nextCharacter();
         end
     end
 
     function self:mousepressed( mx, my, button )
         local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
+        local tile = map:getTileAt( tx, ty );
+
         if button == 1 then
-            local tile = map:getTileAt( tx, ty )
-            actionQueue:clear();
+            character:clearActions();
             setTarget( tile );
             if tile:getWorldObject():instanceOf( 'Door' ) then
                 if not tile:getWorldObject():isPassable() then
-                    actionQueue:enqueue( OpenDoor.new( character, tile ));
+                    character:enqueueAction( OpenDoor.new( character, tile ));
                 else
-                    actionQueue:enqueue( CloseDoor.new( character, tile ));
+                    character:enqueueAction( CloseDoor.new( character, tile ));
                 end
             end
         elseif button == 2 then
-            actionQueue:clear();
-            character = CharacterManager.selectCharacter( map:getTileAt( tx, ty ));
+            character:clearActions();
+            character = CharacterManager.selectCharacter( tile );
         end
     end
 
