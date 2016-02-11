@@ -134,7 +134,12 @@ function WorldPainter.new( game )
         love.graphics.rectangle( 'line', math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE )
     end
 
-    function self:update( dt )
+    function self:update()
+        local map = game:getMap();
+        map:resetVisibility();
+        for _, char in ipairs( CharacterManager.getCharacters() ) do
+            map:calculateVisibility( char:getTile() );
+        end
         updateSpritebatch( game:getMap() );
     end
 

@@ -10,16 +10,6 @@ function Game.new()
     local map;
     local turnManager;
 
-    ---
-    -- Updates the field of view on the map.
-    --
-    local function updateFOV()
-        map:resetVisibility();
-        for _, char in ipairs( CharacterManager.getCharacters() ) do
-            map:calculateVisibility( char:getTile() );
-        end
-    end
-
     function self:init()
         map = Map.new();
         map:init();
@@ -36,7 +26,6 @@ function Game.new()
     end
 
     function self:update( dt )
-        updateFOV();
         turnManager:update( dt )
     end
 
