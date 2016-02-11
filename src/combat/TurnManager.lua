@@ -20,12 +20,13 @@ local TurnManager = {};
 function TurnManager.new( map )
     local self = {};
 
+    local character = CharacterManager.getCurrentCharacter();
+
     local actionQueue = Queue.new();
     local actionTimer = 0;
 
     local function setTarget( target )
         if target then
-            local character = CharacterManager.getCurrentCharacter();
             local origin = character:getTile();
             local path = PathFinder.generatePath( origin, target );
 
@@ -51,7 +52,7 @@ function TurnManager.new( map )
     function self:keypressed( key )
         if key == 'space' then
             actionQueue:clear();
-            CharacterManager.nextCharacter();
+            character = CharacterManager.nextCharacter();
         end
     end
 
@@ -63,14 +64,14 @@ function TurnManager.new( map )
             setTarget( tile );
             if tile:getWorldObject():instanceOf( 'Door' ) then
                 if not tile:getWorldObject():isPassable() then
-                    actionQueue:enqueue( OpenDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+                    actionQueue:enqueue( OpenDoor.new( character, tile ));
                 else
-                    actionQueue:enqueue( CloseDoor.new( CharacterManager.getCurrentCharacter(), tile ));
+                    actionQueue:enqueue( CloseDoor.new( character, tile ));
                 end
             end
         elseif button == 2 then
             actionQueue:clear();
-            CharacterManager.selectCharacter( map:getTileAt( tx, ty ));
+            character = CharacterManager.selectCharacter( map:getTileAt( tx, ty ));
         end
     end
 

@@ -11,7 +11,7 @@ end
 
 function CharacterManager.nextCharacter()
     characterIndex = characterIndex + 1 > #characters and 1 or characterIndex + 1;
-    return characters[characterIndex];
+    return CharacterManager.getCurrentCharacter();
 end
 
 function CharacterManager.getCurrentCharacter()
@@ -24,6 +24,7 @@ function CharacterManager.selectCharacter( tile )
             characterIndex = i;
         end
     end
+    return CharacterManager.getCurrentCharacter();
 end
 
 function CharacterManager.getCharacters()
