@@ -28,8 +28,9 @@ function TurnManager.new( map )
             local path = PathFinder.generatePath( origin, target );
 
             if path then
-                for i = 1, #path do
-                    character:enqueueAction( Walk.new( character, path[i] ));
+                character:addPath( path );
+                for _ = 1, path:getLength() do
+                    character:enqueueAction( Walk.new( character ));
                 end
             else
                 print( "Can't find path!");

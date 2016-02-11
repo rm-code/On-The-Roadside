@@ -8,6 +8,8 @@ function Character.new( tile )
 
     self:validateType( 'Tile', tile, true );
 
+    local path;
+
     -- Add character to the tile.
     tile:setCharacter( self );
 
@@ -35,6 +37,21 @@ function Character.new( tile )
 
     function self:getTile()
         return tile;
+    end
+
+    function self:addPath( npath )
+        if path then
+            path:refresh();
+        end
+        path = npath;
+    end
+
+    function self:getPath()
+        return path;
+    end
+
+    function self:hasPath()
+        return path ~= nil;
     end
 
     return self;
