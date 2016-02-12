@@ -13,6 +13,10 @@ function CloseDoor.new( character, target )
         end
     end
 
+    function self:getCost()
+        return 3;
+    end
+
     return self;
 end
 

@@ -49,6 +49,10 @@ function TurnManager.new( map )
     function self:keypressed( key )
         if key == 'space' then
             character = CharacterManager.nextCharacter();
+        elseif key == 'return' then
+            for _, char in ipairs( CharacterManager.getCharacters() ) do
+                char:resetActionPoints();
+            end
         end
     end
 

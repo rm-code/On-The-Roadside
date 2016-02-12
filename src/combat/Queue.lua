@@ -13,6 +13,10 @@ function Queue.new()
         return table.remove( queue );
     end
 
+    function self:peek()
+        return queue[1];
+    end
+
     function self:isEmpty()
         return #queue == 0;
     end

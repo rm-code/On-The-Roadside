@@ -1,6 +1,8 @@
 local Object = require('src.Object');
 local Queue = require('src.combat.Queue');
 
+local DEFAULT_ACTION_POINTS = 20;
+
 local Character = {};
 
 function Character.new( tile )
@@ -9,6 +11,7 @@ function Character.new( tile )
     self:validateType( 'Tile', tile, true );
 
     local path;
+    local actionPoints = DEFAULT_ACTION_POINTS;
 
     -- Add character to the tile.
     tile:setCharacter( self );
@@ -21,11 +24,12 @@ function Character.new( tile )
 
     function self:performAction()
         local action = actions:dequeue();
+        actionPoints = actionPoints - action:getCost();
         action:perform();
     end
 
     function self:canPerformAction()
-        return actions:getSize() > 0;
+        return actions:getSize() > 0 and actions:peek():getCost() <= actionPoints;
     end
 
     function self:clearActions()
@@ -53,6 +57,14 @@ function Character.new( tile )
 
     function self:hasPath()
         return path ~= nil;
+    end
+
+    function self:resetActionPoints()
+        actionPoints = DEFAULT_ACTION_POINTS;
+    end
+
+    function self:getActionPoints()
+        return actionPoints;
     end
 
     return self;

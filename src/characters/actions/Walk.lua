@@ -18,6 +18,10 @@ function Walk.new( character )
         end
     end
 
+    function self:getCost()
+        return 1;
+    end
+
     return self;
 end
 
