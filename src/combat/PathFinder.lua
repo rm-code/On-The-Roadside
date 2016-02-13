@@ -71,25 +71,37 @@ end
 ---
 -- Traces the closed list from the target to the starting point by going to the
 -- parents of each tile in the list.
--- @param endNode (node) The last node in the generated path.
--- @result        (Path) A path object containing tiles to form a path.
+-- @param endNode       (node)    The last node in the generated path.
+-- @param includeTarget (boolean) Wether to include the target tile in the path or not.
+-- @result              (Path)    A path object containing tiles to form a path.
 --
-local function finalizePath( endNode )
-    local result, parent = { endNode.tile }, endNode.parent;
+local function finalizePath( endNode, includeTarget )
+    local result, parent;
+
+    -- Skip the target tile (endNode) if necessary.
+    if includeTarget then
+        result, parent = { endNode.tile }, endNode.parent;
+    else
+        result, parent = { endNode.parent.tile }, endNode.parent.parent;
+    end
+
+    -- Build the rest of the path.
     while parent and parent.parent do
         result[#result + 1] = parent.tile;
         parent = parent.parent;
     end
+
     return Path.new( result );
 end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param origin (Tile)  The origin.
--- @param target (Tile)  The target.
--- @param return (table) A sequence containing directions to form a path.
+-- @param origin        (Tile)    The origin.
+-- @param target        (Tile)    The target.
+-- @param includeTarget (boolean) Wether to include the target tile in the path or not.
+-- @param return        (table)   A sequence containing directions to form a path.
 --
-function PathFinder.generatePath( origin, target )
+function PathFinder.generatePath( origin, target, includeTarget )
     local closedList = {};
     local openList = {
         { tile = origin, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
@@ -104,7 +116,7 @@ function PathFinder.generatePath( origin, target )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current );
+            return finalizePath( current, includeTarget );
         end
 
         -- Look for the next tile.

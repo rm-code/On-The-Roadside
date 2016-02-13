@@ -22,10 +22,10 @@ function TurnManager.new( map )
     local character = CharacterManager.getCurrentCharacter();
     local actionTimer = 0;
 
-    local function setTarget( target )
+    local function setTarget( target, adjacent )
         if target then
             local origin = character:getTile();
-            local path = PathFinder.generatePath( origin, target );
+            local path = PathFinder.generatePath( origin, target, adjacent );
 
             if path then
                 character:addPath( path );
@@ -56,19 +56,20 @@ function TurnManager.new( map )
     function self:mousepressed( mx, my, button )
         local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
         local tile = map:getTileAt( tx, ty );
+        character:clearActions();
 
         if button == 1 then
-            character:clearActions();
-            setTarget( tile );
             if tile:getWorldObject():instanceOf( 'Door' ) then
+                setTarget( tile, false );
                 if not tile:getWorldObject():isPassable() then
                     character:enqueueAction( OpenDoor.new( character, tile ));
                 else
                     character:enqueueAction( CloseDoor.new( character, tile ));
                 end
+            else
+                setTarget( tile, true );
             end
         elseif button == 2 then
-            character:clearActions();
             character = CharacterManager.selectCharacter( tile );
         end
     end
