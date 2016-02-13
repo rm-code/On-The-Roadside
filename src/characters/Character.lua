@@ -19,11 +19,12 @@ function Character.new( tile )
         actions:enqueue( action );
     end
 
-    function self:dequeueAction()
-        return actions:dequeue();
+    function self:performAction()
+        local action = actions:dequeue();
+        action:perform();
     end
 
-    function self:hasAction()
+    function self:canPerformAction()
         return actions:getSize() > 0;
     end
 

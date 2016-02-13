@@ -39,9 +39,8 @@ function TurnManager.new( map )
     end
 
     function self:update( dt )
-        if character:hasAction() and actionTimer > 0.15 then
-            local action = character:dequeueAction();
-            action:perform();
+        if actionTimer > 0.15 and character:canPerformAction() then
+            character:performAction();
             actionTimer = 0;
         end
         actionTimer = actionTimer + dt;
