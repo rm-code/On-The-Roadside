@@ -187,7 +187,7 @@ function WorldPainter.new( game )
         local map = game:getMap();
         map:resetVisibility();
         for _, char in ipairs( CharacterManager.getCharacters() ) do
-            map:calculateVisibility( char:getTile() );
+            map:calculateVisibility( char:getTile(), char:getViewRange() );
             if char:hasPath() then
                 char:getPath():refresh();
             end

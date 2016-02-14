@@ -71,6 +71,10 @@ function Character.new( tile, faction )
         return faction;
     end
 
+    function self:getViewRange()
+        return 12;
+    end
+
     return self;
 end
 

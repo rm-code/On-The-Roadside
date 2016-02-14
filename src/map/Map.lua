@@ -94,8 +94,10 @@ function Map.new()
 
     ---
     -- Cast rays in a 360° radius and marks tiles visible.
+    -- @param tile (Tile)    The tile to start at.
+    -- @param range (number) The view range to use.
     --
-    function self:calculateVisibility( tile )
+    function self:calculateVisibility( tile, range )
         local tx, ty = tile:getPosition();
 
         for i = 1, 360 do
@@ -103,7 +105,7 @@ function Map.new()
             local rad    = math.rad( i );
             local rx, ry = math.cos( rad ), math.sin( rad );
 
-            for _ = 1, 10 do
+            for _ = 1, range do
                 local target = tiles[math.floor( ox )][math.floor( oy )];
                 target:setVisible( true );
                 target:setExplored( true );
