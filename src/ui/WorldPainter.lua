@@ -155,9 +155,12 @@ function WorldPainter.new( game )
     function self:draw()
         love.graphics.draw( spritebatch, 0, 0 );
 
+        -- Draw mouse cursor and tile coordinates.
         local mx, my = love.mouse.getPosition();
+        local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
         love.graphics.setColor( 255, 255, 255 );
-        love.graphics.rectangle( 'line', math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE )
+        love.graphics.rectangle( 'line', tx * TILE_SIZE, ty * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+        love.graphics.print( 'Coords: ' .. tx .. ', ' .. ty, 10, love.graphics.getHeight() - 20 );
     end
 
     function self:update()
