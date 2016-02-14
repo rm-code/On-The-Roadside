@@ -74,7 +74,7 @@ function WorldPainter.new( game )
     -- @param map (Map) The game's world map.
     --
     local function initSpritebatch( map )
-        map:iterate( function( tile, x, y)
+        map:iterate( function( tile, x, y )
             local id = spritebatch:add( TILE_SPRITES.EMPTY, x * TILE_SIZE, y * TILE_SIZE );
             tile:setID( id );
             tile:setDirty( true );
