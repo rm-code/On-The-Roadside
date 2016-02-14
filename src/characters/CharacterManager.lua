@@ -1,26 +1,50 @@
 local Character = require( 'src.characters.Character' );
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.Factions' );
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local CharacterManager = {};
 
-local characters = {};
-local characterIndex = 1;
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
 
-function CharacterManager.newCharacter( tile )
-    characters[#characters + 1] = Character.new( tile );
+local factions = {
+    [FACTIONS.ALLIED]  = {},
+    [FACTIONS.NEUTRAL] = {},
+    [FACTIONS.ENEMY]   = {}
+};
+
+local characterIndex = 1;
+local factionIndex = 1;
+
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+function CharacterManager.newCharacter( tile, faction )
+    table.insert( factions[faction], Character.new( tile, faction ) );
 end
 
 function CharacterManager.nextCharacter()
-    characterIndex = characterIndex + 1 > #characters and 1 or characterIndex + 1;
+    characterIndex = characterIndex + 1 > #factions[factionIndex] and 1 or characterIndex + 1;
     return CharacterManager.getCurrentCharacter();
 end
 
 function CharacterManager.getCurrentCharacter()
-    return characters[characterIndex];
+    return factions[factionIndex][characterIndex];
 end
 
 function CharacterManager.selectCharacter( tile )
-    for i = 1, #characters do
-        if tile == characters[i]:getTile() then
+    for i = 1, #factions[factionIndex] do
+        if tile == factions[factionIndex][i]:getTile() then
             characterIndex = i;
         end
     end
@@ -28,7 +52,12 @@ function CharacterManager.selectCharacter( tile )
 end
 
 function CharacterManager.getCharacters()
-    return characters;
+    return factions[factionIndex];
+end
+
+function CharacterManager.nextFaction()
+    factionIndex = factionIndex + 1 > #factions and 1 or factionIndex + 1;
+    characterIndex = 1;
 end
 
 return CharacterManager;

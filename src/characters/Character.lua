@@ -5,7 +5,7 @@ local DEFAULT_ACTION_POINTS = 20;
 
 local Character = {};
 
-function Character.new( tile )
+function Character.new( tile, faction )
     local self = Object.new():addInstance( 'Character' );
 
     self:validateType( 'Tile', tile, true );
@@ -65,6 +65,10 @@ function Character.new( tile )
 
     function self:getActionPoints()
         return actionPoints;
+    end
+
+    function self:getFaction()
+        return faction;
     end
 
     return self;

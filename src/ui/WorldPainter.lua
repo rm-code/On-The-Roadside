@@ -5,11 +5,27 @@ local CharacterManager = require( 'src.characters.CharacterManager' );
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
+local FACTIONS = require( 'src.constants.Factions' );
+
+local CHARACTER_COLORS = {
+    ACTIVE = {
+        [FACTIONS.ALLIED]  = COLORS.DB17,
+        [FACTIONS.NEUTRAL] = COLORS.DB09,
+        [FACTIONS.ENEMY]   = COLORS.DB05
+    },
+    INACTIVE = {
+        [FACTIONS.ALLIED]  = COLORS.DB15,
+        [FACTIONS.NEUTRAL] = COLORS.DB12,
+        [FACTIONS.ENEMY]   = COLORS.DB27
+    }
+}
+
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    CHARACTER   = love.graphics.newQuad(  1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -93,9 +109,9 @@ function WorldPainter.new( game )
 
         if tile:isOccupied() then
             if tile:getCharacter() == CharacterManager.getCurrentCharacter() then
-                return COLORS.DB17;
+                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction()];
             else
-                return COLORS.DB15;
+                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction()];
             end
         elseif tile:getWorldObject():instanceOf( 'Door' ) then
             return COLORS.DB03;
@@ -113,7 +129,11 @@ function WorldPainter.new( game )
     --
     local function selectTileSprite( tile )
         if tile:isOccupied() then
-            return TILE_SPRITES.CHARACTER;
+            if tile:getCharacter():getFaction() == FACTIONS.ENEMY then
+                return TILE_SPRITES.ENEMY;
+            else
+                return TILE_SPRITES.ALLIED;
+            end
         elseif tile:getWorldObject():instanceOf( 'Wall' ) then
             return TILE_SPRITES.WALL;
         elseif tile:getWorldObject():instanceOf( 'Floor' ) then

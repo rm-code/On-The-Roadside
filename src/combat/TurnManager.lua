@@ -52,7 +52,10 @@ function TurnManager.new( map )
         elseif key == 'return' then
             for _, char in ipairs( CharacterManager.getCharacters() ) do
                 char:resetActionPoints();
+                char:clearActions();
             end
+            CharacterManager.nextFaction();
+            character = CharacterManager.getCurrentCharacter();
         end
     end
 
