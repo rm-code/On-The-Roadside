@@ -192,6 +192,18 @@ function WorldPainter.new( game )
         -- Action points
         love.graphics.print( 'AP: ' .. CharacterManager.getCurrentCharacter():getActionPoints(), 10, love.graphics.getHeight() - 40 );
 
+        -- TODO move to function
+        if CharacterManager.getCurrentCharacter():hasLineOfSight() then
+            CharacterManager.getCurrentCharacter():getLineOfSight():iterate( function( tile )
+                love.graphics.setColor( 0, 255, 0 );
+                if not tile:isPassable() or not tile:isVisible() then
+                    love.graphics.setColor( 255, 0, 0 );
+                end
+                love.graphics.rectangle( 'line', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+            end)
+            love.graphics.setColor( 255, 255, 255 );
+        end
+
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
 

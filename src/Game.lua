@@ -32,7 +32,7 @@ function Game.new()
         CharacterManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
-        turnManager = TurnManager.new();
+        turnManager = TurnManager.new( map );
     end
 
     function self:update( dt )

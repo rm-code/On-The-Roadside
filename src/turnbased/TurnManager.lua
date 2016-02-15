@@ -1,9 +1,12 @@
+local Attack = require( 'src.characters.actions.Attack' );
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.turnbased.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
+local Bresenham = require( 'lib.Bresenham' );
+local LineOfSight = require( 'src.turnbased.LineOfSight' );
 
 -- ------------------------------------------------
 -- Constants
@@ -17,16 +20,31 @@ local TURN_STEP_DELAY = 0.15;
 
 local TurnManager = {};
 
-function TurnManager.new()
+function TurnManager.new( map )
     local self = {};
 
     local character = CharacterManager.getCurrentCharacter();
     local actionTimer = 0;
     local blockInput = false;
+    local attackMode = false;
 
     -- ------------------------------------------------
     -- Local Methods
     -- ------------------------------------------------
+
+    local function generateLineOfSight( target )
+        local ox, oy = character:getTile():getPosition();
+        local tx, ty = target:getPosition();
+
+        local seenTiles = {};
+
+        Bresenham.calculateLine( ox, oy, tx, ty, function( sx, sy )
+            seenTiles[#seenTiles + 1] = map:getTileAt( sx, sy );
+            return true;
+        end)
+
+        character:addLineOfSight( LineOfSight.new( seenTiles ));
+    end
 
     local function commitPath()
         character:getPath():iterate( function( tile, index )
@@ -56,15 +74,34 @@ function TurnManager.new()
         end
     end
 
+    local function generateAttack( target )
+        character:enqueueAction( Attack.new( character, target ));
+    end
+
     local function checkMovement( target )
         if not character:hasPath() then
             generatePath( target );
+            character:removeLineOfSight();
         elseif target ~= character:getPath():getTarget() then
             character:clearActions();
             character:removePath();
+            character:removeLineOfSight();
             generatePath( target );
         else
             commitPath();
+        end
+    end
+
+    local function checkAttack( target )
+        if not character:hasLineOfSight() then
+            generateLineOfSight( target );
+        elseif target ~= character:getLineOfSight():getTarget() then
+            character:clearActions();
+            character:removePath();
+            character:removeLineOfSight();
+            generateLineOfSight( target );
+        else
+            generateAttack( target );
         end
     end
 
@@ -88,6 +125,18 @@ function TurnManager.new()
     -- Input Events
     -- ------------------------------------------------
 
+    Messenger.observe( 'ENTER_ATTACK_MODE', function()
+        if not blockInput then
+            attackMode = true;
+        end
+    end)
+
+    Messenger.observe( 'ENTER_MOVEMENT_MODE', function()
+        if not blockInput then
+            attackMode = false;
+        end
+    end)
+
     Messenger.observe( 'SWITCH_CHARACTERS', function()
         if not blockInput then
             character = CharacterManager.nextCharacter();
@@ -100,6 +149,7 @@ function TurnManager.new()
                 char:resetActionPoints();
                 char:clearActions();
                 char:removePath();
+                char:removeLineOfSight();
             end
             CharacterManager.nextFaction();
             character = CharacterManager.getCurrentCharacter();
@@ -108,7 +158,11 @@ function TurnManager.new()
 
     Messenger.observe( 'LEFT_CLICKED_TILE', function( tile )
         if not blockInput then
-            checkMovement( tile );
+            if attackMode then
+                checkAttack( tile );
+            else
+                checkMovement( tile );
+            end
         end
     end)
 

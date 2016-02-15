@@ -30,6 +30,7 @@ function Character.new( tile, faction )
     -- ------------------------------------------------
 
     local path;
+    local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
 
@@ -95,6 +96,21 @@ function Character.new( tile, faction )
         path = nil;
     end
 
+    ---
+    -- Adds a new line of sight for the character.
+    -- @param nlos (LineOfSight) The line of sight to add.
+    --
+    function self:addLineOfSight( nlos )
+        lineOfSight = nlos;
+    end
+
+    ---
+    -- Removes the current line of sight.
+    --
+    function self:removeLineOfSight()
+        lineOfSight = nil;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -116,6 +132,14 @@ function Character.new( tile, faction )
     end
 
     ---
+    -- Returns the line of sight.
+    -- @return (LineOfSight) The character's current line of sight.
+    --
+    function self:getLineOfSight()
+        return lineOfSight;
+    end
+
+    ---
     -- Returns the current path.
     -- @return (Path) The current path.
     --
@@ -129,6 +153,14 @@ function Character.new( tile, faction )
     --
     function self:getTile()
         return tile;
+    end
+
+    ---
+    -- Checks if the character currently has a line of sight.
+    -- @return (boolean) Wether the character has a line of sight.
+    --
+    function self:hasLineOfSight()
+        return lineOfSight ~= nil;
     end
 
     ---

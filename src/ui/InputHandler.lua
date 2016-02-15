@@ -41,6 +41,10 @@ function InputHandler.new( game )
             Messenger.publish( 'SWITCH_CHARACTERS' );
         elseif key == 'return' then
             Messenger.publish( 'SWITCH_FACTION' );
+        elseif key == 'a' then
+            Messenger.publish( 'ENTER_ATTACK_MODE' );
+        elseif key == 'escape' then
+            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
         end
     end
 
