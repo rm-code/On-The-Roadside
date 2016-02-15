@@ -32,7 +32,7 @@ function Game.new()
         CharacterManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
-        turnManager = TurnManager.new( map );
+        turnManager = TurnManager.new();
     end
 
     function self:update( dt )
@@ -41,14 +41,6 @@ function Game.new()
 
     function self:getMap()
         return map;
-    end
-
-    function self:keypressed( key )
-        turnManager:keypressed( key );
-    end
-
-    function self:mousepressed( mx, my, button )
-        turnManager:mousepressed( mx, my, button );
     end
 
     return self;

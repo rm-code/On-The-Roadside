@@ -1,4 +1,5 @@
 local CharacterManager = require( 'src.characters.CharacterManager' );
+local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Constants
@@ -46,6 +47,8 @@ function WorldPainter.new( game )
     local self = {};
 
     local spritebatch;
+
+    local mouseX, mouseY = 0, 0;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -162,6 +165,13 @@ function WorldPainter.new( game )
         end)
     end
 
+    ---
+    -- Draws a mouse cursor that snaps to the grid.
+    --
+    local function drawMouseCursor()
+        love.graphics.rectangle( 'line', mouseX * TILE_SIZE, mouseY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -175,12 +185,10 @@ function WorldPainter.new( game )
     function self:draw()
         love.graphics.draw( spritebatch, 0, 0 );
 
-        -- Draw mouse cursor and tile coordinates.
-        local mx, my = love.mouse.getPosition();
-        local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
-        love.graphics.setColor( 255, 255, 255 );
-        love.graphics.rectangle( 'line', tx * TILE_SIZE, ty * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-        love.graphics.print( 'Coords: ' .. tx .. ', ' .. ty, 10, love.graphics.getHeight() - 20 );
+        drawMouseCursor();
+
+        -- Draw tile coordinates.
+        love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
     end
 
     function self:update()
@@ -194,6 +202,10 @@ function WorldPainter.new( game )
         end
         updateSpritebatch( game:getMap() );
     end
+
+    Messenger.observe( 'MOUSE_MOVED', function( mx, my )
+        mouseX, mouseY = mx, my;
+    end)
 
     return self;
 end

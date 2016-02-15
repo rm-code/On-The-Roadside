@@ -1,6 +1,7 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
+local InputHandler = require( 'src.ui.InputHandler' );
 
 -- ------------------------------------------------
 -- Module
@@ -17,6 +18,7 @@ function MainScreen.new()
 
     local game;
     local worldPainter;
+    local inputHandler;
 
     function self:init()
         game = Game.new();
@@ -24,6 +26,8 @@ function MainScreen.new()
 
         worldPainter = WorldPainter.new( game );
         worldPainter.init();
+
+        inputHandler = InputHandler.new( game );
     end
 
     function self:draw()
@@ -31,16 +35,17 @@ function MainScreen.new()
     end
 
     function self:update( dt )
+        inputHandler:update( dt );
         game:update( dt );
         worldPainter.update( dt );
     end
 
     function self:keypressed( key )
-        game:keypressed( key );
+        inputHandler:keypressed( key );
     end
 
     function self:mousepressed( mx, my, button )
-        game:mousepressed( mx, my, button );
+        inputHandler:mousepressed( mx, my, button );
     end
 
     return self;

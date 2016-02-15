@@ -3,12 +3,7 @@ local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.combat.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
+local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Module
@@ -16,11 +11,15 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 
 local TurnManager = {};
 
-function TurnManager.new( map )
+function TurnManager.new()
     local self = {};
 
     local character = CharacterManager.getCurrentCharacter();
     local actionTimer = 0;
+
+    -- ------------------------------------------------
+    -- Local Methods
+    -- ------------------------------------------------
 
     local function setTarget( target, adjacent )
         if target then
@@ -38,6 +37,10 @@ function TurnManager.new( map )
         end
     end
 
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
     function self:update( dt )
         if actionTimer > 0.15 and character:canPerformAction() then
             character:performAction();
@@ -46,41 +49,41 @@ function TurnManager.new( map )
         actionTimer = actionTimer + dt;
     end
 
-    function self:keypressed( key )
-        if key == 'space' then
-            character = CharacterManager.nextCharacter();
-        elseif key == 'return' then
-            for _, char in ipairs( CharacterManager.getCharacters() ) do
-                char:resetActionPoints();
-                char:clearActions();
-            end
-            CharacterManager.nextFaction();
-            character = CharacterManager.getCurrentCharacter();
+    -- ------------------------------------------------
+    -- Input Events
+    -- ------------------------------------------------
+
+    Messenger.observe( 'SWITCH_CHARACTERS', function()
+        character = CharacterManager.nextCharacter();
+    end)
+
+    Messenger.observe( 'SWITCH_FACTION', function()
+        for _, char in ipairs( CharacterManager.getCharacters() ) do
+            char:resetActionPoints();
+            char:clearActions();
         end
-    end
+        CharacterManager.nextFaction();
+        character = CharacterManager.getCurrentCharacter();
+    end)
 
-    function self:mousepressed( mx, my, button )
-        local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
-        local tile = map:getTileAt( tx, ty );
-        character:clearActions();
+    Messenger.observe( 'CLICKED_CLOSED_DOOR', function( tile )
+        setTarget( tile, false );
+        character:enqueueAction( OpenDoor.new( character, tile ));
+    end)
 
-        if not tile then return end
+    Messenger.observe( 'CLICKED_OPEN_DOOR', function( tile )
+        setTarget( tile, false );
+        character:enqueueAction( CloseDoor.new( character, tile ));
+    end)
 
-        if button == 1 then
-            if tile:getWorldObject():instanceOf( 'Door' ) then
-                setTarget( tile, false );
-                if not tile:getWorldObject():isPassable() then
-                    character:enqueueAction( OpenDoor.new( character, tile ));
-                else
-                    character:enqueueAction( CloseDoor.new( character, tile ));
-                end
-            else
-                setTarget( tile, true );
-            end
-        elseif button == 2 then
-            character = CharacterManager.selectCharacter( tile );
-        end
-    end
+    Messenger.observe( 'CLICKED_TILE', function( tile )
+        setTarget( tile, true );
+        character:enqueueAction( CloseDoor.new( character, tile ));
+    end)
+
+    Messenger.observe( 'RIGHT_CLICKED_CHARACTER', function( tile )
+        character = CharacterManager.selectCharacter( tile );
+    end)
 
     return self;
 end
