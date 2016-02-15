@@ -64,6 +64,8 @@ function TurnManager.new( map )
         local tile = map:getTileAt( tx, ty );
         character:clearActions();
 
+        if not tile then return end
+
         if button == 1 then
             if tile:getWorldObject():instanceOf( 'Door' ) then
                 setTarget( tile, false );
