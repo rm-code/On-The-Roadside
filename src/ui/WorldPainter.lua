@@ -131,13 +131,15 @@ function WorldPainter.new( game )
     -- @return     (Quad) A quad pointing to a sprite on the tileset.
     --
     local function selectTileSprite( tile )
-        if tile:isOccupied() then
+        if tile:isOccupied() and tile:isVisible() then
             if tile:getCharacter():getFaction() == FACTIONS.ENEMY then
                 return TILE_SPRITES.ENEMY;
             else
                 return TILE_SPRITES.ALLIED;
             end
-        elseif tile:getWorldObject():instanceOf( 'Wall' ) then
+        end
+
+        if tile:getWorldObject():instanceOf( 'Wall' ) then
             return TILE_SPRITES.WALL;
         elseif tile:getWorldObject():instanceOf( 'Floor' ) then
             return TILE_SPRITES.FLOOR;
