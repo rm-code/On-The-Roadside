@@ -80,7 +80,7 @@ function Tile.new( x, y, worldObject )
         return character ~= nil;
     end
 
-    function self:setCharacter( nchar )
+    function self:addCharacter( nchar )
         character = nchar;
         self:setDirty( true );
     end

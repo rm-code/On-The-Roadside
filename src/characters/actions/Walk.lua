@@ -13,7 +13,7 @@ function Walk.new( character )
             -- Remove the character from the old tile, add it to the new one and
             -- give it a reference to the new tile.
             currentTile:removeCharacter();
-            targetTile:setCharacter( character );
+            targetTile:addCharacter( character );
             character:setTile( targetTile );
         end
     end

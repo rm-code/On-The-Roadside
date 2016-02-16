@@ -14,7 +14,7 @@ function Character.new( tile, faction )
     local actionPoints = DEFAULT_ACTION_POINTS;
 
     -- Add character to the tile.
-    tile:setCharacter( self );
+    tile:addCharacter( self );
 
     local actions = Queue.new();
 
