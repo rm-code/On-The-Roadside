@@ -32,7 +32,7 @@ function Tile.new( x, y, worldObject )
         id = nid;
     end
 
-    function self:setNeighbours( nneighbours )
+    function self:addNeighbours( nneighbours )
         neighbours = nneighbours;
     end
 

@@ -56,7 +56,7 @@ function Map.new()
                 neighbours[DIRECTION.EAST]       = self:getTileAt( x + 1, y     );
                 neighbours[DIRECTION.WEST]       = self:getTileAt( x - 1, y     );
 
-                tiles[x][y]:setNeighbours( neighbours );
+                tiles[x][y]:addNeighbours( neighbours );
             end
         end
     end
