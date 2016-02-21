@@ -22,7 +22,7 @@ function TurnManager.new()
 
     local function commitPath()
         character:getPath():iterate( function( tile )
-            if tile:getWorldObject():instanceOf( 'Door' ) and not tile:getWorldObject():isOpen() then
+            if tile:instanceOf( 'Door' ) and not tile:isOpen() then
                 character:enqueueAction( OpenDoor.new( character, tile ));
             else
                 character:enqueueAction( Walk.new( character ));

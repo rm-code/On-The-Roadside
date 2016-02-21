@@ -6,7 +6,7 @@ local Object = require( 'src.Object' );
 
 local Tile = {};
 
-function Tile.new( x, y, worldObject )
+function Tile.new( x, y, passable )
     local self = Object.new():addInstance( 'Tile' );
 
     self:validateType( 'number', x );
@@ -65,10 +65,6 @@ function Tile.new( x, y, worldObject )
         return y;
     end
 
-    function self:getWorldObject()
-        return worldObject;
-    end
-
     function self:isAdjacent( tile )
         for _, neighbour in pairs( neighbours ) do
             if neighbour == tile then
@@ -89,6 +85,10 @@ function Tile.new( x, y, worldObject )
         return character ~= nil;
     end
 
+    function self:isPassable()
+        return passable;
+    end
+
     function self:isVisible()
         return visible;
     end
@@ -107,6 +107,10 @@ function Tile.new( x, y, worldObject )
 
     function self:setID( nid )
         id = nid;
+    end
+
+    function self:setPassable( npassable )
+        passable = npassable;
     end
 
     function self:setVisible( nvisible )

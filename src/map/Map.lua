@@ -1,9 +1,8 @@
 local Object = require( 'src.Object' );
-local Tile = require( 'src.map.Tile' );
 
-local Floor = require( 'src.map.worldobjects.Floor' );
-local Wall  = require( 'src.map.worldobjects.Wall' );
-local Door  = require( 'src.map.worldobjects.Door' );
+local Floor = require( 'src.map.tiles.Floor' );
+local Wall  = require( 'src.map.tiles.Wall' );
+local Door  = require( 'src.map.tiles.Door' );
 
 local DIRECTION = require( 'src.constants.Direction' );
 
@@ -18,13 +17,13 @@ function Map.new()
     -- Public Functions
     -- ------------------------------------------------
 
-    local function createWorldObject( type )
+    local function createTile( type, x, y )
         if type == '.' then
-            return Floor.new( true );
+            return Floor.new( x, y, true );
         elseif type == '#' then
-            return Wall.new( false );
+            return Wall.new( x, y, false );
         elseif type == '+' then
-            return Door.new( true, false );
+            return Door.new( x, y, true, false );
         end
     end
 
@@ -33,7 +32,7 @@ function Map.new()
         for x = 1, #grid do
             for y = 1, #grid[x] do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = Tile.new( x, y, createWorldObject( grid[x][y] ));
+                newTiles[x][y] = createTile( grid[x][y], x, y );
             end
         end
         return newTiles;
@@ -110,7 +109,7 @@ function Map.new()
                 target:setVisible( true );
                 target:setExplored( true );
                 target:setDirty( true ); -- Mark tile for updating.
-                if not target:getWorldObject():isPassable() then
+                if not target:isPassable() then
                     break;
                 end
                 ox = ox + rx;

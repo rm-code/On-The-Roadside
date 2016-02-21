@@ -1,9 +1,9 @@
-local WorldObject = require( 'src.map.worldobjects.WorldObject' );
+local BaseTile = require( 'src.map.tiles.BaseTile' );
 
 local Door = {};
 
-function Door.new( passable )
-    local self = WorldObject.new( passable ):addInstance( 'Door' );
+function Door.new( x, y, passable )
+    local self = BaseTile.new( x, y, passable ):addInstance( 'Door' );
 
     local open = false;
 
