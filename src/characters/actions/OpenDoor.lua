@@ -7,7 +7,7 @@ function OpenDoor.new( character, target )
 
     function self:perform()
         if target:instanceOf( 'Door' ) and not target:isPassable() and target:isAdjacent( character:getTile() ) then
-            target:setOpen( true );
+            target:setPassable( true );
             target:setDirty( true );
         end
     end
