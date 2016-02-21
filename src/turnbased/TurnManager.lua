@@ -78,7 +78,6 @@ function TurnManager.new()
 
     Messenger.observe( 'CLICKED_TILE', function( tile )
         setTarget( tile, true );
-        character:enqueueAction( CloseDoor.new( character, tile ));
     end)
 
     Messenger.observe( 'RIGHT_CLICKED_CHARACTER', function( tile )
