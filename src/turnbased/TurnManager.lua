@@ -30,6 +30,7 @@ function TurnManager.new()
         character:getPath():iterate( function( tile )
             if tile:instanceOf( 'Door' ) and not tile:isPassable() then
                 character:enqueueAction( OpenDoor.new( character, tile ));
+                character:enqueueAction( Walk.new( character, tile ));
             else
                 character:enqueueAction( Walk.new( character, tile ));
             end
