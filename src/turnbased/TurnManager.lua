@@ -5,6 +5,12 @@ local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local TURN_STEP_DELAY = 0.15;
+
+-- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
@@ -56,7 +62,7 @@ function TurnManager.new()
     -- ------------------------------------------------
 
     function self:update( dt )
-        if actionTimer > 0.40 and character:canPerformAction() then
+        if actionTimer > TURN_STEP_DELAY and character:canPerformAction() then
             character:performAction();
             actionTimer = 0;
         end
