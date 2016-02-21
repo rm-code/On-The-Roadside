@@ -7,7 +7,7 @@ function Door.new( x, y, passable )
 
     local open = false;
 
-    function self:isOpen()
+    function self:isPassable()
         return open;
     end
 

@@ -6,7 +6,7 @@ function OpenDoor.new( character, target )
     local self = Object.new():addInstance( 'OpenDoor' );
 
     function self:perform()
-        if target:instanceOf( 'Door' ) and not target:isOpen() and target:isAdjacent( character:getTile() ) then
+        if target:instanceOf( 'Door' ) and not target:isPassable() and target:isAdjacent( character:getTile() ) then
             target:setOpen( true );
             target:setDirty( true );
         end

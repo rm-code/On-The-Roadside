@@ -22,7 +22,7 @@ function TurnManager.new()
 
     local function commitPath()
         character:getPath():iterate( function( tile )
-            if tile:instanceOf( 'Door' ) and not tile:isOpen() then
+            if tile:instanceOf( 'Door' ) and not tile:isPassable() then
                 character:enqueueAction( OpenDoor.new( character, tile ));
             else
                 character:enqueueAction( Walk.new( character ));
@@ -30,10 +30,10 @@ function TurnManager.new()
         end)
     end
 
-    local function generatePath( target, includeTargetTile )
+    local function generatePath( target )
         if target then
             local origin = character:getTile();
-            local path = PathFinder.generatePath( origin, target, includeTargetTile );
+            local path = PathFinder.generatePath( origin, target, true );
 
             if path then
                 character:addPath( path );
@@ -45,7 +45,7 @@ function TurnManager.new()
 
     local function checkMovement( target )
         if not character:hasPath() or target ~= character:getPath():getTarget() then
-            generatePath( target, true );
+            generatePath( target );
         else
             commitPath();
         end
@@ -56,7 +56,7 @@ function TurnManager.new()
     -- ------------------------------------------------
 
     function self:update( dt )
-        if actionTimer > 0.15 and character:canPerformAction() then
+        if actionTimer > 0.40 and character:canPerformAction() then
             character:performAction();
             actionTimer = 0;
         end
