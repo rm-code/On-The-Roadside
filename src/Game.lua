@@ -1,6 +1,6 @@
 local Map = require( 'src.map.Map' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
-local TurnManager = require( 'src.combat.TurnManager' );
+local TurnManager = require( 'src.turnbased.TurnManager' );
 
 -- ------------------------------------------------
 -- Constants

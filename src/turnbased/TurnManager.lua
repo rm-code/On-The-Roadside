@@ -1,7 +1,7 @@
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local CloseDoor = require( 'src.characters.actions.CloseDoor' );
-local PathFinder = require( 'src.combat.PathFinder' );
+local PathFinder = require( 'src.turnbased.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
 

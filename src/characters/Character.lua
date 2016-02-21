@@ -1,5 +1,5 @@
 local Object = require('src.Object');
-local Queue = require('src.combat.Queue');
+local Queue = require('src.turnbased.Queue');
 
 local DEFAULT_ACTION_POINTS = 20;
 

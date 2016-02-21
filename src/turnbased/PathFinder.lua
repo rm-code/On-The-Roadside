@@ -1,4 +1,4 @@
-local Path = require('src.combat.Path');
+local Path = require('src.turnbased.Path');
 
 local PathFinder = {};
 
