@@ -23,6 +23,16 @@ function Path.new( path )
         end
     end
 
+    ---
+    -- Iterates over the path. The target tile will be processed at last.
+    -- @param callback (function) A function to call on every tile.
+    --
+    function self:iterate( callback )
+        for i = #path, 1, -1 do
+            callback( path[i] );
+        end
+    end
+
     function self:getNextNode()
         return table.remove( path );
     end
@@ -39,6 +49,10 @@ function Path.new( path )
         for i = 1, #path do
             path[i]:setDirty( true );
         end
+    end
+
+    function self:getTarget()
+        return path[1];
     end
 
     return self;

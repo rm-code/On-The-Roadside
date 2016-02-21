@@ -1,6 +1,5 @@
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
-local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.turnbased.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
@@ -21,19 +20,34 @@ function TurnManager.new()
     -- Local Methods
     -- ------------------------------------------------
 
-    local function setTarget( target, adjacent )
+    local function commitPath()
+        character:getPath():iterate( function( tile )
+            if tile:getWorldObject():instanceOf( 'Door' ) and not tile:getWorldObject():isPassable() then
+                character:enqueueAction( OpenDoor.new( character, tile ));
+            else
+                character:enqueueAction( Walk.new( character ));
+            end
+        end)
+    end
+
+    local function generatePath( target, includeTargetTile )
         if target then
             local origin = character:getTile();
-            local path = PathFinder.generatePath( origin, target, adjacent );
+            local path = PathFinder.generatePath( origin, target, includeTargetTile );
 
             if path then
                 character:addPath( path );
-                for _ = 1, path:getLength() do
-                    character:enqueueAction( Walk.new( character ));
-                end
             else
                 print( "Can't find path!");
             end
+        end
+    end
+
+    local function checkMovement( target )
+        if not character:hasPath() or target ~= character:getPath():getTarget() then
+            generatePath( target, true );
+        else
+            commitPath();
         end
     end
 
@@ -66,22 +80,14 @@ function TurnManager.new()
         character = CharacterManager.getCurrentCharacter();
     end)
 
-    Messenger.observe( 'CLICKED_CLOSED_DOOR', function( tile )
-        setTarget( tile, false );
-        character:enqueueAction( OpenDoor.new( character, tile ));
+    Messenger.observe( 'LEFT_CLICKED_TILE', function( tile )
+        checkMovement( tile );
     end)
 
-    Messenger.observe( 'CLICKED_OPEN_DOOR', function( tile )
-        setTarget( tile, false );
-        character:enqueueAction( CloseDoor.new( character, tile ));
-    end)
-
-    Messenger.observe( 'CLICKED_TILE', function( tile )
-        setTarget( tile, true );
-    end)
-
-    Messenger.observe( 'RIGHT_CLICKED_CHARACTER', function( tile )
-        character = CharacterManager.selectCharacter( tile );
+    Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
+        if tile:isOccupied() then
+            character = CharacterManager.selectCharacter( tile );
+        end
     end)
 
     return self;

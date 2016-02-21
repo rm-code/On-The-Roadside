@@ -52,23 +52,9 @@ function InputHandler.new( game )
         end
 
         if button == LEFT_CLICK then
-            if tile:isOccupied() then
-                Messenger.publish( 'LEFT_CLICKED_CHARACTER', tile );
-                return;
-            end
-            if tile:getWorldObject():instanceOf( 'Door' ) then
-                if not tile:getWorldObject():isPassable() then
-                    Messenger.publish( 'CLICKED_CLOSED_DOOR', tile );
-                else
-                    Messenger.publish( 'CLICKED_OPEN_DOOR', tile );
-                end
-            else
-                Messenger.publish( 'CLICKED_TILE', tile );
-            end
+            Messenger.publish( 'LEFT_CLICKED_TILE', tile );
         elseif button == RIGHT_CLICK then
-            if tile:isOccupied() then
-                Messenger.publish( 'RIGHT_CLICKED_CHARACTER', tile );
-            end
+            Messenger.publish( 'RIGHT_CLICKED_TILE', tile );
         end
     end
 
