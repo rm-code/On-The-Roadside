@@ -6,10 +6,12 @@ function CloseDoor.new( character, target )
     local self = Object.new():addInstance( 'CloseDoor' );
 
     function self:perform()
-        if target:instanceOf( 'Door' ) and target:isPassable() and target:isAdjacent( character:getTile() ) then
-            target:setPassable( false );
-            target:setDirty( true );
-        end
+        assert( target:instanceOf( 'Door' ), 'Target tile needs to be an instance of Door!' );
+        assert( target:isPassable(), 'Target tile needs to be passable!' );
+        assert( target:isAdjacent( character:getTile() ), 'Character has to be adjacent to the target tile!' );
+
+        target:setPassable( false );
+        target:setDirty( true );
     end
 
     function self:getCost()
