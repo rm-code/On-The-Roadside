@@ -19,11 +19,11 @@ function Map.new()
 
     local function createTile( type, x, y )
         if type == '.' then
-            return Floor.new( x, y, true );
+            return Floor.new( x, y );
         elseif type == '#' then
-            return Wall.new( x, y, false );
+            return Wall.new( x, y );
         elseif type == '+' then
-            return Door.new( x, y, true, false );
+            return Door.new( x, y );
         end
     end
 
