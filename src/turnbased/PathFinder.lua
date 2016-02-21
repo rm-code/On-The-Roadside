@@ -1,3 +1,6 @@
+local DIRECTION = require( 'src.constants.Direction' );
+local SQRT = math.sqrt( 2 );
+
 local Path = require('src.turnbased.Path');
 
 local PathFinder = {};
@@ -12,17 +15,21 @@ local function calculateHeuristic( a, b )
     local distanceX = math.abs( a:getX() - b:getX() );
     local distanceY = math.abs( a:getY() - b:getY() );
     if distanceX > distanceY then
-        return 1.414 * distanceY + ( distanceX - distanceY );
+        return SQRT * distanceY + ( distanceX - distanceY );
     else
-        return 1.414 * distanceX + ( distanceY - distanceX );
+        return SQRT * distanceX + ( distanceY - distanceX );
     end
 end
 
 -- Calculates the cost of moving to a tile.
 -- @param tile (Tile) The tile to calculate a cost for.
-local function calculateCost( tile )
+local function calculateCost( tile, dir )
     if tile:instanceOf( 'Door' ) and not tile:isPassable() then
         return 3;
+    end
+
+    if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
+        return SQRT;
     end
     return 1;
 end
@@ -133,7 +140,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if (( tile:isPassable() or tile:instanceOf( 'Door' )) and not tile:isOccupied() and not isInList( closedList, tile )) or tile == target then
-                local g = current.g + calculateCost( tile );
+                local g = current.g + calculateCost( tile, direction );
                 local f = g + calculateHeuristic( tile, target );
 
                 -- Check if the tile is in the open list. If it is not, then
