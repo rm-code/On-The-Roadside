@@ -189,6 +189,9 @@ function WorldPainter.new( game )
 
         drawMouseCursor();
 
+        -- Action points
+        love.graphics.print( 'AP: ' .. CharacterManager.getCurrentCharacter():getActionPoints(), 10, love.graphics.getHeight() - 40 );
+
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
 
