@@ -18,6 +18,15 @@ local function calculateHeuristic( a, b )
     end
 end
 
+-- Calculates the cost of moving to a tile.
+-- @param tile (Tile) The tile to calculate a cost for.
+local function calculateCost( tile )
+    if tile:getWorldObject():instanceOf( 'Door' ) and not tile:getWorldObject():isOpen() then
+        return 3;
+    end
+    return 1;
+end
+
 ---
 -- Gets the next tile with the lowest cost from a list.
 -- @param list (table)  The list to search through.
@@ -124,7 +133,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if ( tile:getWorldObject():isPassable() and not tile:isOccupied() and not isInList( closedList, tile )) or tile == target then
-                local g = current.g + 1;
+                local g = current.g + calculateCost( tile );
                 local f = g + calculateHeuristic( tile, target );
 
                 -- Check if the tile is in the open list. If it is not, then
