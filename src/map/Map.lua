@@ -24,7 +24,7 @@ function Map.new()
         elseif type == '#' then
             return Wall.new( false );
         elseif type == '+' then
-            return Door.new( false );
+            return Door.new( true, false );
         end
     end
 

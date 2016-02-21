@@ -7,8 +7,8 @@ function CloseDoor.new( character, target )
 
     function self:perform()
         local obj = target:getWorldObject();
-        if obj:instanceOf( 'Door' ) and obj:isPassable() and target:isAdjacent( character:getTile() ) then
-            obj:setPassable( false );
+        if obj:instanceOf( 'Door' ) and obj:isOpen() and target:isAdjacent( character:getTile() ) then
+            obj:setOpen( false );
             target:setDirty( true );
         end
     end
