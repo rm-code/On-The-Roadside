@@ -1,5 +1,6 @@
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
+local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.turnbased.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
@@ -105,8 +106,16 @@ function TurnManager.new()
     end)
 
     Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
-        if not blockInput and tile:isOccupied() then
-            character = CharacterManager.selectCharacter( tile );
+        if not blockInput then
+            if tile:isOccupied() then
+                character = CharacterManager.selectCharacter( tile );
+            elseif tile:instanceOf( 'Door' ) and tile:isAdjacent( character:getTile() ) then
+                if tile:isPassable() then
+                    character:enqueueAction( CloseDoor.new( character, tile ));
+                else
+                    character:enqueueAction( OpenDoor.new( character, tile ));
+                end
+            end
         end
     end)
 
