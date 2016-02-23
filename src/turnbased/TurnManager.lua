@@ -21,6 +21,7 @@ function TurnManager.new()
 
     local character = CharacterManager.getCurrentCharacter();
     local actionTimer = 0;
+    local blockInput = false;
 
     -- ------------------------------------------------
     -- Local Methods
@@ -35,6 +36,7 @@ function TurnManager.new()
                 character:enqueueAction( Walk.new( character, tile ));
             end
         end)
+        blockInput = true;
     end
 
     local function generatePath( target )
@@ -63,9 +65,13 @@ function TurnManager.new()
     -- ------------------------------------------------
 
     function self:update( dt )
-        if actionTimer > TURN_STEP_DELAY and character:canPerformAction() then
-            character:performAction();
-            actionTimer = 0;
+        if actionTimer > TURN_STEP_DELAY then
+            if character:canPerformAction() then
+                character:performAction();
+                actionTimer = 0;
+            else
+                blockInput = false;
+            end
         end
         actionTimer = actionTimer + dt;
     end
@@ -75,24 +81,30 @@ function TurnManager.new()
     -- ------------------------------------------------
 
     Messenger.observe( 'SWITCH_CHARACTERS', function()
-        character = CharacterManager.nextCharacter();
+        if not blockInput then
+            character = CharacterManager.nextCharacter();
+        end
     end)
 
     Messenger.observe( 'SWITCH_FACTION', function()
-        for _, char in ipairs( CharacterManager.getCharacters() ) do
-            char:resetActionPoints();
-            char:clearActions();
+        if not blockInput then
+            for _, char in ipairs( CharacterManager.getCharacters() ) do
+                char:resetActionPoints();
+                char:clearActions();
+            end
+            CharacterManager.nextFaction();
+            character = CharacterManager.getCurrentCharacter();
         end
-        CharacterManager.nextFaction();
-        character = CharacterManager.getCurrentCharacter();
     end)
 
     Messenger.observe( 'LEFT_CLICKED_TILE', function( tile )
-        checkMovement( tile );
+        if not blockInput then
+            checkMovement( tile );
+        end
     end)
 
     Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
-        if tile:isOccupied() then
+        if not blockInput and tile:isOccupied() then
             character = CharacterManager.selectCharacter( tile );
         end
     end)
