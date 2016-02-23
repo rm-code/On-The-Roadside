@@ -6,11 +6,11 @@ function Queue.new()
     local queue = {};
 
     function self:enqueue( item )
-        table.insert( queue, 1, item );
+        table.insert( queue, item );
     end
 
     function self:dequeue()
-        return table.remove( queue );
+        return table.remove( queue, 1 );
     end
 
     function self:peek()
