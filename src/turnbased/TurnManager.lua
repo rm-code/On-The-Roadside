@@ -91,6 +91,7 @@ function TurnManager.new()
             for _, char in ipairs( CharacterManager.getCharacters() ) do
                 char:resetActionPoints();
                 char:clearActions();
+                char:removePath();
             end
             CharacterManager.nextFaction();
             character = CharacterManager.getCurrentCharacter();

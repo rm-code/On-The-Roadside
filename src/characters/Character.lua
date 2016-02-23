@@ -51,6 +51,10 @@ function Character.new( tile, faction )
         path = npath;
     end
 
+    function self:removePath()
+        path = nil;
+    end
+
     function self:getPath()
         return path;
     end
