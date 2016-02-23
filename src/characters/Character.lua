@@ -8,8 +8,6 @@ local Character = {};
 function Character.new( tile, faction )
     local self = Object.new():addInstance( 'Character' );
 
-    self:validateType( 'Tile', tile, true );
-
     local path;
     local actionPoints = DEFAULT_ACTION_POINTS;
 

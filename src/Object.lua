@@ -5,20 +5,6 @@ function Object.new()
         __instances = { 'Object' };
     };
 
-    function self:validateType( typeToCheck, parameter, isObject )
-        local valid;
-
-        if isObject then
-            valid = parameter:instanceOf( typeToCheck );
-        else
-            valid = type( parameter ) == typeToCheck;
-        end
-
-        if not valid then
-            error( tostring( parameter ) .. " is not of type " .. typeToCheck .. '!' );
-        end
-    end
-
     function self:addInstance( str )
         self.__instances[#self.__instances + 1] = str;
         return self;

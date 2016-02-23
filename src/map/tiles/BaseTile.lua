@@ -9,9 +9,6 @@ local Tile = {};
 function Tile.new( x, y, passable )
     local self = Object.new():addInstance( 'Tile' );
 
-    self:validateType( 'number', x );
-    self:validateType( 'number', y );
-
     local id;
     local dirty;
     local neighbours;
