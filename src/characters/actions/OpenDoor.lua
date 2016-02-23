@@ -1,9 +1,9 @@
-local Object = require('src.Object');
+local Action = require('src.characters.actions.Action');
 
 local OpenDoor = {};
 
 function OpenDoor.new( character, target )
-    local self = Object.new():addInstance( 'OpenDoor' );
+    local self = Action.new( 3 ):addInstance( 'OpenDoor' );
 
     function self:perform()
         assert( target:instanceOf( 'Door' ), 'Target tile needs to be an instance of Door!' );
@@ -12,10 +12,6 @@ function OpenDoor.new( character, target )
 
         target:setPassable( true );
         target:setDirty( true );
-    end
-
-    function self:getCost()
-        return 3;
     end
 
     return self;

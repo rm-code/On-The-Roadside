@@ -1,9 +1,9 @@
-local Object = require('src.Object');
+local Action = require('src.characters.actions.Action');
 
 local Walk = {};
 
 function Walk.new( character, target )
-    local self = Object.new():addInstance( 'Walk' );
+    local self = Action.new( 1 ):addInstance( 'Walk' );
 
     function self:perform()
         local current = character:getTile();
@@ -17,10 +17,6 @@ function Walk.new( character, target )
         current:removeCharacter();
         target:addCharacter( character );
         character:setTile( target );
-    end
-
-    function self:getCost()
-        return 1;
     end
 
     return self;
