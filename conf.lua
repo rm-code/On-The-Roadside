@@ -4,7 +4,7 @@ local PROJECT_IDENTITY = "rmcode_hoost";
 
 local PROJECT_VERSION = "0000";
 
-local LOVE_VERSION = "0.10.0";
+local LOVE_VERSION = "0.10.1";
 
 ---
 -- Initialise löve's config file.
