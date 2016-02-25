@@ -54,7 +54,11 @@ function TurnManager.new()
     end
 
     local function checkMovement( target )
-        if not character:hasPath() or target ~= character:getPath():getTarget() then
+        if not character:hasPath() then
+            generatePath( target );
+        elseif target ~= character:getPath():getTarget() then
+            character:clearActions();
+            character:removePath();
             generatePath( target );
         else
             commitPath();
