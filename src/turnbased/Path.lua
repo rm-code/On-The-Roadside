@@ -29,7 +29,7 @@ function Path.new( path )
     --
     function self:iterate( callback )
         for i = #path, 1, -1 do
-            callback( path[i] );
+            callback( path[i], i );
         end
     end
 

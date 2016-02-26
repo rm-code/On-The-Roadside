@@ -29,10 +29,13 @@ function TurnManager.new()
     -- ------------------------------------------------
 
     local function commitPath()
-        character:getPath():iterate( function( tile )
+        character:getPath():iterate( function( tile, index )
             if tile:instanceOf( 'Door' ) and not tile:isPassable() then
                 character:enqueueAction( OpenDoor.new( character, tile ));
-                character:enqueueAction( Walk.new( character, tile ));
+                -- Don't walk on the door tile if the path ends there.
+                if index ~= 1 then
+                    character:enqueueAction( Walk.new( character, tile ));
+                end
             else
                 character:enqueueAction( Walk.new( character, tile ));
             end
