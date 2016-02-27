@@ -12,6 +12,7 @@ function Attack.new( character )
                 return true;
             end
         end)
+        character:removeLineOfSight();
     end
 
     return self;
