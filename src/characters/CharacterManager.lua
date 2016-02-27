@@ -37,11 +37,13 @@ local factionIndex = 1;
 -- from the tile they last occupied.
 --
 function CharacterManager.removeDeadActors()
-    for i = #factions[factionIndex], 1, -1 do
-        local character = factions[factionIndex][i];
-        if character:isDead() then
-            character:getTile():removeCharacter();
-            table.remove( character, i );
+    for _, faction in pairs( factions ) do
+        for i = #faction, 1, -1 do
+            local character = faction[i];
+            if character:isDead() then
+                character:getTile():removeCharacter();
+                table.remove( faction, i );
+            end
         end
     end
 end
