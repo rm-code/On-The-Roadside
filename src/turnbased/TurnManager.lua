@@ -145,12 +145,7 @@ function TurnManager.new( map )
 
     Messenger.observe( 'SWITCH_FACTION', function()
         if not blockInput then
-            for _, char in ipairs( CharacterManager.getCharacters() ) do
-                char:resetActionPoints();
-                char:clearActions();
-                char:removePath();
-                char:removeLineOfSight();
-            end
+            CharacterManager.clearCharacters();
             CharacterManager.nextFaction();
             character = CharacterManager.getCurrentCharacter();
         end

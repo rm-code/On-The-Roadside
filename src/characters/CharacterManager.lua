@@ -51,6 +51,15 @@ function CharacterManager.selectCharacter( tile )
     return CharacterManager.getCurrentCharacter();
 end
 
+function CharacterManager.clearCharacters()
+    for _, char in ipairs( factions[factionIndex] ) do
+        char:resetActionPoints();
+        char:clearActions();
+        char:removePath();
+        char:removeLineOfSight();
+    end
+end
+
 function CharacterManager.getCharacters()
     return factions[factionIndex];
 end
