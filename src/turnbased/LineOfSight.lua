@@ -7,11 +7,15 @@ function LineOfSight.new( tiles )
 
     ---
     -- Iterates over the line of sight.
-    -- @param callback (function) A function to call on every tile.
+    -- @param callback (function) A function to call on every tile. If the
+    --                             callback returns true the iteration will be
+    --                             cancelled.
     --
     function self:iterate( callback )
         for i = 1, #tiles do
-            callback( tiles[i], i );
+            if callback( tiles[i], i ) then
+                return;
+            end
         end
     end
 

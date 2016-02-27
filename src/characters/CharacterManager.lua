@@ -25,6 +25,27 @@ local factions = {
 local characterIndex = 1;
 local factionIndex = 1;
 
+
+-- ------------------------------------------------
+-- Local Function
+-- ------------------------------------------------
+
+---
+-- Removes all dead characters from the game.
+-- We iterate from the top so that we can remove the character and shift keys
+-- without breaking the iteration. We also need to remove the dead each chars
+-- from the tile they last occupied.
+--
+function CharacterManager.removeDeadActors()
+    for i = #factions[factionIndex], 1, -1 do
+        local character = factions[factionIndex][i];
+        if character:isDead() then
+            character:getTile():removeCharacter();
+            table.remove( character, i );
+        end
+    end
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------

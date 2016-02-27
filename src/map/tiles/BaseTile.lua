@@ -29,6 +29,15 @@ function Tile.new( x, y, passable )
         neighbours = nneighbours;
     end
 
+    function self:hit()
+        if self:isOccupied() then
+            character:hit();
+        else
+            -- TODO damage to tile.
+            print( "Hit impassable tile!" );
+        end
+    end
+
     function self:removeCharacter()
         character = nil;
         self:setDirty( true );

@@ -117,6 +117,7 @@ function TurnManager.new( map )
             else
                 blockInput = false;
             end
+            CharacterManager.removeDeadActors();
         end
         actionTimer = actionTimer + dt;
     end

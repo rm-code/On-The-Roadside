@@ -33,6 +33,7 @@ function Character.new( tile, faction )
     local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
+    local dead = false;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -111,6 +112,14 @@ function Character.new( tile, faction )
         lineOfSight = nil;
     end
 
+    ---
+    -- Hits the character with damage.
+    --
+    function self:hit()
+        -- TODO proper hit and damage calculations.
+        dead = true;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -177,6 +186,14 @@ function Character.new( tile, faction )
     --
     function self:getViewRange()
         return 12;
+    end
+
+    ---
+    -- Returns wether the character is dead or not.
+    -- @return (boolean) Wether the character is dead or not.
+    --
+    function self:isDead()
+        return dead;
     end
 
     -- ------------------------------------------------
