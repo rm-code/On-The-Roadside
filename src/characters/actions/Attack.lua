@@ -1,4 +1,5 @@
 local Action = require('src.characters.actions.Action');
+local Messenger = require( 'src.Messenger' );
 
 local Attack = {};
 
@@ -6,6 +7,8 @@ function Attack.new( character )
     local self = Action.new( 5 ):addInstance( 'Attack' );
 
     function self:perform()
+        Messenger.publish( 'ACTION_SHOOT' );
+
         character:getLineOfSight():iterate( function( tile )
             if tile ~= character:getTile() and ( not tile:isPassable() or tile:isOccupied() ) then
                 tile:hit();

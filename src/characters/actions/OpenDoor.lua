@@ -1,4 +1,5 @@
 local Action = require('src.characters.actions.Action');
+local Messenger = require( 'src.Messenger' );
 
 local OpenDoor = {};
 
@@ -9,6 +10,8 @@ function OpenDoor.new( character, target )
         assert( target:instanceOf( 'Door' ), 'Target tile needs to be an instance of Door!' );
         assert( not target:isPassable(), 'Target tile needs to be impassable!' );
         assert( target:isAdjacent( character:getTile() ), 'Character has to be adjacent to the target tile!' );
+
+        Messenger.publish( 'ACTION_DOOR' );
 
         target:setPassable( true );
         target:setDirty( true );
