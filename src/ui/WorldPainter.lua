@@ -50,6 +50,8 @@ function WorldPainter.new( game )
 
     local mouseX, mouseY = 0, 0;
 
+    love.graphics.setPointSize( 4 );
+
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
@@ -203,6 +205,10 @@ function WorldPainter.new( game )
             end)
             love.graphics.setColor( 255, 255, 255 );
         end
+
+        game:getProjectiles():iterate( function( x, y )
+            love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
+        end)
 
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );

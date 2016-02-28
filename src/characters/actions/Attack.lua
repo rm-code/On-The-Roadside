@@ -3,18 +3,14 @@ local Messenger = require( 'src.Messenger' );
 
 local Attack = {};
 
-function Attack.new( character )
+function Attack.new( character, target )
     local self = Action.new( 5 ):addInstance( 'Attack' );
 
     function self:perform()
-        Messenger.publish( 'ACTION_SHOOT' );
+        local origin = character:getTile();
 
-        character:getLineOfSight():iterate( function( tile )
-            if tile ~= character:getTile() and ( not tile:isPassable() or tile:isOccupied() ) then
-                tile:hit();
-                return true;
-            end
-        end)
+        Messenger.publish( 'ACTION_SHOOT', character, origin, target );
+
         character:removeLineOfSight();
     end
 

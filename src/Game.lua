@@ -1,6 +1,7 @@
 local Map = require( 'src.map.Map' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
+local ProjectileManager = require( 'src.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
 -- Constants
@@ -19,6 +20,7 @@ function Game.new()
 
     local map;
     local turnManager;
+    local projectileManager;
 
     function self:init()
         map = Map.new();
@@ -33,14 +35,21 @@ function Game.new()
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
+
+        projectileManager = ProjectileManager.new( map );
     end
 
     function self:update( dt )
         turnManager:update( dt )
+        projectileManager:update( dt );
     end
 
     function self:getMap()
         return map;
+    end
+
+    function self:getProjectiles()
+        return projectileManager;
     end
 
     return self;
