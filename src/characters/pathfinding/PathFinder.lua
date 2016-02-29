@@ -1,9 +1,21 @@
+local Path = require('src.characters.pathfinding.Path');
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
 local DIRECTION = require( 'src.constants.Direction' );
 local SQRT = math.sqrt( 2 );
 
-local Path = require('src.characters.pathfinding.Path');
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
 local PathFinder = {};
+
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
 
 ---
 -- Calculates the heuristic between tiles a and b.
@@ -109,6 +121,10 @@ local function finalizePath( endNode, includeTarget )
 
     return Path.new( result );
 end
+
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
