@@ -1,7 +1,7 @@
 local DIRECTION = require( 'src.constants.Direction' );
 local SQRT = math.sqrt( 2 );
 
-local Path = require('src.turnbased.Path');
+local Path = require('src.characters.pathfinding.Path');
 
 local PathFinder = {};
 
