@@ -25,7 +25,6 @@ local factions = {
 local characterIndex = 1;
 local factionIndex = 1;
 
-
 -- ------------------------------------------------
 -- Local Function
 -- ------------------------------------------------
