@@ -15,7 +15,9 @@ function ProjectileManager.new( map )
             local px, py = projectile:getPosition();
             local tile = map:getTileAt( math.floor( px ), math.floor( py ));
 
-            if not tile:isPassable() or ( tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() ) then
+            if not tile:isPassable()
+                    or tile == projectile:getTarget()
+                    or ( tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() ) then
                 projectiles[i] = nil;
                 tile:hit();
             end
@@ -29,11 +31,8 @@ function ProjectileManager.new( map )
     end
 
     Messenger.observe( 'ACTION_SHOOT', function( character, origin, target )
-        local px, py = origin:getPosition();
-        local tx, ty = target:getPosition();
-
         id = id + 1;
-        projectiles[id] = Projectile.new( character, px + 0.5, py + 0.5, tx + 0.5, ty + 0.5 );
+        projectiles[id] = Projectile.new( character, origin, target );
     end)
 
     return self;

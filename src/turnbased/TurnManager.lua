@@ -75,7 +75,7 @@ function TurnManager.new( map )
     end
 
     local function generateAttack( target )
-        character:enqueueAction( Attack.new( character, target ));
+        character:enqueueAction( Attack.new( character, target, map ));
     end
 
     local function checkMovement( target )
