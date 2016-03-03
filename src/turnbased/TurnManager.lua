@@ -6,7 +6,7 @@ local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Messenger = require( 'src.Messenger' );
 local Bresenham = require( 'lib.Bresenham' );
-local LineOfSight = require( 'src.turnbased.LineOfSight' );
+local LineOfSight = require( 'src.characters.LineOfSight' );
 
 -- ------------------------------------------------
 -- Constants
