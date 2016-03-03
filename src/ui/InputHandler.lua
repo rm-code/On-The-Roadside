@@ -8,6 +8,13 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 local LEFT_CLICK  = 1;
 local RIGHT_CLICK = 2;
 
+local INPUT_MAP = {
+    ['space']  = function() Messenger.publish( 'SWITCH_CHARACTERS'   ) end,
+    ['return'] = function() Messenger.publish( 'SWITCH_FACTION'      ) end,
+    ['a']      = function() Messenger.publish( 'ENTER_ATTACK_MODE'   ) end,
+    ['escape'] = function() Messenger.publish( 'ENTER_MOVEMENT_MODE' ) end
+};
+
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
@@ -37,14 +44,9 @@ function InputHandler.new( game )
     end
 
     function self:keypressed( key )
-        if key == 'space' then
-            Messenger.publish( 'SWITCH_CHARACTERS' );
-        elseif key == 'return' then
-            Messenger.publish( 'SWITCH_FACTION' );
-        elseif key == 'a' then
-            Messenger.publish( 'ENTER_ATTACK_MODE' );
-        elseif key == 'escape' then
-            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
+        local action = INPUT_MAP[key];
+        if action then
+            action();
         end
     end
 
