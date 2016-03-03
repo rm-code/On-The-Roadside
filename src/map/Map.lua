@@ -4,7 +4,16 @@ local Floor = require( 'src.map.tiles.Floor' );
 local Wall  = require( 'src.map.tiles.Wall' );
 local Door  = require( 'src.map.tiles.Door' );
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
 local DIRECTION = require( 'src.constants.Direction' );
+local TILE_MAP = {
+    ['.'] = function( x, y ) return Floor.new( x, y ) end,
+    ['#'] = function( x, y ) return  Wall.new( x, y ) end,
+    ['+'] = function( x, y ) return  Door.new( x, y ) end
+}
 
 local Map = {};
 
@@ -18,13 +27,7 @@ function Map.new()
     -- ------------------------------------------------
 
     local function createTile( type, x, y )
-        if type == '.' then
-            return Floor.new( x, y );
-        elseif type == '#' then
-            return Wall.new( x, y );
-        elseif type == '+' then
-            return Door.new( x, y );
-        end
+        return TILE_MAP[type]( x, y );
     end
 
     local function createTiles( grid )
