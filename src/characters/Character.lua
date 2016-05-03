@@ -1,5 +1,6 @@
 local Object = require('src.Object');
 local Queue = require('src.turnbased.Queue');
+local Weapon = require('src.weapons.Weapon');
 
 -- ------------------------------------------------
 -- Constants
@@ -34,6 +35,7 @@ function Character.new( tile, faction )
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
     local dead = false;
+    local weapon = Weapon.new();
 
     -- ------------------------------------------------
     -- Public Methods
@@ -130,6 +132,14 @@ function Character.new( tile, faction )
     --
     function self:getActionPoints()
         return actionPoints;
+    end
+
+    ---
+    -- Returns the currently equipped weapon.
+    -- @return (Weapon) The weapon.
+    --
+    function self:getWeapon()
+        return weapon;
     end
 
     ---

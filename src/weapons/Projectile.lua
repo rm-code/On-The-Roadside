@@ -4,7 +4,7 @@ local SPEED = 10;
 
 local Projectile = {};
 
-function Projectile.new( character, origin, target )
+function Projectile.new( character, damage, origin, target )
     local self = Object.new():addInstance( 'Projectile' );
 
     local px, py = origin:getPosition();
@@ -23,6 +23,10 @@ function Projectile.new( character, origin, target )
 
     function self:getCharacter()
         return character;
+    end
+
+    function self:getDamage()
+        return damage;
     end
 
     function self:getPosition()

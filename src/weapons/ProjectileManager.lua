@@ -19,7 +19,7 @@ function ProjectileManager.new( map )
                     or tile == projectile:getTarget()
                     or ( tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() ) then
                 projectiles[i] = nil;
-                tile:hit();
+                tile:hit( projectile:getDamage() );
             end
         end
     end
@@ -32,7 +32,7 @@ function ProjectileManager.new( map )
 
     Messenger.observe( 'ACTION_SHOOT', function( character, origin, target )
         id = id + 1;
-        projectiles[id] = Projectile.new( character, origin, target );
+        projectiles[id] = Projectile.new( character, character:getWeapon():getDamage(), origin, target );
     end)
 
     return self;

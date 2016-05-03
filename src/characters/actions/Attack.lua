@@ -5,7 +5,7 @@ local Bresenham = require( 'lib.Bresenham' );
 local Attack = {};
 
 function Attack.new( character, target, map )
-    local self = Action.new( 5 ):addInstance( 'Attack' );
+    local self = Action.new( character:getWeapon():getAttackCost() ):addInstance( 'Attack' );
 
     function self:perform()
         local origin = character:getTile();
@@ -13,7 +13,7 @@ function Attack.new( character, target, map )
         local ox, oy = origin:getPosition();
         local tx, ty = target:getPosition();
 
-        local range = 10;
+        local range = character:getWeapon():getRange();
 
         Bresenham.calculateLine( ox, oy, tx, ty, function( x, y, counter )
             if counter > range then
