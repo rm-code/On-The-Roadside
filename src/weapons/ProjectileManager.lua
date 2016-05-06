@@ -9,17 +9,32 @@ function ProjectileManager.new( map )
     local projectiles = {};
     local id = 0;
 
+    ---
+    -- Removes a projectile from the world and hits a tile with the projectile
+    -- damage.
+    -- @param index      (number)     The index of the projectile to remove.
+    -- @param tile       (BaseTile)   The tile to hit.
+    -- @param projectile (Projectile) The projectile to remove.
+    --
+    local function hitTile( index, tile, projectile )
+        projectiles[index] = nil;
+        tile:hit( projectile:getDamage() );
+    end
+
     function self:update( dt )
         for i, projectile in pairs( projectiles ) do
             projectile:update( dt );
-            local px, py = projectile:getPosition();
-            local tile = map:getTileAt( math.floor( px ), math.floor( py ));
+            local tile = map:getTileAt( projectile:getTilePosition() );
 
-            if not tile:isPassable()
-                    or tile == projectile:getTarget()
-                    or ( tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() ) then
-                projectiles[i] = nil;
-                tile:hit( projectile:getDamage() );
+            if not tile:isPassable() then
+                print( "Hit impassable tile" );
+                hitTile( i, tile, projectile );
+            elseif tile == projectile:getTarget() then
+                print( "Reached target" );
+                hitTile( i, tile, projectile );
+            elseif tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() then
+                print( "Hit character" );
+                hitTile( i, tile, projectile );
             end
         end
     end

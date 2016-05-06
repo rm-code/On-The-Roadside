@@ -35,7 +35,6 @@ function Tile.new( x, y, passable )
             character:hit( damage );
         else
             -- TODO damage to tile.
-            print( "Hit impassable tile!" );
         end
     end
 

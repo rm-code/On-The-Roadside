@@ -33,6 +33,10 @@ function Projectile.new( character, damage, origin, target )
         return px, py;
     end
 
+    function self:getTilePosition()
+        return math.floor( px ), math.floor( py );
+    end
+
     function self:getTarget()
         return target;
     end
