@@ -36,6 +36,7 @@ function Character.new( tile, faction )
     local actions = Queue.new();
     local dead = false;
     local weapon = Weapon.new();
+    local accuracy = love.math.random( 60, 90 );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -125,6 +126,14 @@ function Character.new( tile, faction )
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
+
+    ---
+    -- Returns the accuracy of this character used when shooting guns.
+    -- @return (number) The accuracy of the character.
+    --
+    function self:getAccuracy()
+        return accuracy;
+    end
 
     ---
     -- Returns the amount of action points.
