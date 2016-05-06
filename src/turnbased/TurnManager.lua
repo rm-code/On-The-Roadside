@@ -140,12 +140,14 @@ function TurnManager.new( map )
 
     Messenger.observe( 'SWITCH_CHARACTERS', function()
         if not blockInput then
+            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
             character = CharacterManager.nextCharacter();
         end
     end)
 
     Messenger.observe( 'SWITCH_FACTION', function()
         if not blockInput then
+            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
             CharacterManager.clearCharacters();
             CharacterManager.nextFaction();
             character = CharacterManager.getCurrentCharacter();
