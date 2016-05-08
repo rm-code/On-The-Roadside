@@ -13,7 +13,7 @@ function ProjectileManager.new( map )
     -- Removes a projectile from the world and hits a tile with the projectile
     -- damage.
     -- @param index      (number)     The index of the projectile to remove.
-    -- @param tile       (BaseTile)   The tile to hit.
+    -- @param tile       (Tile)       The tile to hit.
     -- @param projectile (Projectile) The projectile to remove.
     --
     local function hitTile( index, tile, projectile )

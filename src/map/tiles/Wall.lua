@@ -1,9 +1,9 @@
-local BaseTile = require( 'src.map.tiles.BaseTile' );
+local Tile = require( 'src.map.tiles.Tile' );
 
 local Wall = {};
 
 function Wall.new( x, y )
-    local self = BaseTile.new( x, y, false ):addInstance( 'Wall' );
+    local self = Tile.new( x, y, false ):addInstance( 'Wall' );
 
     return self;
 end
