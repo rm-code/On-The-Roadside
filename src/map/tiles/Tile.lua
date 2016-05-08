@@ -6,13 +6,14 @@ local Object = require( 'src.Object' );
 
 local Tile = {};
 
-function Tile.new( x, y, passable )
+function Tile.new( x, y, movementCost )
     local self = Object.new():addInstance( 'Tile' );
 
     local id;
     local dirty;
     local neighbours;
     local character;    -- Each tiles can hold one game character.
+    local worldObject;
     local visible;
     local explored;
 
@@ -29,6 +30,10 @@ function Tile.new( x, y, passable )
         neighbours = nneighbours;
     end
 
+    function self:addWorldObject( nworldObject )
+        worldObject = nworldObject;
+    end
+
     function self:hit( damage )
         print( damage );
         if self:isOccupied() then
@@ -43,6 +48,10 @@ function Tile.new( x, y, passable )
         self:setDirty( true );
     end
 
+    function self:removeWorldObject()
+        worldObject = nil;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -55,6 +64,13 @@ function Tile.new( x, y, passable )
         return id;
     end
 
+    function self:getMovementCost()
+        if self:hasWorldObject() then
+            return worldObject:getMovementCost();
+        end
+        return movementCost;
+    end
+
     function self:getNeighbours()
         return neighbours;
     end
@@ -63,12 +79,20 @@ function Tile.new( x, y, passable )
         return x, y;
     end
 
+    function self:getWorldObject()
+        return worldObject;
+    end
+
     function self:getX()
         return x;
     end
 
     function self:getY()
         return y;
+    end
+
+    function self:hasWorldObject()
+        return worldObject ~= nil;
     end
 
     function self:isAdjacent( tile )
@@ -92,7 +116,11 @@ function Tile.new( x, y, passable )
     end
 
     function self:isPassable()
-        return passable;
+        if self:hasWorldObject() then
+            return worldObject:isPassable();
+        else
+            return true;
+        end
     end
 
     function self:isVisible()
@@ -113,10 +141,6 @@ function Tile.new( x, y, passable )
 
     function self:setID( nid )
         id = nid;
-    end
-
-    function self:setPassable( npassable )
-        passable = npassable;
     end
 
     function self:setVisible( nvisible )

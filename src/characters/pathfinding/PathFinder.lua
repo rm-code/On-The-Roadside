@@ -36,14 +36,15 @@ end
 -- Calculates the cost of moving to a tile.
 -- @param tile (Tile) The tile to calculate a cost for.
 local function calculateCost( tile, dir )
-    if tile:instanceOf( 'Door' ) and not tile:isPassable() then
-        return 3;
+    if tile:hasWorldObject() then
+        return tile:getWorldObject():getMovementCost();
     end
 
     if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
-        return SQRT;
+        return SQRT * tile:getMovementCost();
     end
-    return 1;
+
+    return tile:getMovementCost();
 end
 
 ---

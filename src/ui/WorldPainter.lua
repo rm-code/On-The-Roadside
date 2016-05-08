@@ -118,12 +118,15 @@ function WorldPainter.new( game )
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction()];
             end
-        elseif tile:instanceOf( 'Door' ) then
-            return COLORS.DB03;
-        elseif tile:instanceOf( 'Floor' ) then
+        elseif tile:hasWorldObject() then
+            local worldObject = tile:getWorldObject();
+            if worldObject:instanceOf( 'Door' ) then
+                return COLORS.DB03;
+            elseif worldObject:instanceOf( 'Wall' ) then
+                return COLORS.DB23;
+            end
+        else
             return COLORS.DB25;
-        elseif tile:instanceOf( 'Wall' ) then
-            return COLORS.DB23;
         end
     end
 
@@ -141,15 +144,18 @@ function WorldPainter.new( game )
             end
         end
 
-        if tile:instanceOf( 'Wall' ) then
-            return TILE_SPRITES.WALL;
-        elseif tile:instanceOf( 'Floor' ) then
+        if not tile:hasWorldObject() then
             return TILE_SPRITES.FLOOR;
-        elseif tile:instanceOf( 'Door' ) then
-            if tile:isPassable() then
-                return TILE_SPRITES.DOOR_OPEN;
-            else
-                return TILE_SPRITES.DOOR_CLOSED;
+        else
+            local worldObject = tile:getWorldObject();
+            if worldObject:instanceOf( 'Wall' ) then
+                return TILE_SPRITES.WALL;
+            elseif worldObject:instanceOf( 'Door' ) then
+                if worldObject:isPassable() then
+                    return TILE_SPRITES.DOOR_OPEN;
+                else
+                    return TILE_SPRITES.DOOR_CLOSED;
+                end
             end
         end
     end

@@ -1,8 +1,8 @@
 local Object = require( 'src.Object' );
 
-local Floor = require( 'src.map.tiles.Floor' );
-local Wall  = require( 'src.map.tiles.Wall' );
-local Door  = require( 'src.map.tiles.Door' );
+local Tile  = require( 'src.map.tiles.Tile' );
+local Wall  = require( 'src.map.worldobjects.Wall' );
+local Door  = require( 'src.map.worldobjects.Door' );
 
 -- ------------------------------------------------
 -- Constants
@@ -10,7 +10,6 @@ local Door  = require( 'src.map.tiles.Door' );
 
 local DIRECTION = require( 'src.constants.Direction' );
 local TILE_MAP = {
-    ['.'] = function( x, y ) return Floor.new( x, y ) end,
     ['#'] = function( x, y ) return  Wall.new( x, y ) end,
     ['+'] = function( x, y ) return  Door.new( x, y ) end
 }
@@ -27,7 +26,11 @@ function Map.new()
     -- ------------------------------------------------
 
     local function createTile( type, x, y )
-        return TILE_MAP[type]( x, y );
+        local tile = Tile.new( x, y, 1 );
+        if type ~= '.' then
+            tile:addWorldObject( TILE_MAP[type]() );
+        end
+        return tile;
     end
 
     local function createTiles( grid )
