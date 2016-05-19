@@ -3,7 +3,7 @@ local WorldObject = require( 'src.map.worldobjects.WorldObject' );
 local Door = {};
 
 function Door.new()
-    local self = WorldObject.new( false ):addInstance( 'Door' );
+    local self = WorldObject.new( false, true ):addInstance( 'Door' );
 
     function self:getMovementCost()
         if self:isPassable() then

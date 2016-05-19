@@ -2,7 +2,7 @@ local Object = require( 'src.Object' );
 
 local WorldObject = {};
 
-function WorldObject.new( passable, movementCost )
+function WorldObject.new( passable, destructible )
     local self = Object.new():addInstance( 'WorldObject' );
 
     function self:isPassable()
@@ -14,7 +14,11 @@ function WorldObject.new( passable, movementCost )
     end
 
     function self:getMovementCost()
-        return movementCost;
+        return 1;
+    end
+
+    function self:isDestructible()
+        return destructible;
     end
 
     return self;

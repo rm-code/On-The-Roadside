@@ -35,11 +35,12 @@ function Tile.new( x, y, movementCost )
     end
 
     function self:hit( damage )
-        print( damage );
         if self:isOccupied() then
             character:hit( damage );
-        else
-            -- TODO damage to tile.
+        elseif self:hasWorldObject() and self:getWorldObject():isDestructible() then
+            -- TODO: Applay damage to worldObject's health.
+            worldObject = nil;
+            self:setDirty( true );
         end
     end
 
