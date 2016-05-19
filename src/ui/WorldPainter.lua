@@ -30,6 +30,7 @@ local TILE_SPRITES = {
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    WATER       = love.graphics.newQuad( 14 * TILE_SIZE, 7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
 }
 
@@ -126,6 +127,9 @@ function WorldPainter.new( game )
                 return COLORS.DB23;
             end
         else
+            if tile:instanceOf( 'Water') then
+                return COLORS.DB16;
+            end
             return COLORS.DB25;
         end
     end
@@ -145,6 +149,9 @@ function WorldPainter.new( game )
         end
 
         if not tile:hasWorldObject() then
+            if tile:instanceOf( 'Water' ) then
+                return TILE_SPRITES.WATER;
+            end
             return TILE_SPRITES.FLOOR;
         else
             local worldObject = tile:getWorldObject();
