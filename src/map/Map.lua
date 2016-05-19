@@ -1,15 +1,20 @@
 local Object = require( 'src.Object' );
 
-local Tile  = require( 'src.map.tiles.Tile' );
-local Wall  = require( 'src.map.worldobjects.Wall' );
-local Door  = require( 'src.map.worldobjects.Door' );
+local Asphalt = require( 'src.map.tiles.Asphalt' );
+
+local Wall = require( 'src.map.worldobjects.Wall' );
+local Door = require( 'src.map.worldobjects.Door' );
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
 local DIRECTION = require( 'src.constants.Direction' );
-local TILE_MAP = {
+local TILES = {
+    ['.'] = function( x, y ) return Asphalt.new( x, y ) end,
+}
+
+local WORLD_OBJECTS = {
     ['#'] = function( x, y ) return  Wall.new( x, y ) end,
     ['+'] = function( x, y ) return  Door.new( x, y ) end
 }
@@ -26,22 +31,34 @@ function Map.new()
     -- ------------------------------------------------
 
     local function createTile( type, x, y )
-        local tile = Tile.new( x, y, 1 );
-        if type ~= '.' then
-            tile:addWorldObject( TILE_MAP[type]() );
-        end
-        return tile;
+        assert( TILES[type], 'Tile of type: ' .. type .. ' does not exist!' );
+        return TILES[type]( x, y );
     end
 
-    local function createTiles( grid )
+    local function createWorldObject( type, tile )
+        assert( WORLD_OBJECTS[type], 'WorldObject of type: ' .. type .. ' does not exist!' );
+        tile:addWorldObject( WORLD_OBJECTS[type]() );
+    end
+
+    local function createTiles( tilelayer )
         local newTiles = {};
-        for x = 1, #grid do
-            for y = 1, #grid[x] do
+        for x = 1, #tilelayer do
+            for y = 1, #tilelayer[x] do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = createTile( grid[x][y], x, y );
+                newTiles[x][y] = createTile( tilelayer[x][y], x, y );
             end
         end
         return newTiles;
+    end
+
+    local function createWorldObjects( objectlayer )
+        for x = 1, #objectlayer do
+            for y = 1, #objectlayer[x] do
+                if objectlayer[x][y] ~= ' ' then -- Ignore placeholders.
+                    createWorldObject( objectlayer[x][y], tiles[x][y] );
+                end
+            end
+        end
     end
 
     ---
@@ -72,8 +89,9 @@ function Map.new()
 
     function self:init()
         -- TODO Replace
-        local grid = require( 'res.data.maps.example' );
-        tiles = createTiles( grid );
+        local layout = require( 'res.data.maps.example' );
+        tiles = createTiles( layout.tilelayer );
+        createWorldObjects( layout.objectlayer );
         addNeighbours();
     end
 
