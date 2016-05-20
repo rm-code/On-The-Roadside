@@ -65,11 +65,13 @@ local function calculateShotDeviation( px, py, tx, ty, angle )
     return px + nx, py + ny;
 end
 
-function Projectile.new( character, damage, origin, target, chanceToHit )
+function Projectile.new( character, damage, origin, target )
     local self = Object.new():addInstance( 'Projectile' );
 
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
+
+    local chanceToHit = character:getAccuracy() * ( character:getWeapon():getAccuracy() / 100 );
 
     print("CTH: " .. chanceToHit);
 

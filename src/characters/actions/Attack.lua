@@ -23,10 +23,7 @@ function Attack.new( character, target, map )
             return true;
         end);
 
-        -- TODO: More effects on the accuracy.
-        local chanceToHit = character:getAccuracy();
-
-        Messenger.publish( 'ACTION_SHOOT', character, origin, target, chanceToHit );
+        Messenger.publish( 'ACTION_SHOOT', character, origin, target );
 
         character:removeLineOfSight();
     end
