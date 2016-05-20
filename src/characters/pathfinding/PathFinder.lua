@@ -33,8 +33,12 @@ local function calculateHeuristic( a, b )
     end
 end
 
+---
 -- Calculates the cost of moving to a tile.
--- @param tile (Tile) The tile to calculate a cost for.
+-- @param tile (Tile)   The tile to calculate a cost for.
+-- @param dir  (string) The direction of the tile to move to.
+-- @return     (number) The calculated movement cost.
+--
 local function calculateCost( tile, dir )
     if tile:hasWorldObject() then
         return tile:getWorldObject():getMovementCost();
