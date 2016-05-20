@@ -88,7 +88,7 @@ end
 -- @return (boolean) True if the tile can be used for pathfinding.
 --
 local function isValidTile( tile, closedList, target )
-    if not isInList( closedList, tile ) and not tile:isOccupied() then
+    if tile:isExplored() and not isInList( closedList, tile ) and not tile:isOccupied() then
         -- Handle doors as special case (They can be navigated even though they are set to impassable).
         if tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) then
             return true;
