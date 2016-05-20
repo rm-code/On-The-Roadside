@@ -84,6 +84,22 @@ local function isInList( list, tile )
 end
 
 ---
+-- Checks if a tile is valid for pathfinding.
+-- @return (boolean) True if the tile can be used for pathfinding.
+--
+local function isValidTile( tile, closedList, target )
+    if not isInList( closedList, tile ) and not tile:isOccupied() then
+        -- Handle doors as special case (They can be navigated even though they are set to impassable).
+        if tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) then
+            return true;
+        end
+        return tile:isPassable();
+    end
+
+    return tile == target;
+end
+
+---
 -- Adds a node to the closed list.
 -- @param closedList (table) The closed list.
 -- @param node       (table) The node to add.
@@ -160,7 +176,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
         for direction, tile in pairs( current.tile:getNeighbours() ) do
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
-            if (( tile:isPassable() or tile:instanceOf( 'Door' )) and not tile:isOccupied() and not isInList( closedList, tile )) or tile == target then
+            if isValidTile( tile, closedList, target ) then
                 local g = current.g + calculateCost( tile, direction );
                 local f = g + calculateHeuristic( tile, target );
 
