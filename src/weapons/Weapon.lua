@@ -8,15 +8,18 @@ function Weapon.new( template )
     local name = template.name;
     local damage = template.damage;
     local range  = template.range;
-    local attackCost = template.cost;
-    local accuracy = template.accuracy;
+    local mode = 'single';
 
     function self:getAccuracy()
-        return accuracy;
+        return template.mode[mode].accuracy;
     end
 
     function self:getDamage()
         return damage;
+    end
+
+    function self:getFiringMode()
+        return mode;
     end
 
     function self:getName()
@@ -28,7 +31,11 @@ function Weapon.new( template )
     end
 
     function self:getAttackCost()
-        return attackCost;
+        return template.mode[mode].cost;
+    end
+
+    function self:getShots()
+        return template.mode[mode].shots;
     end
 
     return self;
