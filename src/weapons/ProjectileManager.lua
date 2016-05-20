@@ -35,7 +35,7 @@ function ProjectileManager.new( map )
         timer = timer - dt;
         if timer < 0 and not projectileQueue.isEmpty() then
             local projectile = spawnProjectile();
-            timer = projectileQueue.isEmpty() and 0 or 1 / projectile:getWeapon():getMode();
+            timer = projectileQueue.isEmpty() and 0 or 1 / projectile:getWeapon():getShots();
         end
 
         for i, projectile in pairs( projectiles ) do

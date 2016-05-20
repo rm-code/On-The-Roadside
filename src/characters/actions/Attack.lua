@@ -68,10 +68,11 @@ function Attack.new( character, target, map )
             return true;
         end);
 
-        local maxDerivation = calculateMaximumDerivation();
-        local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );
-
-        Messenger.publish( 'ACTION_SHOOT', character, origin, target, actualDerivation );
+        for _ = 1, character:getWeapon():getShots() do
+            local maxDerivation = calculateMaximumDerivation();
+            local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );
+            Messenger.publish( 'ACTION_SHOOT', character, origin, target, actualDerivation );
+        end
 
         character:removeLineOfSight();
     end

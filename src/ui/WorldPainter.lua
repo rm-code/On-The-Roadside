@@ -230,6 +230,7 @@ function WorldPainter.new( game )
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 110, love.graphics.getHeight() - 20 );
 
         love.graphics.print( 'Weapon: ' .. CharacterManager.getCurrentCharacter():getWeapon():getName(), 150, love.graphics.getHeight() - 40 );
+        love.graphics.print( 'Mode: ' .. CharacterManager.getCurrentCharacter():getWeapon():getFiringMode(), 150, love.graphics.getHeight() - 20 );
     end
 
     function self:update()

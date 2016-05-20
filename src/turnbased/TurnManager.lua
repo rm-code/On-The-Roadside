@@ -165,6 +165,14 @@ function TurnManager.new( map )
         end
     end)
 
+    Messenger.observe( 'NEXT_FIRING_MODE', function()
+        character:getWeapon():selectNextFiringMode();
+    end)
+
+    Messenger.observe( 'PREV_FIRING_MODE', function()
+        character:getWeapon():selectPrevFiringMode();
+    end)
+
     return self;
 end
 

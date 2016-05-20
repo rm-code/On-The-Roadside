@@ -12,7 +12,9 @@ local INPUT_MAP = {
     ['space']  = function() Messenger.publish( 'SWITCH_CHARACTERS'   ) end,
     ['return'] = function() Messenger.publish( 'SWITCH_FACTION'      ) end,
     ['a']      = function() Messenger.publish( 'ENTER_ATTACK_MODE'   ) end,
-    ['escape'] = function() Messenger.publish( 'ENTER_MOVEMENT_MODE' ) end
+    ['escape'] = function() Messenger.publish( 'ENTER_MOVEMENT_MODE' ) end,
+    ['right']  = function() Messenger.publish( 'NEXT_FIRING_MODE'    ) end,
+    ['left']   = function() Messenger.publish( 'PREV_FIRING_MODE'    ) end
 };
 
 -- ------------------------------------------------

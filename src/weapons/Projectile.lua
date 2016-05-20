@@ -56,6 +56,10 @@ function Projectile.new( character, origin, target, angle )
         return target;
     end
 
+    function self:getWeapon()
+        return weapon;
+    end
+
     return self;
 end
 
