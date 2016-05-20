@@ -97,6 +97,9 @@ function Character.new( tile, faction )
     -- Removes the current path.
     --
     function self:removePath()
+        if path then
+            path:refresh();
+        end
         path = nil;
     end
 
