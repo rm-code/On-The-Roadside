@@ -45,9 +45,9 @@ function ProjectileManager.new( map )
         end
     end
 
-    Messenger.observe( 'ACTION_SHOOT', function( character, origin, target, chanceToHit )
+    Messenger.observe( 'ACTION_SHOOT', function( character, origin, target, angle )
         id = id + 1;
-        projectiles[id] = Projectile.new( character, character:getWeapon():getDamage(), origin, target, chanceToHit );
+        projectiles[id] = Projectile.new( character, character:getWeapon():getDamage(), origin, target, angle );
     end)
 
     return self;
