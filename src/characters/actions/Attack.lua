@@ -64,13 +64,7 @@ function Attack.new( character, target, map )
         local ox, oy = origin:getPosition();
         local tx, ty = target:getPosition();
 
-        local range = character:getWeapon():getRange();
-
-        Bresenham.calculateLine( ox, oy, tx, ty, function( x, y, counter )
-            if counter > range then
-                target = map:getTileAt( x, y );
-                return false;
-            end
+        Bresenham.calculateLine( ox, oy, tx, ty, function()
             return true;
         end);
 
