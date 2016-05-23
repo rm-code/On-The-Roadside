@@ -228,6 +228,8 @@ function WorldPainter.new( game )
 
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 50, love.graphics.getHeight() - 20 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 110, love.graphics.getHeight() - 20 );
+
+        love.graphics.print( 'Weapon: ' .. CharacterManager.getCurrentCharacter():getWeapon():getName(), 150, love.graphics.getHeight() - 20 );
     end
 
     function self:update()
