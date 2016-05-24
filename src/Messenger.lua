@@ -3,7 +3,6 @@ local Messenger = {};
 local subscriptions = {};
 
 function Messenger.publish( message, ... )
-    print(message)
     for _, subscription in ipairs( subscriptions ) do
         if subscription.message == message then
             subscription.callback( ... );
