@@ -1,5 +1,5 @@
 local Object = require('src.Object');
-local Queue = require('src.turnbased.Queue');
+local Queue = require('src.Queue');
 local WeaponFactory = require('src.weapons.WeaponFactory');
 
 -- ------------------------------------------------
