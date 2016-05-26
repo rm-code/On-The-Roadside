@@ -25,7 +25,6 @@ function TurnManager.new( map )
 
     local character = CharacterManager.getCurrentCharacter();
     local actionTimer = 0;
-    local blockInput = false;
     local attackMode = false;
 
     -- ------------------------------------------------
@@ -58,7 +57,7 @@ function TurnManager.new( map )
                 character:enqueueAction( Walk.new( character, tile ));
             end
         end)
-        blockInput = true;
+        Messenger.publish( 'DISABLE_INPUT' );
     end
 
     local function generatePath( target )
@@ -115,7 +114,7 @@ function TurnManager.new( map )
                 character:performAction();
                 actionTimer = 0;
             else
-                blockInput = false;
+                Messenger.publish( 'ENABLE_INPUT' );
             end
             CharacterManager.removeDeadActors();
         end
@@ -127,53 +126,41 @@ function TurnManager.new( map )
     -- ------------------------------------------------
 
     Messenger.observe( 'ENTER_ATTACK_MODE', function()
-        if not blockInput then
-            attackMode = true;
-        end
+        attackMode = true;
     end)
 
     Messenger.observe( 'ENTER_MOVEMENT_MODE', function()
-        if not blockInput then
-            attackMode = false;
-        end
+        attackMode = false;
     end)
 
     Messenger.observe( 'SWITCH_CHARACTERS', function()
-        if not blockInput then
-            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
-            character = CharacterManager.nextCharacter();
-        end
+        Messenger.publish( 'ENTER_MOVEMENT_MODE' );
+        character = CharacterManager.nextCharacter();
     end)
 
     Messenger.observe( 'SWITCH_FACTION', function()
-        if not blockInput then
-            Messenger.publish( 'ENTER_MOVEMENT_MODE' );
-            CharacterManager.clearCharacters();
-            CharacterManager.nextFaction();
-            character = CharacterManager.getCurrentCharacter();
-        end
+        Messenger.publish( 'ENTER_MOVEMENT_MODE' );
+        CharacterManager.clearCharacters();
+        CharacterManager.nextFaction();
+        character = CharacterManager.getCurrentCharacter();
     end)
 
     Messenger.observe( 'LEFT_CLICKED_TILE', function( tile )
-        if not blockInput then
-            if attackMode then
-                checkAttack( tile );
-            else
-                checkMovement( tile );
-            end
+        if attackMode then
+            checkAttack( tile );
+        else
+            checkMovement( tile );
         end
     end)
 
     Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
-        if not blockInput then
-            if tile:isOccupied() then
-                character = CharacterManager.selectCharacter( tile );
-            elseif tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) and tile:isAdjacent( character:getTile() ) then
-                if tile:isPassable() then
-                    character:enqueueAction( CloseDoor.new( character, tile ));
-                else
-                    character:enqueueAction( OpenDoor.new( character, tile ));
-                end
+        if tile:isOccupied() then
+            character = CharacterManager.selectCharacter( tile );
+        elseif tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) and tile:isAdjacent( character:getTile() ) then
+            if tile:isPassable() then
+                character:enqueueAction( CloseDoor.new( character, tile ));
+            else
+                character:enqueueAction( OpenDoor.new( character, tile ));
             end
         end
     end)

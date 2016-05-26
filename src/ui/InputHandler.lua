@@ -29,6 +29,8 @@ function InputHandler.new( game )
     local map = game:getMap();
     local mouseX, mouseY = 0, 0;
 
+    local blocked = false;
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -53,7 +55,7 @@ function InputHandler.new( game )
     function self:mousepressed( _, _, button )
         local tile = map:getTileAt( mouseX, mouseY );
 
-        if not tile then
+        if not tile or blocked then
             return;
         end
 
@@ -63,6 +65,14 @@ function InputHandler.new( game )
             Messenger.publish( 'RIGHT_CLICKED_TILE', tile );
         end
     end
+
+    Messenger.observe( 'DISABLE_INPUT', function()
+        blocked = true;
+    end)
+
+    Messenger.observe( 'ENABLE_INPUT', function()
+        blocked = false;
+    end)
 
     return self;
 end
