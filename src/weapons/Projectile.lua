@@ -1,6 +1,6 @@
 local Object = require( 'src.Object' );
 
-local SPEED = 10;
+local SPEED = 30;
 
 local Projectile = {};
 
