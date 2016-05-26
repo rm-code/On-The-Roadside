@@ -1,13 +1,16 @@
 local Projectile = require( 'src.weapons.Projectile' );
 local Messenger = require( 'src.Messenger' );
+local Queue = require( 'src.Queue' );
 
 local ProjectileManager = {};
 
 function ProjectileManager.new( map )
     local self = {};
 
+    local projectileQueue = Queue.new();
     local projectiles = {};
     local id = 0;
+    local timer = 0;
 
     ---
     -- Removes a projectile from the world and hits a tile with the projectile
@@ -21,7 +24,19 @@ function ProjectileManager.new( map )
         tile:hit( projectile:getDamage() );
     end
 
+    local function spawnProjectile()
+        id = id + 1;
+        projectiles[id] = projectileQueue:dequeue();
+        return projectiles[id];
+    end
+
     function self:update( dt )
+        timer = timer - dt;
+        if timer < 0 and not projectileQueue.isEmpty() then
+            local projectile = spawnProjectile();
+            timer = projectileQueue.isEmpty() and 0 or 1 / projectile:getWeapon():getMode();
+        end
+
         for i, projectile in pairs( projectiles ) do
             projectile:update( dt );
             local tile = map:getTileAt( projectile:getTilePosition() );
@@ -46,8 +61,7 @@ function ProjectileManager.new( map )
     end
 
     Messenger.observe( 'ACTION_SHOOT', function( character, origin, target, angle )
-        id = id + 1;
-        projectiles[id] = Projectile.new( character, character:getWeapon():getDamage(), origin, target, angle );
+        projectileQueue:enqueue( Projectile.new( character, character:getWeapon():getDamage(), origin, target, angle ));
     end)
 
     return self;
