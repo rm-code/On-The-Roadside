@@ -24,7 +24,7 @@ Messenger.observe( 'ACTION_DOOR', function()
     love.audio.play( SOUNDS.DOOR );
 end)
 
-Messenger.observe( 'ACTION_SHOOT', function()
+Messenger.observe( 'SOUND_SHOOT', function()
     love.audio.play( stopBeforePlaying( SOUNDS.SHOOT ));
 end)
 

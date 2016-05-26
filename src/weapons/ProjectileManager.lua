@@ -27,6 +27,7 @@ function ProjectileManager.new( map )
     local function spawnProjectile()
         id = id + 1;
         projectiles[id] = projectileQueue:dequeue();
+        Messenger.publish( 'SOUND_SHOOT' );
         return projectiles[id];
     end
 
