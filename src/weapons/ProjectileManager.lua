@@ -62,7 +62,7 @@ function ProjectileManager.new( map )
     end
 
     Messenger.observe( 'ACTION_SHOOT', function( character, origin, target, angle )
-        projectileQueue:enqueue( Projectile.new( character, character:getWeapon():getDamage(), origin, target, angle ));
+        projectileQueue:enqueue( Projectile.new( character, origin, target, angle ));
     end)
 
     return self;

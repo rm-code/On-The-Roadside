@@ -16,8 +16,10 @@ local function applyVectorRotation( px, py, tx, ty, angle )
     return px + nx, py + ny;
 end
 
-function Projectile.new( character, damage, origin, target, angle )
+function Projectile.new( character, origin, target, angle )
     local self = Object.new():addInstance( 'Projectile' );
+
+    local weapon = character:getWeapon();
 
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
@@ -39,7 +41,7 @@ function Projectile.new( character, damage, origin, target, angle )
     end
 
     function self:getDamage()
-        return damage;
+        return weapon:getDamage();
     end
 
     function self:getPosition()
