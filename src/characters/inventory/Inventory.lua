@@ -42,6 +42,10 @@ function Inventory.new()
         backpackSlot:setItem( item );
     end
 
+    function self:getClothing()
+        return clothing;
+    end
+
     function self:getPrimaryWeapon()
         return primaryWeaponSlot:getItem();
     end

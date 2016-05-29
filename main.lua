@@ -21,6 +21,7 @@ function love.load()
 
     local screens = {
         main = require('src.screens.MainScreen');
+        inventory = require('src.screens.InventoryScreen');
     };
 
     ScreenManager.init(screens, 'main');
