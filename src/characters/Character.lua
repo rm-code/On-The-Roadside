@@ -39,6 +39,12 @@ function Character.new( tile, faction )
 
     local inventory = Inventory.new();
     inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Headgear' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Gloves' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Shirt' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Jacket' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Trousers' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( 'Footwear' ) );
 
     local accuracy = love.math.random( 60, 90 );
 
@@ -164,6 +170,10 @@ function Character.new( tile, faction )
     --
     function self:getFaction()
         return faction;
+    end
+
+    function self:getInventory()
+        return inventory;
     end
 
     ---
