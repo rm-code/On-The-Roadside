@@ -1,4 +1,4 @@
-local Projectile = require( 'src.weapons.Projectile' );
+local Projectile = require( 'src.items.weapons.Projectile' );
 local Messenger = require( 'src.Messenger' );
 local Queue = require( 'src.Queue' );
 

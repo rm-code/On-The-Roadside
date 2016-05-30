@@ -1,6 +1,6 @@
 local Object = require('src.Object');
 local Queue = require('src.Queue');
-local WeaponFactory = require('src.weapons.WeaponFactory');
+local WeaponFactory = require('src.items.weapons.WeaponFactory');
 
 -- ------------------------------------------------
 -- Constants

@@ -1,4 +1,4 @@
-local Weapon = require( 'src.weapons.Weapon' );
+local Weapon = require( 'src.items.weapons.Weapon' );
 
 local WeaponFactory = {};
 

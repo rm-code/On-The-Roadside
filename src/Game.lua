@@ -1,7 +1,7 @@
 local Map = require( 'src.map.Map' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
-local ProjectileManager = require( 'src.weapons.ProjectileManager' );
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
 -- Constants

@@ -2,7 +2,7 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
 local InputHandler = require( 'src.ui.InputHandler' );
-local WeaponFactory = require( 'src.weapons.WeaponFactory' );
+local WeaponFactory = require( 'src.items.weapons.WeaponFactory' );
 
 -- ------------------------------------------------
 -- Module
