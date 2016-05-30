@@ -1,10 +1,10 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 
-local WeaponFactory = {};
+local ItemFactory = {};
 
 local weapons = {};
 
-function WeaponFactory.loadTemplates()
+function ItemFactory.loadTemplates()
     local dir = 'res/data/weapons/';
 
     local files = love.filesystem.getDirectoryItems( dir );
@@ -17,8 +17,8 @@ function WeaponFactory.loadTemplates()
     end
 end
 
-function WeaponFactory.createWeapon()
+function ItemFactory.createWeapon()
     return Weapon.new( weapons[love.math.random( 1, #weapons )] );
 end
 
-return WeaponFactory;
+return ItemFactory;
