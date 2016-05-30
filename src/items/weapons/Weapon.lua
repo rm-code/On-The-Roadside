@@ -1,12 +1,11 @@
-local Object = require( 'src.Object' );
+local Item = require( 'src.items.Item' );
 local FIRING_MODES = require( 'src.constants.FiringModes' );
 
 local Weapon = {};
 
 function Weapon.new( template )
-    local self = Object.new():addInstance( 'Weapon' );
+    local self = Item.new( template.name ):addInstance( 'Weapon' );
 
-    local name = template.name;
     local damage = template.damage;
     local range  = template.range;
     local mode = FIRING_MODES.SINGLE;
@@ -21,10 +20,6 @@ function Weapon.new( template )
 
     function self:getFiringMode()
         return mode;
-    end
-
-    function self:getName()
-        return name;
     end
 
     function self:getRange()
