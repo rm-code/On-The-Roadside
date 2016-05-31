@@ -2,7 +2,7 @@ local Object = require( 'src.Object' );
 
 local WorldObject = {};
 
-function WorldObject.new( type, passable, blocksPathfinding, destructible )
+function WorldObject.new( name, type, passable, blocksPathfinding, destructible )
     local self = Object.new():addInstance( 'WorldObject' );
 
     function self:blocksPathfinding()
@@ -19,6 +19,10 @@ function WorldObject.new( type, passable, blocksPathfinding, destructible )
 
     function self:getMovementCost()
         return 1;
+    end
+
+    function self:getName()
+        return name;
     end
 
     function self:getType()

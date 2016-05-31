@@ -6,7 +6,7 @@ local Object = require( 'src.Object' );
 
 local Tile = {};
 
-function Tile.new( x, y, type, movementCost )
+function Tile.new( x, y, name, type, movementCost )
     local self = Object.new():addInstance( 'Tile' );
 
     local id;
@@ -70,6 +70,10 @@ function Tile.new( x, y, type, movementCost )
             return worldObject:getMovementCost();
         end
         return movementCost;
+    end
+
+    function self:getName()
+        return name;
     end
 
     function self:getNeighbours()

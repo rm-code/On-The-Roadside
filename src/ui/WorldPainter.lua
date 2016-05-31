@@ -199,6 +199,22 @@ function WorldPainter.new( game )
         love.graphics.rectangle( 'line', mouseX * TILE_SIZE, mouseY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
     end
 
+    local function inspectTile()
+        local tile = game:getMap():getTileAt( mouseX, mouseY );
+
+        if not tile then
+            return;
+        end
+
+        if not tile:isExplored() then
+            love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
+        elseif tile:hasWorldObject() then
+            love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
+        elseif tile:isExplored() then
+            love.graphics.print( 'Tile: ' .. tile:getName(), 310, love.graphics.getHeight() - 20 );
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -241,6 +257,8 @@ function WorldPainter.new( game )
 
         love.graphics.print( 'Weapon: ' .. CharacterManager.getCurrentCharacter():getWeapon():getName(), 150, love.graphics.getHeight() - 40 );
         love.graphics.print( 'Mode: ' .. CharacterManager.getCurrentCharacter():getWeapon():getFiringMode(), 150, love.graphics.getHeight() - 20 );
+
+        inspectTile();
     end
 
     function self:update()

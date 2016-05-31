@@ -28,7 +28,7 @@ end
 function TileFactory.create( x, y, type )
     local template = tiles[type];
     assert( template, string.format( 'Requested tile type (%s) doesn\'t exist!', type ));
-    return Tile.new( x, y, template.type, template.movementCost );
+    return Tile.new( x, y, template.name, template.type, template.movementCost );
 end
 
 return TileFactory;
