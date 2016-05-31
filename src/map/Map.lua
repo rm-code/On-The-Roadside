@@ -13,6 +13,7 @@ local DIRECTION = require( 'src.constants.Direction' );
 local TILES = {
     ['.'] = function( x, y ) return TileFactory.create( x, y, 'tile_asphalt' ) end,
     ['~'] = function( x, y ) return TileFactory.create( x, y, 'tile_water'   ) end,
+    [';'] = function( x, y ) return TileFactory.create( x, y, 'tile_soil'    ) end,
 }
 
 local WORLD_OBJECTS = {
