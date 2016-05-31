@@ -5,7 +5,7 @@ local ItemFactory = {};
 local weapons = {};
 
 function ItemFactory.loadTemplates()
-    local dir = 'res/data/weapons/';
+    local dir = 'res/data/items/weapons/';
 
     local files = love.filesystem.getDirectoryItems( dir );
     print("Load Weapon Templates: ");
