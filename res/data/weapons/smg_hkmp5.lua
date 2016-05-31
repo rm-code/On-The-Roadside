@@ -1,5 +1,6 @@
 return {
     name     = "HK MP5",
+    itemType = "Weapon",
     damage   = 36,
     range    = 12,
     mode = {

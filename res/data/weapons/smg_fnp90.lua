@@ -1,5 +1,6 @@
 return {
     name     = "FN P90",
+    itemType = "Weapon",
     damage   = 38,
     range    = 12,
     mode = {

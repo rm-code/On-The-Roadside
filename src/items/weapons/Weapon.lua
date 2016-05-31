@@ -4,7 +4,7 @@ local FIRING_MODES = require( 'src.constants.FiringModes' );
 local Weapon = {};
 
 function Weapon.new( template )
-    local self = Item.new( template.name ):addInstance( 'Weapon' );
+    local self = Item.new( template.name, template.itemType ):addInstance( 'Weapon' );
 
     local damage = template.damage;
     local range  = template.range;

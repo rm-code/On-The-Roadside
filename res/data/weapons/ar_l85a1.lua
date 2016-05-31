@@ -1,5 +1,6 @@
 return {
     name     = "Enfield L85A1",
+    itemType = "Weapon",
     damage   = 45,
     range    = 12,
     mode = {

@@ -1,5 +1,6 @@
 return {
     name     = "AKS-74",
+    itemType = "Weapon",
     damage   = 40,
     range    = 12,
     mode = {
