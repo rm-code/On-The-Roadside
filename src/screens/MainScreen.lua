@@ -3,6 +3,7 @@ local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
 local InputHandler = require( 'src.ui.InputHandler' );
 local ItemFactory = require( 'src.items.ItemFactory' );
+local SoundManager = require( 'src.SoundManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -23,6 +24,7 @@ function MainScreen.new()
 
     function self:init()
         ItemFactory.loadTemplates();
+        SoundManager.loadResources();
 
         game = Game.new();
         game:init();

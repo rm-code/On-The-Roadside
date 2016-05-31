@@ -2,11 +2,7 @@ local Messenger = require( 'src.Messenger' );
 
 local SoundManager = {};
 
-local SOUNDS = {
-    DOOR   = love.audio.newSource( 'res/sounds/door.wav' );
-    SELECT = love.audio.newSource( 'res/sounds/select.wav' );
-    SHOOT  = love.audio.newSource( 'res/sounds/shoot.wav' );
-}
+local SOUNDS = {}
 
 ---
 -- Stops a source if it is currently playing.
@@ -18,6 +14,12 @@ local function stopBeforePlaying( source )
         source:stop();
     end
     return source;
+end
+
+function SoundManager.loadResources()
+    SOUNDS.DOOR   = love.audio.newSource( 'res/sounds/door.wav' );
+    SOUNDS.SELECT = love.audio.newSource( 'res/sounds/select.wav' );
+    SOUNDS.SHOOT  = love.audio.newSource( 'res/sounds/shoot.wav' );
 end
 
 Messenger.observe( 'ACTION_DOOR', function()
