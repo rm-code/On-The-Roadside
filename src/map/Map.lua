@@ -1,7 +1,6 @@
 local Object = require( 'src.Object' );
 
-local Asphalt = require( 'src.map.tiles.Asphalt' );
-local Water   = require( 'src.map.tiles.Water' );
+local TileFactory = require( 'src.map.tiles.TileFactory' );
 
 local Wall = require( 'src.map.worldobjects.Wall' );
 local Door = require( 'src.map.worldobjects.Door' );
@@ -12,8 +11,8 @@ local Door = require( 'src.map.worldobjects.Door' );
 
 local DIRECTION = require( 'src.constants.Direction' );
 local TILES = {
-    ['.'] = function( x, y ) return Asphalt.new( x, y ) end,
-    ['~'] = function( x, y ) return Water.new( x, y ) end,
+    ['.'] = function( x, y ) return TileFactory.create( x, y, 'tile_asphalt' ) end,
+    ['~'] = function( x, y ) return TileFactory.create( x, y, 'tile_water'   ) end,
 }
 
 local WORLD_OBJECTS = {

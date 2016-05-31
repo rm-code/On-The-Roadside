@@ -127,7 +127,7 @@ function WorldPainter.new( game )
                 return COLORS.DB23;
             end
         else
-            if tile:instanceOf( 'Water') then
+            if tile:getType() == 'tile_water' then
                 return COLORS.DB16;
             end
             return COLORS.DB25;
@@ -149,7 +149,7 @@ function WorldPainter.new( game )
         end
 
         if not tile:hasWorldObject() then
-            if tile:instanceOf( 'Water' ) then
+            if tile:getType() == 'tile_water' then
                 return TILE_SPRITES.WATER;
             end
             return TILE_SPRITES.FLOOR;
