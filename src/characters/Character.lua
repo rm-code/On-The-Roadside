@@ -1,6 +1,7 @@
 local Object = require('src.Object');
 local Queue = require('src.Queue');
 local ItemFactory = require('src.items.ItemFactory');
+local Inventory = require('src.characters.inventory.Inventory');
 
 -- ------------------------------------------------
 -- Constants
@@ -35,7 +36,10 @@ function Character.new( tile, faction )
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
     local dead = false;
-    local weapon = ItemFactory.createWeapon();
+
+    local inventory = Inventory.new();
+    inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
+
     local accuracy = love.math.random( 60, 90 );
 
     -- ------------------------------------------------
@@ -151,7 +155,7 @@ function Character.new( tile, faction )
     -- @return (Weapon) The weapon.
     --
     function self:getWeapon()
-        return weapon;
+        return inventory:getPrimaryWeapon();
     end
 
     ---
