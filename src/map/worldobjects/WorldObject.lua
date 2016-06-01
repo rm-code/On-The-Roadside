@@ -2,8 +2,12 @@ local Object = require( 'src.Object' );
 
 local WorldObject = {};
 
-function WorldObject.new( type, passable, destructible )
+function WorldObject.new( type, passable, blocksPathfinding, destructible )
     local self = Object.new():addInstance( 'WorldObject' );
+
+    function self:blocksPathfinding()
+        return blocksPathfinding;
+    end
 
     function self:isPassable()
         return passable;
