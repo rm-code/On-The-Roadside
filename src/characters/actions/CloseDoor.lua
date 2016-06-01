@@ -8,7 +8,7 @@ function CloseDoor.new( character, tile )
 
     function self:perform()
         local target = tile:getWorldObject();
-        assert( target:instanceOf( 'Door' ), 'Target tile needs to be an instance of Door!' );
+        assert( target:getType() == 'worldobject_door', 'Target tile needs to be of type Door!' );
         assert( target:isPassable(), 'Target tile needs to be passable!' );
         assert( tile:isAdjacent( character:getTile() ), 'Character has to be adjacent to the target tile!' );
 

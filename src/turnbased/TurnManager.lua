@@ -47,7 +47,7 @@ function TurnManager.new( map )
 
     local function commitPath()
         character:getPath():iterate( function( tile, index )
-            if tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) and not tile:isPassable() then
+            if tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and not tile:isPassable() then
                 character:enqueueAction( OpenDoor.new( character, tile ));
                 -- Don't walk on the door tile if the path ends there.
                 if index ~= 1 then
@@ -156,7 +156,7 @@ function TurnManager.new( map )
     Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
         if tile:isOccupied() then
             character = CharacterManager.selectCharacter( tile );
-        elseif tile:hasWorldObject() and tile:getWorldObject():instanceOf( 'Door' ) and tile:isAdjacent( character:getTile() ) then
+        elseif tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and tile:isAdjacent( character:getTile() ) then
             if tile:isPassable() then
                 character:enqueueAction( CloseDoor.new( character, tile ));
             else
