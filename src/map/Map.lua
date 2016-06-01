@@ -10,16 +10,6 @@ local Door = require( 'src.map.worldobjects.Door' );
 -- ------------------------------------------------
 
 local DIRECTION = require( 'src.constants.Direction' );
-local TILES = {
-    ['.'] = function( x, y ) return TileFactory.create( x, y, 'tile_asphalt' ) end,
-    ['~'] = function( x, y ) return TileFactory.create( x, y, 'tile_water'   ) end,
-    [';'] = function( x, y ) return TileFactory.create( x, y, 'tile_soil'    ) end,
-}
-
-local WORLD_OBJECTS = {
-    ['#'] = function( x, y ) return  Wall.new( x, y ) end,
-    ['+'] = function( x, y ) return  Door.new( x, y ) end
-}
 
 local Map = {};
 
@@ -32,33 +22,46 @@ function Map.new()
     -- Public Functions
     -- ------------------------------------------------
 
-    local function createTile( type, x, y )
-        assert( TILES[type], 'Tile of type: ' .. type .. ' does not exist!' );
-        return TILES[type]( x, y );
+    local function createTile( x, y, r, g, b, _ )
+        if r == 105 and g == 105 and b == 105 then
+            return TileFactory.create( x, y, 'tile_asphalt' );
+        elseif r == 0 and g == 255 and b == 0 then
+            return TileFactory.create( x, y, 'tile_grass' );
+        elseif r == 0 and g == 0 and b == 255 then
+            return TileFactory.create( x, y, 'tile_water' );
+        end
+        return TileFactory.create( x, y, 'tile_soil' );
     end
 
-    local function createWorldObject( type, tile )
-        assert( WORLD_OBJECTS[type], 'WorldObject of type: ' .. type .. ' does not exist!' );
-        tile:addWorldObject( WORLD_OBJECTS[type]() );
+    local function createWorldObject( tile, r, g, b, a )
+        if a == 0 then
+            return
+        elseif r == 255 and g == 255 and b == 0 then
+            tile:addWorldObject( Door.new() );
+        else
+            tile:addWorldObject( Wall.new() );
+        end
     end
 
-    local function createTiles( tilelayer )
+    local function createTiles()
+        local groundLayer = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
         local newTiles = {};
-        for x = 1, #tilelayer do
-            for y = 1, #tilelayer[x] do
+
+        for x = 1, groundLayer:getWidth() do
+            for y = 1, groundLayer:getHeight() do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = createTile( tilelayer[x][y], x, y );
+                newTiles[x][y] = createTile( x, y, groundLayer:getPixel( x - 1, y - 1 ));
             end
         end
+
         return newTiles;
     end
 
-    local function createWorldObjects( objectlayer )
-        for x = 1, #objectlayer do
-            for y = 1, #objectlayer[x] do
-                if objectlayer[x][y] ~= ' ' then -- Ignore placeholders.
-                    createWorldObject( objectlayer[x][y], tiles[x][y] );
-                end
+    local function createWorldObjects()
+        local objectLayer = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
+        for x = 1, objectLayer:getWidth() do
+            for y = 1, objectLayer:getHeight() do
+                createWorldObject( tiles[x][y], objectLayer:getPixel( x - 1, y - 1 ));
             end
         end
     end
@@ -90,10 +93,8 @@ function Map.new()
     -- ------------------------------------------------
 
     function self:init()
-        -- TODO Replace
-        local layout = require( 'res.data.maps.example' );
-        tiles = createTiles( layout.tilelayer );
-        createWorldObjects( layout.objectlayer );
+        tiles = createTiles();
+        createWorldObjects();
         addNeighbours();
     end
 

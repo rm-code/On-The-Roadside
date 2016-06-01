@@ -29,6 +29,7 @@ local TILE_SPRITES = {
     ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    GRASS       = love.graphics.newQuad( 11 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     SOIL        = love.graphics.newQuad( 12 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WATER       = love.graphics.newQuad( 14 * TILE_SIZE, 7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -130,6 +131,8 @@ function WorldPainter.new( game )
         else
             if tile:getType() == 'tile_water' then
                 return COLORS.DB16;
+            elseif tile:getType() == 'tile_grass' then
+                return COLORS.DB12;
             elseif tile:getType() == 'tile_asphalt' then
                 return COLORS.DB25;
             end
@@ -154,6 +157,8 @@ function WorldPainter.new( game )
         if not tile:hasWorldObject() then
             if tile:getType() == 'tile_water' then
                 return TILE_SPRITES.WATER;
+            elseif tile:getType() == 'tile_grass' then
+                return TILE_SPRITES.GRASS;
             elseif tile:getType() == 'tile_asphalt' then
                 return TILE_SPRITES.FLOOR;
             end

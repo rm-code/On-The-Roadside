@@ -26,10 +26,10 @@ function Game.new()
         map = Map.new();
         map:init();
 
-        CharacterManager.newCharacter( map:getTileAt(  2,  2 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt(  2,  3 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt(  2,  4 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt(  2, 32 ), FACTIONS.NEUTRAL );
+        CharacterManager.newCharacter( map:getTileAt(  4,  4 ), FACTIONS.ALLIED  );
+        CharacterManager.newCharacter( map:getTileAt(  6, 17 ), FACTIONS.ALLIED  );
+        CharacterManager.newCharacter( map:getTileAt( 14,  8 ), FACTIONS.ALLIED  );
+        CharacterManager.newCharacter( map:getTileAt(  2, 33 ), FACTIONS.NEUTRAL );
         CharacterManager.newCharacter( map:getTileAt( 47,  2 ), FACTIONS.ENEMY   );
         CharacterManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
