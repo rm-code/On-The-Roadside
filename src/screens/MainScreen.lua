@@ -4,6 +4,7 @@ local WorldPainter = require( 'src.ui.WorldPainter' );
 local InputHandler = require( 'src.ui.InputHandler' );
 local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
+local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
 
 -- ------------------------------------------------
@@ -26,6 +27,7 @@ function MainScreen.new()
     function self:init()
         ItemFactory.loadTemplates();
         TileFactory.loadTemplates();
+        WorldObjectFactory.loadTemplates();
         SoundManager.loadResources();
 
         game = Game.new();

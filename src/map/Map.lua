@@ -1,9 +1,7 @@
 local Object = require( 'src.Object' );
 
 local TileFactory = require( 'src.map.tiles.TileFactory' );
-
-local Wall = require( 'src.map.worldobjects.Wall' );
-local Door = require( 'src.map.worldobjects.Door' );
+local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 
 -- ------------------------------------------------
 -- Constants
@@ -37,9 +35,9 @@ function Map.new()
         if a == 0 then
             return
         elseif r == 255 and g == 255 and b == 0 then
-            tile:addWorldObject( Door.new() );
+            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_door' ));
         else
-            tile:addWorldObject( Wall.new() );
+            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_wall' ));
         end
     end
 

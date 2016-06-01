@@ -123,9 +123,9 @@ function WorldPainter.new( game )
             end
         elseif tile:hasWorldObject() then
             local worldObject = tile:getWorldObject();
-            if worldObject:instanceOf( 'Door' ) then
+            if worldObject:getType() == 'worldobject_door' then
                 return COLORS.DB03;
-            elseif worldObject:instanceOf( 'Wall' ) then
+            elseif worldObject:getType() == 'worldobject_wall' then
                 return COLORS.DB23;
             end
         else
@@ -165,9 +165,9 @@ function WorldPainter.new( game )
             return TILE_SPRITES.SOIL;
         else
             local worldObject = tile:getWorldObject();
-            if worldObject:instanceOf( 'Wall' ) then
+            if worldObject:getType() == 'worldobject_wall' then
                 return TILE_SPRITES.WALL;
-            elseif worldObject:instanceOf( 'Door' ) then
+            elseif worldObject:getType() == 'worldobject_door' then
                 if worldObject:isPassable() then
                     return TILE_SPRITES.DOOR_OPEN;
                 else
