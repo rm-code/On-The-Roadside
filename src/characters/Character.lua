@@ -173,6 +173,14 @@ function Character.new( tile, faction )
         return faction;
     end
 
+    ---
+    -- Returns the character's current health.
+    -- @return (number) The character's health.
+    --
+    function self:getHealth()
+        return health;
+    end
+
     function self:getInventory()
         return inventory;
     end

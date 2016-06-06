@@ -208,6 +208,8 @@ function WorldPainter.new( game )
 
         if not tile:isExplored() then
             love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
+        elseif tile:isOccupied() then
+            love.graphics.print( 'Health: ' .. tile:getCharacter():getHealth(), 310, love.graphics.getHeight() - 20 );
         elseif tile:hasWorldObject() then
             love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
         elseif tile:isExplored() then
