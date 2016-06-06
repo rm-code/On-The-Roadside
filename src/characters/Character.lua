@@ -35,7 +35,6 @@ function Character.new( tile, faction )
     local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
-    local dead = false;
 
     local inventory = Inventory.new();
     inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
@@ -47,6 +46,7 @@ function Character.new( tile, faction )
     inventory:equipClothingItem( ItemFactory.createClothing( 'Footwear' ) );
 
     local accuracy = love.math.random( 60, 90 );
+    local health = love.math.random( 50, 100 );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -130,10 +130,11 @@ function Character.new( tile, faction )
 
     ---
     -- Hits the character with damage.
+    -- @param damage (number) The amount of damage the character is hit with.
     --
-    function self:hit()
+    function self:hit( damage )
         -- TODO proper hit and damage calculations.
-        dead = true;
+        health = health - damage;
     end
 
     -- ------------------------------------------------
@@ -229,7 +230,7 @@ function Character.new( tile, faction )
     -- @return (boolean) Wether the character is dead or not.
     --
     function self:isDead()
-        return dead;
+        return health <= 0;
     end
 
     -- ------------------------------------------------
