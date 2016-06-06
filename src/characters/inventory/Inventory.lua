@@ -1,6 +1,8 @@
 local Object = require( 'src.Object' );
 local EquipmentSlot = require( 'src.characters.inventory.EquipmentSlot' );
 
+local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+
 local Inventory = {};
 
 function Inventory.new()
@@ -9,12 +11,12 @@ function Inventory.new()
     local primaryWeaponSlot = EquipmentSlot.new( 'Weapon' );
 
     local clothing = {
-        ['Headgear'] = EquipmentSlot.new( 'Clothing' );
-        ['Shirt']    = EquipmentSlot.new( 'Clothing' );
-        ['Jacket']   = EquipmentSlot.new( 'Clothing' );
-        ['Gloves']   = EquipmentSlot.new( 'Clothing' );
-        ['Trousers'] = EquipmentSlot.new( 'Clothing' );
-        ['Footwear'] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.HEADGEAR] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.GLOVES  ] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.JACKET  ] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.SHIRT   ] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.TROUSERS] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.FOOTWEAR] = EquipmentSlot.new( 'Clothing' );
     }
 
     local function equipItem( slot, item )

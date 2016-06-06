@@ -1,6 +1,8 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 local Clothing = require( 'src.items.Clothing' );
 
+local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
 local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
 local TEMPLATES_DIRECTORY_HEADGEAR = 'res/data/items/clothing/headgear/';
@@ -13,6 +15,23 @@ local ItemFactory = {};
 
 local items = {};
 
+local function checkClothingType( type )
+    if type == CLOTHING_SLOTS.HEADGEAR then
+        return true;
+        elseif type == CLOTHING_SLOTS.GLOVES then
+        return true;
+    elseif type == CLOTHING_SLOTS.JACKET then
+        return true;
+    elseif type == CLOTHING_SLOTS.SHIRT then
+        return true;
+    elseif type == CLOTHING_SLOTS.TROUSERS then
+        return true;
+    elseif type == CLOTHING_SLOTS.FOOTWEAR then
+        return true;
+    end
+    return false
+end
+
 local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
@@ -23,8 +42,11 @@ local function load( dir )
             items[itemType] = items[itemType] or {};
 
             if itemType == 'Clothing' then
-                items[itemType][template.clothingType] = items[itemType][template.clothingType] or {};
-                table.insert( items[itemType][template.clothingType], template );
+                local clothingType = template.clothingType;
+                assert( checkClothingType( clothingType ), string.format( 'Invalid clothing type %s!', clothingType ));
+
+                items[itemType][clothingType] = items[itemType][clothingType] or {};
+                table.insert( items[itemType][clothingType], template );
             else
                 table.insert( items[itemType], template );
             end

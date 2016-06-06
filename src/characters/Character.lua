@@ -8,6 +8,7 @@ local Inventory = require('src.characters.inventory.Inventory');
 -- ------------------------------------------------
 
 local DEFAULT_ACTION_POINTS = 20;
+local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 -- ------------------------------------------------
 -- Module
@@ -38,12 +39,12 @@ function Character.new( tile, faction )
 
     local inventory = Inventory.new();
     inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Headgear' ) );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Gloves' ) );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Shirt' ) );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Jacket' ) );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Trousers' ) );
-    inventory:equipClothingItem( ItemFactory.createClothing( 'Footwear' ) );
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
+    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
 
     local accuracy = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
