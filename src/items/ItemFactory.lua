@@ -1,6 +1,7 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 local Clothing = require( 'src.items.Clothing' );
 
+local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
@@ -41,7 +42,7 @@ local function load( dir )
 
             items[itemType] = items[itemType] or {};
 
-            if itemType == 'Clothing' then
+            if itemType == ITEM_TYPES.CLOTHING then
                 local clothingType = template.clothingType;
                 assert( checkClothingType( clothingType ), string.format( 'Invalid clothing type %s!', clothingType ));
 

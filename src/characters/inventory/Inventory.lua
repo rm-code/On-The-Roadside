@@ -1,6 +1,7 @@
 local Object = require( 'src.Object' );
 local EquipmentSlot = require( 'src.characters.inventory.EquipmentSlot' );
 
+local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 local Inventory = {};
@@ -8,15 +9,15 @@ local Inventory = {};
 function Inventory.new()
     local self = Object.new():addInstance( 'Inventory' );
 
-    local primaryWeaponSlot = EquipmentSlot.new( 'Weapon' );
+    local primaryWeaponSlot = EquipmentSlot.new( ITEM_TYPES.WEAPON );
 
     local clothing = {
-        [CLOTHING_SLOTS.HEADGEAR] = EquipmentSlot.new( 'Clothing' );
-        [CLOTHING_SLOTS.GLOVES  ] = EquipmentSlot.new( 'Clothing' );
-        [CLOTHING_SLOTS.JACKET  ] = EquipmentSlot.new( 'Clothing' );
-        [CLOTHING_SLOTS.SHIRT   ] = EquipmentSlot.new( 'Clothing' );
-        [CLOTHING_SLOTS.TROUSERS] = EquipmentSlot.new( 'Clothing' );
-        [CLOTHING_SLOTS.FOOTWEAR] = EquipmentSlot.new( 'Clothing' );
+        [CLOTHING_SLOTS.HEADGEAR] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
+        [CLOTHING_SLOTS.GLOVES  ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
+        [CLOTHING_SLOTS.JACKET  ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
+        [CLOTHING_SLOTS.SHIRT   ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
+        [CLOTHING_SLOTS.TROUSERS] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
+        [CLOTHING_SLOTS.FOOTWEAR] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
     }
 
     local function equipItem( slot, item )
