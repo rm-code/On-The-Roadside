@@ -59,6 +59,18 @@ function Character.new( tile, faction )
     local health = love.math.random( 50, 100 );
 
     -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    --
+    -- Returns a random sign (+ or -).
+    -- @return (number) Randomly returns either -1 or 1.
+    --
+    local function randomSign()
+        return love.math.random( 0, 1 ) == 0 and -1 or 1;
+    end
+
+    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
@@ -147,12 +159,16 @@ function Character.new( tile, faction )
         -- get the clothing item on that body part.
         local bodyPart = BODY_PARTS[love.math.random( #BODY_PARTS )];
 
-        print( "Hit: " .. bodyPart );
+        -- Randomly increases or reduces the base damage by 15%.
+        local flukeModifier = math.floor( damage * randomSign() * ( love.math.random( 15 ) / 100 ));
+        damage = damage + flukeModifier;
 
         local clothing = inventory:getClothingItem( bodyPart );
-        damage = math.max( damage - clothing:getArmor(), 0 ); -- Cap at zero.
+        damage = damage - clothing:getArmor();
 
-        print( "Armor: " .. clothing:getArmor() );
+        -- Prevent negative damage.
+        damage = math.max( damage, 0 );
+
         print( "Damage: " .. damage );
 
         health = health - damage;
