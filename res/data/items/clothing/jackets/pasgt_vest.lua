@@ -1,9 +1,9 @@
 return {
-    name = "Leather Jacket",
+    name = "PASGT Ballistic Vest",
     itemType = "Clothing",
     clothingType = "Jacket",
     armor = {
-        protection = 4,
-        coverage = 95
+        protection = 12,
+        coverage = 80,
     }
 }

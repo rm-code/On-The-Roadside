@@ -9,8 +9,16 @@ function Clothing.new( name, armor, type, clothingType )
         return clothingType;
     end
 
-    function self:getArmor()
-        return armor;
+    function self:isArmor()
+        return armor ~= nil;
+    end
+
+    function self:getArmorProtection()
+        return armor.protection;
+    end
+
+    function self:getArmorCoverage()
+        return armor.coverage;
     end
 
     return self;

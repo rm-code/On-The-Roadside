@@ -164,7 +164,12 @@ function Character.new( tile, faction )
         damage = damage + flukeModifier;
 
         local clothing = inventory:getClothingItem( bodyPart );
-        damage = damage - clothing:getArmor();
+        if clothing:isArmor() then
+            if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
+                print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
+                damage = damage - clothing:getArmorProtection();
+            end
+        end
 
         -- Prevent negative damage.
         damage = math.max( damage, 0 );
