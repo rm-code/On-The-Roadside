@@ -100,7 +100,7 @@ end
 function ItemFactory.createClothing( clothingType )
     local rnd = love.math.random( 1, #items.Clothing[clothingType] );
     local template = items.Clothing[clothingType][rnd];
-    return Clothing.new( template.name, template.itemType, template.clothingType );
+    return Clothing.new( template.name, template.armor, template.itemType, template.clothingType );
 end
 
 return ItemFactory;

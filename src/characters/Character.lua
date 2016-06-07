@@ -10,6 +10,15 @@ local Inventory = require('src.characters.inventory.Inventory');
 local DEFAULT_ACTION_POINTS = 20;
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
+local BODY_PARTS = {
+    CLOTHING_SLOTS.HEADGEAR,
+    CLOTHING_SLOTS.GLOVES,
+    CLOTHING_SLOTS.JACKET,
+    CLOTHING_SLOTS.SHIRT,
+    CLOTHING_SLOTS.TROUSERS,
+    CLOTHING_SLOTS.FOOTWEAR
+}
+
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
@@ -134,7 +143,18 @@ function Character.new( tile, faction )
     -- @param damage (number) The amount of damage the character is hit with.
     --
     function self:hit( damage )
-        -- TODO proper hit and damage calculations.
+        -- Randomly determine the body part which was hit by the attack and
+        -- get the clothing item on that body part.
+        local bodyPart = BODY_PARTS[love.math.random( #BODY_PARTS )];
+
+        print( "Hit: " .. bodyPart );
+
+        local clothing = inventory:getClothingItem( bodyPart );
+        damage = math.max( damage - clothing:getArmor(), 0 ); -- Cap at zero.
+
+        print( "Armor: " .. clothing:getArmor() );
+        print( "Damage: " .. damage );
+
         health = health - damage;
     end
 

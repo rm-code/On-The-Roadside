@@ -41,6 +41,10 @@ function Inventory.new()
         return primaryWeaponSlot:getItem();
     end
 
+    function self:getClothingItem( type )
+        return clothing[type]:getItem();
+    end
+
     return self;
 end
 
