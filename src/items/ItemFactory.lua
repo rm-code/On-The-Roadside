@@ -16,6 +16,15 @@ local ItemFactory = {};
 
 local items = {};
 
+local function checkItemType( type )
+    if type == ITEM_TYPES.WEAPON then
+        return true;
+    elseif type == ITEM_TYPES.CLOTHING then
+        return true;
+    end
+    return false
+end
+
 local function checkClothingType( type )
     if type == CLOTHING_SLOTS.HEADGEAR then
         return true;
@@ -39,6 +48,8 @@ local function load( dir )
         if love.filesystem.isFile( dir .. file ) then
             local template = love.filesystem.load( dir .. file )();
             local itemType = template.itemType;
+
+            assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
 
             items[itemType] = items[itemType] or {};
 
