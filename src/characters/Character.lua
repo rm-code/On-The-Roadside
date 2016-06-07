@@ -159,14 +159,6 @@ function Character.new( tile, faction )
     end
 
     ---
-    -- Returns the currently equipped weapon.
-    -- @return (Weapon) The weapon.
-    --
-    function self:getWeapon()
-        return inventory:getPrimaryWeapon();
-    end
-
-    ---
     -- Returns the faction the character belongs to.
     -- @return (number) The faction's index.
     --
@@ -182,6 +174,10 @@ function Character.new( tile, faction )
         return health;
     end
 
+    ---
+    -- Returns the character's inventory.
+    -- @return (Inventory) The character's inventory.
+    --
     function self:getInventory()
         return inventory;
     end
@@ -211,6 +207,22 @@ function Character.new( tile, faction )
     end
 
     ---
+    -- Returns the view range.
+    -- @return (number) The view range.
+    --
+    function self:getViewRange()
+        return 12;
+    end
+
+    ---
+    -- Returns the currently equipped weapon.
+    -- @return (Weapon) The weapon.
+    --
+    function self:getWeapon()
+        return inventory:getPrimaryWeapon();
+    end
+
+    ---
     -- Checks if the character currently has a line of sight.
     -- @return (boolean) Wether the character has a line of sight.
     --
@@ -224,14 +236,6 @@ function Character.new( tile, faction )
     --
     function self:hasPath()
         return path ~= nil;
-    end
-
-    ---
-    -- Returns the view range.
-    -- @return (number) The view range.
-    --
-    function self:getViewRange()
-        return 12;
     end
 
     ---
