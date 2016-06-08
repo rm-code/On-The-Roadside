@@ -10,6 +10,7 @@ function Inventory.new()
     local self = Object.new():addInstance( 'Inventory' );
 
     local primaryWeaponSlot = EquipmentSlot.new( ITEM_TYPES.WEAPON );
+    local backpackSlot = EquipmentSlot.new( ITEM_TYPES.BAG );
 
     local clothing = {
         [CLOTHING_SLOTS.HEADGEAR] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
@@ -37,12 +38,20 @@ function Inventory.new()
         end
     end
 
+    function self:equipBackpack( item )
+        backpackSlot:setItem( item );
+    end
+
     function self:getPrimaryWeapon()
         return primaryWeaponSlot:getItem();
     end
 
     function self:getClothingItem( type )
         return clothing[type]:getItem();
+    end
+
+    function self:getBackpack()
+        return backpackSlot:getItem();
     end
 
     return self;

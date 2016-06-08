@@ -48,6 +48,7 @@ function Character.new( tile, faction )
 
     local inventory = Inventory.new();
     inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
+    inventory:equipBackpack( ItemFactory.createBag() );
     inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
     inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
     inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
