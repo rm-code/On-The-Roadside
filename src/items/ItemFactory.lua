@@ -113,7 +113,7 @@ end
 function ItemFactory.createBag()
     local rnd = love.math.random( 1, #items.Bag );
     local template = items.Bag[rnd];
-    return Bag.new( template );
+    return Bag.new( template.name, template.itemType, template.slots );
 end
 
 return ItemFactory;
