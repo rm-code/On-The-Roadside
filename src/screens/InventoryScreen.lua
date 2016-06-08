@@ -12,8 +12,15 @@ local InventoryScreen = {};
 -- Constants
 -- ------------------------------------------------
 
+local COLORS = require( 'src.constants.Colors' );
+local ITEM_TYPES = require( 'src.constants.ItemTypes' );
+
 local SCREEN_PADDING = 20;
 local TEXT_PADDING = 20;
+
+local SECOND_COLUMN = 200;
+
+local THIRD_COLUMN = 400;
 
 -- ------------------------------------------------
 -- Constructor
@@ -22,35 +29,176 @@ local TEXT_PADDING = 20;
 function InventoryScreen.new()
     local self = Screen.new();
 
-    local x = SCREEN_PADDING;
-    local y = SCREEN_PADDING;
+    local character = CharacterManager.getCurrentCharacter();
+    local inventory = character:getInventory();
+    local rowIndex    = 1;
+    local columnIndex = 1;
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function unequipItem()
+        for i, slot in ipairs( inventory:getSlots() ) do
+            if i == rowIndex then
+                local item = slot:getItem();
+                slot:removeItem();
+
+                if slot:getItemType() == ITEM_TYPES.BAG then
+                    character:getTile():getStorage():addItem( item );
+                    break;
+                else
+                    inventory:getBackpack():getStorage():addItem( item );
+                    break;
+                end
+            end
+        end
+    end
+
+    local function equipItem()
+        for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+            if i == rowIndex then
+                local item = slot:getItem();
+                slot:removeItem();
+
+                character:getInventory():equipItem( item );
+                break;
+            end
+        end
+    end
+
+    local function dropItem()
+        for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+            if i == rowIndex then
+                local item = slot:getItem();
+                slot:removeItem();
+
+                character:getTile():getStorage():addItem( item );
+                break;
+            end
+        end
+    end
+
+    local function grabItem()
+        for i, slot in ipairs( character:getTile():getStorage():getSlots() ) do
+            if i == rowIndex then
+                local item = slot:getItem();
+                slot:removeItem();
+
+                if not inventory:getBackpack() and item:getItemType() == ITEM_TYPES.BAG then
+                    character:getInventory():equipItem( item );
+                elseif not inventory:getBackpack() then
+                    break;
+                else
+                    inventory:getBackpack():getStorage():addItem( item );
+                end
+                break;
+            end
+        end
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
 
     function self:draw()
-        love.graphics.setColor( 0, 0, 0 );
+        local x = SCREEN_PADDING;
+        local y = SCREEN_PADDING;
+
+        love.graphics.setColor( COLORS.DB00 );
         love.graphics.rectangle( 'fill', x, y, love.graphics.getWidth() - x * 2, love.graphics.getHeight() - y * 2 );
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.setColor( COLORS.DB21 );
         love.graphics.rectangle( 'line', x, y, love.graphics.getWidth() - x * 2, love.graphics.getHeight() - y * 2 );
 
-        love.graphics.print( '-- Clothing:', x + TEXT_PADDING, y + TEXT_PADDING );
+        love.graphics.print( '-- Equipment:', x + TEXT_PADDING, y + TEXT_PADDING );
 
-        local count = 0;
-        for _, slot in pairs( CharacterManager.getCurrentCharacter():getInventory():getStorage() ) do
-            if slot:instanceOf( 'ClothingSlot' ) then
-                count = count + 1;
-                love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + count * 20 );
+        for i, slot in ipairs( inventory:getSlots() ) do
+            if i == rowIndex and columnIndex == 1 then
+                love.graphics.setColor( COLORS.DB26 );
+            end
+            love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + i * 20 );
+            love.graphics.setColor( COLORS.DB21 );
+        end
+
+        x = SECOND_COLUMN;
+
+        love.graphics.print( '-- Backpack:', x + TEXT_PADDING, y + TEXT_PADDING );
+
+        if inventory:getBackpack() ~= nil then
+            for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+                if i == rowIndex and columnIndex == 2 then
+                    love.graphics.setColor( COLORS.DB26 );
+                end
+                love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + i * 20 );
+                love.graphics.setColor( COLORS.DB21 );
             end
         end
 
-        love.graphics.print( '-- Weapon:', x + TEXT_PADDING, y + 3 * TEXT_PADDING + count * TEXT_PADDING);
-        love.graphics.print( CharacterManager.getCurrentCharacter():getInventory():getPrimaryWeapon():getName(), x + TEXT_PADDING, y + 4 * TEXT_PADDING + count * TEXT_PADDING);
+        x = THIRD_COLUMN;
 
-        love.graphics.print( '-- Backpack:', x + TEXT_PADDING, y + 6 * TEXT_PADDING + count * TEXT_PADDING);
-        love.graphics.print( CharacterManager.getCurrentCharacter():getInventory():getBackpack():getName(), x + TEXT_PADDING, y + 7 * TEXT_PADDING + count * TEXT_PADDING);
+        love.graphics.print( '-- Ground:', x + TEXT_PADDING, y + TEXT_PADDING );
+
+        for i, slot in ipairs( character:getTile():getStorage():getSlots() ) do
+            if i == rowIndex and columnIndex == 3 then
+                love.graphics.setColor( COLORS.DB26 );
+            end
+            love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + i * 20 );
+            love.graphics.setColor( COLORS.DB21 );
+        end
     end
 
     function self:keypressed( key )
         if key == 'escape' or key == 'i' then
             ScreenManager.pop();
+        end
+
+        if key == 'up' then
+            local limit;
+            if columnIndex == 1 then
+                limit = #inventory:getSlots();
+            elseif columnIndex == 2 then
+                limit = #inventory:getBackpack():getStorage():getSlots();
+            elseif columnIndex == 3 then
+                limit = #character:getTile():getStorage():getSlots();
+            end
+
+            rowIndex = rowIndex - 1 < 1 and limit or rowIndex - 1;
+        elseif key == 'down' then
+            local limit;
+            if columnIndex == 1 then
+                limit = #inventory:getSlots();
+            elseif columnIndex == 2 then
+                limit = #inventory:getBackpack():getStorage():getSlots();
+            elseif columnIndex == 3 then
+                limit = #character:getTile():getStorage():getSlots();
+            end
+
+            rowIndex = rowIndex + 1 > limit and 1 or rowIndex + 1;
+        elseif key == 'right' then
+            rowIndex = 1;
+
+            columnIndex = columnIndex + 1 > 3 and 1 or columnIndex + 1;
+
+            if not character:getInventory():getBackpack() and columnIndex == 2 then
+                columnIndex = 3;
+            end
+        elseif key == 'left' then
+            rowIndex = 1;
+            columnIndex = columnIndex - 1 < 1 and 3 or columnIndex - 1;
+
+            if not character:getInventory():getBackpack() and columnIndex == 2 then
+                columnIndex = 1;
+            end
+        end
+
+        if key == 'backspace' and columnIndex == 1 then
+            unequipItem();
+        elseif key == 'backspace' and columnIndex == 2 then
+            dropItem();
+        elseif key == 'return' and columnIndex == 2 then
+            equipItem();
+        elseif key == 'return' and columnIndex == 3 then
+            grabItem();
         end
     end
 
