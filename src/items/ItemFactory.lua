@@ -1,5 +1,6 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 local Clothing = require( 'src.items.Clothing' );
+local Bag = require( 'src.items.Bag' );
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
@@ -11,6 +12,7 @@ local TEMPLATES_DIRECTORY_JACKETS  = 'res/data/items/clothing/jackets/';
 local TEMPLATES_DIRECTORY_SHIRTS   = 'res/data/items/clothing/shirts/';
 local TEMPLATES_DIRECTORY_TROUSERS = 'res/data/items/clothing/trousers/';
 local TEMPLATES_DIRECTORY_WEAPONS  = 'res/data/items/weapons/';
+local TEMPLATES_DIRECTORY_BAGS     = 'res/data/items/bags/';
 
 local ItemFactory = {};
 
@@ -20,6 +22,8 @@ local function checkItemType( type )
     if type == ITEM_TYPES.WEAPON then
         return true;
     elseif type == ITEM_TYPES.CLOTHING then
+        return true;
+    elseif type == ITEM_TYPES.BAG then
         return true;
     end
     return false
@@ -89,6 +93,9 @@ function ItemFactory.loadTemplates()
 
     print( "Load Weapon Templates:" )
     load( TEMPLATES_DIRECTORY_WEAPONS );
+
+    print( "Load Bag Templates:" )
+    load( TEMPLATES_DIRECTORY_BAGS );
 end
 
 function ItemFactory.createWeapon()
@@ -101,6 +108,12 @@ function ItemFactory.createClothing( clothingType )
     local rnd = love.math.random( 1, #items.Clothing[clothingType] );
     local template = items.Clothing[clothingType][rnd];
     return Clothing.new( template.name, template.armor, template.itemType, template.clothingType );
+end
+
+function ItemFactory.createBag()
+    local rnd = love.math.random( 1, #items.Bag );
+    local template = items.Bag[rnd];
+    return Bag.new( template );
 end
 
 return ItemFactory;

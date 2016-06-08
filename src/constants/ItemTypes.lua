@@ -2,6 +2,7 @@ local ITEM_TYPES = {};
 
 ITEM_TYPES.WEAPON   = 'Weapon';
 ITEM_TYPES.CLOTHING = 'Clothing';
+ITEM_TYPES.BAG      = 'Bag';
 
 -- Make table read-only.
 return setmetatable( ITEM_TYPES, {
