@@ -1,7 +1,7 @@
 local Object = require('src.Object');
 local Queue = require('src.Queue');
 local ItemFactory = require('src.items.ItemFactory');
-local Inventory = require('src.characters.inventory.Inventory');
+local Inventory = require('src.inventory.Inventory');
 
 -- ------------------------------------------------
 -- Constants

@@ -1,4 +1,4 @@
-local EquipmentSlot = require( 'src.characters.inventory.EquipmentSlot' );
+local EquipmentSlot = require( 'src.inventory.EquipmentSlot' );
 
 local ClothingSlot = {};
 

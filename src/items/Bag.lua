@@ -1,5 +1,5 @@
 local Item = require( 'src.items.Item' );
-local Storage = require( 'src.items.bags.Storage' );
+local Storage = require( 'src.inventory.Storage' );
 
 local Bag = {};
 

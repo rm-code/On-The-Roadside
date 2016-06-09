@@ -1,4 +1,4 @@
-local StorageSlot = require( 'src.items.bags.StorageSlot' );
+local StorageSlot = require( 'src.inventory.StorageSlot' );
 
 local EquipmentSlot = {};
 

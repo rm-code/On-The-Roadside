@@ -1,6 +1,6 @@
 local Object = require( 'src.Object' );
-local EquipmentSlot = require( 'src.characters.inventory.EquipmentSlot' );
-local ClothingSlot = require( 'src.characters.inventory.ClothingSlot' );
+local EquipmentSlot = require( 'src.inventory.EquipmentSlot' );
+local ClothingSlot = require( 'src.inventory.ClothingSlot' );
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
