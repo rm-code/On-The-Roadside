@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Storage = require( 'src.items.bags.Storage' );
 
 -- ------------------------------------------------
 -- Module
@@ -16,6 +17,7 @@ function Tile.new( x, y, name, type, movementCost )
     local worldObject;
     local visible;
     local explored;
+    local storage = Storage.new( 15 );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -98,6 +100,10 @@ function Tile.new( x, y, name, type, movementCost )
 
     function self:getY()
         return y;
+    end
+
+    function self:getStorage()
+        return storage;
     end
 
     function self:hasWorldObject()
