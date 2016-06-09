@@ -235,16 +235,17 @@ function WorldPainter.new( game )
     end
 
     function self:draw()
+        local character = CharacterManager.getCurrentCharacter();
         love.graphics.draw( spritebatch, 0, 0 );
 
         drawMouseCursor();
 
         -- Action points
-        love.graphics.print( 'AP: ' .. CharacterManager.getCurrentCharacter():getActionPoints(), 10, love.graphics.getHeight() - 40 );
+        love.graphics.print( 'AP: ' .. character:getActionPoints(), 10, love.graphics.getHeight() - 40 );
 
         -- TODO move to function
-        if CharacterManager.getCurrentCharacter():hasLineOfSight() then
-            CharacterManager.getCurrentCharacter():getLineOfSight():iterate( function( tile )
+        if character:hasLineOfSight() then
+            character:getLineOfSight():iterate( function( tile )
                 love.graphics.setColor( 0, 255, 0 );
                 if not tile:isPassable() or not tile:isVisible() then
                     love.graphics.setColor( 255, 0, 0 );
@@ -264,8 +265,11 @@ function WorldPainter.new( game )
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 50, love.graphics.getHeight() - 20 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 110, love.graphics.getHeight() - 20 );
 
-        love.graphics.print( 'Weapon: ' .. CharacterManager.getCurrentCharacter():getWeapon():getName(), 150, love.graphics.getHeight() - 40 );
-        love.graphics.print( 'Mode: ' .. CharacterManager.getCurrentCharacter():getWeapon():getFiringMode(), 150, love.graphics.getHeight() - 20 );
+        local weapon = character:getWeapon();
+        if weapon then
+            love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
+            love.graphics.print( 'Mode: ' .. character:getWeapon():getFiringMode(), 150, love.graphics.getHeight() - 20 );
+        end
 
         inspectTile();
     end
