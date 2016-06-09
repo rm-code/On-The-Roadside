@@ -1,5 +1,6 @@
 local Object = require( 'src.Object' );
 local EquipmentSlot = require( 'src.characters.inventory.EquipmentSlot' );
+local ClothingSlot = require( 'src.characters.inventory.ClothingSlot' );
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
@@ -9,53 +10,52 @@ local Inventory = {};
 function Inventory.new()
     local self = Object.new():addInstance( 'Inventory' );
 
-    local primaryWeaponSlot = EquipmentSlot.new( ITEM_TYPES.WEAPON );
-    local backpackSlot = EquipmentSlot.new( ITEM_TYPES.BAG );
-
-    local clothing = {
-        [CLOTHING_SLOTS.HEADGEAR] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-        [CLOTHING_SLOTS.GLOVES  ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-        [CLOTHING_SLOTS.JACKET  ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-        [CLOTHING_SLOTS.SHIRT   ] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-        [CLOTHING_SLOTS.TROUSERS] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-        [CLOTHING_SLOTS.FOOTWEAR] = EquipmentSlot.new( ITEM_TYPES.CLOTHING );
-    }
-
-    local function equipItem( slot, item )
-        slot:setItem( item );
-    end
+    local storage = {
+        EquipmentSlot.new( ITEM_TYPES.WEAPON );
+        EquipmentSlot.new( ITEM_TYPES.BAG );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.HEADGEAR );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.GLOVES   );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.JACKET   );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.SHIRT    );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.TROUSERS );
+        ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.FOOTWEAR );
+    };
 
     function self:equipPrimaryWeapon( weapon )
-        primaryWeaponSlot:setItem( weapon );
+        storage[1]:setItem( weapon );
     end
 
     function self:equipClothingItem( item )
-        for type, slot in pairs( clothing ) do
-            if type == item:getClothingType() then
-                equipItem( slot, item );
+        for _, slot in ipairs( storage ) do
+            if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == item:getClothingType() then
+                slot:setItem( item );
                 break;
             end
         end
     end
 
     function self:equipBackpack( item )
-        backpackSlot:setItem( item );
-    end
-
-    function self:getClothing()
-        return clothing;
+        storage[2]:setItem( item );
     end
 
     function self:getPrimaryWeapon()
-        return primaryWeaponSlot:getItem();
+        return storage[1]:getItem();
     end
 
     function self:getClothingItem( type )
-        return clothing[type]:getItem();
+        for _, slot in ipairs( storage ) do
+            if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == type then
+                return slot:getItem();
+            end
+        end
     end
 
     function self:getBackpack()
-        return backpackSlot:getItem();
+        return storage[2]:getItem();
+    end
+
+    function self:getStorage()
+        return storage;
     end
 
     return self;

@@ -1,19 +1,9 @@
-local Object = require( 'src.Object' );
+local StorageSlot = require( 'src.items.bags.StorageSlot' );
 
 local EquipmentSlot = {};
 
 function EquipmentSlot.new( itemType )
-    local self = Object.new():addInstance( 'EquipmentSlot' );
-
-    local item;
-
-    function self:setItem( nitem )
-        item = nitem;
-    end
-
-    function self:getItem()
-        return item;
-    end
+    local self = StorageSlot.new():addInstance( 'EquipmentSlot' );
 
     function self:getItemType()
         return itemType;
