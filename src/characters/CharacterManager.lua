@@ -40,7 +40,18 @@ function CharacterManager.removeDeadActors()
         for i = #faction, 1, -1 do
             local character = faction[i];
             if character:isDead() then
-                character:getTile():removeCharacter();
+                local inventory = character:getInventory();
+                local clothes = CharacterManager.getCurrentCharacter():getInventory():getClothing();
+                local tile = character:getTile();
+
+                for _, slot in pairs( clothes ) do
+                    tile:getStorage():addItem( slot:getItem() );
+                end
+
+                tile:getStorage():addItem( inventory:getBackpack() );
+                tile:getStorage():addItem( inventory:getPrimaryWeapon() );
+
+                tile:removeCharacter();
                 table.remove( faction, i );
             end
         end

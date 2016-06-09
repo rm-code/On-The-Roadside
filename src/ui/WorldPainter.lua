@@ -26,6 +26,7 @@ local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -128,6 +129,8 @@ function WorldPainter.new( game )
             elseif worldObject:getType() == 'worldobject_wall' then
                 return COLORS.DB23;
             end
+        elseif not tile:getStorage():isEmpty() then
+            return COLORS.DB27;
         else
             if tile:getType() == 'tile_water' then
                 return COLORS.DB16;
@@ -152,6 +155,10 @@ function WorldPainter.new( game )
             else
                 return TILE_SPRITES.ALLIED;
             end
+        end
+
+        if not tile:getStorage():isEmpty() then
+            return TILE_SPRITES.ITEMS;
         end
 
         if not tile:hasWorldObject() then
