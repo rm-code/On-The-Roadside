@@ -24,9 +24,10 @@ function Projectile.new( character, origin, target, angle )
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
 
-    tx, ty = applyVectorRotation( px, py, tx, ty, angle );
+    -- Use the centers of the origin and target tile.
+    px, py, tx, ty = px + 0.5, py + 0.5, tx + 0.5, ty + 0.5;
 
-    px, py = px + 0.5, py + 0.5;
+    tx, ty = applyVectorRotation( px, py, tx, ty, angle );
 
     local dx, dy = tx - px, ty - py;
     local magnitude = math.sqrt( dx * dx + dy * dy );
