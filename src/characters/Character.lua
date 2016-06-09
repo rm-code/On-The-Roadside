@@ -56,6 +56,8 @@ function Character.new( tile, faction )
     inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
     inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
 
+    inventory:getBackpack():getStorage():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
+
     local accuracy = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
 

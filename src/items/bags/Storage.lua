@@ -15,6 +15,15 @@ function Storage.new( space )
         return slots;
     end
 
+    function self:addItem( item )
+        for _, slot in ipairs( slots ) do
+            if slot:isEmpty() then
+                slot:setItem( item );
+                break;
+            end
+        end
+    end
+
     return self;
 end
 

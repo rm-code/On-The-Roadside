@@ -15,6 +15,14 @@ function StorageSlot.new()
         return item;
     end
 
+    function self:removeItem()
+        item = nil;
+    end
+
+    function self:isEmpty()
+        return item == nil;
+    end
+
     return self;
 end
 
