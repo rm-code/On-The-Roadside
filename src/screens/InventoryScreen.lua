@@ -34,9 +34,11 @@ function InventoryScreen.new()
         love.graphics.print( '-- Clothing:', x + TEXT_PADDING, y + TEXT_PADDING );
 
         local count = 0;
-        for _, slot in pairs( CharacterManager.getCurrentCharacter():getInventory():getClothing() ) do
-            count = count + 1;
-            love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + count * 20 );
+        for _, slot in pairs( CharacterManager.getCurrentCharacter():getInventory():getStorage() ) do
+            if slot:instanceOf( 'ClothingSlot' ) then
+                count = count + 1;
+                love.graphics.print( slot:getItem() and slot:getItem():getName() or 'Empty', x + TEXT_PADDING, y + TEXT_PADDING + count * 20 );
+            end
         end
 
         love.graphics.print( '-- Weapon:', x + TEXT_PADDING, y + 3 * TEXT_PADDING + count * TEXT_PADDING);
