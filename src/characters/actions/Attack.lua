@@ -32,7 +32,7 @@ local WEAPON_MODIFIERS = {
   [100] =  0,
 }
 
-function Attack.new( character, target, map )
+function Attack.new( character, target )
     local self = Action.new( character:getWeapon():getAttackCost() ):addInstance( 'Attack' );
 
     local function randomSign()
