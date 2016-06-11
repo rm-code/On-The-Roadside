@@ -9,14 +9,15 @@ local Tile = {};
 
 ---
 -- Creates a new instance of the Tile class.
--- @param x            (number) The grid position along the x-axis.
--- @param y            (number) The grid position along the y-axis.
--- @param name         (string) The tile's name.
--- @param type         (string) The tile's type.
--- @param movementCost (number) The tile's movement cost.
--- @return             (Tile)   The new tile.
+-- @param x            (number)  The grid position along the x-axis.
+-- @param y            (number)  The grid position along the y-axis.
+-- @param name         (string)  The tile's name.
+-- @param type         (string)  The tile's type.
+-- @param movementCost (number)  The tile's movement cost.
+-- @param passable     (boolean) Wether the tile can be traversed.
+-- @return             (Tile)    The new tile.
 --
-function Tile.new( x, y, name, type, movementCost )
+function Tile.new( x, y, name, type, movementCost, passable )
     local self = Object.new():addInstance( 'Tile' );
 
     local id;
@@ -232,10 +233,10 @@ function Tile.new( x, y, name, type, movementCost )
     -- @return (boolean) True if the tile is passable.
     --
     function self:isPassable()
-        if self:hasWorldObject() then
+        if passable and self:hasWorldObject() then
             return worldObject:isPassable();
         end
-        return true;
+        return passable;
     end
 
     ---

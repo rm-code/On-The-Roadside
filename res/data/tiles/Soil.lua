@@ -1,5 +1,6 @@
 return {
     name = 'Soil',
     type = 'tile_soil',
-    movementCost = 1
+    movementCost = 1,
+    passable = true
 }
