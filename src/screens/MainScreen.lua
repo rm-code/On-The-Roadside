@@ -7,6 +7,7 @@ local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
+local CameraHandler = require('src.ui.CameraHandler');
 
 -- ------------------------------------------------
 -- Module
@@ -24,6 +25,7 @@ function MainScreen.new()
     local game;
     local worldPainter;
     local inputHandler;
+    local camera;
 
     function self:init()
         ItemFactory.loadTemplates();
@@ -38,14 +40,19 @@ function MainScreen.new()
         worldPainter.init();
 
         inputHandler = InputHandler.new( game );
+
+        camera = CameraHandler.new();
     end
 
     function self:draw()
+        camera:attach();
         worldPainter.draw();
+        camera:detach();
     end
 
     function self:update( dt )
-        inputHandler:update( dt );
+        camera:update( dt );
+        inputHandler:update( camera:getMousePosition() );
         game:update( dt );
         worldPainter.update( dt );
     end

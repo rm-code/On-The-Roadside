@@ -52,6 +52,10 @@ function Game.new()
         return projectileManager;
     end
 
+    function self:getActiveCharacter()
+        return CharacterManager.getCurrentCharacter();
+    end
+
     return self;
 end
 

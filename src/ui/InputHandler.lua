@@ -39,8 +39,7 @@ function InputHandler.new( game )
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:update()
-        local mx, my = love.mouse.getPosition();
+    function self:update( mx, my )
         local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
 
         if mouseX ~= tx or mouseY ~= ty then
