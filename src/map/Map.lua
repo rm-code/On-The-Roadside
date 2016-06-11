@@ -130,7 +130,10 @@ function Map.new()
             local rx, ry = math.cos( rad ), math.sin( rad );
 
             for _ = 1, range do
-                local target = tiles[math.floor( ox )][math.floor( oy )];
+                local target = self:getTileAt( math.floor( ox ), math.floor( oy ));
+                if not target then
+                    break;
+                end
                 target:setVisible( true );
                 target:setExplored( true );
                 target:setDirty( true ); -- Mark tile for updating.
