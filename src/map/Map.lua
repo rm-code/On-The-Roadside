@@ -27,6 +27,8 @@ function Map.new()
             return TileFactory.create( x, y, 'tile_grass' );
         elseif r == 0 and g == 0 and b == 255 then
             return TileFactory.create( x, y, 'tile_water' );
+        elseif r == 0 and g == 0 and b == 150 then
+            return TileFactory.create( x, y, 'tile_deep_water' );
         end
         return TileFactory.create( x, y, 'tile_soil' );
     end

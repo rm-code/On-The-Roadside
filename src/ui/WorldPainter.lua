@@ -134,6 +134,8 @@ function WorldPainter.new( game )
         else
             if tile:getType() == 'tile_water' then
                 return COLORS.DB16;
+            elseif tile:getType() == 'tile_deep_water' then
+                return COLORS.DB15;
             elseif tile:getType() == 'tile_grass' then
                 return COLORS.DB12;
             elseif tile:getType() == 'tile_asphalt' then
@@ -162,7 +164,7 @@ function WorldPainter.new( game )
         end
 
         if not tile:hasWorldObject() then
-            if tile:getType() == 'tile_water' then
+            if tile:getType() == 'tile_water' or tile:getType() == 'tile_deep_water' then
                 return TILE_SPRITES.WATER;
             elseif tile:getType() == 'tile_grass' then
                 return TILE_SPRITES.GRASS;
