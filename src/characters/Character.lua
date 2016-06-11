@@ -47,14 +47,14 @@ function Character.new( tile, faction )
     local actions = Queue.new();
 
     local inventory = Inventory.new();
-    inventory:equipPrimaryWeapon( ItemFactory.createWeapon() );
-    inventory:equipBackpack( ItemFactory.createBag() );
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
-    inventory:equipClothingItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
+    inventory:equipItem( ItemFactory.createWeapon() );
+    inventory:equipItem( ItemFactory.createBag() );
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
+    inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
 
     inventory:getBackpack():getStorage():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
 

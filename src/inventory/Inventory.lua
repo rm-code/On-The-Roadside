@@ -21,21 +21,21 @@ function Inventory.new()
         ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.FOOTWEAR );
     };
 
-    function self:equipPrimaryWeapon( weapon )
-        storage[1]:setItem( weapon );
-    end
-
-    function self:equipClothingItem( item )
-        for _, slot in ipairs( storage ) do
-            if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == item:getClothingType() then
-                slot:setItem( item );
-                break;
+    function self:equipItem( item )
+        for i = 1, #storage do
+            local slot = storage[i];
+            if slot:getItemType() == item:getItemType() then
+                if item:getItemType() == ITEM_TYPES.CLOTHING then
+                    if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == item:getClothingType() then
+                        slot:setItem( item );
+                        break;
+                    end
+                else
+                    slot:setItem( item );
+                    break;
+                end
             end
         end
-    end
-
-    function self:equipBackpack( item )
-        storage[2]:setItem( item );
     end
 
     function self:getPrimaryWeapon()
