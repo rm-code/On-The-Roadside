@@ -9,14 +9,24 @@ function WorldObject.new( template )
     local type = template.type;
     local passable = template.passable;
     local blocksPathfinding = template.blocksPathfinding;
+    local blocksVision = template.blocksVision;
     local destructible = template.destructible;
 
     function self:blocksPathfinding()
         return blocksPathfinding;
     end
 
+    function self:blocksVision()
+        return blocksVision;
+    end
+
     function self:isPassable()
         return passable;
+    end
+
+    -- TODO rename
+    function self:setBlocksVision( nblocksVision )
+        blocksVision = nblocksVision;
     end
 
     function self:setPassable( npassable )

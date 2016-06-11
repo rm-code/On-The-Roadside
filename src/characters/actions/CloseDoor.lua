@@ -15,6 +15,7 @@ function CloseDoor.new( character, tile )
         Messenger.publish( 'ACTION_DOOR' );
 
         target:setPassable( false );
+        target:setBlocksVision( true );
         tile:setDirty( true );
     end
 

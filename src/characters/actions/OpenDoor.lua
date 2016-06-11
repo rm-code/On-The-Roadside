@@ -15,6 +15,7 @@ function OpenDoor.new( character, tile )
         Messenger.publish( 'ACTION_DOOR' );
 
         target:setPassable( true );
+        target:setBlocksVision( false );
         tile:setDirty( true );
     end
 

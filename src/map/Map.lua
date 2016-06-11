@@ -139,9 +139,11 @@ function Map.new()
                 target:setVisible( true );
                 target:setExplored( true );
                 target:setDirty( true ); -- Mark tile for updating.
-                if not target:isPassable() then
+
+                if target:hasWorldObject() and target:getWorldObject():blocksVision() then
                     break;
                 end
+
                 ox = ox + rx;
                 oy = oy + ry;
             end
