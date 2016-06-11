@@ -28,6 +28,7 @@ function InputHandler.new( game )
 
     love.mouse.setVisible( false );
     love.mouse.setGrabbed( true );
+    love.mouse.setPosition( love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5 );
 
     local map = game:getMap();
     local mouseX, mouseY = 0, 0;
