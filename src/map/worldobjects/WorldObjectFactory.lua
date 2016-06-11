@@ -28,7 +28,7 @@ end
 function WorldObjectFactory.create( type )
     local template = worldobjects[type];
     assert( template, string.format( 'Requested worldobject type (%s) doesn\'t exist!', type ));
-    return WorldObject.new( template.name, template.type, template.passable, template.blocksPathfinding, template.destructible );
+    return WorldObject.new( template );
 end
 
 return WorldObjectFactory;

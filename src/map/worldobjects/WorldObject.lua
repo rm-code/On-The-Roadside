@@ -2,8 +2,14 @@ local Object = require( 'src.Object' );
 
 local WorldObject = {};
 
-function WorldObject.new( name, type, passable, blocksPathfinding, destructible )
+function WorldObject.new( template )
     local self = Object.new():addInstance( 'WorldObject' );
+
+    local name = template.name;
+    local type = template.type;
+    local passable = template.passable;
+    local blocksPathfinding = template.blocksPathfinding;
+    local destructible = template.destructible;
 
     function self:blocksPathfinding()
         return blocksPathfinding;
