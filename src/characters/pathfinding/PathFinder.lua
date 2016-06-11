@@ -89,7 +89,6 @@ end
 --
 local function isValidTile( tile, closedList, target )
     if tile:isExplored() and not isInList( closedList, tile ) and not tile:isOccupied() then
-        -- Handle doors as special case (They can be navigated even though they are set to impassable).
         if tile:hasWorldObject() and not tile:getWorldObject():blocksPathfinding() then
             return true;
         end
