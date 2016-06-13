@@ -9,6 +9,10 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 
 local DIRECTION = require( 'src.constants.Direction' );
 
+local INFO_FILE = love.filesystem.load( 'res/data/maps/info.lua' )();
+local GROUND_LAYER = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
+local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
+
 local Map = {};
 
 function Map.new()
@@ -21,38 +25,39 @@ function Map.new()
     -- ------------------------------------------------
 
     local function createTile( x, y, r, g, b, _ )
-        if r == 105 and g == 105 and b == 105 then
-            return TileFactory.create( x, y, 'tile_asphalt' );
-        elseif r == 0 and g == 255 and b == 0 then
-            return TileFactory.create( x, y, 'tile_grass' );
-        elseif r == 0 and g == 0 and b == 255 then
-            return TileFactory.create( x, y, 'tile_water' );
-        elseif r == 0 and g == 0 and b == 150 then
-            return TileFactory.create( x, y, 'tile_deep_water' );
+        local tile;
+        for _, info in ipairs( INFO_FILE.ground ) do
+            if info.r == r and info.g == g and info.b == b then
+                tile = info.tile;
+                print(tile)
+                break;
+            end
         end
-        return TileFactory.create( x, y, 'tile_soil' );
+        return TileFactory.create( x, y, tile );
     end
 
     local function createWorldObject( tile, r, g, b, a )
         if a == 0 then
-            return
-        elseif r == 255 and g == 255 and b == 0 then
-            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_door' ));
-        elseif r == 190 and g == 38 and b == 51 then
-            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_fence' ));
-        else
-            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_wall' ));
+            return;
         end
+
+        local object;
+        for _, info in ipairs( INFO_FILE.objects ) do
+            if info.r == r and info.g == g and info.b == b then
+                object = info.object;
+                break;
+            end
+        end
+        tile:addWorldObject( WorldObjectFactory.create( object ));
     end
 
     local function createTiles()
-        local groundLayer = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
         local newTiles = {};
 
-        for x = 1, groundLayer:getWidth() do
-            for y = 1, groundLayer:getHeight() do
+        for x = 1, GROUND_LAYER:getWidth() do
+            for y = 1, GROUND_LAYER:getHeight() do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = createTile( x, y, groundLayer:getPixel( x - 1, y - 1 ));
+                newTiles[x][y] = createTile( x, y, GROUND_LAYER:getPixel( x - 1, y - 1 ));
             end
         end
 
@@ -60,10 +65,9 @@ function Map.new()
     end
 
     local function createWorldObjects()
-        local objectLayer = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
-        for x = 1, objectLayer:getWidth() do
-            for y = 1, objectLayer:getHeight() do
-                createWorldObject( tiles[x][y], objectLayer:getPixel( x - 1, y - 1 ));
+        for x = 1, OBJECT_LAYER:getWidth() do
+            for y = 1, OBJECT_LAYER:getHeight() do
+                createWorldObject( tiles[x][y], OBJECT_LAYER:getPixel( x - 1, y - 1 ));
             end
         end
     end
