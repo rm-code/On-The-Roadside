@@ -31,6 +31,7 @@ local TILE_SPRITES = {
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     GRASS       = love.graphics.newQuad( 11 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    FENCE       = love.graphics.newQuad( 13 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     SOIL        = love.graphics.newQuad( 12 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WATER       = love.graphics.newQuad( 14 * TILE_SIZE, 7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -128,6 +129,8 @@ function WorldPainter.new( game )
                 return COLORS.DB03;
             elseif worldObject:getType() == 'worldobject_wall' then
                 return COLORS.DB23;
+            elseif worldObject:getType() == 'worldobject_fence' then
+                return COLORS.DB04;
             end
         elseif not tile:getStorage():isEmpty() then
             return COLORS.DB27;
@@ -176,6 +179,8 @@ function WorldPainter.new( game )
             local worldObject = tile:getWorldObject();
             if worldObject:getType() == 'worldobject_wall' then
                 return TILE_SPRITES.WALL;
+            elseif worldObject:getType() == 'worldobject_fence' then
+                return TILE_SPRITES.FENCE;
             elseif worldObject:getType() == 'worldobject_door' then
                 if worldObject:isPassable() then
                     return TILE_SPRITES.DOOR_OPEN;

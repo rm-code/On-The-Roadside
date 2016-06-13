@@ -38,6 +38,8 @@ function Map.new()
             return
         elseif r == 255 and g == 255 and b == 0 then
             tile:addWorldObject( WorldObjectFactory.create( 'worldobject_door' ));
+        elseif r == 190 and g == 38 and b == 51 then
+            tile:addWorldObject( WorldObjectFactory.create( 'worldobject_fence' ));
         else
             tile:addWorldObject( WorldObjectFactory.create( 'worldobject_wall' ));
         end
