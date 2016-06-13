@@ -29,7 +29,6 @@ function Map.new()
         for _, info in ipairs( INFO_FILE.ground ) do
             if info.r == r and info.g == g and info.b == b then
                 tile = info.tile;
-                print(tile)
                 break;
             end
         end
