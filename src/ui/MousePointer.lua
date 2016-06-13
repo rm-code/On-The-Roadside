@@ -10,12 +10,12 @@ function MousePointer.init( ncamera )
     camera = ncamera;
 end
 
-function MousePointer.getWorldPosition()
-    return love.mouse.getPosition();
+function MousePointer.getWorldPosition( x, y )
+    return camera:worldCoords( x, y );
 end
 
-function MousePointer.getCameraPosition()
-    return camera:mousepos();
+function MousePointer.getCameraPosition( x, y )
+    return camera:cameraCoords( x, y );
 end
 
 function MousePointer.getGridPosition()

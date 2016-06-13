@@ -4,6 +4,7 @@ local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
+local UserInterface = require( 'src.ui.UserInterface' );
 
 -- ------------------------------------------------
 -- Module
@@ -20,6 +21,7 @@ function MainScreen.new()
 
     local game;
     local worldPainter;
+    local userInterface;
     local camera;
 
     function self:init()
@@ -29,6 +31,7 @@ function MainScreen.new()
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
 
+        userInterface = UserInterface.new( game );
         camera = CameraHandler.new();
 
         MousePointer.init( camera );
@@ -38,12 +41,14 @@ function MainScreen.new()
         camera:attach();
         worldPainter:draw();
         camera:detach();
+        userInterface:draw();
     end
 
     function self:update( dt )
         camera:update( dt );
         game:update( dt );
         worldPainter:update( dt );
+        userInterface:update( dt );
     end
 
     function self:keypressed( key )

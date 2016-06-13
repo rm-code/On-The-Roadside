@@ -1,10 +1,5 @@
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local MousePointer = require( 'src.ui.MousePointer' );
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
 local FACTIONS = require( 'src.constants.Factions' );
@@ -55,8 +50,6 @@ function WorldPainter.new( game )
     local self = {};
 
     local spritebatch;
-
-    local mouseX, mouseY = 0, 0;
 
     love.graphics.setPointSize( 4 );
 
@@ -217,31 +210,6 @@ function WorldPainter.new( game )
         end)
     end
 
-    ---
-    -- Draws a mouse cursor that snaps to the grid.
-    --
-    local function drawMouseCursor()
-        love.graphics.rectangle( 'line', mouseX * TILE_SIZE, mouseY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-    end
-
-    local function inspectTile()
-        local tile = game:getMap():getTileAt( mouseX, mouseY );
-
-        if not tile then
-            return;
-        end
-
-        if not tile:isExplored() then
-            love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
-        elseif tile:isOccupied() then
-            love.graphics.print( 'Health: ' .. tile:getCharacter():getHealth(), 310, love.graphics.getHeight() - 20 );
-        elseif tile:hasWorldObject() then
-            love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
-        elseif tile:isExplored() then
-            love.graphics.print( 'Tile: ' .. tile:getName(), 310, love.graphics.getHeight() - 20 );
-        end
-    end
-
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -255,11 +223,6 @@ function WorldPainter.new( game )
     function self:draw()
         local character = CharacterManager.getCurrentCharacter();
         love.graphics.draw( spritebatch, 0, 0 );
-
-        drawMouseCursor();
-
-        -- Action points
-        love.graphics.print( 'AP: ' .. character:getActionPoints(), 10, love.graphics.getHeight() - 40 );
 
         -- TODO move to function
         if character:hasLineOfSight() then
@@ -276,20 +239,6 @@ function WorldPainter.new( game )
         ProjectileManager.iterate( function( x, y )
             love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
         end)
-
-        -- Draw tile coordinates.
-        love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
-
-        love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 50, love.graphics.getHeight() - 20 );
-        love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 110, love.graphics.getHeight() - 20 );
-
-        local weapon = character:getWeapon();
-        if weapon then
-            love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
-            love.graphics.print( 'Mode: ' .. character:getWeapon():getFiringMode(), 150, love.graphics.getHeight() - 20 );
-        end
-
-        inspectTile();
     end
 
     function self:update()
@@ -302,7 +251,6 @@ function WorldPainter.new( game )
             end
         end
         updateSpritebatch( game:getMap() );
-        mouseX, mouseY = MousePointer.getGridPosition();
     end
 
     return self;
