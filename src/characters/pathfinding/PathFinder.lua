@@ -88,7 +88,7 @@ end
 -- @return (boolean) True if the tile can be used for pathfinding.
 --
 local function isValidTile( tile, closedList, target )
-    if tile:isExplored() and not isInList( closedList, tile ) and not tile:isOccupied() then
+    if not isInList( closedList, tile ) and not tile:isOccupied() then
         if tile:hasWorldObject() and not tile:getWorldObject():blocksPathfinding() then
             return true;
         end
