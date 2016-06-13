@@ -5,6 +5,7 @@ local Path = require('src.characters.pathfinding.Path');
 -- ------------------------------------------------
 
 local DIRECTION = require( 'src.constants.Direction' );
+local MAX_TILES = 300;
 local SQRT = math.sqrt( 2 );
 
 -- ------------------------------------------------
@@ -154,12 +155,14 @@ end
 -- @param return        (table)   A sequence containing directions to form a path.
 --
 function PathFinder.generatePath( origin, target, includeTarget )
+    local counter = 0;
     local closedList = {};
     local openList = {
         { tile = origin, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     };
 
     while #openList > 0 do
+        counter = counter + 1;
         local current, index = getNextTile( openList );
 
         -- Update lists.
@@ -167,7 +170,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
         removeFromOpenList( openList, index );
 
         -- Stop if we have found the target.
-        if current.tile == target then
+        if current.tile == target or counter > MAX_TILES then
             return finalizePath( current, includeTarget );
         end
 
