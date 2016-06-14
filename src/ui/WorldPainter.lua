@@ -1,4 +1,5 @@
 local CharacterManager = require( 'src.characters.CharacterManager' );
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
@@ -262,7 +263,7 @@ function WorldPainter.new( game )
             love.graphics.setColor( 255, 255, 255 );
         end
 
-        game:getProjectiles():iterate( function( x, y )
+        ProjectileManager.iterate( function( x, y )
             love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
         end)
 

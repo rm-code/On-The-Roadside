@@ -44,21 +44,15 @@ function Game.new()
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
-
-        projectileManager = ProjectileManager.new( map );
     end
 
     function self:update( dt )
         turnManager:update( dt )
-        projectileManager:update( dt );
+        ProjectileManager.update( dt, map );
     end
 
     function self:getMap()
         return map;
-    end
-
-    function self:getProjectiles()
-        return projectileManager;
     end
 
     function self:getActiveCharacter()
