@@ -2,7 +2,6 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
-local InputHandler = require( 'src.ui.InputHandler' );
 local CameraHandler = require('src.ui.CameraHandler');
 
 -- ------------------------------------------------
@@ -20,7 +19,6 @@ function MainScreen.new()
 
     local game;
     local worldPainter;
-    local inputHandler;
     local camera;
 
     function self:init()
@@ -29,8 +27,6 @@ function MainScreen.new()
 
         worldPainter = WorldPainter.new( game );
         worldPainter.init();
-
-        inputHandler = InputHandler.new( game );
 
         camera = CameraHandler.new();
     end
@@ -43,7 +39,6 @@ function MainScreen.new()
 
     function self:update( dt )
         camera:update( dt );
-        inputHandler:update( camera:getMousePosition() );
         game:update( dt );
         worldPainter.update( dt );
     end
