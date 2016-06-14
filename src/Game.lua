@@ -24,7 +24,6 @@ function Game.new()
 
     local map;
     local turnManager;
-    local projectileManager;
 
     function self:init()
         ItemFactory.loadTemplates();
