@@ -1,6 +1,5 @@
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Constants
@@ -211,7 +210,7 @@ function WorldPainter.new( game )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
-        love.graphics.rectangle( 'line', mouseX * TILE_SIZE, mouseY * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+        love.graphics.rectangle( 'line', math.floor( love.mouse.getX() / TILE_SIZE ) * TILE_SIZE, math.floor( love.mouse.getY() / TILE_SIZE ) * TILE_SIZE, TILE_SIZE, TILE_SIZE );
     end
 
     local function inspectTile()
@@ -293,10 +292,6 @@ function WorldPainter.new( game )
         end
         updateSpritebatch( game:getMap() );
     end
-
-    Messenger.observe( 'MOUSE_MOVED', function( mx, my )
-        mouseX, mouseY = mx, my;
-    end)
 
     return self;
 end
