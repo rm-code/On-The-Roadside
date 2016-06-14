@@ -49,7 +49,7 @@ function MainScreen.new()
     end
 
     function self:keypressed( key )
-        inputHandler:keypressed( key );
+        game:keypressed( key );
 
         if key == 'i' then
             ScreenManager.push( 'inventory' );
@@ -57,7 +57,7 @@ function MainScreen.new()
     end
 
     function self:mousepressed( mx, my, button )
-        inputHandler:mousepressed( mx, my, button );
+        game:mousepressed( mx, my, button );
     end
 
     return self;

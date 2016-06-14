@@ -4,7 +4,6 @@ local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local CloseDoor = require( 'src.characters.actions.CloseDoor' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
-local Messenger = require( 'src.Messenger' );
 local Bresenham = require( 'lib.Bresenham' );
 local LineOfSight = require( 'src.characters.LineOfSight' );
 
@@ -13,6 +12,7 @@ local LineOfSight = require( 'src.characters.LineOfSight' );
 -- ------------------------------------------------
 
 local TURN_STEP_DELAY = 0.15;
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Module
@@ -57,7 +57,6 @@ function TurnManager.new( map )
                 character:enqueueAction( Walk.new( character, tile ));
             end
         end)
-        Messenger.publish( 'DISABLE_INPUT' );
     end
 
     local function generatePath( target )
@@ -113,8 +112,6 @@ function TurnManager.new( map )
             if character:canPerformAction() then
                 character:performAction();
                 actionTimer = 0;
-            else
-                Messenger.publish( 'ENABLE_INPUT' );
             end
             CharacterManager.removeDeadActors();
         end
@@ -125,53 +122,50 @@ function TurnManager.new( map )
     -- Input Events
     -- ------------------------------------------------
 
-    Messenger.observe( 'ENTER_ATTACK_MODE', function()
-        attackMode = true;
-    end)
-
-    Messenger.observe( 'ENTER_MOVEMENT_MODE', function()
-        attackMode = false;
-    end)
-
-    Messenger.observe( 'SWITCH_CHARACTERS', function()
-        Messenger.publish( 'ENTER_MOVEMENT_MODE' );
-        character = CharacterManager.nextCharacter();
-    end)
-
-    Messenger.observe( 'SWITCH_FACTION', function()
-        Messenger.publish( 'ENTER_MOVEMENT_MODE' );
-        CharacterManager.clearCharacters();
-        CharacterManager.nextFaction();
-        character = CharacterManager.getCurrentCharacter();
-    end)
-
-    Messenger.observe( 'LEFT_CLICKED_TILE', function( tile )
-        if attackMode then
-            checkAttack( tile );
-        else
-            checkMovement( tile );
+    function self:keypressed( key )
+        if key == 'a' then
+            attackMode = true;
+        elseif key == 'escape' then
+            attackMode = false;
         end
-    end)
 
-    Messenger.observe( 'RIGHT_CLICKED_TILE', function( tile )
-        if tile:isOccupied() then
-            character = CharacterManager.selectCharacter( tile );
-        elseif tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and tile:isAdjacent( character:getTile() ) then
-            if tile:isPassable() then
-                character:enqueueAction( CloseDoor.new( character, tile ));
+        if key == 'space' then
+            attackMode = false;
+            character = CharacterManager.nextCharacter();
+        elseif key == 'return' then
+            attackMode = false;
+            CharacterManager.clearCharacters();
+            CharacterManager.nextFaction();
+            character = CharacterManager.getCurrentCharacter();
+        end
+
+        if key == 'right' then
+            character:getWeapon():selectNextFiringMode();
+        elseif key == 'left' then
+            character:getWeapon():selectPrevFiringMode();
+        end
+    end
+
+    function self:mousepressed( mx, my, button )
+        local tile = map:getTileAt( math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE ));
+        if button == 1 then
+            if attackMode then
+                checkAttack( tile );
             else
-                character:enqueueAction( OpenDoor.new( character, tile ));
+                checkMovement( tile );
+            end
+        elseif button == 2 then
+            if tile:isOccupied() then
+                character = CharacterManager.selectCharacter( tile );
+            elseif tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and tile:isAdjacent( character:getTile() ) then
+                if tile:isPassable() then
+                    character:enqueueAction( CloseDoor.new( character, tile ));
+                else
+                    character:enqueueAction( OpenDoor.new( character, tile ));
+                end
             end
         end
-    end)
-
-    Messenger.observe( 'NEXT_FIRING_MODE', function()
-        character:getWeapon():selectNextFiringMode();
-    end)
-
-    Messenger.observe( 'PREV_FIRING_MODE', function()
-        character:getWeapon():selectPrevFiringMode();
-    end)
+    end
 
     return self;
 end

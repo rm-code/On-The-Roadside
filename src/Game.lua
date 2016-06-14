@@ -54,6 +54,14 @@ function Game.new()
         return map;
     end
 
+    function self:keypressed( key )
+        turnManager:keypressed( key );
+    end
+
+    function self:mousepressed( mx, my, button )
+        turnManager:mousepressed( mx, my, button );
+    end
+
     function self:getActiveCharacter()
         return CharacterManager.getCurrentCharacter();
     end
