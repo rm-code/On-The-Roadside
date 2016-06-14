@@ -2,6 +2,10 @@ local Map = require( 'src.map.Map' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
+local ItemFactory = require( 'src.items.ItemFactory' );
+local TileFactory = require( 'src.map.tiles.TileFactory' );
+local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
+local SoundManager = require( 'src.SoundManager' );
 
 -- ------------------------------------------------
 -- Constants
@@ -23,6 +27,11 @@ function Game.new()
     local projectileManager;
 
     function self:init()
+        ItemFactory.loadTemplates();
+        TileFactory.loadTemplates();
+        WorldObjectFactory.loadTemplates();
+        SoundManager.loadResources();
+
         map = Map.new();
         map:init();
 
