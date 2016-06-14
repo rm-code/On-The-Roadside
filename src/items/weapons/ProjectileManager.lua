@@ -58,8 +58,8 @@ function ProjectileManager.iterate( callback )
     end
 end
 
-Messenger.observe( 'ACTION_SHOOT', function( character, origin, target, angle )
+function ProjectileManager.register( character, origin, target, angle )
     projectileQueue:enqueue( Projectile.new( character, origin, target, angle ));
-end)
+end
 
 return ProjectileManager;

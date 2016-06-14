@@ -1,5 +1,5 @@
 local Action = require('src.characters.actions.Action');
-local Messenger = require( 'src.Messenger' );
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local Bresenham = require( 'lib.Bresenham' );
 
 local Attack = {};
@@ -71,7 +71,7 @@ function Attack.new( character, target )
         for _ = 1, character:getWeapon():getShots() do
             local maxDerivation = calculateMaximumDerivation();
             local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );
-            Messenger.publish( 'ACTION_SHOOT', character, origin, target, actualDerivation );
+            ProjectileManager.register( character, origin, target, actualDerivation );
         end
 
         character:removeLineOfSight();
