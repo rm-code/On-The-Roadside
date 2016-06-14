@@ -62,4 +62,12 @@ function ProjectileManager.register( character, origin, target, angle )
     projectileQueue:enqueue( Projectile.new( character, origin, target, angle ));
 end
 
+function ProjectileManager.isDone()
+    local count = 0;
+    for _, _ in pairs( projectiles ) do
+        count = count + 1;
+    end
+    return projectileQueue.isEmpty() and count == 0;
+end
+
 return ProjectileManager;
