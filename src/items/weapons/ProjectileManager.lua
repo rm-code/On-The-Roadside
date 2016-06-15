@@ -45,9 +45,11 @@ function ProjectileManager.update( dt, map )
             if not tile then
                 print( "Reached map border" );
                 projectiles[i] = nil;
-            elseif not tile:isPassable() then
-                print( "Hit impassable tile" );
-                hitTile( i, tile, projectile );
+            elseif tile:hasWorldObject() then
+                if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
+                    print( "Hit impassable tile" );
+                    hitTile( i, tile, projectile );
+                end
             elseif tile == projectile:getTarget() then
                 print( "Reached target" );
                 hitTile( i, tile, projectile );

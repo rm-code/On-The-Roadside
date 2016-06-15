@@ -11,6 +11,7 @@ function WorldObject.new( template )
     local blocksPathfinding = template.blocksPathfinding;
     local blocksVision = template.blocksVision;
     local destructible = template.destructible;
+    local size = template.size;
 
     function self:blocksPathfinding()
         return blocksPathfinding;
@@ -22,6 +23,10 @@ function WorldObject.new( template )
 
     function self:isPassable()
         return passable;
+    end
+
+    function self:getSize()
+        return size;
     end
 
     -- TODO rename
