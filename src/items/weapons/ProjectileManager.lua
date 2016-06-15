@@ -38,8 +38,10 @@ function ProjectileManager.update( dt, map )
     for i, projectile in pairs( projectiles ) do
         projectile:update( dt );
         local tile = map:getTileAt( projectile:getTilePosition() );
-
-        if not tile:isPassable() then
+        if not tile then
+            print( "Reached map border" );
+            projectiles[i] = nil;
+        elseif not tile:isPassable() then
             print( "Hit impassable tile" );
             hitTile( i, tile, projectile );
         elseif tile == projectile:getTarget() then
