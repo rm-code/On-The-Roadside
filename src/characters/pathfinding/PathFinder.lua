@@ -172,8 +172,10 @@ function PathFinder.generatePath( origin, target, includeTarget )
         removeFromOpenList( openList, index );
 
         -- Stop if we have found the target.
-        if current.tile == target or counter > MAX_TILES then
+        if current.tile == target then
             return finalizePath( current, includeTarget );
+        elseif counter > MAX_TILES then
+            return; -- Abort if we haven't found the tile after searching for a while.
         end
 
         -- Look for the next tile.
