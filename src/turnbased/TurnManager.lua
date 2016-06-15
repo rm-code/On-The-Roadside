@@ -1,12 +1,6 @@
 local StateManager = require( 'src.turnbased.StateManager' );
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
-
--- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
@@ -42,8 +36,7 @@ function TurnManager.new( map )
     end
 
     function self:mousepressed( mx, my, button )
-        local tx, ty = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
-        stateManager:mousepressed( tx, ty, button );
+        stateManager:mousepressed( mx, my, button );
     end
 
     return self;

@@ -3,6 +3,7 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
+local MousePointer = require( 'src.ui.MousePointer' );
 
 -- ------------------------------------------------
 -- Module
@@ -29,6 +30,8 @@ function MainScreen.new()
         worldPainter.init();
 
         camera = CameraHandler.new();
+
+        MousePointer.init( camera );
     end
 
     function self:draw()
@@ -51,7 +54,8 @@ function MainScreen.new()
         end
     end
 
-    function self:mousepressed( mx, my, button )
+    function self:mousepressed( _, _, button )
+        local mx, my = MousePointer.getGridPosition();
         game:mousepressed( mx, my, button );
     end
 
