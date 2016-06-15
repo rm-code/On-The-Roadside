@@ -86,7 +86,10 @@ end
 
 ---
 -- Checks if a tile is valid for pathfinding.
--- @return (boolean) True if the tile can be used for pathfinding.
+-- @param tile       (Tile)    The tile to check list.
+-- @param closedList (table)   The closed list.
+-- @param target     (Tile)    The target tile.
+-- @return           (boolean) True if the tile can be used for pathfinding.
 --
 local function isValidTile( tile, closedList, target )
     if not isInList( closedList, tile ) and not tile:isOccupied() then
@@ -95,7 +98,6 @@ local function isValidTile( tile, closedList, target )
         end
         return tile:isPassable();
     end
-
     return tile == target;
 end
 
@@ -122,7 +124,7 @@ end
 -- parents of each tile in the list.
 -- @param endNode       (node)    The last node in the generated path.
 -- @param includeTarget (boolean) Wether to include the target tile in the path or not.
--- @result              (Path)    A path object containing tiles to form a path.
+-- @return              (Path)    A path object containing tiles to form a path.
 --
 local function finalizePath( endNode, includeTarget )
     local result, parent;
@@ -152,7 +154,7 @@ end
 -- @param origin        (Tile)    The origin.
 -- @param target        (Tile)    The target.
 -- @param includeTarget (boolean) Wether to include the target tile in the path or not.
--- @param return        (table)   A sequence containing directions to form a path.
+-- @return              (Path)    A Path object containing tiles to form a path.
 --
 function PathFinder.generatePath( origin, target, includeTarget )
     local counter = 0;
