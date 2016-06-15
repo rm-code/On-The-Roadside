@@ -27,7 +27,7 @@ function MainScreen.new()
         game:init();
 
         worldPainter = WorldPainter.new( game );
-        worldPainter.init();
+        worldPainter:init();
 
         camera = CameraHandler.new();
 
@@ -36,14 +36,14 @@ function MainScreen.new()
 
     function self:draw()
         camera:attach();
-        worldPainter.draw();
+        worldPainter:draw();
         camera:detach();
     end
 
     function self:update( dt )
         camera:update( dt );
         game:update( dt );
-        worldPainter.update( dt );
+        worldPainter:update( dt );
     end
 
     function self:keypressed( key )
