@@ -25,20 +25,20 @@ local CHARACTER_COLORS = {
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
-    EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     TABLE       = love.graphics.newQuad(  2 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    CHAIR       = love.graphics.newQuad( 14 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    GRASS       = love.graphics.newQuad( 11 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    FENCE       = love.graphics.newQuad( 13 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    SOIL        = love.graphics.newQuad( 12 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    WATER       = love.graphics.newQuad( 14 * TILE_SIZE, 7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    WALL        = love.graphics.newQuad(  3 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    CHAIR       = love.graphics.newQuad( 14 * TILE_SIZE,  6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    GRASS       = love.graphics.newQuad( 11 * TILE_SIZE,  3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    FENCE       = love.graphics.newQuad( 13 * TILE_SIZE,  3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    SOIL        = love.graphics.newQuad( 12 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    WATER       = love.graphics.newQuad( 14 * TILE_SIZE,  7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE,  5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
 }
 
 -- ------------------------------------------------
