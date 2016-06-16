@@ -59,7 +59,7 @@ function AttackState.new( stateManager )
     function self:keypressed( key )
         if key == 'right' then
             CharacterManager.getCurrentCharacter():getWeapon():selectNextFiringMode();
-        elseif key == 'right' then
+        elseif key == 'left' then
             CharacterManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
         elseif key == 'escape' then
             stateManager:switch( 'movement', { map = map } );
