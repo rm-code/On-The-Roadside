@@ -21,6 +21,7 @@ function Projectile.new( character, origin, target, angle )
 
     local weapon = character:getWeapon();
 
+    local tile = origin;
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
 
@@ -49,6 +50,10 @@ function Projectile.new( character, origin, target, angle )
         return px, py;
     end
 
+    function self:getTile()
+        return tile;
+    end
+
     function self:getTilePosition()
         return math.floor( px ), math.floor( py );
     end
@@ -59,6 +64,10 @@ function Projectile.new( character, origin, target, angle )
 
     function self:getWeapon()
         return weapon;
+    end
+
+    function self:setTile( ntile )
+        tile = ntile;
     end
 
     return self;

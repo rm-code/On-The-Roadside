@@ -37,19 +37,24 @@ function ProjectileManager.update( dt, map )
 
     for i, projectile in pairs( projectiles ) do
         projectile:update( dt );
+
         local tile = map:getTileAt( projectile:getTilePosition() );
-        if not tile then
-            print( "Reached map border" );
-            projectiles[i] = nil;
-        elseif not tile:isPassable() then
-            print( "Hit impassable tile" );
-            hitTile( i, tile, projectile );
-        elseif tile == projectile:getTarget() then
-            print( "Reached target" );
-            hitTile( i, tile, projectile );
-        elseif tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() then
-            print( "Hit character" );
-            hitTile( i, tile, projectile );
+        if projectile:getTile() ~= tile then
+            projectile:setTile( tile );
+
+            if not tile then
+                print( "Reached map border" );
+                projectiles[i] = nil;
+            elseif not tile:isPassable() then
+                print( "Hit impassable tile" );
+                hitTile( i, tile, projectile );
+            elseif tile == projectile:getTarget() then
+                print( "Reached target" );
+                hitTile( i, tile, projectile );
+            elseif tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() then
+                print( "Hit character" );
+                hitTile( i, tile, projectile );
+            end
         end
     end
 end
