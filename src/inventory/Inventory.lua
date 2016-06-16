@@ -10,7 +10,7 @@ local Inventory = {};
 function Inventory.new()
     local self = Object.new():addInstance( 'Inventory' );
 
-    local storage = {
+    local slots = {
         EquipmentSlot.new( ITEM_TYPES.WEAPON );
         EquipmentSlot.new( ITEM_TYPES.BAG );
         ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.HEADGEAR );
@@ -22,8 +22,8 @@ function Inventory.new()
     };
 
     function self:equipItem( item )
-        for i = 1, #storage do
-            local slot = storage[i];
+        for i = 1, #slots do
+            local slot = slots[i];
             if slot:getItemType() == item:getItemType() then
                 if item:getItemType() == ITEM_TYPES.CLOTHING then
                     if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == item:getClothingType() then
@@ -39,11 +39,11 @@ function Inventory.new()
     end
 
     function self:getPrimaryWeapon()
-        return storage[1]:getItem();
+        return slots[1]:getItem();
     end
 
     function self:getClothingItem( type )
-        for _, slot in ipairs( storage ) do
+        for _, slot in ipairs( slots ) do
             if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == type then
                 return slot:getItem();
             end
@@ -51,11 +51,11 @@ function Inventory.new()
     end
 
     function self:getBackpack()
-        return storage[2]:getItem();
+        return slots[2]:getItem();
     end
 
-    function self:getStorage()
-        return storage;
+    function self:getSlots()
+        return slots;
     end
 
     return self;
