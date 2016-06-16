@@ -9,6 +9,8 @@ return {
     objects = {
         { r = 255, g = 255, b =   0, object = 'worldobject_door'  },
         { r = 190, g =  38, b =  51, object = 'worldobject_fence' },
-        { r =   0, g =   0, b =   0, object = 'worldobject_wall'  }
+        { r =   0, g =   0, b =   0, object = 'worldobject_wall'  },
+        { r = 160, g =  50, b =   0, object = 'worldobject_chair' },
+        { r = 160, g =  80, b =   0, object = 'worldobject_table' }
     }
 }

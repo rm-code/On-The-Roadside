@@ -29,7 +29,9 @@ local TILE_SPRITES = {
     ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    TABLE       = love.graphics.newQuad(  2 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WALL        = love.graphics.newQuad(  3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    CHAIR       = love.graphics.newQuad( 14 * TILE_SIZE, 6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     GRASS       = love.graphics.newQuad( 11 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     FENCE       = love.graphics.newQuad( 13 * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -132,6 +134,10 @@ function WorldPainter.new( game )
                 return COLORS.DB23;
             elseif worldObject:getType() == 'worldobject_fence' then
                 return COLORS.DB04;
+            elseif worldObject:getType() == 'worldobject_chair' then
+                return COLORS.DB04;
+            elseif worldObject:getType() == 'worldobject_table' then
+                return COLORS.DB04;
             end
         elseif not tile:getStorage():isEmpty() then
             return COLORS.DB27;
@@ -188,6 +194,10 @@ function WorldPainter.new( game )
                 else
                     return TILE_SPRITES.DOOR_CLOSED;
                 end
+            elseif worldObject:getType() == 'worldobject_chair' then
+                return TILE_SPRITES.CHAIR;
+            elseif worldObject:getType() == 'worldobject_table' then
+                return TILE_SPRITES.TABLE;
             end
         end
     end
