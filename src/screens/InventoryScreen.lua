@@ -44,7 +44,7 @@ function InventoryScreen.new()
                 local item = slot:getItem();
                 slot:removeItem();
 
-                if slot:getItemType() == ITEM_TYPES.BAG then
+                if slot:getItemType() == ITEM_TYPES.BAG or not inventory:getBackpack() then
                     character:getTile():getStorage():addItem( item );
                     break;
                 else
@@ -85,10 +85,8 @@ function InventoryScreen.new()
                 local item = slot:getItem();
                 slot:removeItem();
 
-                if not inventory:getBackpack() and item:getItemType() == ITEM_TYPES.BAG then
+                if not inventory:getBackpack() then
                     character:getInventory():equipItem( item );
-                elseif not inventory:getBackpack() then
-                    break;
                 else
                     inventory:getBackpack():getStorage():addItem( item );
                 end
