@@ -26,38 +26,7 @@ local characterIndex = 1;
 local factionIndex = 1;
 
 -- ------------------------------------------------
--- Local Function
--- ------------------------------------------------
-
----
--- Removes all dead characters from the game.
--- We iterate from the top so that we can remove the character and shift keys
--- without breaking the iteration. We also need to remove the dead each chars
--- from the tile they last occupied.
---
-function CharacterManager.removeDeadActors()
-    for _, faction in pairs( factions ) do
-        for i = #faction, 1, -1 do
-            local character = faction[i];
-            if character:isDead() then
-                local storage = character:getInventory():getStorage();
-                local tile = character:getTile();
-
-                for i, slot in ipairs( storage ) do
-                    if not slot:isEmpty() then
-                        tile:getStorage():addItem( slot:getItem() );
-                    end
-                end
-
-                tile:removeCharacter();
-                table.remove( faction, i );
-            end
-        end
-    end
-end
-
--- ------------------------------------------------
--- Public Functions
+-- Public Methods
 -- ------------------------------------------------
 
 function CharacterManager.newCharacter( tile, faction )
@@ -98,6 +67,33 @@ end
 function CharacterManager.nextFaction()
     factionIndex = factionIndex + 1 > #factions and 1 or factionIndex + 1;
     characterIndex = 1;
+end
+
+---
+-- Removes all dead characters from the game.
+-- We iterate from the top so that we can remove the character and shift keys
+-- without breaking the iteration. We also need to remove the dead each chars
+-- from the tile they last occupied.
+--
+function CharacterManager.removeDeadActors()
+    for _, faction in pairs( factions ) do
+        for i = #faction, 1, -1 do
+            local character = faction[i];
+            if character:isDead() then
+                local storage = character:getInventory():getStorage();
+                local tile = character:getTile();
+
+                for _, slot in ipairs( storage ) do
+                    if not slot:isEmpty() then
+                        tile:getStorage():addItem( slot:getItem() );
+                    end
+                end
+
+                tile:removeCharacter();
+                table.remove( faction, i );
+            end
+        end
+    end
 end
 
 return CharacterManager;
