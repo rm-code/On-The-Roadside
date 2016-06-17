@@ -2,7 +2,7 @@ local Object = require( 'src.Object' );
 
 local StorageSlot = {};
 
-function StorageSlot.new()
+function StorageSlot.new( itemType )
     local self = Object.new():addInstance( 'StorageSlot' );
 
     local item;
@@ -21,6 +21,10 @@ function StorageSlot.new()
 
     function self:isEmpty()
         return item == nil;
+    end
+
+    function self:getItemType()
+        return itemType;
     end
 
     return self;

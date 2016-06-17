@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local EquipmentSlot = require( 'src.inventory.EquipmentSlot' );
+local StorageSlot = require( 'src.inventory.StorageSlot' );
 local ClothingSlot = require( 'src.inventory.ClothingSlot' );
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
@@ -11,8 +11,8 @@ function Inventory.new()
     local self = Object.new():addInstance( 'Inventory' );
 
     local slots = {
-        EquipmentSlot.new( ITEM_TYPES.WEAPON );
-        EquipmentSlot.new( ITEM_TYPES.BAG );
+        StorageSlot.new( ITEM_TYPES.WEAPON );
+        StorageSlot.new( ITEM_TYPES.BAG );
         ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.HEADGEAR );
         ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.GLOVES   );
         ClothingSlot.new( ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.JACKET   );

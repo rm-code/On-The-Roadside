@@ -1,9 +1,9 @@
-local EquipmentSlot = require( 'src.inventory.EquipmentSlot' );
+local StorageSlot = require( 'src.inventory.StorageSlot' );
 
 local ClothingSlot = {};
 
 function ClothingSlot.new( itemType, clothingType )
-    local self = EquipmentSlot.new( itemType ):addInstance( 'ClothingSlot' );
+    local self = StorageSlot.new( itemType ):addInstance( 'ClothingSlot' );
 
     function self:getClothingType()
         return clothingType;
