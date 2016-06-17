@@ -7,7 +7,7 @@ function StorageSlot.new( itemType )
 
     local item;
 
-    function self:setItem( nitem )
+    function self:addItem( nitem )
         item = nitem;
     end
 

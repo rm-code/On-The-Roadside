@@ -27,11 +27,11 @@ function Inventory.new()
             if slot:getItemType() == item:getItemType() then
                 if item:getItemType() == ITEM_TYPES.CLOTHING then
                     if slot:instanceOf( 'ClothingSlot' ) and slot:getClothingType() == item:getClothingType() then
-                        slot:setItem( item );
+                        slot:addItem( item );
                         break;
                     end
                 else
-                    slot:setItem( item );
+                    slot:addItem( item );
                     break;
                 end
             end

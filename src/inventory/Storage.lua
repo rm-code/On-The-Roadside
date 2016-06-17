@@ -18,7 +18,7 @@ function Storage.new( space )
     function self:addItem( item )
         for _, slot in ipairs( slots ) do
             if slot:isEmpty() then
-                slot:setItem( item );
+                slot:addItem( item );
                 break;
             end
         end
