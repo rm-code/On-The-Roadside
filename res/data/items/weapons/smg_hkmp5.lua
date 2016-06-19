@@ -1,8 +1,9 @@
 return {
-    name     = "HK MP5",
+    name     = "HK MP5 A2",
     itemType = "Weapon",
     damage   = 36,
     range    = 12,
+    ammoType = "9x19mm",
     mode = {
         single = {
             cost = 3,

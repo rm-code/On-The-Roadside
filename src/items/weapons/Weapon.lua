@@ -8,10 +8,26 @@ function Weapon.new( template )
 
     local damage = template.damage;
     local range  = template.range;
+    local ammoType = template.ammoType;
     local mode = FIRING_MODES.SINGLE;
+
+    local magazine;
+
+    function self:reload( newMag )
+        assert( ammoType == newMag:getAmmoType(), 'Ammunition Type doesn\'t match the gun!' );
+        magazine = newMag;
+    end
+
+    function self:shoot()
+        magazine:removeShell();
+    end
 
     function self:getAccuracy()
         return template.mode[mode].accuracy;
+    end
+
+    function self:getAmmoType()
+        return ammoType;
     end
 
     function self:getDamage()
@@ -52,6 +68,10 @@ function Weapon.new( template )
         elseif mode == FIRING_MODES.AUTO then
             mode = FIRING_MODES.BURST;
         end
+    end
+
+    function self:getMagazine()
+        return magazine;
     end
 
     return self;

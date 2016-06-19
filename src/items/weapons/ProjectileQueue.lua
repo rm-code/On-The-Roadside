@@ -84,6 +84,7 @@ function ProjectileQueue.new( character, target )
         index = index + 1;
         projectiles[index] = projectileQueue:dequeue();
         Messenger.publish( 'SOUND_SHOOT' );
+        character:getWeapon():shoot();
     end
 
     -- ------------------------------------------------
@@ -91,7 +92,8 @@ function ProjectileQueue.new( character, target )
     -- ------------------------------------------------
 
     function self:init()
-        for _ = 1, character:getWeapon():getShots() do
+        local amount = math.min( character:getWeapon():getMagazine():getRounds(), character:getWeapon():getShots() );
+        for _ = 1, amount do
             local maxDerivation = calculateMaximumDerivation();
             local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );
             projectileQueue:enqueue( Projectile.new( character, character:getTile(), target, actualDerivation ));

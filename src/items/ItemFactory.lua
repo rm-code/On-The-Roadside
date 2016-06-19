@@ -1,4 +1,5 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
+local Magazine = require( 'src.items.weapons.Magazine' );
 local Clothing = require( 'src.items.Clothing' );
 local Bag = require( 'src.items.Bag' );
 
@@ -102,6 +103,10 @@ function ItemFactory.createWeapon()
     local rnd = love.math.random( 1, #items.Weapon );
     local template = items.Weapon[rnd];
     return Weapon.new( template );
+end
+
+function ItemFactory.createMagazine( ammoType, capacity )
+    return Magazine.new( ammoType, capacity );
 end
 
 function ItemFactory.createClothing( clothingType )

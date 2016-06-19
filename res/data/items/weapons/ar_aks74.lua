@@ -3,6 +3,7 @@ return {
     itemType = "Weapon",
     damage   = 40,
     range    = 12,
+    ammoType = "5.45x39mm",
     mode = {
         single = {
             cost = 3,

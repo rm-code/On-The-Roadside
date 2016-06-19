@@ -47,7 +47,12 @@ function Character.new( tile, faction )
     local actions = Queue.new();
 
     local inventory = Inventory.new();
-    inventory:equipItem( ItemFactory.createWeapon() );
+
+    local weapon = ItemFactory.createWeapon();
+    local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
+    weapon:reload( magazine );
+
+    inventory:equipItem( weapon );
     inventory:equipItem( ItemFactory.createBag() );
     inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
     inventory:equipItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
