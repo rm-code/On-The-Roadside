@@ -80,7 +80,7 @@ function CharacterManager.removeDeadActors()
         for i = #faction, 1, -1 do
             local character = faction[i];
             if character:isDead() then
-                local storage = character:getInventory():getStorage();
+                local storage = character:getInventory():getSlots();
                 local tile = character:getTile();
 
                 for _, slot in ipairs( storage ) do
