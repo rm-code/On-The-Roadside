@@ -7,13 +7,13 @@ function WorldObject.new( template )
 
     local name = template.name;
     local type = template.type;
-    local passable = template.passable;
-    local blocksPathfinding = template.blocksPathfinding;
-    local blocksVision = template.blocksVision;
-    local destructible = template.destructible;
     local size = template.size;
-    local movementCost = template.movementCost;
+    local destructible = template.destructible;
     local debrisType = template.debrisType;
+    local passable = template.passable or false;
+    local movementCost = template.movementCost or 1;
+    local blocksVision = template.blocksVision;
+    local blocksPathfinding = template.blocksPathfinding;
 
     function self:blocksPathfinding()
         return blocksPathfinding;

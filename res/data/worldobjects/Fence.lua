@@ -1,10 +1,9 @@
 return {
     name = 'Fence',
     type = 'worldobject_fence',
-    passable = false,
     size = 35,
+    destructible = true,
     movementCost = 5,
-    blocksPathfinding = false,
-    blocksVision      = false,
-    destructible = true
+    blocksVision = false,
+    blocksPathfinding = false
 }
