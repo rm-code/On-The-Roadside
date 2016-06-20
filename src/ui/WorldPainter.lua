@@ -18,7 +18,7 @@ local CHARACTER_COLORS = {
 }
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
+local TILESET = love.graphics.newImage( 'res/img/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WINDOW      = love.graphics.newQuad(  0 * TILE_SIZE, 11 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
