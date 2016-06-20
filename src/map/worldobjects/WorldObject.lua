@@ -12,6 +12,7 @@ function WorldObject.new( template )
     local blocksVision = template.blocksVision;
     local destructible = template.destructible;
     local size = template.size;
+    local movementCost = template.movementCost;
 
     function self:blocksPathfinding()
         return blocksPathfinding;
@@ -39,7 +40,7 @@ function WorldObject.new( template )
     end
 
     function self:getMovementCost()
-        return 1;
+        return movementCost;
     end
 
     function self:getName()
