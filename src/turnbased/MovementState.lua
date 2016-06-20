@@ -2,6 +2,7 @@ local State = require( 'src.turnbased.State' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Walk = require( 'src.characters.actions.Walk' );
 local OpenDoor = require( 'src.characters.actions.OpenDoor' );
+local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 
 local MovementState = {};
@@ -23,6 +24,8 @@ function MovementState.new( stateManager )
                 if index ~= 1 then
                     character:enqueueAction( Walk.new( character, tile ));
                 end
+            elseif tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_fence' then
+                character:enqueueAction( ClimbOver.new( character, tile ));
             else
                 character:enqueueAction( Walk.new( character, tile ));
             end

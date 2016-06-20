@@ -3,7 +3,7 @@ return {
     type = 'worldobject_fence',
     passable = false,
     size = 35,
-    blocksPathfinding = true,
+    blocksPathfinding = false,
     blocksVision      = false,
     destructible = true
 }
