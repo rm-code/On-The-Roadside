@@ -5,16 +5,28 @@ local OpenDoor = require( 'src.characters.actions.OpenDoor' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local MovementState = {};
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
 
 function MovementState.new( stateManager )
     local self = State.new();
 
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
+
     local map;
 
-    function self:enter( params )
-        map = params.map;
-    end
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
 
     local function commitPath( character )
         character:getPath():iterate( function( tile, index )
@@ -58,6 +70,14 @@ function MovementState.new( stateManager )
         else
             commitPath( character, character );
         end
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
+    function self:enter( params )
+        map = params.map;
     end
 
     function self:keypressed( key )
