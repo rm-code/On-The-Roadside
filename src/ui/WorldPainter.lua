@@ -134,6 +134,8 @@ function WorldPainter.new( game )
                 return COLORS.DB04;
             elseif worldObject:getType() == 'worldobject_window' then
                 return COLORS.DB19;
+            elseif worldObject:getType() == 'worldobject_lowwall' then
+                return COLORS.DB23;
             end
         elseif not tile:getStorage():isEmpty() then
             return COLORS.DB27;
@@ -183,6 +185,8 @@ function WorldPainter.new( game )
             if worldObject:getType() == 'worldobject_wall' then
                 return TILE_SPRITES.WALL;
             elseif worldObject:getType() == 'worldobject_fence' then
+                return TILE_SPRITES.FENCE;
+            elseif worldObject:getType() == 'worldobject_lowwall' then
                 return TILE_SPRITES.FENCE;
             elseif worldObject:getType() == 'worldobject_door' then
                 if worldObject:isPassable() then
