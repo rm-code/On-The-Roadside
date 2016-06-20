@@ -21,6 +21,7 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 local TILESET = love.graphics.newImage( 'res/tiles/16x16_sm.png' );
 local TILE_SPRITES = {
     EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    WINDOW      = love.graphics.newQuad(  0 * TILE_SIZE, 11 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
@@ -131,6 +132,8 @@ function WorldPainter.new( game )
                 return COLORS.DB04;
             elseif worldObject:getType() == 'worldobject_table' then
                 return COLORS.DB04;
+            elseif worldObject:getType() == 'worldobject_window' then
+                return COLORS.DB19;
             end
         elseif not tile:getStorage():isEmpty() then
             return COLORS.DB27;
@@ -191,6 +194,8 @@ function WorldPainter.new( game )
                 return TILE_SPRITES.CHAIR;
             elseif worldObject:getType() == 'worldobject_table' then
                 return TILE_SPRITES.TABLE;
+            elseif worldObject:getType() == 'worldobject_window' then
+                return TILE_SPRITES.WINDOW;
             end
         end
     end
