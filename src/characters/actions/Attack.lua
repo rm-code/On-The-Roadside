@@ -1,6 +1,5 @@
 local Action = require('src.characters.actions.Action');
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local Bresenham = require( 'lib.Bresenham' );
 
 local Attack = {};
 
@@ -60,13 +59,6 @@ function Attack.new( character, target )
 
     function self:perform()
         local origin = character:getTile();
-
-        local ox, oy = origin:getPosition();
-        local tx, ty = target:getPosition();
-
-        Bresenham.calculateLine( ox, oy, tx, ty, function()
-            return true;
-        end);
 
         for _ = 1, character:getWeapon():getShots() do
             local maxDerivation = calculateMaximumDerivation();
