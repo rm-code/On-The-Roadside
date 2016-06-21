@@ -1,13 +1,14 @@
-local Projectile = require( 'src.items.weapons.Projectile' );
-local Messenger = require( 'src.Messenger' );
-local Queue = require( 'src.Queue' );
-
 local ProjectileManager = {};
 
-local projectileQueue = Queue.new();
-local projectiles = {};
-local id = 0;
-local timer = 0;
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
+
+local queue;
+
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
 
 ---
 -- Removes a projectile from the world and hits a tile with the projectile
@@ -17,34 +18,30 @@ local timer = 0;
 -- @param projectile (Projectile) The projectile to remove.
 --
 local function hitTile( index, tile, projectile )
-    projectiles[index] = nil;
+    queue:removeProjectile( index );
     tile:hit( projectile:getDamage() );
 end
 
-local function spawnProjectile()
-    id = id + 1;
-    projectiles[id] = projectileQueue:dequeue();
-    Messenger.publish( 'SOUND_SHOOT' );
-    return projectiles[id];
-end
+-- ------------------------------------------------
+-- Public Variables
+-- ------------------------------------------------
 
 function ProjectileManager.update( dt, map )
-    timer = timer - dt;
-    if timer < 0 and not projectileQueue.isEmpty() then
-        local projectile = spawnProjectile();
-        timer = projectileQueue.isEmpty() and 0 or 1 / projectile:getWeapon():getShots();
+    if not queue then
+        return;
     end
 
-    for i, projectile in pairs( projectiles ) do
-        projectile:update( dt );
+    queue:update( dt );
 
+    for i, projectile in pairs( queue:getProjectiles() ) do
+        projectile:update( dt );
         local tile = map:getTileAt( projectile:getTilePosition() );
         if projectile:getTile() ~= tile then
             projectile:setTile( tile );
 
             if not tile then
                 print( "Reached map border" );
-                projectiles[i] = nil;
+                queue:removeProjectile( i );
             elseif tile:hasWorldObject() then
                 if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
                     print( "Hit impassable tile" );
@@ -62,21 +59,23 @@ function ProjectileManager.update( dt, map )
 end
 
 function ProjectileManager.iterate( callback )
-    for _, projectile in pairs( projectiles ) do
-        callback( projectile:getPosition() );
+    if queue then
+        for _, projectile in pairs( queue:getProjectiles() ) do
+            callback( projectile:getPosition() );
+        end
     end
 end
 
-function ProjectileManager.register( character, origin, target, angle )
-    projectileQueue:enqueue( Projectile.new( character, origin, target, angle ));
+function ProjectileManager.register( nqueue )
+    queue = nqueue;
+    queue:init();
 end
 
 function ProjectileManager.isDone()
-    local count = 0;
-    for _, _ in pairs( projectiles ) do
-        count = count + 1;
+    if not queue then
+        return true;
     end
-    return projectileQueue.isEmpty() and count == 0;
+    return queue:isDone();
 end
 
 return ProjectileManager;
