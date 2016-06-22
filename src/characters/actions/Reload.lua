@@ -1,10 +1,10 @@
 local Action = require('src.characters.actions.Action');
 local ItemFactory = require('src.items.ItemFactory');
 
-local Attack = {};
+local Reload = {};
 
-function Attack.new( character )
-    local self = Action.new( 5 ):addInstance( 'Attack' );
+function Reload.new( character )
+    local self = Action.new( 5 ):addInstance( 'Reload' );
 
     function self:perform()
         local weapon = character:getWeapon();
@@ -15,4 +15,4 @@ function Attack.new( character )
     return self;
 end
 
-return Attack;
+return Reload;
