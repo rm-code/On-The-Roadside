@@ -2,6 +2,7 @@ local State = require( 'src.turnbased.State' );
 local Messenger = require( 'src.Messenger' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Attack = require( 'src.characters.actions.Attack' );
+local Reload = require( 'src.characters.actions.Reload' );
 local Bresenham = require( 'lib.Bresenham' );
 local LineOfSight = require( 'src.characters.LineOfSight' );
 
@@ -61,6 +62,9 @@ function AttackState.new( stateManager )
             CharacterManager.getCurrentCharacter():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
             CharacterManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
+        elseif key == 'r' then
+            CharacterManager.getCurrentCharacter():enqueueAction( Reload.new( CharacterManager.getCurrentCharacter() ));
+            stateManager:switch( 'execution', { map = map } );
         elseif key == 'escape' then
             stateManager:switch( 'movement', { map = map } );
         elseif key == 'space' then
