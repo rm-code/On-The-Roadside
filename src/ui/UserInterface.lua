@@ -60,8 +60,8 @@ function UserInterface.new( game )
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
 
-        love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 50, love.graphics.getHeight() - 20 );
-        love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 110, love.graphics.getHeight() - 20 );
+        love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
+        love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
 
         local weapon = character:getWeapon();
         if weapon then
