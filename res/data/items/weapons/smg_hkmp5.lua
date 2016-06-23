@@ -3,6 +3,7 @@ return {
     itemType = "Weapon",
     damage   = 36,
     range    = 12,
+    rpm      = 800,
     ammoType = "9x19mm",
     mode = {
         single = {

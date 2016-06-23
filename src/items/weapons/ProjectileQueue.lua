@@ -51,7 +51,7 @@ function ProjectileQueue.new( character, target )
     local projectiles = {};
     local index = 0;
     local timer = 0;
-    local delay = 1 / character:getWeapon():getShots();
+    local delay = character:getWeapon():getFiringDelay();
 
     -- ------------------------------------------------
     -- Private Methods

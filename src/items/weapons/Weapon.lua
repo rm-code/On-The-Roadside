@@ -10,7 +10,7 @@ function Weapon.new( template )
     local range  = template.range;
     local ammoType = template.ammoType;
     local mode = FIRING_MODES.SINGLE;
-
+    local firingDelay = 1 / ( template.rpm / 60 );
     local magazine;
 
     function self:reload( newMag )
@@ -72,6 +72,10 @@ function Weapon.new( template )
 
     function self:getMagazine()
         return magazine;
+    end
+
+    function self:getFiringDelay()
+        return firingDelay;
     end
 
     return self;
