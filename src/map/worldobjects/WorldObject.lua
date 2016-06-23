@@ -8,12 +8,17 @@ function WorldObject.new( template )
     local name = template.name;
     local type = template.type;
     local size = template.size;
+    local hp = template.hp;
     local destructible = template.destructible;
     local debrisType = template.debrisType;
     local passable = template.passable or false;
     local movementCost = template.movementCost or 1;
     local blocksVision = template.blocksVision;
     local blocksPathfinding = template.blocksPathfinding;
+
+    function self:damage( dmg )
+        hp = hp - dmg;
+    end
 
     function self:blocksPathfinding()
         return blocksPathfinding;
@@ -42,6 +47,10 @@ function WorldObject.new( template )
 
     function self:getDebrisType()
         return debrisType;
+    end
+
+    function self:isDestroyed()
+        return hp <= 0;
     end
 
     function self:getMovementCost()
