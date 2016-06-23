@@ -59,10 +59,13 @@ function InventoryScreen.new()
         for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
             if i == rowIndex then
                 local item = slot:getItem();
-                slot:removeItem();
+                if not item then
+                    return;
+                end
 
+                slot:removeItem();
                 character:getInventory():equipItem( item );
-                break;
+                return;
             end
         end
     end
