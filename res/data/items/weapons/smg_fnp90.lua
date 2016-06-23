@@ -6,17 +6,14 @@ return {
     rpm      = 900,
     ammoType = "5.7x28mm",
     mode = {
-        single = {
+        {
+            name = "Single",
             cost = 3,
             accuracy = 65,
             shots = 1,
         },
-        burst = {
-            cost = 5,
-            accuracy = 55,
-            shots = 5,
-        },
-        auto = {
+        {
+            name = "Full-Auto",
             cost = 8,
             accuracy = 40,
             shots = 13,

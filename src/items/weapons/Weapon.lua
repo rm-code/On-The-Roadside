@@ -1,5 +1,4 @@
 local Item = require( 'src.items.Item' );
-local FIRING_MODES = require( 'src.constants.FiringModes' );
 
 local Weapon = {};
 
@@ -9,7 +8,7 @@ function Weapon.new( template )
     local damage = template.damage;
     local range  = template.range;
     local ammoType = template.ammoType;
-    local mode = FIRING_MODES.SINGLE;
+    local mode = 1;
     local firingDelay = 1 / ( template.rpm / 60 );
     local magazine;
 
@@ -35,7 +34,7 @@ function Weapon.new( template )
     end
 
     function self:getFiringMode()
-        return mode;
+        return template.mode[mode];
     end
 
     function self:getRange()
@@ -51,23 +50,11 @@ function Weapon.new( template )
     end
 
     function self:selectNextFiringMode()
-        if mode == FIRING_MODES.SINGLE then
-            mode = FIRING_MODES.BURST;
-        elseif mode == FIRING_MODES.BURST then
-            mode = FIRING_MODES.AUTO;
-        elseif mode == FIRING_MODES.AUTO then
-            mode = FIRING_MODES.SINGLE;
-        end
+        mode = mode + 1 > #template.mode and 1 or mode + 1;
     end
 
     function self:selectPrevFiringMode()
-        if mode == FIRING_MODES.SINGLE then
-            mode = FIRING_MODES.AUTO;
-        elseif mode == FIRING_MODES.BURST then
-            mode = FIRING_MODES.SINGLE;
-        elseif mode == FIRING_MODES.AUTO then
-            mode = FIRING_MODES.BURST;
-        end
+        mode = mode - 1 < 1 and #template.mode or mode - 1;
     end
 
     function self:getMagazine()
