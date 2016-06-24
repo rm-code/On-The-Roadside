@@ -1,16 +1,33 @@
 local Item = require( 'src.items.Item' );
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local Weapon = {};
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
 
 function Weapon.new( template )
     local self = Item.new( template.name, template.itemType ):addInstance( 'Weapon' );
 
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
+
     local damage = template.damage;
-    local range  = template.range;
+    local range = template.range;
     local ammoType = template.ammoType;
-    local mode = 1;
+    local modeIndex = 1;
+    local mode = template.mode[modeIndex];
     local firingDelay = 1 / ( template.rpm / 60 );
     local magazine;
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
 
     function self:reload( newMag )
         assert( ammoType == newMag:getAmmoType(), 'Ammunition Type doesn\'t match the gun!' );
@@ -21,48 +38,54 @@ function Weapon.new( template )
         magazine:removeShell();
     end
 
+    function self:selectNextFiringMode()
+        modeIndex = modeIndex + 1 > #template.mode and 1 or modeIndex + 1;
+        mode = template.mode[modeIndex];
+    end
+
+    function self:selectPrevFiringMode()
+        modeIndex = modeIndex - 1 < 1 and #template.mode or modeIndex - 1;
+        mode = template.mode[modeIndex];
+    end
+
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
+
     function self:getAccuracy()
-        return template.mode[mode].accuracy;
+        return mode.accuracy;
     end
 
     function self:getAmmoType()
         return ammoType;
     end
 
+    function self:getAttackCost()
+        return mode.cost;
+    end
+
     function self:getDamage()
         return damage;
     end
 
+    function self:getFiringDelay()
+        return firingDelay;
+    end
+
     function self:getFiringMode()
-        return template.mode[mode];
-    end
-
-    function self:getRange()
-        return range;
-    end
-
-    function self:getAttackCost()
-        return template.mode[mode].cost;
-    end
-
-    function self:getShots()
-        return template.mode[mode].shots;
-    end
-
-    function self:selectNextFiringMode()
-        mode = mode + 1 > #template.mode and 1 or mode + 1;
-    end
-
-    function self:selectPrevFiringMode()
-        mode = mode - 1 < 1 and #template.mode or mode - 1;
+        return mode;
     end
 
     function self:getMagazine()
         return magazine;
     end
 
-    function self:getFiringDelay()
-        return firingDelay;
+    function self:getRange()
+        return range;
+    end
+
+    function self:getShots()
+        return mode.shots;
     end
 
     return self;
