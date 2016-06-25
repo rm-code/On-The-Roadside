@@ -1,6 +1,5 @@
 local Object = require( 'src.Object' );
 local Storage = require( 'src.inventory.Storage' );
-local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -71,15 +70,6 @@ function Tile.new( x, y, name, type, movementCost, passable )
             character:hit( damage );
         elseif self:hasWorldObject() and worldObject:isDestructible() then
             worldObject:damage( damage );
-            if worldObject:isDestroyed() then
-                if worldObject:getDebrisType() then
-                    local nobj = WorldObjectFactory.create( worldObject:getDebrisType() );
-                    self:removeWorldObject();
-                    self:addWorldObject( nobj );
-                else
-                    self:removeWorldObject();
-                end
-            end
         end
     end
 

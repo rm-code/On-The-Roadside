@@ -50,7 +50,7 @@ function WorldObject.new( template )
     end
 
     function self:isDestroyed()
-        return hp <= 0;
+        return destructible and hp <= 0 or false;
     end
 
     function self:getMovementCost()

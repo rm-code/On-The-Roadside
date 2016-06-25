@@ -46,6 +46,7 @@ function Game.new()
 
     function self:update( dt )
         turnManager:update( dt )
+        map:update();
     end
 
     function self:getMap()

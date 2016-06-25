@@ -160,16 +160,30 @@ function Map.new()
     end
 
     ---
-    -- Resets the visibility flags for all visible tiles and marks them for
-    -- a drawing update.
+    -- Updates the map. This resets the visibility attribute for all visible
+    -- tiles and marks them for a drawing update. It also replaces destroyed
+    -- WorldObjects with their debris types or removes them completely. 
     --
-    function self:resetVisibility()
-        self:iterate( function( tile )
-            if tile:isVisible() then
-                tile:setVisible( false );
-                tile:setDirty( true );
+    function self:update()
+        for x = 1, #tiles do
+            for y = 1, #tiles[x] do
+                local tile = tiles[x][y];
+                if tile:isVisible() then
+                    tile:setVisible( false );
+                    tile:setDirty( true );
+                end
+
+                if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
+                    if tile:getWorldObject():getDebrisType() then
+                        local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisType() );
+                        tile:removeWorldObject();
+                        tile:addWorldObject( nobj );
+                    else
+                        tile:removeWorldObject();
+                    end
+                end
             end
-        end)
+        end
     end
 
     ---
