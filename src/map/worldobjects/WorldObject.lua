@@ -9,6 +9,7 @@ function WorldObject.new( template )
     local type = template.type;
     local size = template.size;
     local hp = template.hp;
+    local energyReduction = template.energyReduction;
     local destructible = template.destructible;
     local debrisType = template.debrisType;
     local passable = template.passable or false;
@@ -51,6 +52,10 @@ function WorldObject.new( template )
 
     function self:isDestroyed()
         return destructible and hp <= 0 or false;
+    end
+
+    function self:getEnergyReduction()
+        return energyReduction;
     end
 
     function self:getMovementCost()

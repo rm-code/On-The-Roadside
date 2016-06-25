@@ -3,6 +3,7 @@ return {
     type = 'worldobject_door',
     size = 95,
     hp = 110,
+    energyReduction = 40,
     destructible = true,
     blocksVision = true,
     blocksPathfinding = false

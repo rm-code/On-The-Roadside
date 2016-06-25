@@ -22,6 +22,17 @@ local function hitTile( index, tile, projectile )
     tile:hit( projectile:getDamage() );
 end
 
+---
+-- Clamps a value to a certain range.
+-- @param min (number) The minimum value to clamp to.
+-- @param val (number) The value to clamp.
+-- @param max (number) The maximum value to clamp to.
+-- @return    (number) The clamped value.
+--
+local function clamp( min, val, max )
+    return math.max( min, math.min( val, max ));
+end
+
 -- ------------------------------------------------
 -- Public Variables
 -- ------------------------------------------------
@@ -44,12 +55,20 @@ function ProjectileManager.update( dt, map )
                 queue:removeProjectile( i );
             elseif tile:hasWorldObject() then
                 if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
+                    if not tile:getWorldObject():isDestructible() then
+                        hitTile( i, tile, projectile );
+                        return;
+                    end
+
                     local energy = projectile:getEnergy();
-                    local energyReduction = tile:getWorldObject():isDestructible() and love.math.random( 40, 70 ) or 100;
+                    local energyReduction = tile:getWorldObject():getEnergyReduction();
+                    energyReduction = love.math.random( energyReduction - 10, energyReduction + 10 );
+                    energyReduction = clamp( 1, energyReduction, 100 );
+
                     energy = energy - energyReduction;
                     projectile:setEnergy( energy );
 
-                    tile:hit( projectile:getDamage() * ( energyReduction / 100 ));
+                    tile:hit( projectile:getDamage() * ( energy / 100 ));
 
                     if energy <= 0 then
                         queue:removeProjectile( i );
