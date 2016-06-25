@@ -25,6 +25,8 @@ function Projectile.new( character, origin, target, angle )
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
 
+    local energy = 100;
+
     -- Use the centers of the origin and target tile.
     px, py, tx, ty = px + 0.5, py + 0.5, tx + 0.5, ty + 0.5;
 
@@ -46,6 +48,10 @@ function Projectile.new( character, origin, target, angle )
         return weapon:getDamage();
     end
 
+    function self:getEnergy()
+        return energy;
+    end
+
     function self:getPosition()
         return px, py;
     end
@@ -64,6 +70,10 @@ function Projectile.new( character, origin, target, angle )
 
     function self:getWeapon()
         return weapon;
+    end
+
+    function self:setEnergy( nenergy )
+        energy = nenergy;
     end
 
     function self:setTile( ntile )

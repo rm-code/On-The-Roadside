@@ -44,8 +44,16 @@ function ProjectileManager.update( dt, map )
                 queue:removeProjectile( i );
             elseif tile:hasWorldObject() then
                 if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
-                    print( "Hit impassable tile" );
-                    hitTile( i, tile, projectile );
+                    local energy = projectile:getEnergy();
+                    local energyReduction = tile:getWorldObject():isDestructible() and love.math.random( 40, 70 ) or 100;
+                    energy = energy - energyReduction;
+                    projectile:setEnergy( energy );
+
+                    tile:hit( projectile:getDamage() * ( energyReduction / 100 ));
+
+                    if energy <= 0 then
+                        queue:removeProjectile( i );
+                    end
                 end
             elseif tile == projectile:getTarget() then
                 print( "Reached target" );
