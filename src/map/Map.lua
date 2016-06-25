@@ -39,9 +39,14 @@ function Map.new()
     -- @param r (number) The red-component read from the ground layer.
     -- @param g (number) The green-component read from the ground layer.
     -- @param b (number) The blue-component read from the ground layer.
+    -- @param a (number) The alpha value read from the ground layer.
     -- @return  (Tile)   The new Tile object.
     --
-    local function createTile( x, y, r, g, b, _ )
+    local function createTile( x, y, r, g, b, a )
+        if a ~= 255 then
+            error( 'The ground layer must only contain fully opaque pixels!' );
+        end
+
         local tile;
         for _, info in ipairs( INFO_FILE.ground ) do
             if info.r == r and info.g == g and info.b == b then
@@ -55,16 +60,17 @@ function Map.new()
     ---
     -- Creates a WorldObject on the given Tile based on the pixel color read
     -- from the map's object layer.
-    -- @param tile (Tile)        The Tile on which to place the WorldObject.
-    -- @param r    (number)      The red-component read from the object layer.
-    -- @param g    (number)      The green-component read from the object layer.
-    -- @param b    (number)      The blue-component read from the object layer.
-    -- @param a    (number)      The alpha value read from the object layer.
+    -- @param tile (Tile)   The Tile on which to place the WorldObject.
+    -- @param r    (number) The red-component read from the object layer.
+    -- @param g    (number) The green-component read from the object layer.
+    -- @param b    (number) The blue-component read from the object layer.
+    -- @param a    (number) The alpha value read from the object layer.
     --
     local function createWorldObject( tile, r, g, b, a )
-        -- Ignore transparent pixels.
         if a == 0 then
             return;
+        elseif a ~= 255 then
+            error( 'The object layer must only contain either fully opaque or fully transparent pixels!' );
         end
 
         local object;
