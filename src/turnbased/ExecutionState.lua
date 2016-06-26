@@ -2,11 +2,11 @@ local State = require( 'src.turnbased.State' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
-local AnimationState = {};
+local ExecutionState = {};
 
 local TURN_STEP_DELAY = 0.15;
 
-function AnimationState.new( stateManager )
+function ExecutionState.new( stateManager )
     local self = State.new();
 
     local actionTimer = 0;
@@ -38,4 +38,4 @@ function AnimationState.new( stateManager )
     return self;
 end
 
-return AnimationState;
+return ExecutionState;
