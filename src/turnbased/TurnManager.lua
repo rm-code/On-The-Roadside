@@ -1,4 +1,4 @@
-local StateManager = require( 'src.turnbased.StateManager' );
+local StateManager = require( 'src.turnbased.states.StateManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -10,14 +10,12 @@ function TurnManager.new( map )
     local self = {};
 
     local states = {
-        attack    = require( 'src.turnbased.AttackState' ),
-        interact  = require( 'src.turnbased.InteractionState' ),
-        execution = require( 'src.turnbased.ExecutionState' ),
-        movement  = require( 'src.turnbased.MovementState' )
+        execution = require( 'src.turnbased.states.ExecutionState' ),
+        planning = require( 'src.turnbased.states.PlanningState' )
     }
 
     local stateManager = StateManager.new( states );
-    stateManager:switch( 'movement', { map = map } );
+    stateManager:push( 'planning', map );
 
     -- ------------------------------------------------
     -- Public Methods

@@ -1,4 +1,4 @@
-local State = require( 'src.turnbased.State' );
+local State = require( 'src.turnbased.states.State' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
@@ -10,11 +10,6 @@ function ExecutionState.new( stateManager )
     local self = State.new();
 
     local actionTimer = 0;
-    local map;
-
-    function self:enter( params )
-        map = params.map;
-    end
 
     function self:update( dt )
         if not ProjectileManager.isDone() then
@@ -28,7 +23,7 @@ function ExecutionState.new( stateManager )
                 character:performAction();
                 actionTimer = 0;
             else
-                stateManager:switch( 'movement', { map = map } );
+                stateManager:pop();
             end
             CharacterManager.removeDeadActors();
         end
