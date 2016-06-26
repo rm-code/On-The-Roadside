@@ -5,6 +5,7 @@ local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
 -- Constants
@@ -42,6 +43,8 @@ function Game.new()
         CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
+
+        ProjectileManager.init( map );
     end
 
     function self:update( dt )

@@ -5,6 +5,7 @@ local ProjectileManager = {};
 -- ------------------------------------------------
 
 local queue;
+local map;
 
 -- ------------------------------------------------
 -- Private Functions
@@ -37,7 +38,11 @@ end
 -- Public Variables
 -- ------------------------------------------------
 
-function ProjectileManager.update( dt, map )
+function ProjectileManager.init( nmap )
+    map = nmap;
+end
+
+function ProjectileManager.update( dt )
     if not queue then
         return;
     end

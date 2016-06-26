@@ -18,7 +18,7 @@ function ExecutionState.new( stateManager )
 
     function self:update( dt )
         if not ProjectileManager.isDone() then
-            ProjectileManager.update( dt, map );
+            ProjectileManager.update( dt );
             return;
         end
 
