@@ -1,5 +1,4 @@
 local State = require( 'src.turnbased.State' );
-local Messenger = require( 'src.Messenger' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Attack = require( 'src.characters.actions.Attack' );
 local Reload = require( 'src.characters.actions.Reload' );
@@ -11,7 +10,6 @@ local AttackState = {};
 function AttackState.new( stateManager )
     local self = State.new();
 
-    local observations = {};
     local map;
 
     function self:enter( params )
@@ -47,13 +45,6 @@ function AttackState.new( stateManager )
             generateLineOfSight( target, character );
         else
             generateAttack( target, character );
-        end
-    end
-
-    function self:leave()
-        for _, id in ipairs( observations ) do
-            print( id )
-            Messenger.remove( id );
         end
     end
 
