@@ -35,6 +35,7 @@ local TILE_SPRITES = {
     SOIL        = love.graphics.newQuad( 12 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     WATER       = love.graphics.newQuad( 14 * TILE_SIZE,  7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
     DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE,  5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    PATH        = love.graphics.newQuad( 15 * TILE_SIZE, 10 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
 }
 
 -- ------------------------------------------------
@@ -64,14 +65,35 @@ function WorldPainter.new( game )
     --
     local function selectPathNodeColor( value, total )
         local fraction = value / total;
-        if fraction <= 0.1 then
+        if fraction < 0 then
             return COLORS.DB27;
-        elseif fraction <= 0.4 then
+        elseif fraction <= 0.2 then
             return COLORS.DB05;
         elseif fraction <= 0.6 then
             return COLORS.DB08;
         elseif fraction <= 1.0 then
             return COLORS.DB09;
+        end
+    end
+
+    local function drawPath( character )
+        if #character:getActions() ~= 0 then
+            local total = character:getActionPoints();
+            local ap = total;
+
+            for _, action in ipairs( character:getActions() ) do
+                ap = ap - action:getCost();
+
+                -- Clears the tile.
+                local tile = action:getTarget();
+                love.graphics.setColor( 0, 0, 0);
+                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+
+                -- Draws the path icon.
+                love.graphics.setColor( selectPathNodeColor( ap, character:getMaxActionPoints() ));
+                love.graphics.draw( TILESET, TILE_SPRITES.PATH, tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE );
+                love.graphics.setColor( 255, 255, 255);
+            end
         end
     end
 
@@ -98,15 +120,6 @@ function WorldPainter.new( game )
         -- Hide unexplored tiles.
         if not tile:isExplored() then
             return COLORS.DB00;
-        end
-
-        -- Change colors for tiles which are part of a character's path.
-        if CharacterManager.getCurrentCharacter():hasPath() then
-            local path = CharacterManager.getCurrentCharacter():getPath();
-            local index = path:contains( tile );
-            if index then
-                return selectPathNodeColor( index, path:getLength() );
-            end
         end
 
         -- Dim tiles hidden from the player.
@@ -248,6 +261,8 @@ function WorldPainter.new( game )
         ProjectileManager.iterate( function( x, y )
             love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
         end)
+
+        drawPath( character );
     end
 
     function self:update()

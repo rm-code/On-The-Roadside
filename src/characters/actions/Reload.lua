@@ -4,7 +4,7 @@ local ItemFactory = require('src.items.ItemFactory');
 local Reload = {};
 
 function Reload.new( character )
-    local self = Action.new( 5 ):addInstance( 'Reload' );
+    local self = Action.new( 5, character:getTile() ):addInstance( 'Reload' );
 
     function self:perform()
         local weapon = character:getWeapon();

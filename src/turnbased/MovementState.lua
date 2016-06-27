@@ -28,20 +28,7 @@ function MovementState.new( stateManager )
     -- Private Methods
     -- ------------------------------------------------
 
-    local function commitPath( character )
-        character:getPath():iterate( function( tile, index )
-            if tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and not tile:isPassable() then
-                character:enqueueAction( OpenDoor.new( character, tile ));
-                -- Don't walk on the door tile if the path ends there.
-                if index ~= 1 then
-                    character:enqueueAction( Walk.new( character, tile ));
-                end
-            elseif tile:hasWorldObject() and ( tile:getWorldObject():getType() == 'worldobject_fence' or tile:getWorldObject():getType() == 'worldobject_lowwall' ) then
-                character:enqueueAction( ClimbOver.new( character, tile ));
-            else
-                character:enqueueAction( Walk.new( character, tile ));
-            end
-        end)
+    local function commitPath()
         stateManager:switch( 'execution', { map = map } );
     end
 
@@ -52,6 +39,19 @@ function MovementState.new( stateManager )
 
             if path then
                 character:addPath( path );
+                character:getPath():iterate( function( tile, index )
+                    if tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and not tile:isPassable() then
+                        character:enqueueAction( OpenDoor.new( character, tile ));
+                        -- Don't walk on the door tile if the path ends there.
+                        if index ~= 1 then
+                            character:enqueueAction( Walk.new( character, tile ));
+                        end
+                    elseif tile:hasWorldObject() and ( tile:getWorldObject():getType() == 'worldobject_fence' or tile:getWorldObject():getType() == 'worldobject_lowwall' ) then
+                        character:enqueueAction( ClimbOver.new( character, tile ));
+                    else
+                        character:enqueueAction( Walk.new( character, tile ));
+                    end
+                end)
             else
                 print( "Can't find path!");
             end

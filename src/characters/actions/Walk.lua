@@ -3,7 +3,7 @@ local Action = require('src.characters.actions.Action');
 local Walk = {};
 
 function Walk.new( character, target )
-    local self = Action.new( target:getMovementCost() ):addInstance( 'Walk' );
+    local self = Action.new( target:getMovementCost(), target ):addInstance( 'Walk' );
 
     function self:perform()
         local current = character:getTile();

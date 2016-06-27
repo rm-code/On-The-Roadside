@@ -208,6 +208,14 @@ function Character.new( tile, faction )
     end
 
     ---
+    -- Returns the action queue.
+    -- @return (table) A sequence containing all actions.
+    --
+    function self:getActions()
+        return actions:getItems();
+    end
+
+    ---
     -- Returns the faction the character belongs to.
     -- @return (number) The faction's index.
     --
@@ -253,6 +261,14 @@ function Character.new( tile, faction )
     --
     function self:getTile()
         return tile;
+    end
+
+    ---
+    -- Returns the total amount of action points.
+    -- @return (number) The total amount of action points.
+    --
+    function self:getMaxActionPoints()
+        return DEFAULT_ACTION_POINTS;
     end
 
     ---

@@ -29,6 +29,10 @@ function Queue.new()
         queue = {};
     end
 
+    function self:getItems()
+        return queue;
+    end
+
     return self;
 end
 

@@ -5,7 +5,7 @@ local ProjectileQueue = require( 'src.items.weapons.ProjectileQueue' );
 local Attack = {};
 
 function Attack.new( character, target )
-    local self = Action.new( character:getWeapon():getAttackCost() ):addInstance( 'Attack' );
+    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'Attack' );
 
     function self:perform()
         local package = ProjectileQueue.new( character, target );

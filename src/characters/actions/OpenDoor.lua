@@ -4,7 +4,7 @@ local Messenger = require( 'src.Messenger' );
 local OpenDoor = {};
 
 function OpenDoor.new( character, tile )
-    local self = Action.new( 3 ):addInstance( 'OpenDoor' );
+    local self = Action.new( 3, tile ):addInstance( 'OpenDoor' );
 
     function self:perform()
         local target = tile:getWorldObject();
