@@ -9,16 +9,18 @@ local Tile = {};
 
 ---
 -- Creates a new instance of the Tile class.
--- @param x            (number)  The grid position along the x-axis.
--- @param y            (number)  The grid position along the y-axis.
--- @param name         (string)  The tile's name.
--- @param type         (string)  The tile's type.
--- @param movementCost (number)  The tile's movement cost.
--- @param passable     (boolean) Wether the tile can be traversed.
--- @return             (Tile)    The new tile.
+-- @param x        (number) The grid position along the x-axis.
+-- @param y        (number) The grid position along the y-axis.
+-- @param template (table)  The tile's template.
+-- @return         (Tile)   The new tile.
 --
-function Tile.new( x, y, name, type, movementCost, passable )
+function Tile.new( x, y, template )
     local self = Object.new():addInstance( 'Tile' );
+
+    local name = template.name;
+    local type = template.type;
+    local movementCost = template.movementCost;
+    local passable = template.passable;
 
     local id;
     local dirty;
@@ -151,6 +153,13 @@ function Tile.new( x, y, name, type, movementCost, passable )
     --
     function self:getStorage()
         return storage;
+    end
+
+    ---
+    -- Gets the tile's index on the spritesheet.
+    -- @return (number) The tile index.
+    function self:getTileIndex()
+        return tileIndex;
     end
 
     ---
