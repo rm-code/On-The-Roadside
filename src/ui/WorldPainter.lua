@@ -130,7 +130,7 @@ function WorldPainter.new( game )
                 return COLORS.DB03;
             elseif worldObject:getType() == 'worldobject_wall' then
                 return COLORS.DB23;
-            elseif worldObject:getType() == 'worldobject_fence' then
+            elseif worldObject:getType() == 'worldobject_fence' or worldObject:getType() == 'worldobject_fencegate' then
                 return COLORS.DB04;
             elseif worldObject:getType() == 'worldobject_chair' then
                 return COLORS.DB04;
