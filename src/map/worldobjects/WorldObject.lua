@@ -19,6 +19,7 @@ function WorldObject.new( template )
     local blocksPathfinding = template.blocksPathfinding;
     local sprite = template.sprite;
     local openSprite = template.openSprite;
+    local color = template.color;
 
     function self:damage( dmg )
         hp = hp - dmg;
@@ -38,6 +39,14 @@ function WorldObject.new( template )
 
     function self:isOpenable()
         return openable;
+    end
+
+    ---
+    -- Returns a table containing the RGB values for this WorldObject.
+    -- @return (table) The table containing the RGB values.
+    --
+    function self:getColor()
+        return color;
     end
 
     function self:getSize()

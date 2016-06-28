@@ -22,6 +22,7 @@ function Tile.new( x, y, template )
     local movementCost = template.movementCost;
     local passable = template.passable;
     local sprite = template.sprite;
+    local color = template.color;
 
     local id;
     local dirty;
@@ -102,6 +103,14 @@ function Tile.new( x, y, template )
     --
     function self:getCharacter()
         return character;
+    end
+
+    ---
+    -- Returns a table containing the RGB values for this tile.
+    -- @return (table) The table containing the RGB values.
+    --
+    function self:getColor()
+        return color;
     end
 
     ---

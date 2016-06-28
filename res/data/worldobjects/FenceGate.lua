@@ -3,6 +3,7 @@ return {
     type = 'worldobject_fencegate',
     sprite = 241,
     openSprite = 96,
+    color = { 143, 86, 59 },
     size = 40,
     hp = 65,
     energyReduction = 40,

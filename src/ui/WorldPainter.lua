@@ -124,37 +124,13 @@ function WorldPainter.new( game )
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction()];
             end
-        elseif tile:hasWorldObject() then
-            local worldObject = tile:getWorldObject();
-            if worldObject:getType() == 'worldobject_door' then
-                return COLORS.DB03;
-            elseif worldObject:getType() == 'worldobject_wall' then
-                return COLORS.DB23;
-            elseif worldObject:getType() == 'worldobject_fence' or worldObject:getType() == 'worldobject_fencegate' then
-                return COLORS.DB04;
-            elseif worldObject:getType() == 'worldobject_chair' then
-                return COLORS.DB04;
-            elseif worldObject:getType() == 'worldobject_table' then
-                return COLORS.DB04;
-            elseif worldObject:getType() == 'worldobject_window' then
-                return COLORS.DB19;
-            elseif worldObject:getType() == 'worldobject_lowwall' then
-                return COLORS.DB23;
-            end
-        elseif not tile:getStorage():isEmpty() then
-            return COLORS.DB27;
-        else
-            if tile:getType() == 'tile_water' then
-                return COLORS.DB16;
-            elseif tile:getType() == 'tile_deep_water' then
-                return COLORS.DB15;
-            elseif tile:getType() == 'tile_grass' then
-                return COLORS.DB12;
-            elseif tile:getType() == 'tile_asphalt' then
-                return COLORS.DB25;
-            end
-            return COLORS.DB03;
         end
+
+        if tile:hasWorldObject() then
+            return tile:getWorldObject():getColor();
+        end
+
+        return tile:getColor();
     end
 
     ---
