@@ -4,7 +4,7 @@ local Messenger = require( 'src.Messenger' );
 local Open = {};
 
 function Open.new( character, tile )
-    local self = Action.new( 3, tile ):addInstance( 'Open' );
+    local self = Action.new( tile:getWorldObject():getInteractionCost(), tile ):addInstance( 'Open' );
 
     function self:perform()
         local target = tile:getWorldObject();

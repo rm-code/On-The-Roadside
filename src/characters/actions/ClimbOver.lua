@@ -3,7 +3,7 @@ local Action = require( 'src.characters.actions.Action' );
 local ClimbOver = {};
 
 function ClimbOver.new( character, target )
-    local self = Action.new( 5, target ):addInstance( 'ClimbOver' );
+    local self = Action.new( target:getWorldObject():getInteractionCost(), target ):addInstance( 'ClimbOver' );
 
     ---
     -- Gets the direction of the target tile in relation to the character's

@@ -26,13 +26,13 @@ function WorldObject.new( template )
     local type = template.type;
     local size = template.size;
     local hp = template.hp;
+    local interactionCost = template.interactionCost;
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
     local debrisType = template.debrisType;
     local openable = template.openable or false;
     local climbable = template.climbable or false;
     local passable = template.passable or false;
-    local movementCost = template.movementCost or 1;
     local blocksVision = template.blocksVision;
     local blocksPathfinding = template.blocksPathfinding;
     local sprite = template.sprite;
@@ -99,11 +99,11 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject's movement cost attribute.
-    -- @return (number) The amount of AP it costs to move over this WorldObject.
+    -- Returns the WorldObject's interaction cost attribute.
+    -- @return (number) The amount of AP it costs to interact with this WorldObject.
     --
-    function self:getMovementCost()
-        return movementCost;
+    function self:getInteractionCost()
+        return interactionCost;
     end
 
     ---

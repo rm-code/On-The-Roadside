@@ -126,9 +126,6 @@ function Tile.new( x, y, template )
     -- @return (number) The movement cost for this tile.
     --
     function self:getMovementCost()
-        if self:hasWorldObject() then
-            return worldObject:getMovementCost();
-        end
         return movementCost;
     end
 

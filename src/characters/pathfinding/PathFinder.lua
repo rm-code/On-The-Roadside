@@ -42,7 +42,7 @@ end
 --
 local function calculateCost( tile, dir )
     if tile:hasWorldObject() then
-        return tile:getWorldObject():getMovementCost();
+        return tile:getWorldObject():getInteractionCost() + tile:getMovementCost();
     end
 
     if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
