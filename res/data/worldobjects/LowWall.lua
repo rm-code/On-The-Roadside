@@ -5,6 +5,7 @@ return {
     color = { 132, 126, 135 },
     size = 35,
     destructible = false,
+    climbable = true,
     movementCost = 5,
     blocksVision = false,
     blocksPathfinding = false

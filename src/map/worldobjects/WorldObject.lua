@@ -30,6 +30,7 @@ function WorldObject.new( template )
     local destructible = template.destructible;
     local debrisType = template.debrisType;
     local openable = template.openable or false;
+    local climbable = template.climbable or false;
     local passable = template.passable or false;
     local movementCost = template.movementCost or 1;
     local blocksVision = template.blocksVision;
@@ -138,6 +139,14 @@ function WorldObject.new( template )
     --
     function self:getType()
         return type;
+    end
+
+    ---
+    -- Checks wether the WorldObject's can be climbed over (i.e.: Fences).
+    -- @return (boolean) True if the WorldObject is climbable.
+    --
+    function self:isClimbable()
+        return climbable;
     end
 
     ---

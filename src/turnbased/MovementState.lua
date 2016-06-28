@@ -46,7 +46,7 @@ function MovementState.new( stateManager )
                         if index ~= 1 then
                             character:enqueueAction( Walk.new( character, tile ));
                         end
-                    elseif tile:hasWorldObject() and ( tile:getWorldObject():getType() == 'worldobject_fence' or tile:getWorldObject():getType() == 'worldobject_lowwall' ) then
+                    elseif tile:hasWorldObject() and tile:getWorldObject():isClimbable() then
                         character:enqueueAction( ClimbOver.new( character, tile ));
                     else
                         character:enqueueAction( Walk.new( character, tile ));

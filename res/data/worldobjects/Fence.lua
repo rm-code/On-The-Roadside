@@ -7,6 +7,7 @@ return {
     hp = 55,
     energyReduction = 30,
     destructible = true,
+    climbable = true,
     movementCost = 5,
     blocksVision = false,
     blocksPathfinding = false
