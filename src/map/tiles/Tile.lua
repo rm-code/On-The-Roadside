@@ -21,6 +21,7 @@ function Tile.new( x, y, template )
     local type = template.type;
     local movementCost = template.movementCost;
     local passable = template.passable;
+    local sprite = template.sprite;
 
     local id;
     local dirty;
@@ -157,9 +158,9 @@ function Tile.new( x, y, template )
 
     ---
     -- Gets the tile's index on the spritesheet.
-    -- @return (number) The tile index.
-    function self:getTileIndex()
-        return tileIndex;
+    -- @return (number) The sprite index.
+    function self:getSprite()
+        return sprite;
     end
 
     ---

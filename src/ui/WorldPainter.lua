@@ -19,24 +19,15 @@ local CHARACTER_COLORS = {
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local TILESET = love.graphics.newImage( 'res/img/16x16_sm.png' );
-local TILE_SPRITES = {
-    EMPTY       = love.graphics.newQuad(  0 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    WINDOW      = love.graphics.newQuad(  0 * TILE_SIZE, 11 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ALLIED      = love.graphics.newQuad(  1 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ITEMS       = love.graphics.newQuad(  1 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    ENEMY       = love.graphics.newQuad(  2 * TILE_SIZE,  0 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    TABLE       = love.graphics.newQuad(  2 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    WALL        = love.graphics.newQuad(  3 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    CHAIR       = love.graphics.newQuad( 14 * TILE_SIZE,  6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    DOOR_CLOSED = love.graphics.newQuad( 11 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    GRASS       = love.graphics.newQuad( 11 * TILE_SIZE,  3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    FENCE       = love.graphics.newQuad( 13 * TILE_SIZE,  3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    FLOOR       = love.graphics.newQuad( 14 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    SOIL        = love.graphics.newQuad( 12 * TILE_SIZE,  2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    WATER       = love.graphics.newQuad( 14 * TILE_SIZE,  7 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    DOOR_OPEN   = love.graphics.newQuad( 15 * TILE_SIZE,  5 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    PATH        = love.graphics.newQuad( 15 * TILE_SIZE, 10 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-}
+
+local TILE_SPRITES = {};
+for x = 1, TILESET:getWidth() / TILE_SIZE do
+    for y = 1, TILESET:getHeight() / TILE_SIZE do
+        TILE_SPRITES[#TILE_SPRITES + 1] = love.graphics.newQuad(( y - 1 ) * TILE_SIZE, ( x - 1 ) * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
+    end
+end
+
+print( "Loaded " .. #TILE_SPRITES .. " sprites!" );
 
 -- ------------------------------------------------
 -- Module
@@ -91,7 +82,7 @@ function WorldPainter.new( game )
 
                 -- Draws the path icon.
                 love.graphics.setColor( selectPathNodeColor( ap, character:getMaxActionPoints() ));
-                love.graphics.draw( TILESET, TILE_SPRITES.PATH, tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE );
+                love.graphics.draw( TILESET, TILE_SPRITES[176], tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE );
                 love.graphics.setColor( 255, 255, 255);
             end
         end
@@ -104,7 +95,7 @@ function WorldPainter.new( game )
     --
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
-            local id = spritebatch:add( TILE_SPRITES.EMPTY, x * TILE_SIZE, y * TILE_SIZE );
+            local id = spritebatch:add( TILE_SPRITES[1], x * TILE_SIZE, y * TILE_SIZE );
             tile:setID( id );
             tile:setDirty( true );
         end)
@@ -174,47 +165,17 @@ function WorldPainter.new( game )
     local function selectTileSprite( tile )
         if tile:isOccupied() and tile:isVisible() then
             if tile:getCharacter():getFaction() == FACTIONS.ENEMY then
-                return TILE_SPRITES.ENEMY;
+                return TILE_SPRITES[3];
             else
-                return TILE_SPRITES.ALLIED;
+                return TILE_SPRITES[2];
             end
         end
 
-        if not tile:getStorage():isEmpty() then
-            return TILE_SPRITES.ITEMS;
+        if tile:hasWorldObject() then
+            return TILE_SPRITES[tile:getWorldObject():getSprite()];
         end
 
-        if not tile:hasWorldObject() then
-            if tile:getType() == 'tile_water' or tile:getType() == 'tile_deep_water' then
-                return TILE_SPRITES.WATER;
-            elseif tile:getType() == 'tile_grass' then
-                return TILE_SPRITES.GRASS;
-            elseif tile:getType() == 'tile_asphalt' then
-                return TILE_SPRITES.FLOOR;
-            end
-            return TILE_SPRITES.SOIL;
-        else
-            local worldObject = tile:getWorldObject();
-            if worldObject:getType() == 'worldobject_wall' then
-                return TILE_SPRITES.WALL;
-            elseif worldObject:getType() == 'worldobject_fence' then
-                return TILE_SPRITES.FENCE;
-            elseif worldObject:getType() == 'worldobject_lowwall' then
-                return TILE_SPRITES.FENCE;
-            elseif worldObject:getType() == 'worldobject_door' then
-                if worldObject:isPassable() then
-                    return TILE_SPRITES.DOOR_OPEN;
-                else
-                    return TILE_SPRITES.DOOR_CLOSED;
-                end
-            elseif worldObject:getType() == 'worldobject_chair' then
-                return TILE_SPRITES.CHAIR;
-            elseif worldObject:getType() == 'worldobject_table' then
-                return TILE_SPRITES.TABLE;
-            elseif worldObject:getType() == 'worldobject_window' then
-                return TILE_SPRITES.WINDOW;
-            end
-        end
+        return TILE_SPRITES[tile:getSprite()];
     end
 
     ---

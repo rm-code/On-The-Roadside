@@ -16,6 +16,7 @@ function WorldObject.new( template )
     local movementCost = template.movementCost or 1;
     local blocksVision = template.blocksVision;
     local blocksPathfinding = template.blocksPathfinding;
+    local sprite = template.sprite;
 
     function self:damage( dmg )
         hp = hp - dmg;
@@ -66,12 +67,24 @@ function WorldObject.new( template )
         return name;
     end
 
+    function self:getSprite()
+        return sprite or 1;
+    end
+
     function self:getType()
         return type;
     end
 
     function self:isDestructible()
         return destructible;
+    end
+
+    ---
+    -- Sets the worldObject's sprite index.
+    -- @param nsprite (number) The new index.
+    --
+    function self:setSprite( nsprite )
+        sprite = nsprite;
     end
 
     return self;

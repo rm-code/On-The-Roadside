@@ -1,6 +1,7 @@
 return {
     name = 'Door',
     type = 'worldobject_door',
+    sprite = 44,
     size = 95,
     hp = 110,
     energyReduction = 40,

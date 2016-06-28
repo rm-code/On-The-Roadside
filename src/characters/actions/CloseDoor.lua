@@ -16,6 +16,8 @@ function CloseDoor.new( character, tile )
 
         target:setPassable( false );
         target:setBlocksVision( true );
+        target:setSprite( 44 );
+
         tile:setDirty( true );
     end
 
