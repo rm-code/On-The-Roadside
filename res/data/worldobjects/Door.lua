@@ -6,6 +6,7 @@ return {
     hp = 110,
     energyReduction = 40,
     destructible = true,
+    openable = true,
     blocksVision = true,
     blocksPathfinding = false
 }

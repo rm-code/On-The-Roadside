@@ -1,7 +1,7 @@
 local State = require( 'src.turnbased.State' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
 local Walk = require( 'src.characters.actions.Walk' );
-local OpenDoor = require( 'src.characters.actions.OpenDoor' );
+local Open = require( 'src.characters.actions.Open' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 
@@ -40,8 +40,8 @@ function MovementState.new( stateManager )
             if path then
                 character:addPath( path );
                 character:getPath():iterate( function( tile, index )
-                    if tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and not tile:isPassable() then
-                        character:enqueueAction( OpenDoor.new( character, tile ));
+                    if tile:hasWorldObject() and tile:getWorldObject():isOpenable() and not tile:isPassable() then
+                        character:enqueueAction( Open.new( character, tile ));
                         -- Don't walk on the door tile if the path ends there.
                         if index ~= 1 then
                             character:enqueueAction( Walk.new( character, tile ));

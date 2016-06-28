@@ -12,6 +12,7 @@ function WorldObject.new( template )
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
     local debrisType = template.debrisType;
+    local openable = template.openable or false;
     local passable = template.passable or false;
     local movementCost = template.movementCost or 1;
     local blocksVision = template.blocksVision;
@@ -32,6 +33,10 @@ function WorldObject.new( template )
 
     function self:isPassable()
         return passable;
+    end
+
+    function self:isOpenable()
+        return openable;
     end
 
     function self:getSize()

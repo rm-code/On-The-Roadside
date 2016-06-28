@@ -1,7 +1,7 @@
 local State = require( 'src.turnbased.State' );
 local CharacterManager = require( 'src.characters.CharacterManager' );
-local OpenDoor = require( 'src.characters.actions.OpenDoor' );
-local CloseDoor = require( 'src.characters.actions.CloseDoor' );
+local Open = require( 'src.characters.actions.Open' );
+local Close = require( 'src.characters.actions.Close' );
 
 local InteractionState = {};
 
@@ -11,11 +11,11 @@ function InteractionState.new( stateManager )
     local map;
 
     local function checkInteraction( tile, character )
-        if tile:hasWorldObject() and tile:getWorldObject():getType() == 'worldobject_door' and tile:isAdjacent( character:getTile() ) then
+        if tile:hasWorldObject() and tile:getWorldObject():isOpenable() and tile:isAdjacent( character:getTile() ) then
             if tile:isPassable() then
-                character:enqueueAction( CloseDoor.new( character, tile ));
+                character:enqueueAction( Close.new( character, tile ));
             else
-                character:enqueueAction( OpenDoor.new( character, tile ));
+                character:enqueueAction( Open.new( character, tile ));
             end
             stateManager:switch( 'execution', { map = map } );
         end

@@ -1,14 +1,14 @@
 local Action = require('src.characters.actions.Action');
 local Messenger = require( 'src.Messenger' );
 
-local CloseDoor = {};
+local Close = {};
 
-function CloseDoor.new( character, tile )
-    local self = Action.new( 3, tile ):addInstance( 'CloseDoor' );
+function Close.new( character, tile )
+    local self = Action.new( 3, tile ):addInstance( 'Close' );
 
     function self:perform()
         local target = tile:getWorldObject();
-        assert( target:getType() == 'worldobject_door', 'Target tile needs to be of type Door!' );
+        assert( target:isOpenable(), 'Target needs to be openable!' );
         assert( target:isPassable(), 'Target tile needs to be passable!' );
         assert( tile:isAdjacent( character:getTile() ), 'Character has to be adjacent to the target tile!' );
 
@@ -24,4 +24,4 @@ function CloseDoor.new( character, tile )
     return self;
 end
 
-return CloseDoor;
+return Close;
