@@ -20,10 +20,15 @@ function SoundManager.loadResources()
     SOUNDS.DOOR   = love.audio.newSource( 'res/sounds/door.wav' );
     SOUNDS.SELECT = love.audio.newSource( 'res/sounds/select.wav' );
     SOUNDS.SHOOT  = love.audio.newSource( 'res/sounds/shoot.wav' );
+    SOUNDS.CLIMB  = love.audio.newSource( 'res/sounds/climb.wav' );
 end
 
 Messenger.observe( 'ACTION_DOOR', function()
     love.audio.play( SOUNDS.DOOR );
+end)
+
+Messenger.observe( 'SOUND_CLIMB', function()
+    love.audio.play( SOUNDS.CLIMB );
 end)
 
 Messenger.observe( 'SOUND_SHOOT', function()

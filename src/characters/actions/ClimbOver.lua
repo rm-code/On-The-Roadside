@@ -1,4 +1,5 @@
 local Action = require( 'src.characters.actions.Action' );
+local Messenger = require( 'src.Messenger' );
 
 local ClimbOver = {};
 
@@ -40,6 +41,8 @@ function ClimbOver.new( character, target )
             current:removeCharacter();
             target:addCharacter( character );
             character:setTile( target );
+
+            Messenger.publish( 'SOUND_CLIMB' );
         end
     end
 
