@@ -16,7 +16,6 @@ function Open.new( character, tile )
 
         target:setPassable( true );
         target:setBlocksVision( false );
-        target:setSprite( 96 );
 
         tile:setDirty( true );
     end
