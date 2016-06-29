@@ -1,4 +1,5 @@
 local Character = require( 'src.characters.Character' );
+local Faction = require( 'src.characters.Faction' );
 
 -- ------------------------------------------------
 -- Constants
@@ -17,12 +18,11 @@ local CharacterManager = {};
 -- ------------------------------------------------
 
 local factions = {
-    [FACTIONS.ALLIED]  = {},
-    [FACTIONS.NEUTRAL] = {},
-    [FACTIONS.ENEMY]   = {}
+    [FACTIONS.ALLIED]  = Faction.new(),
+    [FACTIONS.NEUTRAL] = Faction.new(),
+    [FACTIONS.ENEMY]   = Faction.new()
 };
 
-local characterIndex = 1;
 local factionIndex = 1;
 
 -- ------------------------------------------------
@@ -30,23 +30,24 @@ local factionIndex = 1;
 -- ------------------------------------------------
 
 function CharacterManager.newCharacter( tile, faction )
-    table.insert( factions[faction], Character.new( tile, faction ) );
+    factions[faction]:addCharacter( Character.new( tile, faction ));
 end
 
 function CharacterManager.nextCharacter()
-    characterIndex = characterIndex + 1 > #factions[factionIndex] and 1 or characterIndex + 1;
-    return CharacterManager.getCurrentCharacter();
+    return factions[factionIndex]:nextCharacter();
+end
+
+function CharacterManager.prevCharacter()
+    return factions[factionIndex]:prevCharacter();
 end
 
 function CharacterManager.getCurrentCharacter()
-    return factions[factionIndex][characterIndex];
+    return factions[factionIndex]:getCurrentCharacter();
 end
 
 function CharacterManager.selectCharacter( tile )
-    for i = 1, #factions[factionIndex] do
-        if tile == factions[factionIndex][i]:getTile() then
-            characterIndex = i;
-        end
+    if tile:isOccupied() then
+        factions[factionIndex]:findCharacter( tile:getCharacter() );
     end
     return CharacterManager.getCurrentCharacter();
 end
@@ -60,40 +61,36 @@ function CharacterManager.clearCharacters()
     end
 end
 
-function CharacterManager.getCharacters()
+function CharacterManager.getFaction()
     return factions[factionIndex];
 end
 
 function CharacterManager.nextFaction()
     factionIndex = factionIndex + 1 > #factions and 1 or factionIndex + 1;
-    characterIndex = 1;
+
+    if factions[factionIndex]:getCurrentCharacter():isDead() then
+        CharacterManager.nextCharacter();
+    end
 end
 
 ---
--- Removes all dead characters from the game.
--- We iterate from the top so that we can remove the character and shift keys
--- without breaking the iteration. We also need to remove the dead each chars
--- from the tile they last occupied.
+-- Removes dead characters from the game.
 --
 function CharacterManager.removeDeadActors()
-    for _, faction in pairs( factions ) do
-        for i = #faction, 1, -1 do
-            local character = faction[i];
-            if character:isDead() then
-                local storage = character:getInventory():getSlots();
-                local tile = character:getTile();
+    factions[factionIndex]:iterate( function( character )
+        if character:isDead() then
+            local storage = character:getInventory():getSlots();
+            local tile = character:getTile();
 
-                for _, slot in ipairs( storage ) do
-                    if not slot:isEmpty() then
-                        tile:getStorage():addItem( slot:getItem() );
-                    end
+            for _, slot in ipairs( storage ) do
+                if not slot:isEmpty() then
+                    tile:getStorage():addItem( slot:getItem() );
                 end
-
-                tile:removeCharacter();
-                table.remove( faction, i );
             end
+
+            tile:removeCharacter();
         end
-    end
+    end);
 end
 
 return CharacterManager;

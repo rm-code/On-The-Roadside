@@ -32,6 +32,8 @@ function PlanningState.new( stateManager )
             activeHelper = MovementHelper;
         elseif key == 'space' then
             CharacterManager.nextCharacter();
+        elseif key == 'backspace' then
+            CharacterManager.prevCharacter();
         elseif key == 'return' then
             CharacterManager.clearCharacters();
             CharacterManager.nextFaction();
