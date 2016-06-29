@@ -126,6 +126,10 @@ function WorldPainter.new( game )
             end
         end
 
+        if not tile:getStorage():isEmpty() then
+            return COLORS.DB16;
+        end
+
         if tile:hasWorldObject() then
             return tile:getWorldObject():getColor();
         end
@@ -145,6 +149,10 @@ function WorldPainter.new( game )
             else
                 return TILE_SPRITES[2];
             end
+        end
+
+        if not tile:getStorage():isEmpty() then
+            return TILE_SPRITES[34];
         end
 
         if tile:hasWorldObject() then
