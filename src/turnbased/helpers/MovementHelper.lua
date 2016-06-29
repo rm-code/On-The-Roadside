@@ -13,22 +13,6 @@ local MovementHelper = {};
 -- Private Methods
 -- ------------------------------------------------
 
-local function commitPath( character )
-    character:getPath():iterate( function( tile, index )
-        if tile:hasWorldObject() and tile:getWorldObject():isOpenable() and not tile:isPassable() then
-            character:enqueueAction( Open.new( character, tile ));
-            -- Don't walk on the door tile if the path ends there.
-            if index ~= 1 then
-                character:enqueueAction( Walk.new( character, tile ));
-            end
-        elseif tile:hasWorldObject() and tile:getWorldObject():isClimbable() then
-            character:enqueueAction( ClimbOver.new( character, tile ));
-        else
-            character:enqueueAction( Walk.new( character, tile ));
-        end
-    end)
-end
-
 local function generatePath( target, character )
     if target then
         local origin = character:getTile();
@@ -36,6 +20,19 @@ local function generatePath( target, character )
 
         if path then
             character:addPath( path );
+            character:getPath():iterate( function( tile, index )
+                if tile:hasWorldObject() and tile:getWorldObject():isOpenable() and not tile:isPassable() then
+                    character:enqueueAction( Open.new( character, tile ));
+                    -- Don't walk on the door tile if the path ends there.
+                    if index ~= 1 then
+                        character:enqueueAction( Walk.new( character, tile ));
+                    end
+                elseif tile:hasWorldObject() and tile:getWorldObject():isClimbable() then
+                    character:enqueueAction( ClimbOver.new( character, tile ));
+                else
+                    character:enqueueAction( Walk.new( character, tile ));
+                end
+            end)
         else
             print( "Can't find path!");
         end
@@ -56,7 +53,6 @@ function MovementHelper.request( map, target, character, states )
         character:removeLineOfSight();
         generatePath( target, character );
     else
-        commitPath( character, character );
         states:push( 'execution' );
     end
 end
