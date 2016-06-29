@@ -38,9 +38,14 @@ function PlanningState.new( stateManager )
         end
     end
 
-    function self:mousepressed( mx, my, _ )
+    function self:mousepressed( mx, my, button )
         local tile = map:getTileAt( mx, my );
         if not tile then
+            return;
+        end
+
+        if button == 2 then
+            CharacterManager.selectCharacter( tile );
             return;
         end
 
