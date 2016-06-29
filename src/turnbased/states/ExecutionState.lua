@@ -25,7 +25,6 @@ function ExecutionState.new( stateManager )
             else
                 stateManager:pop();
             end
-            FactionManager.removeDeadActors();
         end
         actionTimer = actionTimer + dt;
     end

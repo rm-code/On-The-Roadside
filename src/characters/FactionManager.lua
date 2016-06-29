@@ -105,24 +105,4 @@ function FactionManager.nextFaction()
 
 end
 
----
--- Removes dead characters from the game.
---
-function FactionManager.removeDeadActors()
-    active:getFaction():iterate( function( character )
-        if character:isDead() then
-            local storage = character:getInventory():getSlots();
-            local tile = character:getTile();
-
-            for _, slot in ipairs( storage ) do
-                if not slot:isEmpty() then
-                    tile:getStorage():addItem( slot:getItem() );
-                end
-            end
-
-            tile:removeCharacter();
-        end
-    end);
-end
-
 return FactionManager;

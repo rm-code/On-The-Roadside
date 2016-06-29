@@ -78,6 +78,17 @@ function Character.new( tile, faction )
         return love.math.random( 0, 1 ) == 0 and -1 or 1;
     end
 
+    ---
+    -- Drops this character's inventory on the ground.
+    --
+    local function dropInventory()
+        for _, slot in ipairs( inventory:getSlots() ) do
+            if not slot:isEmpty() then
+                tile:getStorage():addItem( slot:getItem() );
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -185,6 +196,11 @@ function Character.new( tile, faction )
         print( "Damage: " .. damage );
 
         health = health - damage;
+
+        if self:isDead() then
+            dropInventory();
+            tile:removeCharacter();
+        end
     end
 
     -- ------------------------------------------------
