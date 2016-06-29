@@ -24,6 +24,7 @@ function PlanningState.new( stateManager )
             FactionManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
         elseif key == 'r' then
             FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
+            stateManager:push( 'execution' );
         elseif key == 'a' then
             activeHelper = AttackHelper;
         elseif key == 'e' then
