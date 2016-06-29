@@ -1,5 +1,5 @@
 local State = require( 'src.turnbased.states.State' );
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 local ExecutionState = {};
@@ -17,7 +17,7 @@ function ExecutionState.new( stateManager )
             return;
         end
 
-        local character = CharacterManager:getCurrentCharacter();
+        local character = FactionManager:getCurrentCharacter();
         if actionTimer > TURN_STEP_DELAY then
             if character:canPerformAction() then
                 character:performAction();
@@ -25,7 +25,7 @@ function ExecutionState.new( stateManager )
             else
                 stateManager:pop();
             end
-            CharacterManager.removeDeadActors();
+            FactionManager.removeDeadActors();
         end
         actionTimer = actionTimer + dt;
     end

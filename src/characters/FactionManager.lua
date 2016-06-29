@@ -11,7 +11,7 @@ local FACTIONS = require( 'src.constants.Factions' );
 -- Module
 -- ------------------------------------------------
 
-local CharacterManager = {};
+local FactionManager = {};
 
 -- ------------------------------------------------
 -- Local Variables
@@ -29,30 +29,30 @@ local factionIndex = 1;
 -- Public Methods
 -- ------------------------------------------------
 
-function CharacterManager.newCharacter( tile, faction )
+function FactionManager.newCharacter( tile, faction )
     factions[faction]:addCharacter( Character.new( tile, faction ));
 end
 
-function CharacterManager.nextCharacter()
+function FactionManager.nextCharacter()
     return factions[factionIndex]:nextCharacter();
 end
 
-function CharacterManager.prevCharacter()
+function FactionManager.prevCharacter()
     return factions[factionIndex]:prevCharacter();
 end
 
-function CharacterManager.getCurrentCharacter()
+function FactionManager.getCurrentCharacter()
     return factions[factionIndex]:getCurrentCharacter();
 end
 
-function CharacterManager.selectCharacter( tile )
+function FactionManager.selectCharacter( tile )
     if tile:isOccupied() then
         factions[factionIndex]:findCharacter( tile:getCharacter() );
     end
-    return CharacterManager.getCurrentCharacter();
+    return FactionManager.getCurrentCharacter();
 end
 
-function CharacterManager.clearCharacters()
+function FactionManager.clearCharacters()
     for _, char in ipairs( factions[factionIndex] ) do
         char:resetActionPoints();
         char:clearActions();
@@ -61,22 +61,22 @@ function CharacterManager.clearCharacters()
     end
 end
 
-function CharacterManager.getFaction()
+function FactionManager.getFaction()
     return factions[factionIndex];
 end
 
-function CharacterManager.nextFaction()
+function FactionManager.nextFaction()
     factionIndex = factionIndex + 1 > #factions and 1 or factionIndex + 1;
 
     if factions[factionIndex]:getCurrentCharacter():isDead() then
-        CharacterManager.nextCharacter();
+        FactionManager.nextCharacter();
     end
 end
 
 ---
 -- Removes dead characters from the game.
 --
-function CharacterManager.removeDeadActors()
+function FactionManager.removeDeadActors()
     factions[factionIndex]:iterate( function( character )
         if character:isDead() then
             local storage = character:getInventory():getSlots();
@@ -93,4 +93,4 @@ function CharacterManager.removeDeadActors()
     end);
 end
 
-return CharacterManager;
+return FactionManager;

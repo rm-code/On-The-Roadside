@@ -1,4 +1,4 @@
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 local MousePointer = require( 'src.ui.MousePointer' );
 
 -- ------------------------------------------------
@@ -53,7 +53,7 @@ function UserInterface.new( game )
     end
 
     function self:draw()
-        local character = CharacterManager.getCurrentCharacter();
+        local character = FactionManager.getCurrentCharacter();
 
         drawMouseCursor();
 

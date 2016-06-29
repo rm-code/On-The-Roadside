@@ -1,5 +1,5 @@
 local Map = require( 'src.map.Map' );
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
@@ -34,13 +34,13 @@ function Game.new()
         map = Map.new();
         map:init();
 
-        CharacterManager.newCharacter( map:getTileAt(  4,  4 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt(  6, 17 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt( 14,  8 ), FACTIONS.ALLIED  );
-        CharacterManager.newCharacter( map:getTileAt(  2, 33 ), FACTIONS.NEUTRAL );
-        CharacterManager.newCharacter( map:getTileAt( 47,  2 ), FACTIONS.ENEMY   );
-        CharacterManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
-        CharacterManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
+        FactionManager.newCharacter( map:getTileAt(  4,  4 ), FACTIONS.ALLIED  );
+        FactionManager.newCharacter( map:getTileAt(  6, 17 ), FACTIONS.ALLIED  );
+        FactionManager.newCharacter( map:getTileAt( 14,  8 ), FACTIONS.ALLIED  );
+        FactionManager.newCharacter( map:getTileAt(  2, 33 ), FACTIONS.NEUTRAL );
+        FactionManager.newCharacter( map:getTileAt( 47,  2 ), FACTIONS.ENEMY   );
+        FactionManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
+        FactionManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
 
@@ -65,7 +65,7 @@ function Game.new()
     end
 
     function self:getActiveCharacter()
-        return CharacterManager.getCurrentCharacter();
+        return FactionManager.getCurrentCharacter();
     end
 
     return self;

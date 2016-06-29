@@ -1,6 +1,6 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -29,7 +29,7 @@ local THIRD_COLUMN = 400;
 function InventoryScreen.new()
     local self = Screen.new();
 
-    local character = CharacterManager.getCurrentCharacter();
+    local character = FactionManager.getCurrentCharacter();
     local inventory = character:getInventory();
     local rowIndex    = 1;
     local columnIndex = 1;

@@ -3,7 +3,7 @@ local Reload = require( 'src.characters.actions.Reload' );
 local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
 local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
 local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 
 local PlanningState = {};
 
@@ -19,11 +19,11 @@ function PlanningState.new( stateManager )
 
     function self:keypressed( key )
         if key == 'right' then
-            CharacterManager.getCurrentCharacter():getWeapon():selectNextFiringMode();
+            FactionManager.getCurrentCharacter():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            CharacterManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
+            FactionManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
         elseif key == 'r' then
-            CharacterManager.getCurrentCharacter():enqueueAction( Reload.new( CharacterManager.getCurrentCharacter() ));
+            FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
         elseif key == 'a' then
             activeHelper = AttackHelper;
         elseif key == 'e' then
@@ -31,12 +31,12 @@ function PlanningState.new( stateManager )
         elseif key == 'm' then
             activeHelper = MovementHelper;
         elseif key == 'space' then
-            CharacterManager.nextCharacter();
+            FactionManager.nextCharacter();
         elseif key == 'backspace' then
-            CharacterManager.prevCharacter();
+            FactionManager.prevCharacter();
         elseif key == 'return' then
-            CharacterManager.clearCharacters();
-            CharacterManager.nextFaction();
+            FactionManager.clearCharacters();
+            FactionManager.nextFaction();
         end
     end
 
@@ -47,11 +47,11 @@ function PlanningState.new( stateManager )
         end
 
         if button == 2 then
-            CharacterManager.selectCharacter( tile );
+            FactionManager.selectCharacter( tile );
             return;
         end
 
-        activeHelper.request( map, tile, CharacterManager.getCurrentCharacter(), stateManager );
+        activeHelper.request( map, tile, FactionManager.getCurrentCharacter(), stateManager );
     end
 
     return self;

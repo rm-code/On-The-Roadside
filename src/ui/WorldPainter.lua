@@ -1,4 +1,4 @@
-local CharacterManager = require( 'src.characters.CharacterManager' );
+local FactionManager = require( 'src.characters.FactionManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 local COLORS = require( 'src.constants.Colors' );
@@ -119,7 +119,7 @@ function WorldPainter.new( game )
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == CharacterManager.getCurrentCharacter() then
+            if tile:getCharacter() == FactionManager.getCurrentCharacter() then
                 return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction()];
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction()];
@@ -180,7 +180,7 @@ function WorldPainter.new( game )
     end
 
     function self:draw()
-        local character = CharacterManager.getCurrentCharacter();
+        local character = FactionManager.getCurrentCharacter();
         love.graphics.draw( spritebatch, 0, 0 );
 
         -- TODO move to function
@@ -204,7 +204,7 @@ function WorldPainter.new( game )
 
     function self:update()
         local map = game:getMap();
-        CharacterManager.getFaction():iterate( function( character )
+        FactionManager.getFaction():iterate( function( character )
             map:calculateVisibility( character:getTile(), character:getViewRange() );
             if character:hasPath() then
                 character:getPath():refresh();
