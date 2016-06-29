@@ -80,12 +80,12 @@ function FactionManager.selectCharacter( tile )
 end
 
 function FactionManager.clearCharacters()
-    for _, char in ipairs( active:getFaction() ) do
-        char:resetActionPoints();
-        char:clearActions();
-        char:removePath();
-        char:removeLineOfSight();
-    end
+    active:getFaction():iterate( function( character )
+        character:resetActionPoints();
+        character:clearActions();
+        character:removePath();
+        character:removeLineOfSight();
+    end);
 end
 
 function FactionManager.getFaction()
