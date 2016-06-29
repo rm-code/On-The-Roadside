@@ -1,5 +1,6 @@
 local Character = require( 'src.characters.Character' );
 local Faction = require( 'src.characters.Faction' );
+local FactionNode = require( 'src.characters.FactionNode' );
 
 -- ------------------------------------------------
 -- Constants
@@ -17,43 +18,69 @@ local FactionManager = {};
 -- Local Variables
 -- ------------------------------------------------
 
-local factions = {
-    [FACTIONS.ALLIED]  = Faction.new(),
-    [FACTIONS.NEUTRAL] = Faction.new(),
-    [FACTIONS.ENEMY]   = Faction.new()
-};
+local root;
+local active;
 
-local factionIndex = 1;
+local function addFaction( faction )
+    local node = FactionNode.new( faction );
+
+    -- Initialise root node.
+    if not root then
+        root = node;
+        active = root;
+        return;
+    end
+
+    -- Doubly link the new node.
+    active:linkNext( node );
+    node:linkPrev( active );
+
+    -- Make it the active node.
+    active = node;
+end
 
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
+function FactionManager.init()
+    addFaction( Faction.new( FACTIONS.ENEMY ));
+    addFaction( Faction.new( FACTIONS.NEUTRAL ));
+    addFaction( Faction.new( FACTIONS.ALLIED ));
+end
+
 function FactionManager.newCharacter( tile, faction )
-    factions[faction]:addCharacter( Character.new( tile, faction ));
+    local node = root;
+    while node do
+        if node:getFaction():getType() == faction then
+            node:getFaction():addCharacter( Character.new( tile, faction ));
+            break;
+        end
+        node = node:getNext();
+    end
 end
 
 function FactionManager.nextCharacter()
-    return factions[factionIndex]:nextCharacter();
+    return active:getFaction():nextCharacter();
 end
 
 function FactionManager.prevCharacter()
-    return factions[factionIndex]:prevCharacter();
+    return active:getFaction():prevCharacter();
 end
 
 function FactionManager.getCurrentCharacter()
-    return factions[factionIndex]:getCurrentCharacter();
+    return active:getFaction():getCurrentCharacter();
 end
 
 function FactionManager.selectCharacter( tile )
     if tile:isOccupied() then
-        factions[factionIndex]:findCharacter( tile:getCharacter() );
+        active:getFaction():findCharacter( tile:getCharacter() );
     end
     return FactionManager.getCurrentCharacter();
 end
 
 function FactionManager.clearCharacters()
-    for _, char in ipairs( factions[factionIndex] ) do
+    for _, char in ipairs( active:getFaction() ) do
         char:resetActionPoints();
         char:clearActions();
         char:removePath();
@@ -62,22 +89,27 @@ function FactionManager.clearCharacters()
 end
 
 function FactionManager.getFaction()
-    return factions[factionIndex];
+    return active:getFaction();
 end
 
 function FactionManager.nextFaction()
-    factionIndex = factionIndex + 1 > #factions and 1 or factionIndex + 1;
-
-    if factions[factionIndex]:getCurrentCharacter():isDead() then
-        FactionManager.nextCharacter();
+    while active do
+        active = active:getNext() or root;
+        if active:getFaction():hasLivingCharacters() then
+            if active:getFaction():getCurrentCharacter():isDead() then
+                return FactionManager.nextCharacter();
+            end
+            return active:getFaction():getCurrentCharacter();
+        end
     end
+
 end
 
 ---
 -- Removes dead characters from the game.
 --
 function FactionManager.removeDeadActors()
-    factions[factionIndex]:iterate( function( character )
+    active:getFaction():iterate( function( character )
         if character:isDead() then
             local storage = character:getInventory():getSlots();
             local tile = character:getTile();

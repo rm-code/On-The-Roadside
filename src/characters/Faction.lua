@@ -3,7 +3,7 @@ local CharacterNode = require('src.characters.CharacterNode');
 
 local Faction = {};
 
-function Faction.new()
+function Faction.new( type )
     local self = Object.new():addInstance( 'Faction' );
 
     local root;
@@ -81,6 +81,10 @@ function Faction.new()
             node = node:getNext();
         end
         return false;
+    end
+
+    function self:getType()
+        return type;
     end
 
     return self;

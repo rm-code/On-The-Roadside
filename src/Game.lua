@@ -34,6 +34,7 @@ function Game.new()
         map = Map.new();
         map:init();
 
+        FactionManager.init();
         FactionManager.newCharacter( map:getTileAt(  4,  4 ), FACTIONS.ALLIED  );
         FactionManager.newCharacter( map:getTileAt(  6, 17 ), FACTIONS.ALLIED  );
         FactionManager.newCharacter( map:getTileAt( 14,  8 ), FACTIONS.ALLIED  );
