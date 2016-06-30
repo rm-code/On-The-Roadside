@@ -1,5 +1,5 @@
 local Object = require('src.Object');
-local CharacterNode = require('src.characters.CharacterNode');
+local Node = require('src.characters.Node');
 
 local Faction = {};
 
@@ -11,7 +11,7 @@ function Faction.new( type )
     local last;
 
     function self:addCharacter( nchar )
-        local node = CharacterNode.new( nchar );
+        local node = Node.new( nchar );
 
         -- Initialise root node.
         if not root then
@@ -34,7 +34,7 @@ function Faction.new( type )
         assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
         local node = root;
         while node do
-            if node:getCharacter() == character and not node:getCharacter():isDead() then
+            if node:getObject() == character and not node:getObject():isDead() then
                 active = node;
                 break;
             end
@@ -45,20 +45,20 @@ function Faction.new( type )
     function self:iterate( callback )
         local node = root;
         while node do
-            callback( node:getCharacter() );
+            callback( node:getObject() );
             node = node:getNext();
         end
     end
 
     function self:getCurrentCharacter()
-        return active:getCharacter();
+        return active:getObject();
     end
 
     function self:nextCharacter()
         while active do
             active = active:getNext() or root;
-            if not active:getCharacter():isDead() then
-                return active:getCharacter();
+            if not active:getObject():isDead() then
+                return active:getObject();
             end
         end
     end
@@ -66,8 +66,8 @@ function Faction.new( type )
     function self:prevCharacter()
         while active do
             active = active:getPrev() or last;
-            if not active:getCharacter():isDead() then
-                return active:getCharacter();
+            if not active:getObject():isDead() then
+                return active:getObject();
             end
         end
     end
@@ -75,7 +75,7 @@ function Faction.new( type )
     function self:hasLivingCharacters()
         local node = root;
         while node do
-            if not node:getCharacter():isDead() then
+            if not node:getObject():isDead() then
                 return true;
             end
             node = node:getNext();

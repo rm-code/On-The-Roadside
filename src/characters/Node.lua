@@ -1,9 +1,9 @@
 local Object = require('src.Object');
 
-local FactionNode = {};
+local Node = {};
 
-function FactionNode.new( faction )
-    local self = Object.new():addInstance( 'FactionNode' );
+function Node.new( object )
+    local self = Object.new():addInstance( 'Node' );
 
     local next;
     local prev;
@@ -24,11 +24,11 @@ function FactionNode.new( faction )
         return prev;
     end
 
-    function self:getFaction()
-        return faction;
+    function self:getObject()
+        return object;
     end
 
     return self;
 end
 
-return FactionNode;
+return Node;

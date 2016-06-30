@@ -1,6 +1,6 @@
 local Character = require( 'src.characters.Character' );
 local Faction = require( 'src.characters.Faction' );
-local FactionNode = require( 'src.characters.FactionNode' );
+local Node = require( 'src.characters.Node' );
 
 -- ------------------------------------------------
 -- Constants
@@ -30,7 +30,7 @@ local active;
 -- @param faction (number) An index to identify the faction.
 --
 local function addFaction( faction )
-    local node = FactionNode.new( faction );
+    local node = Node.new( faction );
 
     -- Initialise root node.
     if not root then
@@ -55,7 +55,7 @@ end
 -- Resets the characters of the active faction.
 --
 function FactionManager.clearCharacters()
-    active:getFaction():iterate( function( character )
+    active:getObject():iterate( function( character )
         character:resetActionPoints();
         character:clearActions();
         character:removePath();
@@ -80,8 +80,8 @@ end
 function FactionManager.newCharacter( tile, faction )
     local node = root;
     while node do
-        if node:getFaction():getType() == faction then
-            node:getFaction():addCharacter( Character.new( tile, faction ));
+        if node:getObject():getType() == faction then
+            node:getObject():addCharacter( Character.new( tile, faction ));
             break;
         end
         node = node:getNext();
@@ -93,7 +93,7 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.nextCharacter()
-    return active:getFaction():nextCharacter();
+    return active:getObject():nextCharacter();
 end
 
 ---
@@ -103,11 +103,11 @@ end
 function FactionManager.nextFaction()
     while active do
         active = active:getNext() or root;
-        if active:getFaction():hasLivingCharacters() then
-            if active:getFaction():getCurrentCharacter():isDead() then
+        if active:getObject():hasLivingCharacters() then
+            if active:getObject():getCurrentCharacter():isDead() then
                 return FactionManager.nextCharacter();
             end
-            return active:getFaction():getCurrentCharacter();
+            return active:getObject():getCurrentCharacter();
         end
     end
 end
@@ -117,7 +117,7 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.prevCharacter()
-    return active:getFaction():prevCharacter();
+    return active:getObject():prevCharacter();
 end
 
 ---
@@ -127,7 +127,7 @@ end
 --
 function FactionManager.selectCharacter( tile )
     if tile:isOccupied() then
-        active:getFaction():findCharacter( tile:getCharacter() );
+        active:getObject():findCharacter( tile:getCharacter() );
     end
     return FactionManager.getCurrentCharacter();
 end
@@ -141,7 +141,7 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.getCurrentCharacter()
-    return active:getFaction():getCurrentCharacter();
+    return active:getObject():getCurrentCharacter();
 end
 
 ---
@@ -149,7 +149,7 @@ end
 -- @return (Faction) The selected Faction.
 --
 function FactionManager.getFaction()
-    return active:getFaction();
+    return active:getObject();
 end
 
 return FactionManager;
