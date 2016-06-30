@@ -4,6 +4,16 @@ local Character = require( 'src.characters.Character' );
 
 local Faction = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.Factions' );
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 function Faction.new( type )
     local self = Object.new():addInstance( 'Faction' );
 
@@ -219,6 +229,10 @@ function Faction.new( type )
 
     function self:getType()
         return type;
+    end
+
+    function self:isAIControlled()
+        return type == FACTIONS.NEUTRAL or type == FACTIONS.ENEMY;
     end
 
     return self;
