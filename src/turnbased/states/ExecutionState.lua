@@ -29,6 +29,10 @@ function ExecutionState.new( stateManager )
         actionTimer = actionTimer + dt;
     end
 
+    function self:blocksInput()
+        return true;
+    end
+
     return self;
 end
 

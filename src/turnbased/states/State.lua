@@ -9,6 +9,7 @@ function State.new()
     function self:selectTile() end
     function self:processEvent() end
     function self:update() end
+    function self:blocksInput() end
 
     return self;
 end

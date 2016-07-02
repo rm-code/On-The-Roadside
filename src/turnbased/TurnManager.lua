@@ -30,10 +30,18 @@ function TurnManager.new( map )
     -- ------------------------------------------------
 
     function self:keypressed( key )
+        if stateManager:blocksInput() then
+            return;
+        end
+
         stateManager:keypressed( key );
     end
 
     function self:mousepressed( mx, my, button )
+        if stateManager:blocksInput() then
+            return;
+        end
+
         stateManager:selectTile( map:getTileAt( mx, my ), button );
     end
 

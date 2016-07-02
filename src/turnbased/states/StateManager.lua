@@ -5,6 +5,10 @@ function StateManager.new( states )
 
     local stack = {};
 
+    function self:blocksInput()
+        return stack[#stack]:blocksInput();
+    end
+
     function self:update( dt )
         stack[#stack]:update( dt );
     end
