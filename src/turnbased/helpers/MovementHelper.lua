@@ -33,6 +33,7 @@ local function generatePath( target, character )
                     character:enqueueAction( Walk.new( character, tile ));
                 end
             end)
+            return;
         end
     end
     print( "Can't find path!");
