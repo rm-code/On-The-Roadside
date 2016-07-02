@@ -14,7 +14,7 @@ local MovementHelper = {};
 -- ------------------------------------------------
 
 local function generatePath( target, character )
-    if target then
+    if target and not target:isOccupied() then
         local origin = character:getTile();
         local path = PathFinder.generatePath( origin, target, true );
 
@@ -33,10 +33,9 @@ local function generatePath( target, character )
                     character:enqueueAction( Walk.new( character, tile ));
                 end
             end)
-        else
-            print( "Can't find path!");
         end
     end
+    print( "Can't find path!");
 end
 
 -- ------------------------------------------------
