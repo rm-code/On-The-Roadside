@@ -34,7 +34,7 @@ function TurnManager.new( map )
     end
 
     function self:mousepressed( mx, my, button )
-        stateManager:mousepressed( mx, my, button );
+        stateManager:selectTile( map:getTileAt( mx, my ), button );
     end
 
     return self;

@@ -13,8 +13,8 @@ function StateManager.new( states )
         stack[#stack]:keypressed( key );
     end
 
-    function self:mousepressed( mx, my, button )
-        stack[#stack]:mousepressed( mx, my, button );
+    function self:selectTile( tile, button )
+        stack[#stack]:selectTile( tile, button );
     end
 
     function self:processEvent( event )

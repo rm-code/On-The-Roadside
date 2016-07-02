@@ -41,8 +41,7 @@ function PlanningState.new( stateManager )
         end
     end
 
-    function self:mousepressed( mx, my, button )
-        local tile = map:getTileAt( mx, my );
+    function self:selectTile( tile, button )
         if not tile then
             return;
         end
