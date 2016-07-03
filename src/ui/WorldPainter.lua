@@ -211,13 +211,6 @@ function WorldPainter.new( game )
     end
 
     function self:update()
-        local map = game:getMap();
-        FactionManager.getFaction():iterate( function( character )
-            map:calculateVisibility( character:getTile(), character:getViewRange() );
-            if character:hasPath() then
-                character:getPath():refresh();
-            end
-        end);
         updateSpritebatch( game:getMap() );
     end
 

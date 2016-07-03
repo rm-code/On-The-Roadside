@@ -25,6 +25,23 @@ function Game.new()
     local map;
     local turnManager;
 
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function updateVisibility()
+        FactionManager.getFaction():iterate( function( character )
+            map:calculateVisibility( character:getTile(), character:getViewRange() );
+            if character:hasPath() then
+                character:getPath():refresh();
+            end
+        end);
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
     function self:init()
         ItemFactory.loadTemplates();
         TileFactory.loadTemplates();
@@ -49,8 +66,9 @@ function Game.new()
     end
 
     function self:update( dt )
-        turnManager:update( dt )
         map:update();
+        updateVisibility();
+        turnManager:update( dt )
     end
 
     function self:getMap()
