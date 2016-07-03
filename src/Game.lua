@@ -31,9 +31,11 @@ function Game.new()
 
     local function updateVisibility()
         FactionManager.getFaction():iterate( function( character )
-            map:calculateVisibility( character:getTile(), character:getViewRange() );
-            if character:hasPath() then
-                character:getPath():refresh();
+            if not character:isDead() then
+                map:calculateVisibility( character:getTile(), character:getViewRange() );
+                if character:hasPath() then
+                    character:getPath():refresh();
+                end
             end
         end);
     end
