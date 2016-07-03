@@ -85,10 +85,6 @@ function Game.new()
         turnManager:mousepressed( mx, my, button );
     end
 
-    function self:getActiveCharacter()
-        return FactionManager.getCurrentCharacter();
-    end
-
     return self;
 end
 
