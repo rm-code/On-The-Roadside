@@ -109,12 +109,12 @@ function WorldPainter.new( game )
     --
     local function selectTileColor( tile )
         -- Hide unexplored tiles.
-        if not tile:isExplored() then
+        if not FactionManager.getFaction():hasExplored( tile ) then
             return COLORS.DB00;
         end
 
         -- Dim tiles hidden from the player.
-        if not tile:isVisible() then
+        if not FactionManager.getFaction():canSee( tile ) then
             return COLORS.DB01;
         end
 
@@ -143,7 +143,7 @@ function WorldPainter.new( game )
     -- @return     (Quad) A quad pointing to a sprite on the tileset.
     --
     local function selectTileSprite( tile )
-        if tile:isOccupied() and tile:isVisible() then
+        if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
             if tile:getCharacter():getFaction() == FACTIONS.ENEMY then
                 return TILE_SPRITES[3];
             else
@@ -195,7 +195,7 @@ function WorldPainter.new( game )
         if character:hasLineOfSight() then
             character:getLineOfSight():iterate( function( tile )
                 love.graphics.setColor( 0, 255, 0 );
-                if not tile:isPassable() or not tile:isVisible() then
+                if not tile:isPassable() or not character:canSee( tile ) then
                     love.graphics.setColor( 255, 0, 0 );
                 end
                 love.graphics.rectangle( 'line', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );

@@ -92,6 +92,7 @@ function FactionManager.nextFaction()
     while active do
         active = active:getNext() or root;
         if active:getObject():hasLivingCharacters() then
+            active:getObject():activate();
             if active:getObject():getCurrentCharacter():isDead() then
                 return FactionManager.nextCharacter();
             end

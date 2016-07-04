@@ -168,11 +168,6 @@ function Map.new()
         for x = 1, #tiles do
             for y = 1, #tiles[x] do
                 local tile = tiles[x][y];
-                if tile:isVisible() then
-                    tile:setVisible( false );
-                    tile:setDirty( true );
-                end
-
                 if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
                     if tile:getWorldObject():getDebrisType() then
                         local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisType() );
@@ -182,40 +177,6 @@ function Map.new()
                         tile:removeWorldObject();
                     end
                 end
-            end
-        end
-    end
-
-    ---
-    -- Cast rays in a 360° radius around a given Tile. When a ray touches a Tile
-    -- it will be set visible, explored and marked for a drawing update. If the
-    -- tile contains a WorldObject which blocks vision the ray stops there.
-    -- @param tile  (Tile)   The tile to start at.
-    -- @param range (number) The view range to use.
-    --
-    function self:calculateVisibility( tile, range )
-        local tx, ty = tile:getPosition();
-
-        for i = 1, 360 do
-            local ox, oy = tx + 0.5, ty + 0.5;
-            local rad    = math.rad( i );
-            local rx, ry = math.cos( rad ), math.sin( rad );
-
-            for _ = 1, range do
-                local target = self:getTileAt( math.floor( ox ), math.floor( oy ));
-                if not target then
-                    break;
-                end
-                target:setVisible( true );
-                target:setExplored( true );
-                target:setDirty( true );
-
-                if target:hasWorldObject() and target:getWorldObject():blocksVision() then
-                    break;
-                end
-
-                ox = ox + rx;
-                oy = oy + ry;
             end
         end
     end

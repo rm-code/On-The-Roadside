@@ -45,6 +45,7 @@ function Character.new( tile, faction )
     local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
+    local fov = {};
 
     local inventory = Inventory.new();
 
@@ -92,6 +93,17 @@ function Character.new( tile, faction )
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
+
+    ---
+    -- Adds a tile to this character's FOV.
+    -- @param tx     (number) The target-tile's position along the x-axis.
+    -- @param ty     (number) The target-tile's position along the y-axis.
+    -- @param target (Tile)   The target-tile.
+    --
+    function self:addSeenTile( tx, ty, target )
+        fov[tx] = fov[tx] or {};
+        fov[tx][ty] = target;
+    end
 
     ---
     -- Adds a new action to the action queue.
@@ -201,6 +213,31 @@ function Character.new( tile, faction )
             dropInventory();
             tile:removeCharacter();
         end
+    end
+
+    ---
+    -- Clears the list of seen tiles and marks them for a drawing update.
+    --
+    function self:resetFOV()
+        for x, rx in pairs( fov ) do
+            for y, target in pairs( rx ) do
+                target:setDirty( true );
+                fov[x][y] = nil;
+            end
+        end
+    end
+
+    ---
+    -- Checks if the character can see a certain tile.
+    -- @param target (Tile)    The tile to check.
+    -- @return       (boolean) Wether the character sees the tile.
+    --
+    function self:canSee( target )
+        local tx, ty = target:getPosition();
+        if not fov[tx] then
+            return false;
+        end
+        return fov[tx][ty] ~= nil;
     end
 
     -- ------------------------------------------------

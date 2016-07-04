@@ -29,15 +29,9 @@ function Game.new()
     -- Private Methods
     -- ------------------------------------------------
 
+    -- TODO update visibility only when it is really necessary.
     local function updateVisibility()
-        FactionManager.getFaction():iterate( function( character )
-            if not character:isDead() then
-                map:calculateVisibility( character:getTile(), character:getViewRange() );
-                if character:hasPath() then
-                    character:getPath():refresh();
-                end
-            end
-        end);
+        FactionManager.getFaction():generateFOV( map );
     end
 
     -- ------------------------------------------------

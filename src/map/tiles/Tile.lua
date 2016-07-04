@@ -29,8 +29,6 @@ function Tile.new( x, y, template )
     local neighbours;
     local character;
     local worldObject;
-    local visible;
-    local explored;
     local storage = Storage.new( 15 );
 
     -- ------------------------------------------------
@@ -230,14 +228,6 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Checks if the tile is explored.
-    -- @return (boolean) True if the tile has been explored.
-    --
-    function self:isExplored()
-        return explored;
-    end
-
-    ---
     -- Checks if the tile has a character on it.
     -- @return (boolean) True a character is standing on the tile.
     --
@@ -256,14 +246,6 @@ function Tile.new( x, y, template )
         return passable;
     end
 
-    ---
-    -- Checks if the tile is visible.
-    -- @return (boolean) True if the tile is visible.
-    --
-    function self:isVisible()
-        return visible;
-    end
-
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
@@ -277,27 +259,11 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Sets the explored state of the tile.
-    -- @param nexplored (boolean) Wether the tile has been explored or not.
-    --
-    function self:setExplored( nexplored )
-        explored = nexplored;
-    end
-
-    ---
     -- Sets the tile's unique ID.
     -- @param nid (number) The tile's new ID.
     --
     function self:setID( nid )
         id = nid;
-    end
-
-    ---
-    -- Sets the visibile state of the tile.
-    -- @param nvisible (boolean) Wether the tile is visible or not.
-    --
-    function self:setVisible( nvisible )
-        visible = nvisible;
     end
 
     return self;
