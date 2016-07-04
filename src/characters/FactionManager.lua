@@ -51,18 +51,6 @@ end
 -- ------------------------------------------------
 
 ---
--- Resets the characters of the active faction.
---
-function FactionManager.clearCharacters()
-    active:getObject():iterate( function( character )
-        character:resetActionPoints();
-        character:clearActions();
-        character:removePath();
-        character:removeLineOfSight();
-    end);
-end
-
----
 -- Initialises the FactionManager by creating a linked list of factions.
 --
 function FactionManager.init()
@@ -100,6 +88,7 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.nextFaction()
+    active:getObject():deactivate();
     while active do
         active = active:getNext() or root;
         if active:getObject():hasLivingCharacters() then

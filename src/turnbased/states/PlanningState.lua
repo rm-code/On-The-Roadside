@@ -36,7 +36,6 @@ function PlanningState.new( stateManager )
         elseif key == 'backspace' then
             FactionManager.prevCharacter();
         elseif key == 'return' then
-            FactionManager.clearCharacters();
             FactionManager.nextFaction();
         end
     end

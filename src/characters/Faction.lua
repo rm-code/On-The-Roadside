@@ -11,6 +11,15 @@ function Faction.new( type )
     local active;
     local last;
 
+    function self:deactivate()
+        self:iterate( function( character )
+            character:resetActionPoints();
+            character:clearActions();
+            character:removePath();
+            character:removeLineOfSight();
+        end);
+    end
+
     function self:addCharacter( tile, faction )
         local node = Node.new( Character.new( tile, faction ));
 
