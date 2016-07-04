@@ -162,7 +162,7 @@ function Map.new()
     ---
     -- Updates the map. This resets the visibility attribute for all visible
     -- tiles and marks them for a drawing update. It also replaces destroyed
-    -- WorldObjects with their debris types or removes them completely. 
+    -- WorldObjects with their debris types or removes them completely.
     --
     function self:update()
         for x = 1, #tiles do
