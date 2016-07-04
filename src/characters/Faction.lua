@@ -1,5 +1,6 @@
 local Object = require('src.Object');
 local Node = require('src.characters.Node');
+local Character = require( 'src.characters.Character' );
 
 local Faction = {};
 
@@ -10,8 +11,8 @@ function Faction.new( type )
     local active;
     local last;
 
-    function self:addCharacter( nchar )
-        local node = Node.new( nchar );
+    function self:addCharacter( tile, faction )
+        local node = Node.new( Character.new( tile, faction ));
 
         -- Initialise root node.
         if not root then

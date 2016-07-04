@@ -1,4 +1,3 @@
-local Character = require( 'src.characters.Character' );
 local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.characters.Node' );
 
@@ -81,7 +80,7 @@ function FactionManager.newCharacter( tile, faction )
     local node = root;
     while node do
         if node:getObject():getType() == faction then
-            node:getObject():addCharacter( Character.new( tile, faction ));
+            node:getObject():addCharacter( tile, faction );
             break;
         end
         node = node:getNext();
