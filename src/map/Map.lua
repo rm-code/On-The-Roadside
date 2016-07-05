@@ -138,6 +138,22 @@ function Map.new()
     -- ------------------------------------------------
 
     ---
+    -- Randomly searches for a tile on which a player could be spawned.
+    -- @return (Tile) A tile suitable for spawning or nil.
+    --
+    function self:findRandomSpawnPoint()
+        while true do
+            local x = love.math.random( 1, GROUND_LAYER:getWidth() );
+            local y = love.math.random( 1, GROUND_LAYER:getHeight() );
+
+            local tile = self:getTileAt( x, y );
+            if tile:isPassable() and not tile:isOccupied() then
+                return tile;
+            end
+        end
+    end
+
+    ---
     -- Initialises the map by creating the Tiles, creating references to the
     -- neighbouring tiles and adding WorldObjects.
     --

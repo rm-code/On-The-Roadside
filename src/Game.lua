@@ -34,6 +34,15 @@ function Game.new()
         FactionManager.getFaction():generateFOV( map );
     end
 
+    ---
+    -- Spawns characters at a random location on the map.
+    --
+    local function spawnCharactersRandomly( amount, faction )
+        for _ = 1, amount do
+            FactionManager.newCharacter( map:findRandomSpawnPoint(), faction  );
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -48,13 +57,10 @@ function Game.new()
         map:init();
 
         FactionManager.init();
-        FactionManager.newCharacter( map:getTileAt(  4,  4 ), FACTIONS.ALLIED  );
-        FactionManager.newCharacter( map:getTileAt(  6, 17 ), FACTIONS.ALLIED  );
-        FactionManager.newCharacter( map:getTileAt( 14,  8 ), FACTIONS.ALLIED  );
-        FactionManager.newCharacter( map:getTileAt(  2, 33 ), FACTIONS.NEUTRAL );
-        FactionManager.newCharacter( map:getTileAt( 47,  2 ), FACTIONS.ENEMY   );
-        FactionManager.newCharacter( map:getTileAt( 47,  3 ), FACTIONS.ENEMY   );
-        FactionManager.newCharacter( map:getTileAt( 47,  4 ), FACTIONS.ENEMY   );
+
+        spawnCharactersRandomly( 10, FACTIONS.ALLIED  );
+        spawnCharactersRandomly(  5, FACTIONS.NEUTRAL );
+        spawnCharactersRandomly( 10, FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
 
