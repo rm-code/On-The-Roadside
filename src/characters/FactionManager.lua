@@ -1,5 +1,6 @@
 local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.characters.Node' );
+local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Constants
@@ -80,7 +81,9 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.nextCharacter()
-    return active:getObject():nextCharacter();
+    local character = active:getObject():nextCharacter();
+    Messenger.publish( 'SWITCH_CHARACTERS', character );
+    return character;
 end
 
 ---
@@ -93,10 +96,12 @@ function FactionManager.nextFaction()
         active = active:getNext() or root;
         if active:getObject():hasLivingCharacters() then
             active:getObject():activate();
-            if active:getObject():getCurrentCharacter():isDead() then
+            local current = active:getObject():getCurrentCharacter();
+            if current:isDead() then
                 return FactionManager.nextCharacter();
             end
-            return active:getObject():getCurrentCharacter();
+            Messenger.publish( 'SWITCH_CHARACTERS', current );
+            return current;
         end
     end
 end

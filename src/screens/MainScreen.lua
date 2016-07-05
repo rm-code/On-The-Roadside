@@ -5,12 +5,19 @@ local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
+local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local MainScreen = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -63,6 +70,10 @@ function MainScreen.new()
         local mx, my = MousePointer.getGridPosition();
         game:mousepressed( mx, my, button );
     end
+
+    Messenger.observe( 'SWITCH_CHARACTERS', function( character )
+        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+    end)
 
     return self;
 end
