@@ -19,7 +19,7 @@ function ExecutionState.new( stateManager )
 
         local character = FactionManager:getCurrentCharacter();
         if actionTimer > TURN_STEP_DELAY then
-            if character:canPerformAction() then
+            if character:hasEnqueuedAction() and character:canPerformAction() then
                 character:performAction();
                 actionTimer = 0;
             else

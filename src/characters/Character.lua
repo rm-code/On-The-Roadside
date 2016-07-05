@@ -124,11 +124,12 @@ function Character.new( tile, faction )
     end
 
     ---
-    -- Checks if the next action in the queue can be performed.
+    -- Checks if the character has enough action points to perform the next
+    -- action in the queue.
     -- @return (boolean) Wether the action can be performed.
     --
     function self:canPerformAction()
-        return actions:getSize() > 0 and actions:peek():getCost() <= actionPoints;
+        return actions:peek():getCost() <= actionPoints;
     end
 
     ---
@@ -338,6 +339,14 @@ function Character.new( tile, faction )
     --
     function self:getWeapon()
         return inventory:getPrimaryWeapon();
+    end
+
+    ---
+    -- Checks if the character has an action enqueued.
+    -- @return (boolean) Wether an action is enqueued.
+    --
+    function self:hasEnqueuedAction()
+        return actions:getSize() > 0;
     end
 
     ---
