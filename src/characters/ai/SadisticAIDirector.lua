@@ -16,11 +16,13 @@ function SadisticAIDirector.new( map, states )
             tiles[i] = nil;
         end
 
-        map:iterate( function( tile )
-            if character:canSee( tile ) then
-                tiles[#tiles + 1] = tile;
+        -- Get the character's FOV and store the tiles in a sequence for easier access.
+        local fov = character:getFOV();
+        for _, rx in pairs( fov ) do
+            for _, target in pairs( rx ) do
+                tiles[#tiles + 1] = target;
             end
-        end)
+        end
 
         -- Shoot at an enemy character if one is visible.
         states:keypressed( 'a' );

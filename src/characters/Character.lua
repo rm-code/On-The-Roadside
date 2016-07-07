@@ -310,6 +310,14 @@ function Character.new( tile, faction )
     end
 
     ---
+    -- Returns the character's fov.
+    -- @return (table) A table containing the tiles this character sees.
+    --
+    function self:getFOV()
+        return fov;
+    end
+
+    ---
     -- Gets the character's tile.
     -- @return (Tile) The tile the character is located on.
     --
