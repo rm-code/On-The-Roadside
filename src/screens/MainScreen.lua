@@ -5,6 +5,7 @@ local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
+local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
@@ -29,6 +30,7 @@ function MainScreen.new()
     local game;
     local worldPainter;
     local userInterface;
+    local overlayPainter;
     local camera;
 
     function self:init()
@@ -41,12 +43,15 @@ function MainScreen.new()
         userInterface = UserInterface.new( game );
         camera = CameraHandler.new();
 
+        overlayPainter = OverlayPainter.new();
+
         MousePointer.init( camera );
     end
 
     function self:draw()
         camera:attach();
         worldPainter:draw();
+        overlayPainter:draw();
         camera:detach();
         userInterface:draw();
     end
@@ -55,6 +60,7 @@ function MainScreen.new()
         camera:update( dt );
         game:update( dt );
         worldPainter:update( dt );
+        overlayPainter:update( dt );
         userInterface:update( dt );
     end
 

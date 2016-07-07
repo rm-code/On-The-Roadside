@@ -51,44 +51,6 @@ function WorldPainter.new( game )
     -- ------------------------------------------------
 
     ---
-    -- @param value (number) The cost of the node.
-    -- @param total (number) The total number of nodes in the path.
-    --
-    local function selectPathNodeColor( value, total )
-        local fraction = value / total;
-        if fraction < 0 then
-            return COLORS.DB27;
-        elseif fraction <= 0.2 then
-            return COLORS.DB05;
-        elseif fraction <= 0.6 then
-            return COLORS.DB08;
-        elseif fraction <= 1.0 then
-            return COLORS.DB09;
-        end
-    end
-
-    local function drawPath( character )
-        if #character:getActions() ~= 0 then
-            local total = character:getActionPoints();
-            local ap = total;
-
-            for _, action in ipairs( character:getActions() ) do
-                ap = ap - action:getCost();
-
-                -- Clears the tile.
-                local tile = action:getTarget();
-                love.graphics.setColor( 0, 0, 0);
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-
-                -- Draws the path icon.
-                love.graphics.setColor( selectPathNodeColor( ap, character:getMaxActionPoints() ));
-                love.graphics.draw( TILESET, TILE_SPRITES[176], tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE );
-                love.graphics.setColor( 255, 255, 255);
-            end
-        end
-    end
-
-    ---
     -- Adds an empty sprite for each tile in the map to the spritebatch, gives
     -- each tile a unique identifier and sets it to dirty for the first update.
     -- @param map (Map) The game's world map.
@@ -188,26 +150,11 @@ function WorldPainter.new( game )
     end
 
     function self:draw()
-        local character = FactionManager.getCurrentCharacter();
         love.graphics.draw( spritebatch, 0, 0 );
-
-        -- TODO move to function
-        if character:hasLineOfSight() then
-            character:getLineOfSight():iterate( function( tile )
-                love.graphics.setColor( 0, 255, 0 );
-                if not tile:isPassable() or not character:canSee( tile ) then
-                    love.graphics.setColor( 255, 0, 0 );
-                end
-                love.graphics.rectangle( 'line', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-            end)
-            love.graphics.setColor( 255, 255, 255 );
-        end
 
         ProjectileManager.iterate( function( x, y )
             love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
         end)
-
-        drawPath( character );
     end
 
     function self:update()
