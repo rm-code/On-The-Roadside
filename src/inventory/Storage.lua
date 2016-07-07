@@ -25,14 +25,12 @@ function Storage.new( space )
     end
 
     function self:isEmpty()
-        local empty = true;
         for _, slot in ipairs( slots ) do
             if not slot:isEmpty() then
-                empty = false;
-                break;
+                return false;
             end
         end
-        return empty;
+        return true;
     end
 
     return self;
