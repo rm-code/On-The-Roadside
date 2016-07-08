@@ -1,5 +1,5 @@
 local Object = require('src.Object');
-local Queue = require('src.Queue');
+local Queue = require('src.util.Queue');
 local ItemFactory = require('src.items.ItemFactory');
 local Inventory = require('src.inventory.Inventory');
 
