@@ -2,12 +2,6 @@ local FactionManager = require( 'src.characters.FactionManager' );
 local MousePointer = require( 'src.ui.MousePointer' );
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
-
--- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
