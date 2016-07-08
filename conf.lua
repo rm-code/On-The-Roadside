@@ -1,6 +1,6 @@
-local PROJECT_TITLE = "Hoost (Working Title)";
+local PROJECT_TITLE = "On The Roadside";
 
-local PROJECT_IDENTITY = "rmcode_hoost";
+local PROJECT_IDENTITY = "rmcode_otr";
 
 local PROJECT_VERSION = "0000";
 
