@@ -1,5 +1,6 @@
 local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
+local MousePointer = require( 'src.ui.MousePointer' );
 
 -- ------------------------------------------------
 -- Module
@@ -95,6 +96,20 @@ function OverlayPainter.new()
         end
     end
 
+    ---
+    -- Draws a mouse cursor that snaps to the grid.
+    --
+    local function drawMouseCursor()
+        local mx, my = MousePointer.getWorldPosition();
+        local cx, cy = math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE;
+
+        love.graphics.setBlendMode( 'add' );
+        love.graphics.setColor( COLORS.DB19[1], COLORS.DB19[2], COLORS.DB19[3], pulser:getPulse() );
+        love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
+        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setBlendMode( 'alpha' );
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -103,6 +118,7 @@ function OverlayPainter.new()
         local character = FactionManager.getCurrentCharacter();
         drawLineOfSight( character );
         drawPath( character );
+        drawMouseCursor();
     end
 
     function self:update( dt )

@@ -24,14 +24,6 @@ function UserInterface.new( game )
     local mouseX, mouseY = 0, 0;
 
     ---
-    -- Draws a mouse cursor that snaps to the grid.
-    --
-    local function drawMouseCursor()
-        local mx, my = MousePointer.getCameraPosition( mouseX * TILE_SIZE, mouseY * TILE_SIZE );
-        love.graphics.rectangle( 'line', mx, my, TILE_SIZE, TILE_SIZE );
-    end
-
-    ---
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
@@ -54,8 +46,6 @@ function UserInterface.new( game )
 
     function self:draw()
         local character = FactionManager.getCurrentCharacter();
-
-        drawMouseCursor();
 
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
