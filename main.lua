@@ -1,4 +1,12 @@
 local ScreenManager = require('lib.screenmanager.ScreenManager');
+local ProFi = require( 'lib.ProFi' );
+
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
+
+-- TODO Remove profiling code.
+local profile = 0;
 
 -- ------------------------------------------------
 -- Callbacks
@@ -28,11 +36,31 @@ function love.load()
 end
 
 function love.draw()
+    if profile == 2 then
+        ProFi:start();
+    end
+
     ScreenManager.draw();
+
+    if profile == 2 then
+        ProFi:stop();
+        ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
+        profile = 0;
+    end
 end
 
 function love.update(dt)
+    if profile == 1 then
+        ProFi:start();
+    end
+
     ScreenManager.update(dt);
+
+    if profile == 1 then
+        ProFi:stop();
+        local success = ProFi:writeReport( string.format( '../profiling/update_%d.txt', os.time( os.date( '*t' ))));
+        profile = success and 2 or 0;
+    end
 end
 
 function love.quit(q)
@@ -41,6 +69,10 @@ end
 
 function love.keypressed(key)
     ScreenManager.keypressed(key);
+
+    if key == 'p' then
+        profile = 1;
+    end
 end
 
 function love.mousepressed( mx, my, button, isTouch )
