@@ -24,22 +24,18 @@ function Game.new()
 
     local map;
     local turnManager;
+    local observations = {};
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
-
-    -- TODO update visibility only when it is really necessary.
-    local function updateVisibility()
-        FactionManager.getFaction():generateFOV( map );
-    end
 
     ---
     -- Spawns characters at a random location on the map.
     --
     local function spawnCharactersRandomly( amount, faction )
         for _ = 1, amount do
-            FactionManager.newCharacter( map:findRandomSpawnPoint(), faction  );
+            FactionManager.newCharacter( map, map:findRandomSpawnPoint(), faction  );
         end
     end
 
@@ -65,11 +61,21 @@ function Game.new()
         turnManager = TurnManager.new( map );
 
         ProjectileManager.init( map );
+
+        -- Register obsersvations.
+        observations[#observations + 1] = map:observe( self );
+    end
+
+    function self:receive( event, ... )
+        if event == 'TILE_UPDATED' then
+            local tile = ...;
+            assert( tile:instanceOf( 'Tile' ), 'Expected an object of type Tile.' );
+            FactionManager.getFaction():regenerateFOVSelectively( tile );
+        end
     end
 
     function self:update( dt )
         map:update();
-        updateVisibility();
         turnManager:update( dt )
     end
 

@@ -62,14 +62,15 @@ end
 
 ---
 -- Adds a new character.
+-- @param map     (Map)    A reference to the map object.
 -- @param tile    (Tile)   The tile to place the character on.
 -- @param faction (number) The index of the faction to add the character to.
 --
-function FactionManager.newCharacter( tile, faction )
+function FactionManager.newCharacter( map, tile, faction )
     local node = root;
     while node do
         if node:getObject():getType() == faction then
-            node:getObject():addCharacter( tile, faction );
+            node:getObject():addCharacter( map, tile );
             break;
         end
         node = node:getNext();

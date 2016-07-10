@@ -1,4 +1,4 @@
-local Object = require( 'src.Object' );
+local Observable = require( 'src.util.Observable' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 
@@ -23,7 +23,7 @@ local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
 -- ------------------------------------------------
 
 function Map.new()
-    local self = Object.new():addInstance( 'Map' );
+    local self = Observable.new():addInstance( 'Map' );
 
     local tiles;
 
@@ -192,6 +192,7 @@ function Map.new()
                     else
                         tile:removeWorldObject();
                     end
+                    self:publish( 'TILE_UPDATED', tile );
                 end
             end
         end

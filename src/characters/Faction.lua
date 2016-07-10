@@ -27,61 +27,6 @@ function Faction.new( type )
     -- ------------------------------------------------
 
     ---
-    -- Adds a tile to the list of explored tiles for this faction.
-    -- @param tx     (number) The target-tile's position along the x-axis.
-    -- @param ty     (number) The target-tile's position along the y-axis.
-    -- @param target (Tile)   The target-tile.
-    --
-    local function addExploredTile( tx, ty, target )
-        mapInfo[tx] = mapInfo[tx] or {};
-        mapInfo[tx][ty] = target;
-    end
-
-    ---
-    -- Casts rays in a circle around the character to determine all tiles he can
-    -- see. Rays stop if they reach the map border or a world object which has
-    -- the blocksVision attribute set to true.
-    -- TODO Replace FOV algorithm with something more elaborate / efficient.
-    -- @param character (Character) The character to create the FOV for.
-    -- @param map       (Map)       The map on which to cast the rays.
-    --
-    local function castViewRays( character, map )
-        local range = character:getViewRange();
-        local tile = character:getTile();
-
-        -- Calculate the new FOV information.
-        for i = 1, 360 do
-            local ox, oy = tile:getX() + 0.5, tile:getY() + 0.5;
-            local rad    = math.rad( i );
-            local rx, ry = math.cos( rad ), math.sin( rad );
-
-            for _ = 1, range do
-                local target = map:getTileAt( math.floor( ox ), math.floor( oy ));
-                if not target then
-                    break;
-                end
-                local tx, ty = target:getPosition();
-
-                -- Add tile to this character's FOV.
-                character:addSeenTile( tx, ty, target );
-
-                -- Add tile to list of explored tiles.
-                addExploredTile( tx, ty, target );
-
-                -- Mark tile for drawing update.
-                target:setDirty( true );
-
-                if target:hasWorldObject() and target:getWorldObject():blocksVision() then
-                    break;
-                end
-
-                ox = ox + rx;
-                oy = oy + ry;
-            end
-        end
-    end
-
-    ---
     -- Marks all explored tiles for drawing updates.
     --
     local function updateExplorationInfo()
@@ -110,8 +55,12 @@ function Faction.new( type )
         updateExplorationInfo();
     end
 
-    function self:addCharacter( tile )
-        local node = Node.new( Character.new( tile, self ));
+    function self:addCharacter( map, tile )
+        -- Create character and calculate initial FOV.
+        local character = Character.new( map, tile, self );
+        character:generateFOV();
+
+        local node = Node.new( character );
 
         -- Initialise root node.
         if not root then
@@ -130,12 +79,26 @@ function Faction.new( type )
         last = active;
     end
 
+    ---
+    -- Adds a tile to the list of explored tiles for this faction.
+    -- @param tx     (number) The target-tile's position along the x-axis.
+    -- @param ty     (number) The target-tile's position along the y-axis.
+    -- @param target (Tile)   The target-tile.
+    --
+    function self:addExploredTile( tx, ty, target )
+        mapInfo[tx] = mapInfo[tx] or {};
+        mapInfo[tx][ty] = target;
+    end
+
     function self:findCharacter( character )
         assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
         local node = root;
         while node do
             if node:getObject() == character and not node:getObject():isDead() then
+                character:generateFOV();
+                local previous = active;
                 active = node;
+                previous:getObject():generateFOV();
                 break;
             end
             node = node:getNext();
@@ -155,35 +118,42 @@ function Faction.new( type )
     end
 
     ---
-    -- Generates the FOV for all characters in this faction.
-    -- @param map (Map) The map object to calculate the visibility on.
+    -- Generates the FOV for characters which can see a certain tile.
+    -- @param tile (Tile) The tile to check for.
     --
-    function self:generateFOV( map )
+    function self:regenerateFOVSelectively( tile )
         local node = root;
         while node do
             local character = node:getObject();
-            character:resetFOV();
-            if not character:isDead() then
-                castViewRays( character, map );
+            if not character:isDead() and character:canSee( tile ) then
+                character:generateFOV();
             end
             node = node:getNext();
         end
     end
 
     function self:nextCharacter()
+        local previousCharacter = active:getObject();
         while active do
             active = active:getNext() or root;
-            if not active:getObject():isDead() then
-                return active:getObject();
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:generateFOV();
+                character:generateFOV();
+                return character;
             end
         end
     end
 
     function self:prevCharacter()
+        local previousCharacter = active:getObject();
         while active do
             active = active:getPrev() or last;
-            if not active:getObject():isDead() then
-                return active:getObject();
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:generateFOV();
+                character:generateFOV();
+                return character;
             end
         end
     end

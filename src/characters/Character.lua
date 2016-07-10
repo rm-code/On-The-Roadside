@@ -27,11 +27,12 @@ local Character = {};
 
 ---
 -- Creates a new character and places it on the target tile.
+-- @param map     (Map)       A reference to the map object.
 -- @param tile    (Tile)      The tile to spawn the character on.
 -- @param faction (Faction)   The Faction object determining the character's faction.
 -- @return        (Character) A new instance of the Character class.
 --
-function Character.new( tile, faction )
+function Character.new( map, tile, faction )
     local self = Object.new():addInstance( 'Character' );
 
     -- Add character to the tile.
@@ -121,6 +122,7 @@ function Character.new( tile, faction )
         local action = actions:dequeue();
         actionPoints = actionPoints - action:getCost();
         action:perform();
+        self:generateFOV();
     end
 
     ---
@@ -137,6 +139,48 @@ function Character.new( tile, faction )
     --
     function self:clearActions()
         actions:clear();
+    end
+
+    ---
+    -- Casts rays in a circle around the character to determine all tiles he can
+    -- see. Rays stop if they reach the map border or a world object which has
+    -- the blocksVision attribute set to true.
+    --
+    function self:generateFOV()
+        self:resetFOV();
+
+        local range = self:getViewRange();
+
+        -- Calculate the new FOV information.
+        for i = 1, 360 do
+            local ox, oy = tile:getX() + 0.5, tile:getY() + 0.5;
+            local rad    = math.rad( i );
+            local rx, ry = math.cos( rad ), math.sin( rad );
+
+            for _ = 1, range do
+                local target = map:getTileAt( math.floor( ox ), math.floor( oy ));
+                if not target then
+                    break;
+                end
+                local tx, ty = target:getPosition();
+
+                -- Add tile to this character's FOV.
+                self:addSeenTile( tx, ty, target );
+
+                -- Add tile to faction's map of explored tiles.
+                faction:addExploredTile( tx, ty, target );
+
+                -- Mark tile for drawing update.
+                target:setDirty( true );
+
+                if target:hasWorldObject() and target:getWorldObject():blocksVision() then
+                    break;
+                end
+
+                ox = ox + rx;
+                oy = oy + ry;
+            end
+        end
     end
 
     ---
@@ -213,6 +257,7 @@ function Character.new( tile, faction )
         if self:isDead() then
             dropInventory();
             tile:removeCharacter();
+            self:resetFOV();
         end
     end
 
