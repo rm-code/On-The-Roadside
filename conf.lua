@@ -2,7 +2,7 @@ local PROJECT_TITLE = "On The Roadside";
 
 local PROJECT_IDENTITY = "rmcode_otr";
 
-local PROJECT_VERSION = "0000";
+local PROJECT_VERSION = require( 'version' );
 
 local LOVE_VERSION = "0.10.1";
 
