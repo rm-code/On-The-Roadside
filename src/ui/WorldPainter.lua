@@ -82,9 +82,9 @@ function WorldPainter.new( game )
 
         if tile:isOccupied() then
             if tile:getCharacter() == FactionManager.getCurrentCharacter() then
-                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction()];
+                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
             else
-                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction()];
+                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
             end
         end
 
@@ -106,7 +106,7 @@ function WorldPainter.new( game )
     --
     local function selectTileSprite( tile )
         if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
-            if tile:getCharacter():getFaction() == FACTIONS.ENEMY then
+            if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
                 return TILE_SPRITES[3];
             else
                 return TILE_SPRITES[2];

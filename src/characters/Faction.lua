@@ -110,8 +110,8 @@ function Faction.new( type )
         updateExplorationInfo();
     end
 
-    function self:addCharacter( tile, faction )
-        local node = Node.new( Character.new( tile, faction ));
+    function self:addCharacter( tile )
+        local node = Node.new( Character.new( tile, self ));
 
         -- Initialise root node.
         if not root then

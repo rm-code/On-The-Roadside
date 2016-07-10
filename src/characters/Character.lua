@@ -28,7 +28,7 @@ local Character = {};
 ---
 -- Creates a new character and places it on the target tile.
 -- @param tile    (Tile)      The tile to spawn the character on.
--- @param faction (number)    The index determining the character's faction.
+-- @param faction (Faction)   The Faction object determining the character's faction.
 -- @return        (Character) A new instance of the Character class.
 --
 function Character.new( tile, faction )
@@ -271,7 +271,7 @@ function Character.new( tile, faction )
 
     ---
     -- Returns the faction the character belongs to.
-    -- @return (number) The faction's index.
+    -- @return (Faction) The Faction object.
     --
     function self:getFaction()
         return faction;

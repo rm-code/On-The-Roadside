@@ -28,7 +28,7 @@ function SadisticAIDirector.new( map, states )
         states:keypressed( 'a' );
         for i = 1, #tiles do
             local tile = tiles[i];
-            if tile:isOccupied() and tile:getCharacter():getFaction() ~= character:getFaction() then
+            if tile:isOccupied() and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
                 states:selectTile( tile, 1 );
                 states:push( 'execution' );
                 return true;
