@@ -50,11 +50,17 @@ function ProjectileManager.update( dt )
     queue:update( dt );
 
     for i, projectile in pairs( queue:getProjectiles() ) do
+        -- Moves the projectile.
         projectile:update( dt );
-        local tile = map:getTileAt( projectile:getTilePosition() );
-        if projectile:getTile() ~= tile then
-            projectile:setTile( tile );
 
+        if projectile:hasReachedTarget() then
+            queue:removeProjectile( i );
+        end
+
+        if projectile:hasMoved( map ) then
+            projectile:updateTile( map );
+
+            local tile = projectile:getTile();
             if not tile then
                 print( "Reached map border" );
                 queue:removeProjectile( i );
@@ -82,7 +88,7 @@ function ProjectileManager.update( dt )
             elseif tile == projectile:getTarget() then
                 print( "Reached target" );
                 hitTile( i, tile, projectile );
-            elseif tile:isOccupied() and tile:getCharacter() ~= projectile:getCharacter() then
+            elseif tile:isOccupied() then
                 print( "Hit character" );
                 hitTile( i, tile, projectile );
             end
@@ -93,7 +99,7 @@ end
 function ProjectileManager.iterate( callback )
     if queue then
         for _, projectile in pairs( queue:getProjectiles() ) do
-            callback( projectile:getPosition() );
+            callback( projectile:getTile():getPosition() );
         end
     end
 end

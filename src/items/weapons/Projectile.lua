@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Bresenham = require( 'lib.Bresenham' );
 
 local SPEED = 30;
 
@@ -27,17 +28,40 @@ function Projectile.new( character, origin, target, angle )
 
     local energy = 100;
 
-    -- Use the centers of the origin and target tile.
-    px, py, tx, ty = px + 0.5, py + 0.5, tx + 0.5, ty + 0.5;
+    local tiles = {};
 
+    local timer = 0;
+    local index = 1;
+
+    -- ------------------------------------------------
+    -- Target calculations
+    -- TODO Move to different class.
+    -- ------------------------------------------------
+
+    -- Modify the target tile's location based on the shot' derivation to get
+    -- the actual target for this projectile. Floor the values to integers.
     tx, ty = applyVectorRotation( px, py, tx, ty, angle );
+    tx, ty = math.floor( tx + 0.5 ), math.floor( ty + 0.5 );
 
-    local dx, dy = tx - px, ty - py;
-    local magnitude = math.sqrt( dx * dx + dy * dy );
-    local normalisedX, normalisedY = dx / magnitude, dy / magnitude;
+    -- Get the tiles this projectile passes on the way to its target.
+    Bresenham.calculateLine( px, py, tx, ty, function( sx, sy )
+        -- Ignore the origin.
+        if sx ~= px or sy ~= py then
+            tiles[#tiles + 1] = { sx, sy };
+        end
+        return true;
+    end)
 
     function self:update( dt )
-        px, py = px + normalisedX * dt * SPEED, py + normalisedY * dt * SPEED;
+        timer = timer + dt * SPEED;
+        if timer > 1 then
+            index = index + 1;
+            timer = 0;
+        end
+    end
+
+    function self:updateTile( map )
+        tile = map:getTileAt( tiles[index][1], tiles[index][2] );
     end
 
     function self:getCharacter()
@@ -52,16 +76,8 @@ function Projectile.new( character, origin, target, angle )
         return energy;
     end
 
-    function self:getPosition()
-        return px, py;
-    end
-
     function self:getTile()
         return tile;
-    end
-
-    function self:getTilePosition()
-        return math.floor( px ), math.floor( py );
     end
 
     function self:getTarget()
@@ -72,12 +88,16 @@ function Projectile.new( character, origin, target, angle )
         return weapon;
     end
 
-    function self:setEnergy( nenergy )
-        energy = nenergy;
+    function self:hasMoved( map )
+        return tile ~= map:getTileAt( tiles[index][1], tiles[index][2] );
     end
 
-    function self:setTile( ntile )
-        tile = ntile;
+    function self:hasReachedTarget()
+        return #tiles == index;
+    end
+
+    function self:setEnergy( nenergy )
+        energy = nenergy;
     end
 
     return self;
