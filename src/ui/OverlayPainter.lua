@@ -1,7 +1,6 @@
 local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -22,9 +21,10 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 
 ---
 -- Creates an new instance of the OverlayPainter class.
--- @return (OverlayPainter) The new instance.
+-- @param particleLayer (ParticleLayer)  The layer used for drawing particles.
+-- @return              (OverlayPainter) The new instance.
 --
-function OverlayPainter.new()
+function OverlayPainter.new( particleLayer )
     local self = {};
 
     local pulser = Pulser.new( 4, 80, 80 );
@@ -111,17 +111,14 @@ function OverlayPainter.new()
         love.graphics.setBlendMode( 'alpha' );
     end
 
-    ---
-    -- Draws all projectiles queued up in the ProjectileManager.
-    --
-    local function drawProjectiles()
-        ProjectileManager.iterate( function( x, y )
-            love.graphics.setBlendMode( 'add' );
-            love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], 180 );
-            love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-            love.graphics.setColor( 255, 255, 255, 255 );
-            love.graphics.setBlendMode( 'alpha' );
-        end)
+    local function drawParticles()
+        for x, row in pairs( particleLayer:getParticleGrid() ) do
+            for y, particle in pairs( row ) do
+                love.graphics.setColor( particle:getColors() );
+                love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+                love.graphics.setColor( 255, 255, 255, 255 );
+            end
+        end
     end
 
     -- ------------------------------------------------
@@ -132,11 +129,12 @@ function OverlayPainter.new()
         local character = FactionManager.getCurrentCharacter();
         drawLineOfSight( character );
         drawPath( character );
-        drawProjectiles();
+        drawParticles();
         drawMouseCursor();
     end
 
     function self:update( dt )
+        particleLayer:update( dt );
         pulser:update( dt );
     end
 

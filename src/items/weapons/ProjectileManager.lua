@@ -1,3 +1,5 @@
+local Messenger = require( 'src.Messenger' );
+
 local ProjectileManager = {};
 
 -- ------------------------------------------------
@@ -59,6 +61,7 @@ function ProjectileManager.update( dt )
 
         if projectile:hasMoved( map ) then
             projectile:updateTile( map );
+            Messenger.publish( 'PROJECTILE_MOVED', projectile );
 
             local tile = projectile:getTile();
             if not tile then
