@@ -1,6 +1,7 @@
 local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -110,6 +111,19 @@ function OverlayPainter.new()
         love.graphics.setBlendMode( 'alpha' );
     end
 
+    ---
+    -- Draws all projectiles queued up in the ProjectileManager.
+    --
+    local function drawProjectiles()
+        ProjectileManager.iterate( function( x, y )
+            love.graphics.setBlendMode( 'add' );
+            love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], 180 );
+            love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+            love.graphics.setColor( 255, 255, 255, 255 );
+            love.graphics.setBlendMode( 'alpha' );
+        end)
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -118,6 +132,7 @@ function OverlayPainter.new()
         local character = FactionManager.getCurrentCharacter();
         drawLineOfSight( character );
         drawPath( character );
+        drawProjectiles();
         drawMouseCursor();
     end
 

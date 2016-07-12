@@ -1,5 +1,4 @@
 local FactionManager = require( 'src.characters.FactionManager' );
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 local COLORS = require( 'src.constants.Colors' );
 local FACTIONS = require( 'src.constants.Factions' );
@@ -151,10 +150,6 @@ function WorldPainter.new( game )
 
     function self:draw()
         love.graphics.draw( spritebatch, 0, 0 );
-
-        ProjectileManager.iterate( function( x, y )
-            love.graphics.points( x * TILE_SIZE, y * TILE_SIZE );
-        end)
     end
 
     function self:update()
