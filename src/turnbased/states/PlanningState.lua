@@ -32,10 +32,13 @@ function PlanningState.new( stateManager )
         elseif key == 'm' then
             activeHelper = MovementHelper;
         elseif key == 'space' then
+            activeHelper = MovementHelper;
             FactionManager.nextCharacter();
         elseif key == 'backspace' then
+            activeHelper = MovementHelper;
             FactionManager.prevCharacter();
         elseif key == 'return' then
+            activeHelper = MovementHelper;
             FactionManager.nextFaction();
         end
     end
