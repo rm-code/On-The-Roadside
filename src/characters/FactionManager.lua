@@ -112,7 +112,9 @@ end
 -- @return (Character) The selected Character.
 --
 function FactionManager.prevCharacter()
-    return active:getObject():prevCharacter();
+    local character = active:getObject():prevCharacter();
+    Messenger.publish( 'SWITCH_CHARACTERS', character );
+    return character;
 end
 
 ---
