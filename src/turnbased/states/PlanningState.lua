@@ -23,13 +23,17 @@ function PlanningState.new( stateManager )
         elseif key == 'left' then
             FactionManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
         elseif key == 'r' then
+            FactionManager.getCurrentCharacter():clearActions();
             FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
             stateManager:push( 'execution' );
         elseif key == 'a' then
+            FactionManager.getCurrentCharacter():clearActions();
             activeHelper = AttackHelper;
         elseif key == 'e' then
+            FactionManager.getCurrentCharacter():clearActions();
             activeHelper = InteractionHelper;
         elseif key == 'm' then
+            FactionManager.getCurrentCharacter():clearActions();
             activeHelper = MovementHelper;
         elseif key == 'space' then
             activeHelper = MovementHelper;
