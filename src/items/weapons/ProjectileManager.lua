@@ -55,10 +55,6 @@ function ProjectileManager.update( dt )
         -- Moves the projectile.
         projectile:update( dt );
 
-        if projectile:hasReachedTarget() then
-            queue:removeProjectile( i );
-        end
-
         if projectile:hasMoved( map ) then
             projectile:updateTile( map );
             Messenger.publish( 'PROJECTILE_MOVED', projectile );
@@ -88,9 +84,9 @@ function ProjectileManager.update( dt )
                         queue:removeProjectile( i );
                     end
                 end
-            elseif tile == projectile:getTarget() then
+            elseif projectile:hasReachedTarget() then
                 print( "Reached target" );
-                hitTile( i, tile, projectile );
+                hitTile( i, projectile:getTile(), projectile );
             elseif tile:isOccupied() then
                 print( "Hit character" );
                 hitTile( i, tile, projectile );

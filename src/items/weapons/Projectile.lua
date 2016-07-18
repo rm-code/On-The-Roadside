@@ -80,10 +80,6 @@ function Projectile.new( character, origin, target, angle )
         return tile;
     end
 
-    function self:getTarget()
-        return target;
-    end
-
     function self:getWeapon()
         return weapon;
     end
