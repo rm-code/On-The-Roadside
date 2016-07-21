@@ -24,15 +24,42 @@ function SadisticAIDirector.new( map, states )
             end
         end
 
-        -- Shoot at an enemy character if one is visible.
+        -- Enter attack mode.
         states:keypressed( 'a' );
+
+        -- Get all characters visible to this character.
+        local enemies = {};
         for i = 1, #tiles do
             local tile = tiles[i];
             if tile:isOccupied() and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
-                states:selectTile( tile, 1 );
-                states:push( 'execution' );
-                return true;
+                enemies[#enemies + 1] = tile;
             end
+        end
+
+        -- Select the closest enemy.
+        local target;
+        for i = 1, #enemies do
+            local t = enemies[i];
+            if not target then
+                target = t;
+            else
+                local distanceX = math.abs( target:getX() - character:getTile():getX() );
+                local distanceY = math.abs( target:getY() - character:getTile():getY() );
+
+                local ndistanceX = math.abs( t:getX() - character:getTile():getX() );
+                local ndistanceY = math.abs( t:getY() - character:getTile():getY() );
+
+                if ndistanceX + ndistanceY < distanceX + distanceY then
+                    target = t;
+                end
+            end
+        end
+
+        -- Attack the closest enemy.
+        if target then
+            states:selectTile( target, 1 );
+            states:push( 'execution' );
+            return true;
         end
 
         -- Move around randomly.
