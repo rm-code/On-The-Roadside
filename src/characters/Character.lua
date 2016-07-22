@@ -1,7 +1,7 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
 local ItemFactory = require('src.items.ItemFactory');
-local Storage = require('src.inventory.Storage');
+local Equipment = require('src.characters.Equipment');
 
 -- ------------------------------------------------
 -- Constants
@@ -9,7 +9,6 @@ local Storage = require('src.inventory.Storage');
 
 local DEFAULT_ACTION_POINTS = 20;
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 local BODY_PARTS = {
@@ -50,29 +49,20 @@ function Character.new( map, tile, faction )
     local actions = Queue.new();
     local fov = {};
 
-    local storage = Storage.new( {
-        { ITEM_TYPES.WEAPON },
-        { ITEM_TYPES.BAG    },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.HEADGEAR },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.GLOVES   },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.JACKET   },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.SHIRT    },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.TROUSERS },
-        { ITEM_TYPES.CLOTHING, CLOTHING_SLOTS.FOOTWEAR }
-    } );
+    local equipment = Equipment.new();
 
     -- TODO move to different class
     local weapon = ItemFactory.createWeapon();
     local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
     weapon:reload( magazine );
-    storage:addItem( weapon );
-    storage:addItem( ItemFactory.createBag() );
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
-    storage:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
+    equipment:addItem( weapon );
+    equipment:addItem( ItemFactory.createBag() );
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
+    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
 
     local accuracy = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
@@ -93,10 +83,11 @@ function Character.new( map, tile, faction )
     -- Drops this character's inventory on the ground.
     --
     local function dropInventory()
-        for _, slot in ipairs( storage:getSlots() ) do
-            if not slot:isEmpty() then
-                tile:getStorage():addItem( slot:getItem() );
-            end
+        tile:getInventory():addItem( equipment:getWeapon() );
+        tile:getInventory():addItem( equipment:getBackpack() );
+
+        for _, part in pairs( BODY_PARTS ) do
+            tile:getInventory():addItem( equipment:getClothingItem( part ));
         end
     end
 
@@ -248,7 +239,7 @@ function Character.new( map, tile, faction )
         local flukeModifier = math.floor( damage * randomSign() * ( love.math.random( 15 ) / 100 ));
         damage = damage + flukeModifier;
 
-        local clothing = self:getClothingItem( bodyPart );
+        local clothing = equipment:getClothingItem( bodyPart );
         if clothing:isArmor() then
             if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
                 print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
@@ -323,6 +314,11 @@ function Character.new( map, tile, faction )
         return actions:getItems();
     end
 
+    -- TODO remove
+    function self:getBackpack()
+        return equipment:getBackpack()
+    end
+
     ---
     -- Returns the faction the character belongs to.
     -- @return (Faction) The Faction object.
@@ -340,32 +336,11 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the character's inventory.
-    -- @return (Inventory) The character's inventory.
+    -- Returns the character's equipment.
+    -- @return (Inventory) The character's equipment.
     --
-    function self:getStorage()
-        return storage;
-    end
-
-    ---
-    -- Returns an equipped clothing item.
-    -- @param  type (string)   The type of clothing item to return.
-    -- @return      (Clothing) A specific clothing item.
-    --
-    function self:getClothingItem( type )
-        for _, slot in ipairs( storage:getSlots() ) do
-            if slot:getSubType() == type then
-                return slot:getItem();
-            end
-        end
-    end
-
-    ---
-    -- Returns the character's bag.
-    -- @return (Bag) The character's equipped bag.
-    --
-    function self:getBackpack()
-        return storage:getSlots()[2]:getItem();
+    function self:getEquipment()
+        return equipment;
     end
 
     ---
@@ -419,9 +394,9 @@ function Character.new( map, tile, faction )
     ---
     -- Returns the currently equipped weapon.
     -- @return (Weapon) The weapon.
-    --
+    -- TODO remove
     function self:getWeapon()
-        return storage:getSlots()[1]:getItem();
+        return self:getEquipment():getWeapon();
     end
 
     ---

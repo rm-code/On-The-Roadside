@@ -1,5 +1,5 @@
 local Item = require( 'src.items.Item' );
-local Storage = require( 'src.inventory.Storage' );
+local Inventory = require( 'src.inventory.Inventory' );
 
 local Bag = {};
 
@@ -7,13 +7,13 @@ local Bag = {};
 -- Constructor
 -- ------------------------------------------------
 
-function Bag.new( name, type, slots )
+function Bag.new( name, type )
     local self = Item.new( name, type ):addInstance( 'Bag' );
 
-    local storage = Storage.new( slots );
+    local inventory = Inventory.new();
 
-    function self:getStorage()
-        return storage;
+    function self:getInventory()
+        return inventory;
     end
 
     return self;

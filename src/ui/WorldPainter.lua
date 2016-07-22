@@ -87,7 +87,7 @@ function WorldPainter.new( game )
             end
         end
 
-        if not tile:getStorage():isEmpty() then
+        if not tile:getInventory():isEmpty() then
             return COLORS.DB16;
         end
 
@@ -112,7 +112,7 @@ function WorldPainter.new( game )
             end
         end
 
-        if not tile:getStorage():isEmpty() then
+        if not tile:getInventory():isEmpty() then
             return TILE_SPRITES[34];
         end
 

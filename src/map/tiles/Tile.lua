@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local Storage = require( 'src.inventory.Storage' );
+local Inventory = require( 'src.inventory.Inventory' );
 
 -- ------------------------------------------------
 -- Module
@@ -33,7 +33,7 @@ function Tile.new( x, y, template )
     local neighbours;
     local character;
     local worldObject;
-    local storage = Storage.new( 15 );
+    local inventory = Inventory.new( 15 );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -157,11 +157,11 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Gets the tile's storage slots.
-    -- @return (Storage) The tile's storage.
+    -- Gets the tile's inventory.
+    -- @return (Inventory) The tile's inventory.
     --
-    function self:getStorage()
-        return storage;
+    function self:getInventory()
+        return inventory;
     end
 
     ---
