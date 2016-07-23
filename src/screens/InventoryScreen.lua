@@ -30,7 +30,6 @@ function InventoryScreen.new()
     local self = Screen.new();
 
     local character = FactionManager.getCurrentCharacter();
-    local inventory = character:getInventory();
     local rowIndex    = 1;
     local columnIndex = 1;
 
@@ -39,16 +38,16 @@ function InventoryScreen.new()
     -- ------------------------------------------------
 
     local function unequipItem()
-        for i, slot in ipairs( inventory:getSlots() ) do
+        for i, slot in ipairs( character:getStorage():getSlots() ) do
             if i == rowIndex then
                 local item = slot:getItem();
                 slot:removeItem();
 
-                if slot:getItemType() == ITEM_TYPES.BAG or not inventory:getBackpack() then
+                if slot:getItemType() == ITEM_TYPES.BAG or not character:getBackpack() then
                     character:getTile():getStorage():addItem( item );
                     break;
                 else
-                    inventory:getBackpack():getStorage():addItem( item );
+                    character:getBackpack():getStorage():addItem( item );
                     break;
                 end
             end
@@ -56,7 +55,7 @@ function InventoryScreen.new()
     end
 
     local function equipItem()
-        for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+        for i, slot in ipairs( character:getBackpack():getStorage():getSlots() ) do
             if i == rowIndex then
                 local item = slot:getItem();
                 if not item then
@@ -64,14 +63,14 @@ function InventoryScreen.new()
                 end
 
                 slot:removeItem();
-                character:getInventory():equipItem( item );
+                character:getStorage():addItem( item );
                 return;
             end
         end
     end
 
     local function dropItem()
-        for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+        for i, slot in ipairs( character:getBackpack():getStorage():getSlots() ) do
             if i == rowIndex then
                 local item = slot:getItem();
                 slot:removeItem();
@@ -88,10 +87,10 @@ function InventoryScreen.new()
                 local item = slot:getItem();
                 slot:removeItem();
 
-                if not inventory:getBackpack() then
-                    character:getInventory():equipItem( item );
+                if not character:getBackpack() then
+                    character:getStorage():addItem( item );
                 else
-                    inventory:getBackpack():getStorage():addItem( item );
+                    character:getBackpack():getStorage():addItem( item );
                 end
                 break;
             end
@@ -113,7 +112,7 @@ function InventoryScreen.new()
 
         love.graphics.print( '-- Equipment:', x + TEXT_PADDING, y + TEXT_PADDING );
 
-        for i, slot in ipairs( inventory:getSlots() ) do
+        for i, slot in ipairs( character:getStorage():getSlots() ) do
             if i == rowIndex and columnIndex == 1 then
                 love.graphics.setColor( COLORS.DB26 );
             end
@@ -125,8 +124,8 @@ function InventoryScreen.new()
 
         love.graphics.print( '-- Backpack:', x + TEXT_PADDING, y + TEXT_PADDING );
 
-        if inventory:getBackpack() ~= nil then
-            for i, slot in ipairs( inventory:getBackpack():getStorage():getSlots() ) do
+        if character:getBackpack() ~= nil then
+            for i, slot in ipairs( character:getBackpack():getStorage():getSlots() ) do
                 if i == rowIndex and columnIndex == 2 then
                     love.graphics.setColor( COLORS.DB26 );
                 end
@@ -156,9 +155,9 @@ function InventoryScreen.new()
         if key == 'up' then
             local limit;
             if columnIndex == 1 then
-                limit = #inventory:getSlots();
+                limit = #character:getStorage():getSlots();
             elseif columnIndex == 2 then
-                limit = #inventory:getBackpack():getStorage():getSlots();
+                limit = #character:getBackpack():getStorage():getSlots();
             elseif columnIndex == 3 then
                 limit = #character:getTile():getStorage():getSlots();
             end
@@ -167,9 +166,9 @@ function InventoryScreen.new()
         elseif key == 'down' then
             local limit;
             if columnIndex == 1 then
-                limit = #inventory:getSlots();
+                limit = #character:getStorage():getSlots();
             elseif columnIndex == 2 then
-                limit = #inventory:getBackpack():getStorage():getSlots();
+                limit = #character:getBackpack():getStorage():getSlots();
             elseif columnIndex == 3 then
                 limit = #character:getTile():getStorage():getSlots();
             end
@@ -180,14 +179,14 @@ function InventoryScreen.new()
 
             columnIndex = columnIndex + 1 > 3 and 1 or columnIndex + 1;
 
-            if not character:getInventory():getBackpack() and columnIndex == 2 then
+            if not character:getBackpack() and columnIndex == 2 then
                 columnIndex = 3;
             end
         elseif key == 'left' then
             rowIndex = 1;
             columnIndex = columnIndex - 1 < 1 and 3 or columnIndex - 1;
 
-            if not character:getInventory():getBackpack() and columnIndex == 2 then
+            if not character:getBackpack() and columnIndex == 2 then
                 columnIndex = 1;
             end
         end

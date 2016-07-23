@@ -3,12 +3,18 @@ local StorageSlot = require( 'src.inventory.StorageSlot' );
 
 local Storage = {};
 
-function Storage.new( space )
+function Storage.new( nslots )
     local self = Object.new():addInstance( 'Storage' );
 
     local slots = {};
-    for _ = 1, space do
-        slots[#slots + 1] = StorageSlot.new();
+    if type( nslots ) == 'number' then
+        for _ = 1, nslots do
+            slots[#slots + 1] = StorageSlot.new();
+        end
+    else
+        for i, type in ipairs( nslots ) do
+            slots[i] = StorageSlot.new( type[1], type[2] );
+        end
     end
 
     function self:getSlots()
@@ -17,7 +23,7 @@ function Storage.new( space )
 
     function self:addItem( item )
         for _, slot in ipairs( slots ) do
-            if slot:isEmpty() then
+            if slot:isEmpty() and slot:canEquip( item ) then
                 slot:addItem( item );
                 break;
             end

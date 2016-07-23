@@ -7,6 +7,16 @@ local Storage = require( 'src.inventory.Storage' );
 
 local Tile = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local ITEM_TYPES = require('src.constants.ItemTypes');
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 ---
 -- Creates a new instance of the Tile class.
 -- @param x        (number) The grid position along the x-axis.

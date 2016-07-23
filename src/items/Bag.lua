@@ -3,6 +3,16 @@ local Storage = require( 'src.inventory.Storage' );
 
 local Bag = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local ITEM_TYPES = require('src.constants.ItemTypes');
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 function Bag.new( name, type, slots )
     local self = Item.new( name, type ):addInstance( 'Bag' );
 
