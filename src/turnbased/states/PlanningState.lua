@@ -19,9 +19,9 @@ function PlanningState.new( stateManager )
 
     function self:keypressed( key )
         if key == 'right' then
-            FactionManager.getCurrentCharacter():getWeapon():selectNextFiringMode();
+            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            FactionManager.getCurrentCharacter():getWeapon():selectPrevFiringMode();
+            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectPrevFiringMode();
         elseif key == 'r' then
             FactionManager.getCurrentCharacter():clearActions();
             FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));

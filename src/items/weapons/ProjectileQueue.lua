@@ -51,7 +51,8 @@ function ProjectileQueue.new( character, target )
     local projectiles = {};
     local index = 0;
     local timer = 0;
-    local delay = character:getWeapon():getFiringDelay();
+    local weapon = character:getEquipment():getWeapon();
+    local delay = weapon:getFiringDelay();
 
     -- ------------------------------------------------
     -- Private Methods
@@ -71,7 +72,7 @@ function ProjectileQueue.new( character, target )
 
     local function calculateMaximumDerivation()
         local marksmanSkill = round( character:getAccuracy() );
-        local weaponAccuracy = round( character:getWeapon():getAccuracy() );
+        local weaponAccuracy = round( weapon:getAccuracy() );
 
         return getRandomAngle( SKILL_MODIFIERS[marksmanSkill] ) + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
     end
@@ -84,7 +85,7 @@ function ProjectileQueue.new( character, target )
         index = index + 1;
         projectiles[index] = projectileQueue:dequeue();
         Messenger.publish( 'SOUND_SHOOT' );
-        character:getWeapon():shoot();
+        weapon:shoot();
     end
 
     -- ------------------------------------------------
@@ -92,7 +93,7 @@ function ProjectileQueue.new( character, target )
     -- ------------------------------------------------
 
     function self:init()
-        local amount = math.min( character:getWeapon():getMagazine():getRounds(), character:getWeapon():getShots() );
+        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
         for _ = 1, amount do
             local maxDerivation = calculateMaximumDerivation();
             local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );

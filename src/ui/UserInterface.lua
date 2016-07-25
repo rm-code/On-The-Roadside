@@ -47,10 +47,10 @@ function UserInterface.new( game )
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
 
-        local weapon = character:getWeapon();
+        local weapon = character:getEquipment():getWeapon();
         if weapon then
             love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
-            love.graphics.print( 'Mode: ' .. character:getWeapon():getFiringMode().name, 150, love.graphics.getHeight() - 20 );
+            love.graphics.print( 'Mode: ' .. weapon:getFiringMode().name, 150, love.graphics.getHeight() - 20 );
             love.graphics.print( 'Ammo: ' .. string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 310, love.graphics.getHeight() - 40 );
         end
 

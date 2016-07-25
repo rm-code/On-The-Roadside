@@ -20,7 +20,7 @@ end
 function Projectile.new( character, origin, target, angle )
     local self = Object.new():addInstance( 'Projectile' );
 
-    local weapon = character:getWeapon();
+    local weapon = character:getEquipment():getWeapon();
 
     local tile = origin;
     local px, py = origin:getPosition();

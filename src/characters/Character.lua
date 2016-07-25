@@ -392,14 +392,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the currently equipped weapon.
-    -- @return (Weapon) The weapon.
-    -- TODO remove
-    function self:getWeapon()
-        return self:getEquipment():getWeapon();
-    end
-
-    ---
     -- Checks if the character has an action enqueued.
     -- @return (boolean) Wether an action is enqueued.
     --

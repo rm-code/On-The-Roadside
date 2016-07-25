@@ -7,7 +7,7 @@ function Reload.new( character )
     local self = Action.new( 5, character:getTile() ):addInstance( 'Reload' );
 
     function self:perform()
-        local weapon = character:getWeapon();
+        local weapon = character:getEquipment():getWeapon();
         local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
         weapon:reload( magazine );
     end
