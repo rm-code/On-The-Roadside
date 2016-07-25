@@ -8,12 +8,6 @@ local Storage = require( 'src.inventory.Storage' );
 local Tile = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local ITEM_TYPES = require('src.constants.ItemTypes');
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
