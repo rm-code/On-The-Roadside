@@ -1,6 +1,7 @@
 local Object = require('src.Object');
 local Node = require('src.characters.Node');
 local Character = require( 'src.characters.Character' );
+local ItemFactory = require('src.items.ItemFactory');
 
 local Faction = {};
 
@@ -9,6 +10,7 @@ local Faction = {};
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.Factions' );
+local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 -- ------------------------------------------------
 -- Constructor
@@ -37,6 +39,25 @@ function Faction.new( type )
         end
     end
 
+    ---
+    -- Creates the equipment for a character.
+    -- @param character (Character) The character to equip with new items.
+    --
+    local function createEquipment( character )
+        local weapon = ItemFactory.createWeapon();
+        local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
+        weapon:reload( magazine );
+
+        character:getEquipment():addItem( weapon );
+        character:getEquipment():addItem( ItemFactory.createBag() );
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
+        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -58,6 +79,7 @@ function Faction.new( type )
     function self:addCharacter( map, tile )
         -- Create character and calculate initial FOV.
         local character = Character.new( map, tile, self );
+        createEquipment( character );
         character:generateFOV();
 
         local node = Node.new( character );

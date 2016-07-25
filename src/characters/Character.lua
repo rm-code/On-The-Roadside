@@ -1,6 +1,5 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
-local ItemFactory = require('src.items.ItemFactory');
 local Equipment = require('src.characters.Equipment');
 
 -- ------------------------------------------------
@@ -50,19 +49,6 @@ function Character.new( map, tile, faction )
     local fov = {};
 
     local equipment = Equipment.new();
-
-    -- TODO move to different class
-    local weapon = ItemFactory.createWeapon();
-    local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
-    weapon:reload( magazine );
-    equipment:addItem( weapon );
-    equipment:addItem( ItemFactory.createBag() );
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
-    equipment:addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
 
     local accuracy = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
