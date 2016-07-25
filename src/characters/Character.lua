@@ -314,11 +314,6 @@ function Character.new( map, tile, faction )
         return actions:getItems();
     end
 
-    -- TODO remove
-    function self:getBackpack()
-        return equipment:getBackpack()
-    end
-
     ---
     -- Returns the faction the character belongs to.
     -- @return (Faction) The Faction object.

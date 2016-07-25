@@ -41,7 +41,7 @@ function InventoryScreen.new()
         local characterEquipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
         characterEquipment:init();
 
-        local characterInventory = UIInventoryList.new( 220, 20, 'Backpack', character:getBackpack():getInventory() );
+        local characterInventory = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
         characterInventory:init();
 
         local tileInventory = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
