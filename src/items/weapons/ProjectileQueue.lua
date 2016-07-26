@@ -186,7 +186,7 @@ function ProjectileQueue.new( character, target )
             Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
                 -- Ignore the origin.
                 if sx ~= px or sy ~= py then
-                    tiles[#tiles + 1] = { sx, sy };
+                    tiles[#tiles + 1] = { x = sx, y = sy };
                 end
                 return true;
             end)

@@ -44,7 +44,7 @@ function Projectile.new( character, tiles )
     end
 
     function self:updateTile( map )
-        tile = map:getTileAt( tiles[index][1], tiles[index][2] );
+        tile = map:getTileAt( tiles[index].x, tiles[index].y );
     end
 
     -- ------------------------------------------------
@@ -72,7 +72,7 @@ function Projectile.new( character, tiles )
     end
 
     function self:hasMoved( map )
-        return tile ~= map:getTileAt( tiles[index][1], tiles[index][2] );
+        return tile ~= map:getTileAt( tiles[index].x, tiles[index].y );
     end
 
     function self:hasReachedTarget()
