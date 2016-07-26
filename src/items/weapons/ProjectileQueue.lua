@@ -1,6 +1,7 @@
 local Projectile = require( 'src.items.weapons.Projectile' );
 local Queue = require( 'src.util.Queue' );
 local Messenger = require( 'src.Messenger' );
+local Bresenham = require( 'lib.Bresenham' );
 
 -- ------------------------------------------------
 -- Module
@@ -133,6 +134,28 @@ function ProjectileQueue.new( character, target )
         weapon:shoot();
     end
 
+    ---
+    -- Rotates the target position by the given angle.
+    -- @param px    (number)
+    -- @param py    (number)
+    -- @param tx    (number)
+    -- @param ty    (number)
+    -- @param angle (number)
+    -- @return      (number) The new target along the x-axis.
+    -- @return      (number) The new target along the y-axis.
+    --
+    local function applyVectorRotation( px, py, tx, ty, angle )
+        local vx, vy = tx - px, ty - py;
+
+        -- Transform angle from degrees to radians.
+        angle = math.rad( angle );
+
+        local nx = vx * math.cos( angle ) - vy * math.sin( angle );
+        local ny = vx * math.sin( angle ) + vy * math.cos( angle );
+
+        return px + nx, py + ny;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -146,9 +169,29 @@ function ProjectileQueue.new( character, target )
     function self:init()
         local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
         for i = 1, amount do
+            -- Calculate the angle of derivation.
             local maxDerivation = calculateMaximumDerivation( i );
             local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
-            projectileQueue:enqueue( Projectile.new( character, character:getTile(), target, actualDerivation ));
+
+            -- Apply the angle to find the final target tile.
+            local origin = character:getTile();
+            local px, py = origin:getPosition();
+            local tx, ty = target:getPosition();
+
+            local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
+            nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
+
+            -- Get the coords of all tiles the projectile passes on the way to its target.
+            local tiles = {};
+            Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
+                -- Ignore the origin.
+                if sx ~= px or sy ~= py then
+                    tiles[#tiles + 1] = { sx, sy };
+                end
+                return true;
+            end)
+
+            projectileQueue:enqueue( Projectile.new( character, tiles ));
         end
     end
 

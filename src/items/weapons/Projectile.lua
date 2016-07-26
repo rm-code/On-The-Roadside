@@ -1,56 +1,39 @@
 local Object = require( 'src.Object' );
-local Bresenham = require( 'lib.Bresenham' );
 
-local SPEED = 30;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
 local Projectile = {};
 
-local function applyVectorRotation( px, py, tx, ty, angle )
-    local vx, vy = tx - px, ty - py;
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
 
-    -- Transform angle from degrees to radians.
-    angle = math.rad( angle );
+local SPEED = 30;
 
-    local nx = vx * math.cos( angle ) - vy * math.sin( angle );
-    local ny = vx * math.sin( angle ) + vy * math.cos( angle );
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
 
-    return px + nx, py + ny;
-end
-
-function Projectile.new( character, origin, target, angle )
+---
+-- Creates a new Projectile.
+-- @param character (Character)  The character this projectile belongs to.
+-- @param tiles     (table)      A sequence containing all tiles this projectile will pass.
+-- @return          (Projectile) A new instance of the Projectile class.
+--
+function Projectile.new( character, tiles )
     local self = Object.new():addInstance( 'Projectile' );
 
     local weapon = character:getEquipment():getWeapon();
-
-    local tile = origin;
-    local px, py = origin:getPosition();
-    local tx, ty = target:getPosition();
-
     local energy = 100;
-
-    local tiles = {};
-
     local timer = 0;
     local index = 1;
+    local tile;
 
     -- ------------------------------------------------
-    -- Target calculations
-    -- TODO Move to different class.
+    -- Public Methods
     -- ------------------------------------------------
-
-    -- Modify the target tile's location based on the shot' derivation to get
-    -- the actual target for this projectile. Floor the values to integers.
-    tx, ty = applyVectorRotation( px, py, tx, ty, angle );
-    tx, ty = math.floor( tx + 0.5 ), math.floor( ty + 0.5 );
-
-    -- Get the tiles this projectile passes on the way to its target.
-    Bresenham.calculateLine( px, py, tx, ty, function( sx, sy )
-        -- Ignore the origin.
-        if sx ~= px or sy ~= py then
-            tiles[#tiles + 1] = { sx, sy };
-        end
-        return true;
-    end)
 
     function self:update( dt )
         timer = timer + dt * SPEED;
@@ -63,6 +46,10 @@ function Projectile.new( character, origin, target, angle )
     function self:updateTile( map )
         tile = map:getTileAt( tiles[index][1], tiles[index][2] );
     end
+
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
 
     function self:getCharacter()
         return character;
@@ -91,6 +78,10 @@ function Projectile.new( character, origin, target, angle )
     function self:hasReachedTarget()
         return #tiles == index;
     end
+
+    -- ------------------------------------------------
+    -- Setters
+    -- ------------------------------------------------
 
     function self:setEnergy( nenergy )
         energy = nenergy;
