@@ -8,16 +8,20 @@ local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 
 -- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local Game = {};
+
+-- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.Factions' );
 
 -- ------------------------------------------------
--- Module
+-- Constructor
 -- ------------------------------------------------
-
-local Game = {};
 
 function Game.new()
     local self = {};
