@@ -44,6 +44,12 @@ local WEAPON_MODIFIERS = {
 -- Constructor
 -- ------------------------------------------------
 
+---
+-- Creates a new ProjectileQueue.
+-- @param character (Character)       The character who started the attack.
+-- @param target    (Tile)            The target tile.
+-- @return          (ProjectileQueue) A new instance of the ProjectileQueue class.
+--
 function ProjectileQueue.new( character, target )
     local self = {};
 
@@ -58,29 +64,47 @@ function ProjectileQueue.new( character, target )
     -- Private Methods
     -- ------------------------------------------------
 
+    ---
+    -- Returns a random sign.
+    -- @return (number) Either one or minus one.
+    --
     local function randomSign()
         return love.math.random( 0, 1 ) == 0 and -1 or 1;
     end
 
-    local function round( value )
+    ---
+    -- Rounds a value to the next multiple of ten.
+    -- @param value (number) The value to round.
+    -- @return      (number) The rounded value.
+    --
+    local function roundToMultipleOfTen( value )
         return math.floor( value / 10 + 0.5 ) * 10;
     end
 
-    local function getRandomAngle( angle )
-        return love.math.random( angle * 100 ) / 100;
+    ---
+    -- Generates a random angle in the specified range.
+    -- @param range (number) The range to choose from.
+    -- @return      (number) The random angle.
+    --
+    local function getRandomAngle( range )
+        return love.math.random( range * 100 ) / 100;
     end
 
+    ---
+    -- Calculates the maximum angle of derivation for the shot.
+    -- @return (number) The maximum range for the derivation.
+    --
     local function calculateMaximumDerivation()
-        local marksmanSkill = round( character:getAccuracy() );
-        local weaponAccuracy = round( weapon:getAccuracy() );
+        local marksmanSkill = roundToMultipleOfTen( character:getAccuracy() );
+        local weaponAccuracy = roundToMultipleOfTen( weapon:getAccuracy() );
 
         return getRandomAngle( SKILL_MODIFIERS[marksmanSkill] ) + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
     end
 
-    local function determineActualDerivation( angle )
-        return getRandomAngle( angle );
-    end
-
+    ---
+    -- Removes a projectile from the queue and adds it to the table of active
+    -- projectiles.
+    --
     local function spawnProjectile()
         index = index + 1;
         projectiles[index] = projectileQueue:dequeue();
@@ -92,15 +116,25 @@ function ProjectileQueue.new( character, target )
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Generates projectiles based on the weapons firing mode. The value is
+    -- limited by the amount of rounds in the weapon's magazine. For each
+    -- projectile an angle of derivation is calculated before it is placed in
+    -- the queue.
+    --
     function self:init()
         local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
         for _ = 1, amount do
             local maxDerivation = calculateMaximumDerivation();
-            local actualDerivation = randomSign() * determineActualDerivation( maxDerivation );
+            local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
             projectileQueue:enqueue( Projectile.new( character, character:getTile(), target, actualDerivation ));
         end
     end
 
+    ---
+    -- Spawns a new projectile after a certain delay defined by the weapon's
+    -- rate of fire.
+    --
     function self:update( dt )
         timer = timer - dt;
         if timer <= 0 and not projectileQueue.isEmpty() then
@@ -109,6 +143,10 @@ function ProjectileQueue.new( character, target )
         end
     end
 
+    ---
+    -- Removes a projectile from the table of active projectiles.
+    -- @param id (number) The id of the projectile to remove.
+    --
     function self:removeProjectile( id )
         projectiles[id] = nil;
     end
@@ -117,14 +155,25 @@ function ProjectileQueue.new( character, target )
     -- Getters
     -- ------------------------------------------------
 
+    ---
+    -- Gets the character this attack was performed by.
+    -- @return (Character) The character.
+    --
     function self:getCharacter()
         return character;
     end
 
+    ---
+    -- Gets the table of projectiles which are active on the map.
+    -- @return (table) A table containing the projectiles.
     function self:getProjectiles()
         return projectiles;
     end
 
+    ---
+    -- Checks if this ProjectileQueue is done with all the projectiles.
+    -- @return (boolean) True if it is done.
+    --
     function self:isDone()
         if not projectileQueue.isEmpty() then
             return false;
