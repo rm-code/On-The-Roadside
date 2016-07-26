@@ -40,6 +40,18 @@ local WEAPON_MODIFIERS = {
   [100] =  0,
 }
 
+local BURST_MODIFIERS = {
+    [1] = 0,
+    [2] = 1,
+    [3] = 1,
+    [4] = 2,
+    [5] = 2,
+    [6] = 3,
+    [7] = 3,
+    [8] = 3,
+    [9] = 4
+}
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -92,13 +104,22 @@ function ProjectileQueue.new( character, target )
 
     ---
     -- Calculates the maximum angle of derivation for the shot.
-    -- @return (number) The maximum range for the derivation.
+    -- @param i (number) Determines how many projectiles have been fired already.
+    -- @return  (number) The maximum range for the derivation.
     --
-    local function calculateMaximumDerivation()
+    local function calculateMaximumDerivation( i )
         local marksmanSkill = roundToMultipleOfTen( character:getAccuracy() );
         local weaponAccuracy = roundToMultipleOfTen( weapon:getAccuracy() );
 
-        return getRandomAngle( SKILL_MODIFIERS[marksmanSkill] ) + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
+        local derivation = 0;
+        -- Random angle based on the character's accuracy skill.
+        derivation = derivation + getRandomAngle( SKILL_MODIFIERS[marksmanSkill] );
+        -- Random angle based on weapon's accuracy stat.
+        derivation = derivation + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
+        -- Random angle based on how many bullets have been shot before.
+        derivation = derivation + getRandomAngle( BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )] );
+
+        return derivation;
     end
 
     ---
@@ -124,8 +145,8 @@ function ProjectileQueue.new( character, target )
     --
     function self:init()
         local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
-        for _ = 1, amount do
-            local maxDerivation = calculateMaximumDerivation();
+        for i = 1, amount do
+            local maxDerivation = calculateMaximumDerivation( i );
             local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
             projectileQueue:enqueue( Projectile.new( character, character:getTile(), target, actualDerivation ));
         end
