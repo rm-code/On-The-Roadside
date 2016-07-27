@@ -1,7 +1,9 @@
+local Object = require( 'src.Object' );
+
 local Magazine = {};
 
 function Magazine.new( ammoType, capacity )
-    local self = {};
+    local self = Object.new():addInstance( 'Magazine' );
 
     local rounds = capacity;
 
