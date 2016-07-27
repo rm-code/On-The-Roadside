@@ -23,6 +23,7 @@ function Weapon.new( template )
     local modeIndex = 1;
     local mode = template.mode[modeIndex];
     local firingDelay = 1 / ( template.rpm / 60 );
+    local magSize = template.magSize;
     local magazine;
 
     -- ------------------------------------------------
@@ -78,6 +79,10 @@ function Weapon.new( template )
 
     function self:getMagazine()
         return magazine;
+    end
+
+    function self:getMagSize()
+        return magSize;
     end
 
     function self:getRange()

@@ -23,6 +23,10 @@ function Magazine.new( ammoType, capacity )
         return ammoType;
     end
 
+    function self:getName()
+        return ammoType;
+    end
+
     function self:isEmpty()
         return rounds == 0;
     end

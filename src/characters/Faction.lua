@@ -45,7 +45,7 @@ function Faction.new( type )
     --
     local function createEquipment( character )
         local weapon = ItemFactory.createWeapon();
-        local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
+        local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() );
         weapon:reload( magazine );
 
         character:getEquipment():addItem( weapon );
@@ -56,6 +56,9 @@ function Faction.new( type )
         character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
         character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
         character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
+
+        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() ));
+        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() ));
     end
 
     -- ------------------------------------------------

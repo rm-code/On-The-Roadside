@@ -1,5 +1,4 @@
 local Action = require('src.characters.actions.Action');
-local ItemFactory = require('src.items.ItemFactory');
 
 local Reload = {};
 
@@ -8,7 +7,15 @@ function Reload.new( character )
 
     function self:perform()
         local weapon = character:getEquipment():getWeapon();
-        local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), 30 );
+
+        local inventory = character:getEquipment():getBackpack():getInventory();
+        local magazine;
+        for _, item in pairs( inventory:getItems() ) do
+            if item:instanceOf( 'Magazine' ) and item:getAmmoType() == weapon:getAmmoType() then
+                magazine = item;
+                inventory:removeItem( item );
+            end
+        end
         weapon:reload( magazine );
     end
 

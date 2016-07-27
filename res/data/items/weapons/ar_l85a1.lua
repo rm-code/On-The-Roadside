@@ -5,6 +5,7 @@ return {
     range    = 12,
     rpm      = 610,
     ammoType = "5.56x45mm",
+    magSize  = 30,
     mode = {
         {
             name = "Single",
