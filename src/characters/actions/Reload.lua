@@ -16,6 +16,12 @@ function Reload.new( character )
                 inventory:removeItem( item );
             end
         end
+
+        if not magazine then
+            print( 'No magazine found.' );
+            return;
+        end
+
         weapon:reload( magazine );
     end
 
