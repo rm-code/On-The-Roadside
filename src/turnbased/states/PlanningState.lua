@@ -1,5 +1,8 @@
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
+local StandUp = require( 'src.characters.actions.StandUp' );
+local Crouch = require( 'src.characters.actions.Crouch' );
+local LieDown = require( 'src.characters.actions.LieDown' );
 local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
 local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
 local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
@@ -22,6 +25,18 @@ function PlanningState.new( stateManager )
             FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
             FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectPrevFiringMode();
+        elseif key == 'c' then
+            FactionManager.getCurrentCharacter():clearActions();
+            FactionManager.getCurrentCharacter():enqueueAction( Crouch.new( FactionManager.getCurrentCharacter() ));
+            stateManager:push( 'execution' );
+        elseif key == 's' then
+            FactionManager.getCurrentCharacter():clearActions();
+            FactionManager.getCurrentCharacter():enqueueAction( StandUp.new( FactionManager.getCurrentCharacter() ));
+            stateManager:push( 'execution' );
+        elseif key == 'p' then
+            FactionManager.getCurrentCharacter():clearActions();
+            FactionManager.getCurrentCharacter():enqueueAction( LieDown.new( FactionManager.getCurrentCharacter() ));
+            stateManager:push( 'execution' );
         elseif key == 'r' then
             FactionManager.getCurrentCharacter():clearActions();
             FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));

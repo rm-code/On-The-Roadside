@@ -2,8 +2,23 @@ local Action = require('src.characters.actions.Action');
 
 local Walk = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local STANCES = require('src.constants.Stances');
+local STANCE_MODIFIER = {
+    [STANCES.STAND]  = 1.0,
+    [STANCES.CROUCH] = 1.5,
+    [STANCES.PRONE]  = 2.0,
+}
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 function Walk.new( character, target )
-    local self = Action.new( target:getMovementCost(), target ):addInstance( 'Walk' );
+    local self = Action.new( math.floor( target:getMovementCost() * STANCE_MODIFIER[character:getStance()] ), target ):addInstance( 'Walk' );
 
     function self:perform()
         local current = character:getTile();

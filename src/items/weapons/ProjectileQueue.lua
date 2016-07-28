@@ -53,6 +53,13 @@ local BURST_MODIFIERS = {
     [9] = 4
 }
 
+local STANCES = require('src.constants.Stances');
+local STANCE_MODIFIER = {
+    [STANCES.STAND]  = 1.0,
+    [STANCES.CROUCH] = 0.7,
+    [STANCES.PRONE]  = 0.5,
+}
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -119,6 +126,9 @@ function ProjectileQueue.new( character, target )
         derivation = derivation + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
         -- Random angle based on how many bullets have been shot before.
         derivation = derivation + getRandomAngle( BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )] );
+
+        -- Stances influence the whole angle.
+        derivation = derivation * STANCE_MODIFIER[character:getStance()];
 
         return derivation;
     end

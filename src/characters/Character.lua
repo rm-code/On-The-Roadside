@@ -8,8 +8,9 @@ local Equipment = require('src.characters.Equipment');
 
 local DEFAULT_ACTION_POINTS = 20;
 
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+local STANCES = require('src.constants.Stances');
 
+local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 local BODY_PARTS = {
     CLOTHING_SLOTS.HEADGEAR,
     CLOTHING_SLOTS.GLOVES,
@@ -52,6 +53,8 @@ function Character.new( map, tile, faction )
 
     local accuracy = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
+
+    local stance = STANCES.STAND;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -349,6 +352,14 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Returns the character's current stance.
+    -- @return (number) The character's stance.
+    --
+    function self:getStance()
+        return stance;
+    end
+
+    ---
     -- Gets the character's tile.
     -- @return (Tile) The tile the character is located on.
     --
@@ -414,6 +425,14 @@ function Character.new( map, tile, faction )
     --
     function self:setTile( ntile )
         tile = ntile;
+    end
+
+    ---
+    -- Sets the character's stance.
+    -- @param nstance (number) The character's new stance.
+    --
+    function self:setStance( nstance )
+        stance = nstance;
     end
 
     return self;

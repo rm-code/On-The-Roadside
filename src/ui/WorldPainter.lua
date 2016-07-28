@@ -16,6 +16,8 @@ local CHARACTER_COLORS = {
     }
 }
 
+local STANCES = require('src.constants.Stances');
+
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local TILESET = love.graphics.newImage( 'res/img/16x16_sm.png' );
 
@@ -105,10 +107,16 @@ function WorldPainter.new( game )
     --
     local function selectTileSprite( tile )
         if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
-            if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
-                return TILE_SPRITES[3];
-            else
-                return TILE_SPRITES[2];
+            if tile:getCharacter():getStance() == STANCES.STAND then
+                if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
+                    return TILE_SPRITES[3];
+                else
+                    return TILE_SPRITES[2];
+                end
+            elseif tile:getCharacter():getStance() == STANCES.CROUCH then
+                return TILE_SPRITES[32];
+            elseif tile:getCharacter():getStance() == STANCES.PRONE then
+                return TILE_SPRITES[23];
             end
         end
 
