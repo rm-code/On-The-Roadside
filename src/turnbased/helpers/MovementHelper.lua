@@ -2,12 +2,20 @@ local Walk = require( 'src.characters.actions.Walk' );
 local Open = require( 'src.characters.actions.Open' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
+local Crouch = require( 'src.characters.actions.Crouch' );
+local LieDown = require( 'src.characters.actions.LieDown' );
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local MovementHelper = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local STANCES = require('src.constants.Stances');
 
 -- ------------------------------------------------
 -- Private Methods
@@ -21,14 +29,19 @@ local function generatePath( target, character )
         if path then
             character:addPath( path );
             character:getPath():iterate( function( tile, index )
-                if tile:hasWorldObject() and tile:getWorldObject():isOpenable() and not tile:isPassable() then
-                    character:enqueueAction( Open.new( character, tile ));
-                    -- Don't walk on the door tile if the path ends there.
-                    if index ~= 1 then
-                        character:enqueueAction( Walk.new( character, tile ));
+                if tile:hasWorldObject() then
+                    if character:getStance() == STANCES.PRONE then
+                        character:enqueueAction( Crouch.new( character ));
                     end
-                elseif tile:hasWorldObject() and tile:getWorldObject():isClimbable() then
-                    character:enqueueAction( ClimbOver.new( character, tile ));
+                    if tile:getWorldObject():isOpenable() and not tile:isPassable() then
+                        character:enqueueAction( Open.new( character, tile ));
+                        -- Don't walk on the door tile if the path ends there.
+                        if index ~= 1 then
+                            character:enqueueAction( Walk.new( character, tile ));
+                        end
+                    elseif tile:getWorldObject():isClimbable() then
+                        character:enqueueAction( ClimbOver.new( character, tile ));
+                    end
                 else
                     character:enqueueAction( Walk.new( character, tile ));
                 end
