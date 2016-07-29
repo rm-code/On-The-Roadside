@@ -70,7 +70,7 @@ end
 function love.keypressed(key)
     ScreenManager.keypressed(key);
 
-    if key == 'p' then
+    if key == '0' then
         profile = 1;
     end
 end
