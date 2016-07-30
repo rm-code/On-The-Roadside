@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Stop if no version flag is provided.
-if ! [ $1 == "major" ] || [ $1 == "minor" ] || [ $1 == "patch" ] ; then
+if ! [[ $1 == "major" || $1 == "minor" || $1 == "patch" ]] ; then
     echo "FAILED: Use major, minor or patch to release a new version."
     exit 1
 fi
