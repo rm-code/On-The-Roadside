@@ -18,6 +18,7 @@ function Close.new( character, tile )
         target:setBlocksVision( true );
 
         tile:setDirty( true );
+        return true;
     end
 
     return self;

@@ -43,7 +43,9 @@ function ClimbOver.new( character, target )
             character:setTile( target );
 
             Messenger.publish( 'SOUND_CLIMB' );
+            return true;
         end
+        return false;
     end
 
     return self;

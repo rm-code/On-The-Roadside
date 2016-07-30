@@ -109,8 +109,10 @@ function Character.new( map, tile, faction )
     --
     function self:performAction()
         local action = actions:dequeue();
-        actionPoints = actionPoints - action:getCost();
-        action:perform();
+        local success = action:perform();
+        if success then
+            actionPoints = actionPoints - action:getCost();
+        end
         self:generateFOV();
     end
 

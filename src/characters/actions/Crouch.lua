@@ -8,7 +8,12 @@ function Crouch.new( character )
     local self = Action.new( 1, character:getTile() ):addInstance( 'Crouch' );
 
     function self:perform()
+        if character:getStance() == STANCES.CROUCH then
+            return false;
+        end
+
         character:setStance( STANCES.CROUCH );
+        return true;
     end
 
     return self;

@@ -18,6 +18,7 @@ function Open.new( character, tile )
         target:setBlocksVision( false );
 
         tile:setDirty( true );
+        return true;
     end
 
     return self;

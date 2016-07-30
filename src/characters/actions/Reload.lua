@@ -19,10 +19,11 @@ function Reload.new( character )
 
         if not magazine then
             print( 'No magazine found.' );
-            return;
+            return false;
         end
 
         weapon:reload( magazine );
+        return true;
     end
 
     return self;

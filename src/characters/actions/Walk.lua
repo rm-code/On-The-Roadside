@@ -32,6 +32,7 @@ function Walk.new( character, target )
         current:removeCharacter();
         target:addCharacter( character );
         character:setTile( target );
+        return true;
     end
 
     return self;
