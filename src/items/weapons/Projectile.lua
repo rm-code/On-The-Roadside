@@ -37,7 +37,7 @@ function Projectile.new( character, tiles )
 
     function self:update( dt )
         timer = timer + dt * SPEED;
-        if timer > 1 then
+        if timer > 1 and index < #tiles then
             index = index + 1;
             timer = 0;
         end
