@@ -7,6 +7,10 @@ function Reload.new( character )
 
     function self:perform()
         local weapon = character:getEquipment():getWeapon();
+        if weapon:getMagazine():isFull() then
+            print( 'Weapon is fully loaded.' );
+            return false;
+        end
 
         local inventory = character:getEquipment():getBackpack():getInventory();
         local magazine;
