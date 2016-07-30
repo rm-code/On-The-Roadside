@@ -22,7 +22,7 @@ minor=${version[1]}
 patch=${version[2]}
 build=${version[3]}
 
-echo "Old Version: $major.$minor.$patch-($build)"
+echo "Old Version: $major.$minor.$patch.$build"
 
 # Increment version based on command.
 if [ $1 == "major" ] ; then
@@ -39,7 +39,7 @@ fi
 # Use the git count as build number.
 build=$(git rev-list develop --count)
 
-formatted="$major.$minor.$patch-($build)"
+formatted="$major.$minor.$patch.$build"
 
 echo "New Version: $formatted"
 

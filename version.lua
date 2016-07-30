@@ -5,4 +5,4 @@ local version = {
     build = 0,
 }
 
-return string.format( "%d.%d.%d-(%d)", version.major, version.minor, version.patch, version.build );
+return string.format( "%d.%d.%d.%d", version.major, version.minor, version.patch, version.build );
