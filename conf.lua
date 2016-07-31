@@ -1,10 +1,10 @@
-local PROJECT_TITLE = "Hoost (Working Title)";
+local PROJECT_TITLE = "On The Roadside";
 
-local PROJECT_IDENTITY = "rmcode_hoost";
+local PROJECT_IDENTITY = "rmcode_otr";
 
-local PROJECT_VERSION = "0000";
+local PROJECT_VERSION = require( 'version' );
 
-local LOVE_VERSION = "0.10.0";
+local LOVE_VERSION = "0.10.1";
 
 ---
 -- Initialise löve's config file.
