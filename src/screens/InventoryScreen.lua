@@ -30,6 +30,19 @@ function InventoryScreen.new()
     local dragboard;
 
     -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function refreshBackpack()
+        if character:getEquipment():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack:init();
+        else
+            lists.backpack = nil;
+        end
+    end
+
+    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
@@ -96,12 +109,17 @@ function InventoryScreen.new()
             if list:isMouseOver() then
                 if dragboard then
                     list:drop( dragboard.item, dragboard.origin );
+                    if dragboard.item:instanceOf( 'Bag' ) then
+                        refreshBackpack();
+                    end
                     dragboard = nil;
-                    return;
                 else
                     local item = list:drag();
                     if item then
                         dragboard = { item = item, origin = list };
+                        if item:instanceOf( 'Bag' ) then
+                            refreshBackpack();
+                        end
                     end
                 end
             end
