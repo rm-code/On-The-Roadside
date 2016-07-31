@@ -41,9 +41,12 @@ function OverlayPainter.new( particleLayer )
         if character:hasLineOfSight() then
             love.graphics.setBlendMode( 'add' );
             character:getLineOfSight():iterate( function( tile )
-                love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
-                if not tile:isPassable() or not character:canSee( tile ) then
+                if not character:getFaction():canSee( tile ) then
                     love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
+                elseif tile:hasWorldObject() or tile:isOccupied() then
+                    love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() );
+                else
+                    love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
                 end
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
             end)
