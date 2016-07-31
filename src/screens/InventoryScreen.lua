@@ -38,20 +38,18 @@ function InventoryScreen.new()
     -- and the tile he is standing on.
     --
     function self:init()
-        local characterEquipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
-        characterEquipment:init();
+        lists = {};
 
-        local characterInventory = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
-        characterInventory:init();
+        lists.equipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
+        lists.equipment:init();
 
-        local tileInventory = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
-        tileInventory:init();
+        if character:getEquipment():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack:init();
+        end
 
-        lists = {
-            characterEquipment,
-            characterInventory,
-            tileInventory
-        }
+        lists.ground = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
+        lists.ground:init();
     end
 
     ---
@@ -63,8 +61,8 @@ function InventoryScreen.new()
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
         love.graphics.setColor( 255, 255, 255, 255 );
 
-        for i = 1, #lists do
-            lists[i]:draw();
+        for _, list in pairs( lists ) do
+            list:draw();
         end
 
         if dragboard then
@@ -82,8 +80,8 @@ function InventoryScreen.new()
     -- Updates the inventory lists.
     --
     function self:update( dt )
-        for i = 1, #lists do
-            lists[i]:update( dt );
+        for _, list in pairs( lists ) do
+            list:update( dt );
         end
     end
 
@@ -94,7 +92,7 @@ function InventoryScreen.new()
     end
 
     function self:mousepressed()
-        for _, list in ipairs( lists ) do
+        for _, list in pairs( lists ) do
             if list:isMouseOver() then
                 if dragboard then
                     list:drop( dragboard.item, dragboard.origin );
