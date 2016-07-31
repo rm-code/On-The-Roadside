@@ -4,6 +4,8 @@
 
 On the Roadside is a turnbased strategy game. It is developed by [@rm-code](https://twitter.com/rm_code) using [Lua](http://www.lua.org/) and the [LÖVE](https://love2d.org/) framework.
 
+![img](res/misc/screenshot.png)
+
 ## Controls
 
 | Key       | Action                     |
