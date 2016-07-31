@@ -1,8 +1,8 @@
 local version = {
     major = 0,
-    minor = 0,
+    minor = 1,
     patch = 0,
-    build = 0,
+    build = 337,
 }
 
 return string.format( "%d.%d.%d.%d", version.major, version.minor, version.patch, version.build );
