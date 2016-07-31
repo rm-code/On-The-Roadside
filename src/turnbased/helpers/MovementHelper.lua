@@ -33,10 +33,14 @@ local function generatePath( target, character )
                     if character:getStance() == STANCES.PRONE then
                         character:enqueueAction( Crouch.new( character ));
                     end
-                    if tile:getWorldObject():isOpenable() and not tile:isPassable() then
-                        character:enqueueAction( Open.new( character, tile ));
-                        -- Don't walk on the door tile if the path ends there.
-                        if index ~= 1 then
+                    if tile:getWorldObject():isOpenable() then
+                        if not tile:isPassable() then
+                            character:enqueueAction( Open.new( character, tile ));
+                            -- Don't walk on the door tile if the path ends there.
+                            if index ~= 1 then
+                                character:enqueueAction( Walk.new( character, tile ));
+                            end
+                        else
                             character:enqueueAction( Walk.new( character, tile ));
                         end
                     elseif tile:getWorldObject():isClimbable() then
