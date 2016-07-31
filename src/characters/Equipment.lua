@@ -9,15 +9,15 @@ function Equipment.new()
     local self = Object.new():addInstance( 'Equipment' );
 
     local items = {
-        [ITEM_TYPES.WEAPON] = true,
-        [ITEM_TYPES.BAG] = true,
+        [ITEM_TYPES.WEAPON] = false,
+        [ITEM_TYPES.BAG]    = false,
         [ITEM_TYPES.CLOTHING] = {
-            [CLOTHING_SLOTS.HEADGEAR] = true,
-            [CLOTHING_SLOTS.GLOVES] = true,
-            [CLOTHING_SLOTS.JACKET] = true,
-            [CLOTHING_SLOTS.SHIRT] = true,
-            [CLOTHING_SLOTS.TROUSERS] = true,
-            [CLOTHING_SLOTS.FOOTWEAR] = true
+            [CLOTHING_SLOTS.HEADGEAR] = false,
+            [CLOTHING_SLOTS.GLOVES]   = false,
+            [CLOTHING_SLOTS.JACKET]   = false,
+            [CLOTHING_SLOTS.SHIRT]    = false,
+            [CLOTHING_SLOTS.TROUSERS] = false,
+            [CLOTHING_SLOTS.FOOTWEAR] = false
         }
     };
 
