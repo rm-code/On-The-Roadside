@@ -1,6 +1,7 @@
 local State = require( 'src.turnbased.states.State' );
 local FactionManager = require( 'src.characters.FactionManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
 local ExecutionState = {};
 
@@ -14,6 +15,11 @@ function ExecutionState.new( stateManager )
     function self:update( dt )
         if not ProjectileManager.isDone() then
             ProjectileManager.update( dt );
+            return;
+        end
+
+        if not ExplosionManager.isDone() then
+            ExplosionManager.update( dt );
             return;
         end
 

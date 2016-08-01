@@ -6,6 +6,7 @@ local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -65,6 +66,7 @@ function Game.new()
         turnManager = TurnManager.new( map );
 
         ProjectileManager.init( map );
+        ExplosionManager.init( map );
 
         -- Register obsersvations.
         observations[#observations + 1] = map:observe( self );

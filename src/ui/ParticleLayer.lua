@@ -46,6 +46,18 @@ function ParticleLayer.new()
         end
     end)
 
+    Messenger.observe( 'EXPLOSION', function( ... )
+        local generation = ...;
+        for tile, life in pairs( generation ) do
+            local r = 255;
+            local g = love.math.random( 100, 200 );
+            local b = 0;
+            local a = love.math.random( 200, 255 );
+            local fade = 500 / math.min( 3, love.math.random( life ));
+            addParticleEffect( tile:getX(), tile:getY(), r, g, b, a, fade );
+        end
+    end)
+
     return self;
 end
 

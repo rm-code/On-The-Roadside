@@ -7,6 +7,9 @@ local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
 local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
 local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
 local FactionManager = require( 'src.characters.FactionManager' );
+-- TODO Proper grenade implementation.
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
+local MousePointer = require( 'src.ui.MousePointer' );
 
 local PlanningState = {};
 
@@ -40,6 +43,10 @@ function PlanningState.new( stateManager )
         elseif key == 'r' then
             FactionManager.getCurrentCharacter():clearActions();
             FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
+            stateManager:push( 'execution' );
+        elseif key == 'g' then
+            -- TODO Proper grenade implementation.
+            ExplosionManager.register( map:getTileAt( MousePointer.getGridPosition() ), love.math.random( 5, 10 ));
             stateManager:push( 'execution' );
         elseif key == 'a' then
             FactionManager.getCurrentCharacter():clearActions();
