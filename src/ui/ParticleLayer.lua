@@ -17,7 +17,7 @@ function ParticleLayer.new()
         if grid[x][y] then
             particles:deposit( grid[x][y] );
         end
-        grid[x][y] = particles:request( 223, 113,  38, 200 );
+        grid[x][y] = particles:request( 223, 113,  38, 200, 500 );
     end
 
     function self:update( dt )
