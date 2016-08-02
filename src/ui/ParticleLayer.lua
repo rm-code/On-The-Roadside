@@ -11,13 +11,13 @@ function ParticleLayer.new()
     local grid = {};
     local particles = ObjectPool.new( Particle, 'Particle' );
 
-    local function addParticleEffect( x, y )
+    local function addParticleEffect( x, y, r, g, b, a, fade )
         grid[x] = grid[x] or {};
         -- Return previous particles on this tile to the particle pool.
         if grid[x][y] then
             particles:deposit( grid[x][y] );
         end
-        grid[x][y] = particles:request( 223, 113,  38, 200, 500 );
+        grid[x][y] = particles:request( r, g, b, a, fade );
     end
 
     function self:update( dt )
@@ -42,7 +42,7 @@ function ParticleLayer.new()
         local projectile = ...;
         local tile = projectile:getTile();
         if tile then
-            addParticleEffect( tile:getPosition() );
+            addParticleEffect( tile:getX(), tile:getY(), 223, 113,  38, 200, 500 );
         end
     end)
 
