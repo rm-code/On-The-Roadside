@@ -1,6 +1,7 @@
 local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
+local Tileset = require( 'src.ui.Tileset' );
 
 -- ------------------------------------------------
 -- Module
@@ -21,13 +22,15 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 
 ---
 -- Creates an new instance of the OverlayPainter class.
+-- @param game          (Game)           The game object.
 -- @param particleLayer (ParticleLayer)  The layer used for drawing particles.
 -- @return              (OverlayPainter) The new instance.
 --
-function OverlayPainter.new( particleLayer )
+function OverlayPainter.new( game, particleLayer )
     local self = {};
 
     local pulser = Pulser.new( 4, 80, 80 );
+    love.mouse.setVisible( false );
 
     -- ------------------------------------------------
     -- Private Methods
@@ -104,14 +107,27 @@ function OverlayPainter.new( particleLayer )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
         local mx, my = MousePointer.getWorldPosition();
         local cx, cy = math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE;
 
-        love.graphics.setBlendMode( 'add' );
-        love.graphics.setColor( COLORS.DB19[1], COLORS.DB19[2], COLORS.DB19[3], pulser:getPulse() );
+        love.graphics.setColor( 0, 0, 0 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
+
+        if game:getState():getHelperType() == 'move' then
+            love.graphics.setColor( COLORS.DB18 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 176 ), cx, cy );
+        elseif game:getState():getHelperType() == 'attack' then
+            love.graphics.setColor( COLORS.DB27 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 11 ), cx, cy );
+        elseif game:getState():getHelperType() == 'interact' then
+            love.graphics.setColor( COLORS.DB10 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 30 ), cx, cy );
+        end
         love.graphics.setColor( 255, 255, 255, 255 );
-        love.graphics.setBlendMode( 'alpha' );
     end
 
     local function drawParticles()

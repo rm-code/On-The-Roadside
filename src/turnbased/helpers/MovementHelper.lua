@@ -74,4 +74,8 @@ function MovementHelper.request( map, target, character, states )
     end
 end
 
+function MovementHelper.getType()
+    return 'move';
+end
+
 return MovementHelper;

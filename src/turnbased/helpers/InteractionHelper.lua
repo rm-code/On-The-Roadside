@@ -14,4 +14,8 @@ function InteractionHelper.request( map, tile, character, states )
     end
 end
 
+function InteractionHelper.getType()
+    return 'interact';
+end
+
 return InteractionHelper;

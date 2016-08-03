@@ -97,6 +97,10 @@ function Game.new()
         turnManager:mousepressed( mx, my, button );
     end
 
+    function self:getState()
+        return turnManager:getState();
+    end
+
     return self;
 end
 

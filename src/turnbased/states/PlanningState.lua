@@ -82,6 +82,10 @@ function PlanningState.new( stateManager )
         activeHelper.request( map, tile, FactionManager.getCurrentCharacter(), stateManager );
     end
 
+    function self:getHelperType()
+        return activeHelper.getType();
+    end
+
     return self;
 end
 

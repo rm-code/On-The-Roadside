@@ -40,6 +40,10 @@ function StateManager.new( states )
         stack[#stack] = nil;
     end
 
+    function self:getState()
+        return stack[#stack];
+    end
+
     return self;
 end
 

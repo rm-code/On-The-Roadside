@@ -36,4 +36,8 @@ function AttackHelper.request( map, target, character, states )
     end
 end
 
+function AttackHelper.getType()
+    return 'attack';
+end
+
 return AttackHelper;

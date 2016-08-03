@@ -50,7 +50,7 @@ function MainScreen.new()
 
         particleLayer = ParticleLayer.new();
 
-        overlayPainter = OverlayPainter.new( particleLayer );
+        overlayPainter = OverlayPainter.new( game, particleLayer );
 
         MousePointer.init( camera );
     end

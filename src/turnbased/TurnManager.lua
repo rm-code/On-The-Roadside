@@ -53,6 +53,10 @@ function TurnManager.new( map )
         stateManager:selectTile( map:getTileAt( mx, my ), button );
     end
 
+    function self:getState()
+        return stateManager:getState();
+    end
+
     return self;
 end
 
