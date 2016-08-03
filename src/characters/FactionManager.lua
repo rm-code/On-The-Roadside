@@ -126,6 +126,7 @@ function FactionManager.selectCharacter( tile )
     if tile:isOccupied() then
         active:getObject():findCharacter( tile:getCharacter() );
     end
+    Messenger.publish( 'SWITCH_CHARACTERS', FactionManager.getCurrentCharacter() );
     return FactionManager.getCurrentCharacter();
 end
 
