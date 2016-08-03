@@ -1,3 +1,4 @@
+local Object = require( 'src.Object' );
 local Map = require( 'src.map.Map' );
 local FactionManager = require( 'src.characters.FactionManager' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
@@ -25,7 +26,7 @@ local FACTIONS = require( 'src.constants.Factions' );
 -- ------------------------------------------------
 
 function Game.new()
-    local self = {};
+    local self = Object.new():addInstance( 'Game' );
 
     local map;
     local turnManager;
