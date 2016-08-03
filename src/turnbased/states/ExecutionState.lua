@@ -8,7 +8,7 @@ local ExecutionState = {};
 local TURN_STEP_DELAY = 0.15;
 
 function ExecutionState.new( stateManager )
-    local self = State.new();
+    local self = State.new():addInstance( 'ExecutionState' );
 
     local actionTimer = 0;
 

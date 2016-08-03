@@ -1,7 +1,9 @@
+local Object = require('src.Object');
+
 local State = {};
 
 function State.new()
-    local self = {};
+    local self = Object.new():addInstance( 'State' );
 
     function self:enter() end
     function self:keypressed() end

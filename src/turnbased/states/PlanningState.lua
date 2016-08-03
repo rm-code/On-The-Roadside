@@ -14,7 +14,7 @@ local MousePointer = require( 'src.ui.MousePointer' );
 local PlanningState = {};
 
 function PlanningState.new( stateManager )
-    local self = State.new();
+    local self = State.new():addInstance( 'PlanningState' );
 
     local map;
     local activeHelper = MovementHelper;
