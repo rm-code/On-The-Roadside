@@ -102,6 +102,10 @@ function Game.new()
         return turnManager:getState();
     end
 
+    function self:getCurrentCharacter()
+        return FactionManager.getCurrentCharacter();
+    end
+
     return self;
 end
 

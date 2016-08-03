@@ -6,10 +6,9 @@ local CAMERA_TRACKING_SPEED = 10;
 local SCROLL_MARGIN = 5;
 local SCROLL_SPEED = 10;
 
-function CameraHandler.new()
+function CameraHandler.new( px, py )
     local self = Camera.new();
 
-    local px, py = love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5;
     local tx, ty = px, py;
 
     ---
