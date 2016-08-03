@@ -18,8 +18,8 @@ local function generateLineOfSight( target, character, map )
     character:addLineOfSight( LineOfSight.new( seenTiles ));
 end
 
-local function generateAttack( target, character, map )
-    character:enqueueAction( Attack.new( character, target, map ));
+local function generateAttack( target, character )
+    character:enqueueAction( Attack.new( character, target ));
 end
 
 function AttackHelper.request( map, target, character, states )
@@ -31,7 +31,7 @@ function AttackHelper.request( map, target, character, states )
         character:removeLineOfSight();
         generateLineOfSight( target, character, map );
     else
-        generateAttack( target, character, map );
+        generateAttack( target, character );
         states:push( 'execution' );
     end
 end
