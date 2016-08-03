@@ -55,9 +55,9 @@ end
 -- Initialises the FactionManager by creating a linked list of factions.
 --
 function FactionManager.init()
-    addFaction( Faction.new( FACTIONS.ENEMY ));
-    addFaction( Faction.new( FACTIONS.NEUTRAL ));
-    addFaction( Faction.new( FACTIONS.ALLIED ));
+    addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
+    addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
+    addFaction( Faction.new( FACTIONS.ALLIED,  false ));
 end
 
 ---

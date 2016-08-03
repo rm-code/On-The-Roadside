@@ -9,14 +9,13 @@ local Faction = {};
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.Factions' );
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Faction.new( type )
+function Faction.new( type, controlledByAi )
     local self = Object.new():addInstance( 'Faction' );
 
     local root;
@@ -227,7 +226,7 @@ function Faction.new( type )
     end
 
     function self:isAIControlled()
-        return type == FACTIONS.NEUTRAL or type == FACTIONS.ENEMY;
+        return controlledByAi;
     end
 
     return self;
