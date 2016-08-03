@@ -8,6 +8,7 @@ local UserInterface = require( 'src.ui.UserInterface' );
 local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
+local Tileset = require( 'src.ui.Tileset' );
 
 -- ------------------------------------------------
 -- Module
@@ -38,6 +39,8 @@ function MainScreen.new()
     function self:init()
         game = Game.new();
         game:init();
+
+        Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();

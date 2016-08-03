@@ -1,4 +1,5 @@
 local FactionManager = require( 'src.characters.FactionManager' );
+local Tileset = require( 'src.ui.Tileset' );
 
 local COLORS = require( 'src.constants.Colors' );
 local FACTIONS = require( 'src.constants.Factions' );
@@ -17,18 +18,7 @@ local CHARACTER_COLORS = {
 }
 
 local STANCES = require('src.constants.Stances');
-
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local TILESET = love.graphics.newImage( 'res/img/16x16_sm.png' );
-
-local TILE_SPRITES = {};
-for x = 1, TILESET:getWidth() / TILE_SIZE do
-    for y = 1, TILESET:getHeight() / TILE_SIZE do
-        TILE_SPRITES[#TILE_SPRITES + 1] = love.graphics.newQuad(( y - 1 ) * TILE_SIZE, ( x - 1 ) * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    end
-end
-
-print( "Loaded " .. #TILE_SPRITES .. " sprites!" );
 
 -- ------------------------------------------------
 -- Module
@@ -58,7 +48,7 @@ function WorldPainter.new( game )
     --
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
-            local id = spritebatch:add( TILE_SPRITES[1], x * TILE_SIZE, y * TILE_SIZE );
+            local id = spritebatch:add( Tileset.getSprite( 1 ), x * TILE_SIZE, y * TILE_SIZE );
             tile:setID( id );
             tile:setDirty( true );
         end)
@@ -109,26 +99,26 @@ function WorldPainter.new( game )
         if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
             if tile:getCharacter():getStance() == STANCES.STAND then
                 if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
-                    return TILE_SPRITES[3];
+                    return Tileset.getSprite( 3 );
                 else
-                    return TILE_SPRITES[2];
+                    return Tileset.getSprite( 2 );
                 end
             elseif tile:getCharacter():getStance() == STANCES.CROUCH then
-                return TILE_SPRITES[32];
+                return Tileset.getSprite( 32 );
             elseif tile:getCharacter():getStance() == STANCES.PRONE then
-                return TILE_SPRITES[23];
+                return Tileset.getSprite( 23 );
             end
         end
 
         if not tile:getInventory():isEmpty() then
-            return TILE_SPRITES[34];
+            return Tileset.getSprite( 34 );
         end
 
         if tile:hasWorldObject() then
-            return TILE_SPRITES[tile:getWorldObject():getSprite()];
+            return Tileset.getSprite( tile:getWorldObject():getSprite() );
         end
 
-        return TILE_SPRITES[tile:getSprite()];
+        return Tileset.getSprite( tile:getSprite() );
     end
 
     ---
@@ -152,7 +142,7 @@ function WorldPainter.new( game )
 
     function self:init()
         love.graphics.setBackgroundColor( COLORS.DB00 );
-        spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
+        spritebatch = love.graphics.newSpriteBatch( Tileset.getTileset(), 10000, 'dynamic' );
         initSpritebatch( game:getMap() );
     end
 
