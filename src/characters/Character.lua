@@ -3,6 +3,12 @@ local Queue = require('src.util.Queue');
 local Equipment = require('src.characters.Equipment');
 
 -- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local Character = {};
+
+-- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
@@ -21,10 +27,8 @@ local BODY_PARTS = {
 }
 
 -- ------------------------------------------------
--- Module
+-- Constructor
 -- ------------------------------------------------
-
-local Character = {};
 
 ---
 -- Creates a new character and places it on the target tile.
