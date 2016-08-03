@@ -3,6 +3,10 @@ local Node = require('src.characters.Node');
 local Character = require( 'src.characters.Character' );
 local ItemFactory = require('src.items.ItemFactory');
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local Faction = {};
 
 -- ------------------------------------------------
@@ -17,6 +21,10 @@ local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 function Faction.new( type, controlledByAi )
     local self = Object.new():addInstance( 'Faction' );
+
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
 
     local root;
     local active;
@@ -64,20 +72,18 @@ function Faction.new( type, controlledByAi )
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Activates this Faction right before it is selected.
+    --
     function self:activate()
         updateExplorationInfo();
     end
 
-    function self:deactivate()
-        self:iterate( function( character )
-            character:resetActionPoints();
-            character:clearActions();
-            character:removePath();
-            character:removeLineOfSight();
-        end);
-        updateExplorationInfo();
-    end
-
+    ---
+    -- Adds a new Character to this Faction.
+    -- @param map  (Map)  The game's map.
+    -- @param tile (Tile) The tile on which to spawn this character.
+    --
     function self:addCharacter( map, tile )
         -- Create character and calculate initial FOV.
         local character = Character.new( map, tile, self );
@@ -114,6 +120,38 @@ function Faction.new( type, controlledByAi )
         mapInfo[tx][ty] = target;
     end
 
+    ---
+    -- Checks if any of the characters in this Faction can see the target tile.
+    -- @param target (Tile)    The tile to check visibility for.
+    -- @return       (boolean) Wether a character can see this tile.
+    --
+    function self:canSee( tile )
+        local node = root;
+        while node do
+            if node:getObject():canSee( tile ) then
+                return true;
+            end
+            node = node:getNext();
+        end
+    end
+
+    ---
+    -- Deactivates this Faction right before it is deselected.
+    --
+    function self:deactivate()
+        self:iterate( function( character )
+            character:resetActionPoints();
+            character:clearActions();
+            character:removePath();
+            character:removeLineOfSight();
+        end);
+        updateExplorationInfo();
+    end
+
+    ---
+    -- Finds a certain Character in this Faction and makes him active.
+    -- @param character (Character) The character to select.
+    --
     function self:findCharacter( character )
         assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
         local node = root;
@@ -129,6 +167,39 @@ function Faction.new( type, controlledByAi )
         end
     end
 
+    ---
+    -- Checks if any of this faction's characters are still alive.
+    -- @return (boolean) True if at least one character is alive.
+    --
+    function self:hasLivingCharacters()
+        local node = root;
+        while node do
+            if not node:getObject():isDead() then
+                return true;
+            end
+            node = node:getNext();
+        end
+        return false;
+    end
+
+    ---
+    -- Checks if the target tile has been explored by this Faction.
+    -- @param target (Tile)    The tile to check.
+    -- @return       (boolean) Wether this tile has been explored.
+    --
+    function self:hasExplored( target )
+        local tx, ty = target:getPosition();
+        if not mapInfo[tx] then
+            return false;
+        end
+        return mapInfo[tx][ty] ~= nil;
+    end
+
+    ---
+    -- Iterates over all nodes in this Faction, gets their Characters and passes
+    -- them to the callback function.
+    -- @param callback (function) The callback to use on the characters.
+    --
     function self:iterate( callback )
         local node = root;
         while node do
@@ -137,8 +208,38 @@ function Faction.new( type, controlledByAi )
         end
     end
 
-    function self:getCurrentCharacter()
-        return active:getObject();
+    ---
+    -- Selects and returns the next Character.
+    -- @return (Character) The active Character.
+    --
+    function self:nextCharacter()
+        local previousCharacter = active:getObject();
+        while active do
+            active = active:getNext() or root;
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:generateFOV();
+                character:generateFOV();
+                return character;
+            end
+        end
+    end
+
+    ---
+    -- Selects and returns the previous Character.
+    -- @return (Character) The active Character.
+    --
+    function self:prevCharacter()
+        local previousCharacter = active:getObject();
+        while active do
+            active = active:getPrev() or last;
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:generateFOV();
+                character:generateFOV();
+                return character;
+            end
+        end
     end
 
     ---
@@ -156,75 +257,30 @@ function Faction.new( type, controlledByAi )
         end
     end
 
-    function self:nextCharacter()
-        local previousCharacter = active:getObject();
-        while active do
-            active = active:getNext() or root;
-            local character = active:getObject();
-            if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
-                return character;
-            end
-        end
-    end
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
 
-    function self:prevCharacter()
-        local previousCharacter = active:getObject();
-        while active do
-            active = active:getPrev() or last;
-            local character = active:getObject();
-            if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
-                return character;
-            end
-        end
-    end
-
-    function self:hasLivingCharacters()
-        local node = root;
-        while node do
-            if not node:getObject():isDead() then
-                return true;
-            end
-            node = node:getNext();
-        end
-        return false;
+    ---
+    -- Returns this faction's currently active character.
+    -- @return (Character) The active character.
+    --
+    function self:getCurrentCharacter()
+        return active:getObject();
     end
 
     ---
-    -- Checks if any of the characters in this Faction can see the target tile.
-    -- @param target (Tile)    The tile to check visibility for.
-    -- @return       (boolean) Wether a character can see this tile.
+    -- Returns the faction's type.
+    -- @return (number) The faction's number as defined in the faction constants.
     --
-    function self:canSee( tile )
-        local node = root;
-        while node do
-            if node:getObject():canSee( tile ) then
-                return true;
-            end
-            node = node:getNext();
-        end
-    end
-
-    ---
-    -- Checks if the target tile has been explored by this Faction.
-    -- @param target (Tile)    The tile to check.
-    -- @return       (boolean) Wether this tile has been explored.
-    --
-    function self:hasExplored( target )
-        local tx, ty = target:getPosition();
-        if not mapInfo[tx] then
-            return false;
-        end
-        return mapInfo[tx][ty] ~= nil;
-    end
-
     function self:getType()
         return type;
     end
 
+    ---
+    -- Wether this faction is controlled by the game's AI.
+    -- @return (boolean) True if it is controlled by the AI.
+    --
     function self:isAIControlled()
         return controlledByAi;
     end
