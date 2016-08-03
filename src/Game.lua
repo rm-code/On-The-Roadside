@@ -37,11 +37,20 @@ function Game.new()
     -- ------------------------------------------------
 
     ---
-    -- Spawns characters at a random location on the map.
+    -- Spawns characters on the map.
     --
-    local function spawnCharactersRandomly( amount, faction )
+    local function spawnCharacters( amount, faction )
+        local id;
+        if faction == FACTIONS.NEUTRAL then
+            id = 'neutral';
+        elseif faction == FACTIONS.ALLIED then
+            id = 'allied';
+        elseif faction == FACTIONS.ENEMY then
+            id = 'enemy';
+        end
+
         for _ = 1, amount do
-            FactionManager.newCharacter( map, map:findRandomSpawnPoint(), faction  );
+            FactionManager.newCharacter( map, map:findSpawnPoint( id ), faction );
         end
     end
 
@@ -60,9 +69,9 @@ function Game.new()
 
         FactionManager.init();
 
-        spawnCharactersRandomly( 10, FACTIONS.ALLIED  );
-        spawnCharactersRandomly(  5, FACTIONS.NEUTRAL );
-        spawnCharactersRandomly( 10, FACTIONS.ENEMY   );
+        spawnCharacters( 10, FACTIONS.ALLIED  );
+        spawnCharacters(  5, FACTIONS.NEUTRAL );
+        spawnCharacters( 10, FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
 

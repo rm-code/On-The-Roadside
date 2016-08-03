@@ -17,6 +17,7 @@ local DIRECTION = require( 'src.constants.Direction' );
 local INFO_FILE = love.filesystem.load( 'res/data/maps/info.lua' )();
 local GROUND_LAYER = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
 local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
+local SPAWNS_LAYER = love.image.newImageData( 'res/data/maps/Map_Spawns.png' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -26,6 +27,11 @@ function Map.new()
     local self = Observable.new():addInstance( 'Map' );
 
     local tiles;
+    local spawnpoints = {
+        allied  = {},
+        neutral = {},
+        enemy   = {}
+    };
 
     -- ------------------------------------------------
     -- Private Methods
@@ -84,6 +90,28 @@ function Map.new()
     end
 
     ---
+    -- Creates a spawnpoint for the given Tile based on the pixel color read
+    -- from the map's spawns layer.
+    -- @param tile (Tile)   The Tile for which to create the spawnpoint.
+    -- @param r    (number) The red-component read from the spawns layer.
+    -- @param g    (number) The green-component read from the spawns layer.
+    -- @param b    (number) The blue-component read from the spawns layer.
+    -- @param a    (number) The alpha value read from the spawns layer.
+    --
+    local function createSpawnPoint( tile, r, g, b, a )
+        if a == 0 then
+            table.insert( spawnpoints.neutral, tile );
+        end
+
+        for _, info in ipairs( INFO_FILE.spawns ) do
+            if info.r == r and info.g == g and info.b == b then
+                table.insert( spawnpoints[info.type], tile );
+                break;
+            end
+        end
+    end
+
+    ---
     -- Iterates over the ground layer's RGBA values pixel by pixel and creates
     -- tiles based on the loaded colors.
     -- @return (table) A 2d array containing the map's tiles.
@@ -107,6 +135,18 @@ function Map.new()
         for x = 1, OBJECT_LAYER:getWidth() do
             for y = 1, OBJECT_LAYER:getHeight() do
                 createWorldObject( tiles[x][y], OBJECT_LAYER:getPixel( x - 1, y - 1 ));
+            end
+        end
+    end
+
+    ---
+    -- Iterates over the spawns layer's RGBA values pixel by pixel and creates
+    -- spawn points based on the loaded colors.
+    --
+    local function createSpawnPoints()
+        for x = 1, SPAWNS_LAYER:getWidth() do
+            for y = 1, SPAWNS_LAYER:getHeight() do
+                createSpawnPoint( tiles[x][y], SPAWNS_LAYER:getPixel( x - 1, y - 1 ));
             end
         end
     end
@@ -139,16 +179,19 @@ function Map.new()
 
     ---
     -- Randomly searches for a tile on which a player could be spawned.
-    -- @return (Tile) A tile suitable for spawning or nil.
+    -- @param faction (string) The faction identifier.
+    -- @return        (Tile)   A tile suitable for spawning.
     --
-    function self:findRandomSpawnPoint()
+    function self:findSpawnPoint( faction )
         while true do
-            local x = love.math.random( 1, GROUND_LAYER:getWidth() );
-            local y = love.math.random( 1, GROUND_LAYER:getHeight() );
+            local x = love.math.random( 1, SPAWNS_LAYER:getWidth() );
+            local y = love.math.random( 1, SPAWNS_LAYER:getHeight() );
 
             local tile = self:getTileAt( x, y );
-            if tile:isPassable() and not tile:isOccupied() then
-                return tile;
+            for _, spawn in ipairs( spawnpoints[faction] ) do
+                if tile == spawn and tile:isPassable() and not tile:isOccupied() then
+                    return tile;
+                end
             end
         end
     end
@@ -160,6 +203,7 @@ function Map.new()
     function self:init()
         tiles = createTiles();
         createWorldObjects();
+        createSpawnPoints();
         addNeighbours();
     end
 
