@@ -40,17 +40,8 @@ function Game.new()
     -- Spawns characters on the map.
     --
     local function spawnCharacters( amount, faction )
-        local id;
-        if faction == FACTIONS.NEUTRAL then
-            id = 'neutral';
-        elseif faction == FACTIONS.ALLIED then
-            id = 'allied';
-        elseif faction == FACTIONS.ENEMY then
-            id = 'enemy';
-        end
-
         for _ = 1, amount do
-            FactionManager.newCharacter( map, map:findSpawnPoint( id ), faction );
+            FactionManager.newCharacter( map, map:findSpawnPoint( faction ), faction );
         end
     end
 
