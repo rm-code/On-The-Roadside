@@ -2,7 +2,6 @@ return {
     name     = "HK MP5 A2",
     itemType = "Weapon",
     damage   = 36,
-    range    = 12,
     rpm      = 800,
     ammoType = "9x19mm",
     magSize  = 30,

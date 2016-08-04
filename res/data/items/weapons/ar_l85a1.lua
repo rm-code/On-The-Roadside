@@ -2,7 +2,6 @@ return {
     name     = "Enfield L85A1",
     itemType = "Weapon",
     damage   = 45,
-    range    = 12,
     rpm      = 610,
     ammoType = "5.56x45mm",
     magSize  = 30,

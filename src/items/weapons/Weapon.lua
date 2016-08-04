@@ -18,7 +18,6 @@ function Weapon.new( template )
     -- ------------------------------------------------
 
     local damage = template.damage;
-    local range = template.range;
     local ammoType = template.ammoType;
     local modeIndex = 1;
     local mode = template.mode[modeIndex];
@@ -83,10 +82,6 @@ function Weapon.new( template )
 
     function self:getMagSize()
         return magSize;
-    end
-
-    function self:getRange()
-        return range;
     end
 
     function self:getShots()
