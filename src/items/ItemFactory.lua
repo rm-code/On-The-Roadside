@@ -1,6 +1,7 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 local Magazine = require( 'src.items.weapons.Magazine' );
 local Rocket = require( 'src.items.weapons.Rocket' );
+local ShotgunShell = require( 'src.items.weapons.ShotgunShell' );
 local Clothing = require( 'src.items.Clothing' );
 local Bag = require( 'src.items.Bag' );
 
@@ -168,8 +169,13 @@ function ItemFactory.createMagazine( caliber, capacity )
             break;
         end
     end
+
+    assert( ammo, 'Ammo type for caliber ' .. caliber .. ' not found!' );
+
     if ammo.ammoType == 'Rocket' then
         return Rocket.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.blastRadius );
+    elseif ammo.ammoType == 'ShotgunShell' then
+        return ShotgunShell.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.pellets );
     end
     return Magazine.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity );
 end

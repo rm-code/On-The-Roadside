@@ -191,10 +191,19 @@ function ProjectileQueue.new( character, target )
     -- projectiles.
     --
     local function spawnProjectile()
-        index = index + 1;
-        projectiles[index] = projectileQueue:dequeue();
+        local projectile = projectileQueue:dequeue();
         Messenger.publish( 'SOUND_SHOOT', weapon );
         weapon:shoot();
+
+        if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
+            for _ = 1, projectile:getWeapon():getMagazine():getPelletAmount() do
+                index = index + 1;
+                projectiles[index] = createProjectile();
+            end
+        else
+            index = index + 1;
+            projectiles[index] = projectile;
+        end
     end
 
     -- ------------------------------------------------

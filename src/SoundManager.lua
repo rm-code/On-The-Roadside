@@ -20,6 +20,7 @@ function SoundManager.loadResources()
     SOUNDS.DOOR           = love.audio.newSource( 'res/sounds/door.wav' );
     SOUNDS.SELECT         = love.audio.newSource( 'res/sounds/select.wav' );
     SOUNDS.ASSAULT_RIFLE  = love.audio.newSource( 'res/sounds/ar.wav' );
+    SOUNDS.SHOTGUN        = love.audio.newSource( 'res/sounds/ar.wav' );
     SOUNDS.SUBMACHINE_GUN = love.audio.newSource( 'res/sounds/smg.wav' );
     SOUNDS.CLIMB          = love.audio.newSource( 'res/sounds/climb.wav' );
     SOUNDS.EXPLODE        = love.audio.newSource( 'res/sounds/explosion.wav' );
@@ -37,6 +38,8 @@ end)
 Messenger.observe( 'SOUND_SHOOT', function( weapon )
     if weapon:getWeaponType() == 'Assault Rifle' then
         love.audio.play( stopBeforePlaying( SOUNDS.ASSAULT_RIFLE ));
+    elseif weapon:getWeaponType() == 'Shotgun' then
+        love.audio.play( stopBeforePlaying( SOUNDS.SHOTGUN ));
     elseif weapon:getWeaponType() == 'Submachine Gun' then
         love.audio.play( stopBeforePlaying( SOUNDS.SUBMACHINE_GUN ));
     elseif weapon:getWeaponType() == 'Rocket Launcher' then
