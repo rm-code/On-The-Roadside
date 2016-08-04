@@ -2,7 +2,7 @@ local Item = require( 'src.items.Item' );
 
 local Magazine = {};
 
-function Magazine.new( caliber, itemType, capacity )
+function Magazine.new( caliber, itemType, damageType, capacity )
     local self = Item.new( caliber, itemType ):addInstance( 'Magazine' );
 
     local rounds = capacity;
@@ -21,6 +21,10 @@ function Magazine.new( caliber, itemType, capacity )
 
     function self:getCaliber()
         return caliber;
+    end
+
+    function self:getDamageType()
+        return damageType;
     end
 
     function self:isFull()

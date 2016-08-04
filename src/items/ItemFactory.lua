@@ -1,5 +1,6 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
 local Magazine = require( 'src.items.weapons.Magazine' );
+local Rocket = require( 'src.items.weapons.Rocket' );
 local Clothing = require( 'src.items.Clothing' );
 local Bag = require( 'src.items.Bag' );
 
@@ -167,7 +168,10 @@ function ItemFactory.createMagazine( caliber, capacity )
             break;
         end
     end
-    return Magazine.new( ammo.caliber, ammo.itemType, capacity );
+    if ammo.damageType == 'Explosive' then
+        return Rocket.new( ammo.caliber, ammo.itemType, ammo.damageType, capacity, ammo.blastRadius );
+    end
+    return Magazine.new( ammo.caliber, ammo.itemType, ammo.damageType, capacity );
 end
 
 ---

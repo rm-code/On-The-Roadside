@@ -1,4 +1,5 @@
 local Messenger = require( 'src.Messenger' );
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
 local ProjectileManager = {};
 
@@ -22,7 +23,11 @@ local map;
 --
 local function hitTile( index, tile, projectile )
     queue:removeProjectile( index );
-    tile:hit( projectile:getDamage() );
+    if projectile:getWeapon():getMagazine():getDamageType() == 'Explosive' then
+        ExplosionManager.register( tile, projectile:getWeapon():getMagazine():getBlastRadius() );
+    else
+        tile:hit( projectile:getDamage() );
+    end
 end
 
 ---
