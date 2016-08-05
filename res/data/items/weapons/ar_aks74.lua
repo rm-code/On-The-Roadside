@@ -1,6 +1,7 @@
 return {
     name     = "AKS-74",
     itemType = "Weapon",
+    weaponType = "Assault Rifle",
     damage   = 40,
     rpm      = 650,
     ammoType = "5.45x39mm",

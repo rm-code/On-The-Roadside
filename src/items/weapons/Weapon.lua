@@ -17,6 +17,7 @@ function Weapon.new( template )
     -- Private Attributes
     -- ------------------------------------------------
 
+    local weaponType = template.weaponType;
     local damage = template.damage;
     local ammoType = template.ammoType;
     local modeIndex = 1;
@@ -86,6 +87,10 @@ function Weapon.new( template )
 
     function self:getShots()
         return mode.shots;
+    end
+
+    function self:getWeaponType()
+        return weaponType;
     end
 
     return self;

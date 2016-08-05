@@ -1,6 +1,7 @@
 return {
     name     = "FN P90",
     itemType = "Weapon",
+    weaponType = "Submachine Gun",
     damage   = 38,
     rpm      = 900,
     ammoType = "5.7x28mm",

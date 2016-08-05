@@ -1,6 +1,7 @@
 return {
     name     = "HK MP5 A2",
     itemType = "Weapon",
+    weaponType = "Submachine Gun",
     damage   = 36,
     rpm      = 800,
     ammoType = "9x19mm",

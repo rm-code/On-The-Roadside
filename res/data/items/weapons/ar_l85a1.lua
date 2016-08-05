@@ -1,6 +1,7 @@
 return {
     name     = "Enfield L85A1",
     itemType = "Weapon",
+    weaponType = "Assault Rifle",
     damage   = 45,
     rpm      = 610,
     ammoType = "5.56x45mm",
