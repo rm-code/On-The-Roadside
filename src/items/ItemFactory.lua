@@ -3,6 +3,16 @@ local Magazine = require( 'src.items.weapons.Magazine' );
 local Clothing = require( 'src.items.Clothing' );
 local Bag = require( 'src.items.Bag' );
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local ItemFactory = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
@@ -15,10 +25,21 @@ local TEMPLATES_DIRECTORY_TROUSERS = 'res/data/items/clothing/trousers/';
 local TEMPLATES_DIRECTORY_WEAPONS  = 'res/data/items/weapons/';
 local TEMPLATES_DIRECTORY_BAGS     = 'res/data/items/bags/';
 
-local ItemFactory = {};
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
 
 local items = {};
 
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
+
+---
+-- Checks if the item type is valid.
+-- @param type (string)  The type to check.
+-- @return     (boolean) True if the item type is valid.
+--
 local function checkItemType( type )
     if type == ITEM_TYPES.WEAPON then
         return true;
@@ -30,10 +51,15 @@ local function checkItemType( type )
     return false
 end
 
+---
+-- Checks if the clothing type is valid.
+-- @param type (string)  The clothing type to check.
+-- @return     (boolean) True if the clothing type is valid.
+--
 local function checkClothingType( type )
     if type == CLOTHING_SLOTS.HEADGEAR then
         return true;
-        elseif type == CLOTHING_SLOTS.GLOVES then
+    elseif type == CLOTHING_SLOTS.GLOVES then
         return true;
     elseif type == CLOTHING_SLOTS.JACKET then
         return true;
@@ -47,6 +73,11 @@ local function checkClothingType( type )
     return false
 end
 
+---
+-- Loads item templates from the specified directory and stores them in the
+-- items table.
+-- @param dir (string) The directory url to load the templates from.
+--
 local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
@@ -73,6 +104,13 @@ local function load( dir )
     end
 end
 
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+---
+-- Loads all templates.
+--
 function ItemFactory.loadTemplates()
     print( "Load Footwear Templates:" )
     load( TEMPLATES_DIRECTORY_FOOTWEAR );
@@ -99,22 +137,41 @@ function ItemFactory.loadTemplates()
     load( TEMPLATES_DIRECTORY_BAGS );
 end
 
+---
+-- Creates a new random weapon.
+-- @return (Weapon) The new weapon instance.
+--
 function ItemFactory.createWeapon()
     local rnd = love.math.random( 1, #items.Weapon );
     local template = items.Weapon[rnd];
     return Weapon.new( template );
 end
 
+---
+-- Creates a new magazine for the given type.
+-- @param ammoType (string)   The specific ammo to create.
+-- @param capacity (number)   The magazine's total capacity.
+-- @return         (Magazine) The new magazine instance.
+--
 function ItemFactory.createMagazine( ammoType, capacity )
     return Magazine.new( ammoType, capacity );
 end
 
+---
+-- Creates a random clothing item of the specified category.
+-- @param clothingType (string)   The specific clothing part to create.
+-- @return             (Clothing) The new clothing instance.
+--
 function ItemFactory.createClothing( clothingType )
     local rnd = love.math.random( 1, #items.Clothing[clothingType] );
     local template = items.Clothing[clothingType][rnd];
     return Clothing.new( template.name, template.armor, template.itemType, template.clothingType );
 end
 
+---
+-- Creates a new random bag item.
+-- @return (Bag) The new bag instance.
+--
 function ItemFactory.createBag()
     local rnd = love.math.random( 1, #items.Bag );
     local template = items.Bag[rnd];
