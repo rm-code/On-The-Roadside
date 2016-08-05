@@ -140,7 +140,7 @@ function ProjectileQueue.new( character, target )
     local function spawnProjectile()
         index = index + 1;
         projectiles[index] = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_SHOOT' );
+        Messenger.publish( 'SOUND_SHOOT', weapon );
         weapon:shoot();
     end
 
