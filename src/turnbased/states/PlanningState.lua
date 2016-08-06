@@ -23,8 +23,21 @@ function PlanningState.new( stateManager )
         map = nmap;
     end
 
+    function self:update()
+        if FactionManager.getFaction():getCurrentCharacter():isDead() then
+            if FactionManager.getFaction():hasLivingCharacters() then
+                FactionManager.getFaction():nextCharacter();
+            else
+                FactionManager.nextFaction();
+            end
+        end
+    end
+
     function self:keypressed( key )
         local character = FactionManager.getFaction():getCurrentCharacter();
+        if character:isDead() then
+            return;
+        end
 
         if key == 'right' then
             character:getEquipment():getWeapon():selectNextFiringMode();
@@ -72,7 +85,7 @@ function PlanningState.new( stateManager )
     end
 
     function self:selectTile( tile, button )
-        if not tile then
+        if not tile or FactionManager.getFaction():getCurrentCharacter():isDead() then
             return;
         end
 
