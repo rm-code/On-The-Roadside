@@ -177,6 +177,11 @@ function Faction.new( type, controlledByAi )
             if not node:getObject():isDead() then
                 return true;
             end
+
+            if node == last then
+                break;
+            end
+
             node = node:getNext();
         end
         return false;
