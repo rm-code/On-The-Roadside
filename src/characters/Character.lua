@@ -91,6 +91,16 @@ function Character.new( map, tile, faction )
     -- ------------------------------------------------
 
     ---
+    -- Called when this character is made active by the game.
+    --
+    function self:activate()
+        if self:isDead() then
+            return;
+        end
+        self:generateFOV();
+    end
+
+    ---
     -- Adds a tile to this character's FOV.
     -- @param tx     (number) The target-tile's position along the x-axis.
     -- @param ty     (number) The target-tile's position along the y-axis.
@@ -136,6 +146,16 @@ function Character.new( map, tile, faction )
     --
     function self:clearActions()
         actions:clear();
+    end
+
+    ---
+    -- Called when this character is made inactive by the game.
+    --
+    function self:deactivate()
+        if self:isDead() then
+            return;
+        end
+        self:generateFOV();
     end
 
     ---

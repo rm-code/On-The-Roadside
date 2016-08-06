@@ -158,10 +158,13 @@ function Faction.new( type, controlledByAi )
         local node = root;
         while node do
             if node:getObject() == character and not node:getObject():isDead() then
-                character:generateFOV();
-                local previous = active;
+                -- Deactivate old character.
+                active:getObject():deactivate();
+
+                -- Activate new character.
                 active = node;
-                previous:getObject():generateFOV();
+                active:getObject():activate();
+
                 Messenger.publish( 'SWITCH_CHARACTERS', active:getObject() );
                 break;
             end
@@ -225,8 +228,8 @@ function Faction.new( type, controlledByAi )
             active = active:getNext() or root;
             local character = active:getObject();
             if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
+                previousCharacter:deactivate();
+                character:activate();
                 Messenger.publish( 'SWITCH_CHARACTERS', character );
                 return character;
             end
@@ -243,8 +246,8 @@ function Faction.new( type, controlledByAi )
             active = active:getPrev() or last;
             local character = active:getObject();
             if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
+                previousCharacter:activate();
+                character:deactivate();
                 Messenger.publish( 'SWITCH_CHARACTERS', character );
                 return character;
             end
