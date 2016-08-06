@@ -39,7 +39,7 @@ function UserInterface.new( game )
     end
 
     function self:draw()
-        local character = FactionManager.getCurrentCharacter();
+        local character = FactionManager.getFaction():getCurrentCharacter();
 
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );

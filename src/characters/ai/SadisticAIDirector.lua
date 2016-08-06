@@ -8,7 +8,7 @@ function SadisticAIDirector.new( map, states )
 
     local tiles = {};
 
-    local startCharacter = FactionManager.getCurrentCharacter();
+    local startCharacter = FactionManager.getFaction():getCurrentCharacter();
     local startFaction   = FactionManager.getFaction();
 
     local function analyzeMap( character )
@@ -74,14 +74,14 @@ function SadisticAIDirector.new( map, states )
 
     function self:update()
         if FactionManager.getFaction() ~= startFaction then
-            startCharacter = FactionManager.getCurrentCharacter();
+            startCharacter = FactionManager.getFaction():getCurrentCharacter();
             startFaction   = FactionManager.getFaction();
         end
 
-        local character = FactionManager.getCurrentCharacter();
+        local character = FactionManager.getFaction():getCurrentCharacter();
 
         if not analyzeMap( character ) or ( character:hasEnqueuedAction() and not character:canPerformAction() ) then
-            local nextCharacter = FactionManager.nextCharacter();
+            local nextCharacter = FactionManager.getFaction():nextCharacter();
             if nextCharacter == startCharacter then
                 FactionManager.nextFaction();
             end

@@ -103,7 +103,7 @@ function Game.new()
     end
 
     function self:getCurrentCharacter()
-        return FactionManager.getCurrentCharacter();
+        return FactionManager.getFaction():getCurrentCharacter();
     end
 
     return self;

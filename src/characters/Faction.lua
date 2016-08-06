@@ -2,6 +2,7 @@ local Object = require('src.Object');
 local Node = require('src.characters.Node');
 local Character = require( 'src.characters.Character' );
 local ItemFactory = require('src.items.ItemFactory');
+local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
 -- Module
@@ -152,7 +153,7 @@ function Faction.new( type, controlledByAi )
     -- Finds a certain Character in this Faction and makes him active.
     -- @param character (Character) The character to select.
     --
-    function self:findCharacter( character )
+    function self:selectCharacter( character )
         assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
         local node = root;
         while node do
@@ -161,6 +162,7 @@ function Faction.new( type, controlledByAi )
                 local previous = active;
                 active = node;
                 previous:getObject():generateFOV();
+                Messenger.publish( 'SWITCH_CHARACTERS', active:getObject() );
                 break;
             end
             node = node:getNext();
@@ -225,6 +227,7 @@ function Faction.new( type, controlledByAi )
             if not character:isDead() then
                 previousCharacter:generateFOV();
                 character:generateFOV();
+                Messenger.publish( 'SWITCH_CHARACTERS', character );
                 return character;
             end
         end
@@ -242,6 +245,7 @@ function Faction.new( type, controlledByAi )
             if not character:isDead() then
                 previousCharacter:generateFOV();
                 character:generateFOV();
+                Messenger.publish( 'SWITCH_CHARACTERS', character );
                 return character;
             end
         end

@@ -145,7 +145,7 @@ function OverlayPainter.new( game, particleLayer )
     -- ------------------------------------------------
 
     function self:draw()
-        local character = FactionManager.getCurrentCharacter();
+        local character = FactionManager.getFaction():getCurrentCharacter();
         drawLineOfSight( character );
         drawPath( character );
         drawParticles();

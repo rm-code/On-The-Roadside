@@ -78,16 +78,6 @@ function FactionManager.newCharacter( map, tile, faction )
 end
 
 ---
--- Selects the next character of the active faction and returns it.
--- @return (Character) The selected Character.
---
-function FactionManager.nextCharacter()
-    local character = active:getObject():nextCharacter();
-    Messenger.publish( 'SWITCH_CHARACTERS', character );
-    return character;
-end
-
----
 -- Selects the next faction and returns the first valid character.
 -- @return (Character) The selected Character.
 --
@@ -99,7 +89,7 @@ function FactionManager.nextFaction()
             active:getObject():activate();
             local current = active:getObject():getCurrentCharacter();
             if current:isDead() then
-                return FactionManager.nextCharacter();
+                return FactionManager.getFaction():nextCharacter();
             end
             Messenger.publish( 'SWITCH_CHARACTERS', current );
             return current;
@@ -107,40 +97,9 @@ function FactionManager.nextFaction()
     end
 end
 
----
--- Selects the previous character of the active faction and returns it.
--- @return (Character) The selected Character.
---
-function FactionManager.prevCharacter()
-    local character = active:getObject():prevCharacter();
-    Messenger.publish( 'SWITCH_CHARACTERS', character );
-    return character;
-end
-
----
--- Searches a faction for the character located on the given tile and selects him.
--- @param tile (Tile)      The tile on which the character is located.
--- @return     (Character) The selected Character.
---
-function FactionManager.selectCharacter( tile )
-    if tile:isOccupied() then
-        active:getObject():findCharacter( tile:getCharacter() );
-    end
-    Messenger.publish( 'SWITCH_CHARACTERS', FactionManager.getCurrentCharacter() );
-    return FactionManager.getCurrentCharacter();
-end
-
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
-
----
--- Returns the currently active character.
--- @return (Character) The selected Character.
---
-function FactionManager.getCurrentCharacter()
-    return active:getObject():getCurrentCharacter();
-end
 
 ---
 -- Returns the currently active faction.

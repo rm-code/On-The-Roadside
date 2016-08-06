@@ -24,45 +24,47 @@ function PlanningState.new( stateManager )
     end
 
     function self:keypressed( key )
+        local character = FactionManager.getFaction():getCurrentCharacter();
+
         if key == 'right' then
-            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectNextFiringMode();
+            character:getEquipment():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectPrevFiringMode();
+            character:getEquipment():getWeapon():selectPrevFiringMode();
         elseif key == 'c' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( Crouch.new( FactionManager.getCurrentCharacter() ));
+            character:clearActions();
+            character:enqueueAction( Crouch.new( character ));
             stateManager:push( 'execution' );
         elseif key == 's' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( StandUp.new( FactionManager.getCurrentCharacter() ));
+            character:clearActions();
+            character:enqueueAction( StandUp.new( character ));
             stateManager:push( 'execution' );
         elseif key == 'p' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( LieDown.new( FactionManager.getCurrentCharacter() ));
+            character:clearActions();
+            character:enqueueAction( LieDown.new( character ));
             stateManager:push( 'execution' );
         elseif key == 'r' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
+            character:clearActions();
+            character:enqueueAction( Reload.new( character ));
             stateManager:push( 'execution' );
         elseif key == 'g' then
             -- TODO Proper grenade implementation.
             ExplosionManager.register( map:getTileAt( MousePointer.getGridPosition() ), love.math.random( 5, 10 ));
             stateManager:push( 'execution' );
         elseif key == 'a' then
-            FactionManager.getCurrentCharacter():clearActions();
+            character:clearActions();
             activeHelper = AttackHelper;
         elseif key == 'e' then
-            FactionManager.getCurrentCharacter():clearActions();
+            character:clearActions();
             activeHelper = InteractionHelper;
         elseif key == 'm' then
-            FactionManager.getCurrentCharacter():clearActions();
+            character:clearActions();
             activeHelper = MovementHelper;
         elseif key == 'space' then
             activeHelper = MovementHelper;
-            FactionManager.nextCharacter();
+            FactionManager.getFaction():nextCharacter();
         elseif key == 'backspace' then
             activeHelper = MovementHelper;
-            FactionManager.prevCharacter();
+            FactionManager.getFaction():prevCharacter();
         elseif key == 'return' then
             activeHelper = MovementHelper;
             FactionManager.nextFaction();
@@ -74,12 +76,12 @@ function PlanningState.new( stateManager )
             return;
         end
 
-        if button == 2 then
-            FactionManager.selectCharacter( tile );
+        if button == 2 and tile:isOccupied() then
+            FactionManager.getFaction():selectCharacter( tile:getCharacter() );
             return;
         end
 
-        activeHelper.request( map, tile, FactionManager.getCurrentCharacter(), stateManager );
+        activeHelper.request( map, tile, FactionManager.getFaction():getCurrentCharacter(), stateManager );
     end
 
     function self:getHelperType()

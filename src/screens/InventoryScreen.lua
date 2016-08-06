@@ -25,7 +25,7 @@ local DRAGGED_ITEM_HEIGHT =  30;
 function InventoryScreen.new()
     local self = Screen.new();
 
-    local character = FactionManager.getCurrentCharacter();
+    local character = FactionManager.getFaction():getCurrentCharacter();
     local lists;
     local dragboard;
 

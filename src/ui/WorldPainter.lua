@@ -72,7 +72,7 @@ function WorldPainter.new( game )
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == FactionManager.getCurrentCharacter() then
+            if tile:getCharacter() == FactionManager.getFaction():getCurrentCharacter() then
                 return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
