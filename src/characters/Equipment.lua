@@ -33,6 +33,17 @@ function Equipment.new()
         items[main] = item;
     end
 
+    function self:clear()
+        items[ITEM_TYPES.WEAPON] = false;
+        items[ITEM_TYPES.BAG]    = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.HEADGEAR] = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.GLOVES]   = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.JACKET]   = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.SHIRT]    = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.TROUSERS] = false;
+        items[ITEM_TYPES.CLOTHING][CLOTHING_SLOTS.FOOTWEAR] = false;
+    end
+
     function self:removeItem( item )
         local main = item:getItemType();
         local sub  = item:getSubType();

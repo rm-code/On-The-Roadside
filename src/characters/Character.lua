@@ -82,6 +82,8 @@ function Character.new( map, tile, faction )
         for _, part in pairs( BODY_PARTS ) do
             tile:getInventory():addItem( equipment:getClothingItem( part ));
         end
+
+        equipment:clear();
     end
 
     -- ------------------------------------------------
