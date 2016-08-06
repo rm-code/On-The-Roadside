@@ -51,6 +51,8 @@ function InventoryScreen.new()
     -- and the tile he is standing on.
     --
     function self:init()
+        love.mouse.setVisible( true );
+
         lists = {};
 
         lists.equipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
@@ -124,6 +126,10 @@ function InventoryScreen.new()
                 end
             end
         end
+    end
+
+    function self:close()
+        love.mouse.setVisible( false );
     end
 
     return self;
