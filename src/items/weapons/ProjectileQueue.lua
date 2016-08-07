@@ -42,15 +42,15 @@ local WEAPON_MODIFIERS = {
 }
 
 local BURST_MODIFIERS = {
-    [1] = 0,
-    [2] = 1,
-    [3] = 1,
-    [4] = 2,
-    [5] = 2,
-    [6] = 3,
-    [7] = 3,
-    [8] = 3,
-    [9] = 4
+    [1] =  0,
+    [2] =  2,
+    [3] =  3,
+    [4] =  4,
+    [5] =  6,
+    [6] =  7,
+    [7] =  8,
+    [8] =  9,
+    [9] = 10
 }
 
 local STANCES = require('src.constants.Stances');
@@ -121,11 +121,11 @@ function ProjectileQueue.new( character, target )
 
         local derivation = 0;
         -- Random angle based on the character's accuracy skill.
-        derivation = derivation + getRandomAngle( SKILL_MODIFIERS[marksmanSkill] );
+        derivation = derivation + SKILL_MODIFIERS[marksmanSkill];
         -- Random angle based on weapon's accuracy stat.
-        derivation = derivation + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
+        derivation = derivation + WEAPON_MODIFIERS[weaponAccuracy];
         -- Random angle based on how many bullets have been shot before.
-        derivation = derivation + getRandomAngle( BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )] );
+        derivation = derivation + BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )];
 
         -- Stances influence the whole angle.
         derivation = derivation * STANCE_MODIFIER[character:getStance()];
