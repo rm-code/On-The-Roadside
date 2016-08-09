@@ -4,7 +4,7 @@ return {
     weaponType = "Submachine Gun",
     damage   = 36,
     rpm      = 800,
-    ammoType = "9x19mm",
+    caliber  = "9x19mm",
     magSize  = 30,
     mode = {
         {

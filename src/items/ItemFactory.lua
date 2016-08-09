@@ -24,6 +24,7 @@ local TEMPLATES_DIRECTORY_SHIRTS   = 'res/data/items/clothing/shirts/';
 local TEMPLATES_DIRECTORY_TROUSERS = 'res/data/items/clothing/trousers/';
 local TEMPLATES_DIRECTORY_WEAPONS  = 'res/data/items/weapons/';
 local TEMPLATES_DIRECTORY_BAGS     = 'res/data/items/bags/';
+local TEMPLATES_DIRECTORY_AMMO     = 'res/data/items/ammunition/';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -46,6 +47,8 @@ local function checkItemType( type )
     elseif type == ITEM_TYPES.CLOTHING then
         return true;
     elseif type == ITEM_TYPES.BAG then
+        return true;
+    elseif type == ITEM_TYPES.AMMO then
         return true;
     end
     return false
@@ -135,6 +138,9 @@ function ItemFactory.loadTemplates()
 
     print( "Load Bag Templates:" )
     load( TEMPLATES_DIRECTORY_BAGS );
+
+    print( "Load Ammunition Templates:" );
+    load( TEMPLATES_DIRECTORY_AMMO );
 end
 
 ---
@@ -148,13 +154,20 @@ function ItemFactory.createWeapon()
 end
 
 ---
--- Creates a new magazine for the given type.
--- @param ammoType (string)   The specific ammo to create.
+-- Creates a new magazine for the given caliber.
+-- @param caliber  (string)   The specific caliber to create.
 -- @param capacity (number)   The magazine's total capacity.
 -- @return         (Magazine) The new magazine instance.
 --
-function ItemFactory.createMagazine( ammoType, capacity )
-    return Magazine.new( ammoType, capacity );
+function ItemFactory.createMagazine( caliber, capacity )
+    local ammo;
+    for _, template in ipairs( items.Ammunition ) do
+        if template.caliber == caliber then
+            ammo = template;
+            break;
+        end
+    end
+    return Magazine.new( ammo.caliber, ammo.itemType, capacity );
 end
 
 ---

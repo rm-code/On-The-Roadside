@@ -4,6 +4,7 @@ ITEM_TYPES.WEAPON    = 'Weapon';
 ITEM_TYPES.CLOTHING  = 'Clothing';
 ITEM_TYPES.BAG       = 'Bag';
 ITEM_TYPES.UNIVERSAL = 'Universal';
+ITEM_TYPES.AMMO      = 'Ammunition';
 
 -- Make table read-only.
 return setmetatable( ITEM_TYPES, {

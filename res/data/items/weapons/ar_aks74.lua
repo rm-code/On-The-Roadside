@@ -4,7 +4,7 @@ return {
     weaponType = "Assault Rifle",
     damage   = 40,
     rpm      = 650,
-    ammoType = "5.45x39mm",
+    caliber  = "5.45x39mm",
     magSize  = 30,
     mode = {
         {

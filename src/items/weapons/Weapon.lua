@@ -19,7 +19,7 @@ function Weapon.new( template )
 
     local weaponType = template.weaponType;
     local damage = template.damage;
-    local ammoType = template.ammoType;
+    local caliber = template.caliber;
     local modeIndex = 1;
     local mode = template.mode[modeIndex];
     local firingDelay = 1 / ( template.rpm / 60 );
@@ -31,7 +31,7 @@ function Weapon.new( template )
     -- ------------------------------------------------
 
     function self:reload( newMag )
-        assert( ammoType == newMag:getAmmoType(), 'Ammunition Type doesn\'t match the gun!' );
+        assert( caliber == newMag:getCaliber(), 'Ammunition Type doesn\'t match the gun!' );
         magazine = newMag;
     end
 
@@ -57,8 +57,8 @@ function Weapon.new( template )
         return mode.accuracy;
     end
 
-    function self:getAmmoType()
-        return ammoType;
+    function self:getCaliber()
+        return caliber;
     end
 
     function self:getAttackCost()
