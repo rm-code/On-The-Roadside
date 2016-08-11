@@ -134,17 +134,6 @@ function ProjectileQueue.new( character, target )
     end
 
     ---
-    -- Removes a projectile from the queue and adds it to the table of active
-    -- projectiles.
-    --
-    local function spawnProjectile()
-        index = index + 1;
-        projectiles[index] = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_SHOOT', weapon );
-        weapon:shoot();
-    end
-
-    ---
     -- Rotates the target position by the given angle.
     -- @param px    (number)
     -- @param py    (number)
@@ -166,6 +155,48 @@ function ProjectileQueue.new( character, target )
         return px + nx, py + ny;
     end
 
+    ---
+    -- Creates a new projectile.
+    -- @param i (number)     Determines the index number of this projectile.
+    -- @return  (Projectile) The new projectile instance.
+    --
+    local function createProjectile( i )
+        -- Calculate the angle of derivation.
+        local maxDerivation = calculateMaximumDerivation( i or 1 );
+        local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
+
+        -- Apply the angle to find the final target tile.
+        local origin = character:getTile();
+        local px, py = origin:getPosition();
+        local tx, ty = target:getPosition();
+
+        local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
+        nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
+
+        -- Get the coords of all tiles the projectile passes on the way to its target.
+        local tiles = {};
+        Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
+            -- Ignore the origin.
+            if sx ~= px or sy ~= py then
+                tiles[#tiles + 1] = { x = sx, y = sy };
+            end
+            return true;
+        end)
+
+        return Projectile.new( character, tiles );
+    end
+
+    ---
+    -- Removes a projectile from the queue and adds it to the table of active
+    -- projectiles.
+    --
+    local function spawnProjectile()
+        index = index + 1;
+        projectiles[index] = projectileQueue:dequeue();
+        Messenger.publish( 'SOUND_SHOOT', weapon );
+        weapon:shoot();
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -179,29 +210,7 @@ function ProjectileQueue.new( character, target )
     function self:init()
         local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
         for i = 1, amount do
-            -- Calculate the angle of derivation.
-            local maxDerivation = calculateMaximumDerivation( i );
-            local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
-
-            -- Apply the angle to find the final target tile.
-            local origin = character:getTile();
-            local px, py = origin:getPosition();
-            local tx, ty = target:getPosition();
-
-            local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
-            nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
-
-            -- Get the coords of all tiles the projectile passes on the way to its target.
-            local tiles = {};
-            Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
-                -- Ignore the origin.
-                if sx ~= px or sy ~= py then
-                    tiles[#tiles + 1] = { x = sx, y = sy };
-                end
-                return true;
-            end)
-
-            projectileQueue:enqueue( Projectile.new( character, tiles ));
+            projectileQueue:enqueue( createProjectile( i ));
         end
     end
 
