@@ -23,7 +23,7 @@ local map;
 --
 local function hitTile( index, tile, projectile )
     queue:removeProjectile( index );
-    if projectile:getWeapon():getMagazine():getDamageType() == 'Explosive' then
+    if projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
         ExplosionManager.register( tile, projectile:getWeapon():getMagazine():getBlastRadius() );
     else
         tile:hit( projectile:getDamage() );

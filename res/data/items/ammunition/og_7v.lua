@@ -1,6 +1,6 @@
 return {
     caliber  = "OG-7V",
     itemType = "Ammunition",
-    damageType = "Explosive",
+    ammoType = "Rocket",
     blastRadius = 5
 }

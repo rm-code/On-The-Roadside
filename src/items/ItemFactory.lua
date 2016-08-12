@@ -168,10 +168,10 @@ function ItemFactory.createMagazine( caliber, capacity )
             break;
         end
     end
-    if ammo.damageType == 'Explosive' then
-        return Rocket.new( ammo.caliber, ammo.itemType, ammo.damageType, capacity, ammo.blastRadius );
+    if ammo.ammoType == 'Rocket' then
+        return Rocket.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.blastRadius );
     end
-    return Magazine.new( ammo.caliber, ammo.itemType, ammo.damageType, capacity );
+    return Magazine.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity );
 end
 
 ---
