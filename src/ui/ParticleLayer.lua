@@ -11,13 +11,13 @@ function ParticleLayer.new()
     local grid = {};
     local particles = ObjectPool.new( Particle, 'Particle' );
 
-    local function addParticleEffect( x, y, r, g, b, a, fade )
+    local function addParticleEffect( x, y, r, g, b, a, fade, ascii )
         grid[x] = grid[x] or {};
         -- Return previous particles on this tile to the particle pool.
         if grid[x][y] then
             particles:deposit( grid[x][y] );
         end
-        grid[x][y] = particles:request( r, g, b, a, fade );
+        grid[x][y] = particles:request( r, g, b, a, fade, ascii );
     end
 
     function self:update( dt )
@@ -45,6 +45,9 @@ function ParticleLayer.new()
             if projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
                 local col = love.math.random( 150, 255 );
                 addParticleEffect( tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 );
+                return;
+            elseif projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
+                addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, true );
                 return;
             end
             addParticleEffect( tile:getX(), tile:getY(), 223, 113,  38, 200, 500 );

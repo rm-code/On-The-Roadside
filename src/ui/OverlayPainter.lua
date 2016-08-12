@@ -134,7 +134,11 @@ function OverlayPainter.new( game, particleLayer )
         for x, row in pairs( particleLayer:getParticleGrid() ) do
             for y, particle in pairs( row ) do
                 love.graphics.setColor( particle:getColors() );
-                love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+                if particle:isAscii() then
+                    love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
+                else
+                    love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+                end
                 love.graphics.setColor( 255, 255, 255, 255 );
             end
         end
