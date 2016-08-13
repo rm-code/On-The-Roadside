@@ -114,6 +114,17 @@ function Equipment.new()
         return items[ITEM_TYPES.WEAPON];
     end
 
+    ---
+    -- Serializes this object.
+    --
+    function self:serialize()
+        local t = {};
+        for _, item in pairs( items ) do
+            table.insert( t, item:serialize() );
+        end
+        return t;
+    end
+
     return self;
 end
 

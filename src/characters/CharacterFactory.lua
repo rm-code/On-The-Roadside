@@ -47,6 +47,12 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
+function CharacterFactory.loadCharacter( map, tile, faction )
+    local character = Character.new( map, tile, faction );
+    character:generateFOV();
+    return character;
+end
+
 function CharacterFactory.newCharacter( map, tile, faction )
     local character = Character.new( map, tile, faction );
     createEquipment( character );

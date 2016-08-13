@@ -210,6 +210,15 @@ function Map.new()
     end
 
     ---
+    -- Recreates the map from a saved state.
+    -- @param ntiles (table) A 2d array containing all loaded tiles.
+    --
+    function self:recreate( ntiles )
+        tiles = ntiles;
+        addNeighbours();
+    end
+
+    ---
     -- Iterates over all tiles and performs the callback function on them.
     -- @param callback (function) The operation to perform on each tile.
     --
@@ -256,6 +265,16 @@ function Map.new()
                 end
             end
         end
+    end
+
+    function self:serialize()
+        local t = {};
+        for x = 1, #tiles do
+            for y = 1, #tiles[x] do
+                table.insert( t, tiles[x][y]:serialize() );
+            end
+        end
+        return t;
     end
 
     -- ------------------------------------------------

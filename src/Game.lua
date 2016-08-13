@@ -8,6 +8,7 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
+local SaveHandler = require( 'src.SaveHandler' );
 
 -- ------------------------------------------------
 -- Module
@@ -38,11 +39,18 @@ function Game.new()
         SoundManager.loadResources();
 
         map = Map.new();
-        map:init();
-
         factions = Factions.new( map );
         factions:init();
-        factions:spawnCharacters();
+
+        -- Load previously saved state or create new state.
+        if SaveHandler.hasSaveFile() then
+            local savegame = SaveHandler.load();
+            savegame:loadMap( map );
+            savegame:loadCharacters( map, factions );
+        else
+            map:init();
+            factions:spawnCharacters();
+        end
 
         turnManager = TurnManager.new( map, factions );
 
@@ -51,6 +59,9 @@ function Game.new()
 
         -- Register obsersvations.
         observations[#observations + 1] = map:observe( self );
+
+        -- Free memory if possible.
+        collectgarbage( 'collect' );
     end
 
     function self:receive( event, ... )
@@ -76,6 +87,11 @@ function Game.new()
 
     function self:keypressed( key )
         turnManager:keypressed( key );
+        if key == '.' then
+            -- TODO Optimisation!
+            SaveHandler.save( map:serialize() );
+            collectgarbage( 'collect' );
+        end
     end
 
     function self:mousepressed( mx, my, button )

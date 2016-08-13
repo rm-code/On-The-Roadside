@@ -51,6 +51,15 @@ function WorldObject.new( template )
         hp = hp - dmg;
     end
 
+
+    function self:serialize()
+        local t = {
+            ['type'] = type,
+            ['hp'] = hp
+        }
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -96,6 +105,14 @@ function WorldObject.new( template )
     --
     function self:getEnergyReduction()
         return energyReduction;
+    end
+
+    ---
+    -- Returns the WorldObject's hit points.
+    -- @return (number) The amount of hit points.
+    --
+    function self:getHitPoints()
+        return hp;
     end
 
     ---
@@ -191,6 +208,14 @@ function WorldObject.new( template )
     --
     function self:setBlocksVision( nblocksVision )
         blocksVision = nblocksVision;
+    end
+
+    ---
+    -- Sets this WorldObject's hit points.
+    -- @param nhp (number) The new hit point value.
+    --
+    function self:setHitPoints( nhp )
+        hp = nhp;
     end
 
     ---

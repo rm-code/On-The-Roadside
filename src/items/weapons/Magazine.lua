@@ -44,6 +44,16 @@ function Magazine.new( name, itemType, ammoType )
         capacity = ncapacity;
     end
 
+    function self:serialize()
+        local t = {
+            ['name'] = name,
+            ['itemType'] = itemType,
+            ['rounds'] = rounds,
+            ['capacity'] = capacity
+        }
+        return t;
+    end
+
     return self;
 end
 

@@ -16,6 +16,15 @@ function Bag.new( template )
         return inventory;
     end
 
+    function self:serialize()
+        local t = {
+            ['name'] = template.name,
+            ['itemType'] = template.itemType,
+            ['inventory'] = inventory:serialize()
+        };
+        return t;
+    end
+
     return self;
 end
 

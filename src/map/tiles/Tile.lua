@@ -97,6 +97,29 @@ function Tile.new( x, y, template )
         self:setDirty( true );
     end
 
+    function self:serialize()
+        local t = {
+            ['type'] = type,
+            ['x'] = x,
+            ['y'] = y
+        };
+
+        if not inventory:isEmpty() then
+            t['inventory'] = inventory:serialize()
+        end
+        if character then
+            t['character'] = character:serialize();
+        end
+        if worldObject then
+            t['worldObject'] = worldObject:serialize();
+        end
+        if explored then
+            t['explored'] = explored
+        end
+
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------

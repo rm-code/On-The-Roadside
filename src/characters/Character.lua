@@ -303,6 +303,18 @@ function Character.new( map, tile, faction )
         return fov[tx][ty] ~= nil;
     end
 
+    function self:serialize()
+        local t = {
+            ['ap'] = actionPoints,
+            ['accuracy'] = accuracy,
+            ['health'] = health,
+            ['stance'] = stance,
+            ['equipment'] = equipment:serialize(),
+            ['faction'] = faction:getType()
+        }
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -446,6 +458,30 @@ function Character.new( map, tile, faction )
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
+
+    ---
+    -- Sets the character's accuracy attribute.
+    -- @param naccuracy (number) The new accuracy value.
+    --
+    function self:setAccuracy( naccuracy )
+        accuracy = naccuracy;
+    end
+
+    ---
+    -- Sets the character's action points.
+    -- @param nap (number) The amount of AP to set.
+    --
+    function self:setActionPoints( nap )
+        actionPoints = nap;
+    end
+
+    ---
+    -- Sets the character's health.
+    -- @param nhp (number) The new health value.
+    --
+    function self:setHealth( nhp )
+        health = nhp;
+    end
 
     ---
     -- Sets the character's tile.

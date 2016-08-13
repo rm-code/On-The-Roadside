@@ -49,6 +49,20 @@ function Weapon.new( template )
         mode = template.mode[modeIndex];
     end
 
+    function self:serialize()
+        local t = {
+            ['name'] = template.name,
+            ['itemType'] = template.itemType,
+            ['modeIndex'] = modeIndex
+        };
+
+        if magazine then
+            t['magazine'] = magazine:serialize()
+        end
+
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -91,6 +105,15 @@ function Weapon.new( template )
 
     function self:getWeaponType()
         return weaponType;
+    end
+
+    -- ------------------------------------------------
+    -- Setters
+    -- ------------------------------------------------
+
+    function self:setFiringMode( nmodeIndex )
+        modeIndex = nmodeIndex;
+        mode = template.mode[modeIndex];
     end
 
     return self;
