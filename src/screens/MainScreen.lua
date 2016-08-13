@@ -46,7 +46,7 @@ function MainScreen.new()
         worldPainter:init();
 
         userInterface = UserInterface.new( game );
-        camera = CameraHandler.new( game.getCurrentCharacter():getTile():getX() * TILE_SIZE, game.getCurrentCharacter():getTile():getY() * TILE_SIZE );
+        camera = CameraHandler.new( game:getMap(), game.getCurrentCharacter():getTile():getX() * TILE_SIZE, game.getCurrentCharacter():getTile():getY() * TILE_SIZE );
 
         particleLayer = ParticleLayer.new();
 

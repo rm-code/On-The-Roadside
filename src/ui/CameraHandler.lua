@@ -6,7 +6,7 @@ local CAMERA_TRACKING_SPEED = 10;
 local SCROLL_MARGIN = 5;
 local SCROLL_SPEED = 10;
 
-function CameraHandler.new( px, py )
+function CameraHandler.new( map, px, py )
     local self = Camera.new();
 
     local tx, ty = px, py;
@@ -38,7 +38,10 @@ function CameraHandler.new( px, py )
             y = y + SCROLL_SPEED;
         end
 
-        tx, ty = x, y;
+        -- Clamp the camera to the map dimensions.
+        local w, h = map:getPixelDimensions();
+        tx = math.max( 0, math.min( x, w ));
+        ty = math.max( 0, math.min( y, h ));
     end
 
     function self:update( dt )

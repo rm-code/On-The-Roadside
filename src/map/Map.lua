@@ -19,6 +19,8 @@ local GROUND_LAYER = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
 local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
 local SPAWNS_LAYER = love.image.newImageData( 'res/data/maps/Map_Spawns.png' );
 
+local TILE_SIZE = require( 'src.constants.TileSize' );
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -254,6 +256,15 @@ function Map.new()
     --
     function self:getTileAt( x, y )
         return tiles[x] and tiles[x][y];
+    end
+
+    ---
+    -- Returns the width and height of the map in pixels.
+    -- @return (number) The width of the map.
+    -- @return (number) The height of the map.
+    --
+    function self:getPixelDimensions()
+        return GROUND_LAYER:getWidth() * TILE_SIZE, GROUND_LAYER:getHeight() * TILE_SIZE;
     end
 
     return self;
