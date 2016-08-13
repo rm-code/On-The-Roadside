@@ -33,7 +33,7 @@ function Tile.new( x, y, template )
     local neighbours;
     local character;
     local worldObject;
-    local inventory = Inventory.new( 15 );
+    local inventory = Inventory.new();
 
     -- ------------------------------------------------
     -- Public Methods
