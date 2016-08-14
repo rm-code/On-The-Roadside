@@ -68,26 +68,24 @@ function ProjectileManager.update( dt )
             if not tile then
                 print( "Reached map border" );
                 queue:removeProjectile( i );
-            elseif tile:hasWorldObject() then
-                if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
-                    if not tile:getWorldObject():isDestructible() then
-                        hitTile( i, tile, projectile );
-                        return;
-                    end
+            elseif tile:hasWorldObject() and love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
+                if not tile:getWorldObject():isDestructible() then
+                    hitTile( i, tile, projectile );
+                    return;
+                end
 
-                    local energy = projectile:getEnergy();
-                    local energyReduction = tile:getWorldObject():getEnergyReduction();
-                    energyReduction = love.math.random( energyReduction - 10, energyReduction + 10 );
-                    energyReduction = clamp( 1, energyReduction, 100 );
+                local energy = projectile:getEnergy();
+                local energyReduction = tile:getWorldObject():getEnergyReduction();
+                energyReduction = love.math.random( energyReduction - 10, energyReduction + 10 );
+                energyReduction = clamp( 1, energyReduction, 100 );
 
-                    energy = energy - energyReduction;
-                    projectile:setEnergy( energy );
+                energy = energy - energyReduction;
+                projectile:setEnergy( energy );
 
-                    tile:hit( projectile:getDamage() * ( energy / 100 ));
+                tile:hit( projectile:getDamage() * ( energy / 100 ));
 
-                    if energy <= 0 then
-                        queue:removeProjectile( i );
-                    end
+                if energy <= 0 or projectile:hasReachedTarget() then
+                    queue:removeProjectile( i );
                 end
             elseif projectile:hasReachedTarget() then
                 print( "Reached target" );
