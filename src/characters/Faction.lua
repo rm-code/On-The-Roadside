@@ -14,7 +14,7 @@ local Faction = {};
 -- Constants
 -- ------------------------------------------------
 
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -58,12 +58,12 @@ function Faction.new( type, controlledByAi )
 
         character:getEquipment():addItem( weapon );
         character:getEquipment():addItem( ItemFactory.createBag() );
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.HEADGEAR ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.GLOVES   ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.SHIRT    ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.JACKET   ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.TROUSERS ));
+        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.FOOTWEAR ));
 
         character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));
         character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));

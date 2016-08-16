@@ -1,7 +1,6 @@
 return {
     name = "PASGT Helmet",
-    itemType = "Clothing",
-    clothingType = "Headgear",
+    itemType = "Headgear",
     armor = {
         protection = 30,
         coverage = 45,

@@ -2,7 +2,12 @@ local Weapon = require( 'src.items.weapons.Weapon' );
 local Magazine = require( 'src.items.weapons.Magazine' );
 local Rocket = require( 'src.items.weapons.Rocket' );
 local ShotgunShell = require( 'src.items.weapons.ShotgunShell' );
-local Clothing = require( 'src.items.Clothing' );
+local Footwear = require( 'src.items.clothes.Footwear' );
+local Gloves = require( 'src.items.clothes.Gloves' );
+local Headgear = require( 'src.items.clothes.Headgear' );
+local Jacket = require( 'src.items.clothes.Jacket' );
+local Shirt = require( 'src.items.clothes.Shirt' );
+local Trousers = require( 'src.items.clothes.Trousers' );
 local Bag = require( 'src.items.Bag' );
 
 -- ------------------------------------------------
@@ -16,7 +21,15 @@ local ItemFactory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+
+local CLOTHING = {
+    [ITEM_TYPES.HEADGEAR] = Headgear;
+    [ITEM_TYPES.GLOVES]   = Gloves;
+    [ITEM_TYPES.JACKET]   = Jacket;
+    [ITEM_TYPES.SHIRT]    = Shirt;
+    [ITEM_TYPES.TROUSERS] = Trousers;
+    [ITEM_TYPES.FOOTWEAR] = Footwear;
+}
 
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
 local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
@@ -46,33 +59,21 @@ local items = {};
 local function checkItemType( type )
     if type == ITEM_TYPES.WEAPON then
         return true;
-    elseif type == ITEM_TYPES.CLOTHING then
+    elseif type == ITEM_TYPES.HEADGEAR then
+        return true;
+    elseif type == ITEM_TYPES.GLOVES then
+        return true;
+    elseif type == ITEM_TYPES.JACKET then
+        return true;
+    elseif type == ITEM_TYPES.SHIRT then
+        return true;
+    elseif type == ITEM_TYPES.TROUSERS then
+        return true;
+    elseif type == ITEM_TYPES.FOOTWEAR then
         return true;
     elseif type == ITEM_TYPES.BAG then
         return true;
     elseif type == ITEM_TYPES.AMMO then
-        return true;
-    end
-    return false
-end
-
----
--- Checks if the clothing type is valid.
--- @param type (string)  The clothing type to check.
--- @return     (boolean) True if the clothing type is valid.
---
-local function checkClothingType( type )
-    if type == CLOTHING_SLOTS.HEADGEAR then
-        return true;
-    elseif type == CLOTHING_SLOTS.GLOVES then
-        return true;
-    elseif type == CLOTHING_SLOTS.JACKET then
-        return true;
-    elseif type == CLOTHING_SLOTS.SHIRT then
-        return true;
-    elseif type == CLOTHING_SLOTS.TROUSERS then
-        return true;
-    elseif type == CLOTHING_SLOTS.FOOTWEAR then
         return true;
     end
     return false
@@ -93,16 +94,7 @@ local function load( dir )
             assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
 
             items[itemType] = items[itemType] or {};
-
-            if itemType == ITEM_TYPES.CLOTHING then
-                local clothingType = template.clothingType;
-                assert( checkClothingType( clothingType ), string.format( 'Invalid clothing type %s!', clothingType ));
-
-                items[itemType][clothingType] = items[itemType][clothingType] or {};
-                table.insert( items[itemType][clothingType], template );
-            else
-                table.insert( items[itemType], template );
-            end
+            table.insert( items[itemType], template );
 
             print( string.format( '  %d. %s', i, template.name ));
         end
@@ -181,14 +173,14 @@ function ItemFactory.createMagazine( caliber, capacity )
 end
 
 ---
--- Creates a random clothing item of the specified category.
--- @param clothingType (string)   The specific clothing part to create.
--- @return             (Clothing) The new clothing instance.
+-- Creates a random clothing item.
+-- @param type (string)   The clothing part to create.
+-- @return     (Clothing) The new clothing instance.
 --
-function ItemFactory.createClothing( clothingType )
-    local rnd = love.math.random( 1, #items.Clothing[clothingType] );
-    local template = items.Clothing[clothingType][rnd];
-    return Clothing.new( template.name, template.armor, template.itemType, template.clothingType );
+function ItemFactory.createClothing( type )
+    local rnd = love.math.random( 1, #items[type] );
+    local template = items[type][rnd];
+    return CLOTHING[type].new( template.name, template.itemType, template.armor );
 end
 
 ---

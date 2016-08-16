@@ -16,14 +16,14 @@ local DEFAULT_ACTION_POINTS = 20;
 
 local STANCES = require('src.constants.Stances');
 
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+local ITEM_TYPES = require('src.constants.ItemTypes');
 local BODY_PARTS = {
-    CLOTHING_SLOTS.HEADGEAR,
-    CLOTHING_SLOTS.GLOVES,
-    CLOTHING_SLOTS.JACKET,
-    CLOTHING_SLOTS.SHIRT,
-    CLOTHING_SLOTS.TROUSERS,
-    CLOTHING_SLOTS.FOOTWEAR
+    ITEM_TYPES.HEADGEAR,
+    ITEM_TYPES.GLOVES,
+    ITEM_TYPES.JACKET,
+    ITEM_TYPES.SHIRT,
+    ITEM_TYPES.TROUSERS,
+    ITEM_TYPES.FOOTWEAR
 }
 
 -- ------------------------------------------------

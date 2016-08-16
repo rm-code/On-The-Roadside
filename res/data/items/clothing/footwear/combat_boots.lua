@@ -1,7 +1,6 @@
 return {
     name = "Combat Boots",
-    itemType = "Clothing",
-    clothingType = "Footwear",
+    itemType = "Footwear",
     armor = {
         protection = 2,
         coverage = 100

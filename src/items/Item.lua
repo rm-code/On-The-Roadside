@@ -2,7 +2,7 @@ local Object = require( 'src.Object' );
 
 local Item = {};
 
-function Item.new( name, itemType, subType )
+function Item.new( name, itemType )
     local self = Object.new():addInstance( 'Item' );
 
     function self:getName()
@@ -11,10 +11,6 @@ function Item.new( name, itemType, subType )
 
     function self:getItemType()
         return itemType;
-    end
-
-    function self:getSubType()
-        return subType;
     end
 
     return self;
