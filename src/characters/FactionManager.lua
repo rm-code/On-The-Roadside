@@ -47,6 +47,23 @@ local function addFaction( faction )
     active = node;
 end
 
+---
+-- Adds a new character.
+-- @param map     (Map)    A reference to the map object.
+-- @param tile    (Tile)   The tile to place the character on.
+-- @param faction (string) The faction identifier to add the character to.
+--
+local function addCharacter( map, tile, faction )
+    local node = root;
+    while node do
+        if node:getObject():getType() == faction then
+            node:getObject():addCharacter( map, tile );
+            break;
+        end
+        node = node:getNext();
+    end
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -61,19 +78,14 @@ function FactionManager.init()
 end
 
 ---
--- Adds a new character.
+-- Spawns characters on the map.
 -- @param map     (Map)    A reference to the map object.
--- @param tile    (Tile)   The tile to place the character on.
--- @param faction (number) The index of the faction to add the character to.
+-- @param amount  (number) The amount of characters to spawn.
+-- @param faction (string) The faction identifier.
 --
-function FactionManager.newCharacter( map, tile, faction )
-    local node = root;
-    while node do
-        if node:getObject():getType() == faction then
-            node:getObject():addCharacter( map, tile );
-            break;
-        end
-        node = node:getNext();
+function FactionManager.spawnCharacters( map, amount, faction )
+    for _ = 1, amount do
+        addCharacter( map, map:findSpawnPoint( faction ), faction );
     end
 end
 

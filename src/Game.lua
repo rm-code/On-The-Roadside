@@ -33,19 +33,6 @@ function Game.new()
     local observations = {};
 
     -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Spawns characters on the map.
-    --
-    local function spawnCharacters( amount, faction )
-        for _ = 1, amount do
-            FactionManager.newCharacter( map, map:findSpawnPoint( faction ), faction );
-        end
-    end
-
-    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
@@ -60,9 +47,9 @@ function Game.new()
 
         FactionManager.init();
 
-        spawnCharacters( 10, FACTIONS.ALLIED  );
-        spawnCharacters(  5, FACTIONS.NEUTRAL );
-        spawnCharacters( 10, FACTIONS.ENEMY   );
+        FactionManager.spawnCharacters( map, 10, FACTIONS.ALLIED  );
+        FactionManager.spawnCharacters( map,  5, FACTIONS.NEUTRAL );
+        FactionManager.spawnCharacters( map, 10, FACTIONS.ENEMY   );
 
         turnManager = TurnManager.new( map );
 
