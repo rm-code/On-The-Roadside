@@ -16,12 +16,6 @@ local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Game = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local FACTIONS = require( 'src.constants.Factions' );
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -45,11 +39,7 @@ function Game.new()
         map = Map.new();
         map:init();
 
-        FactionManager.init();
-
-        FactionManager.spawnCharacters( map, 10, FACTIONS.ALLIED  );
-        FactionManager.spawnCharacters( map,  5, FACTIONS.NEUTRAL );
-        FactionManager.spawnCharacters( map, 10, FACTIONS.ENEMY   );
+        FactionManager.init( map );
 
         turnManager = TurnManager.new( map );
 

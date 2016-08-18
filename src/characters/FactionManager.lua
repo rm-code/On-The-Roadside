@@ -64,29 +64,35 @@ local function addCharacter( map, tile, faction )
     end
 end
 
--- ------------------------------------------------
--- Public Functions
--- ------------------------------------------------
-
----
--- Initialises the FactionManager by creating a linked list of factions.
---
-function FactionManager.init()
-    addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
-    addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
-    addFaction( Faction.new( FACTIONS.ALLIED,  false ));
-end
-
 ---
 -- Spawns characters on the map.
 -- @param map     (Map)    A reference to the map object.
 -- @param amount  (number) The amount of characters to spawn.
 -- @param faction (string) The faction identifier.
 --
-function FactionManager.spawnCharacters( map, amount, faction )
+local function spawnCharacters( map, amount, faction )
     for _ = 1, amount do
         addCharacter( map, map:findSpawnPoint( faction ), faction );
     end
+end
+
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+---
+-- Initialises the FactionManager by creating a linked list of factions and
+-- spawning the characters for each faction at random locations on the map.
+-- @param map (Map) A reference to the map object.
+--
+function FactionManager.init( map )
+    addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
+    addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
+    addFaction( Faction.new( FACTIONS.ALLIED,  false ));
+
+    spawnCharacters( map, 10, FACTIONS.ALLIED  );
+    spawnCharacters( map,  5, FACTIONS.NEUTRAL );
+    spawnCharacters( map, 10, FACTIONS.ENEMY   );
 end
 
 ---
