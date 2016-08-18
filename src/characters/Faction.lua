@@ -1,7 +1,6 @@
 local Object = require('src.Object');
 local Node = require('src.characters.Node');
-local Character = require( 'src.characters.Character' );
-local ItemFactory = require('src.items.ItemFactory');
+local CharacterFactory = require( 'src.characters.CharacterFactory' );
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
@@ -9,12 +8,6 @@ local Messenger = require( 'src.Messenger' );
 -- ------------------------------------------------
 
 local Faction = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -47,28 +40,6 @@ function Faction.new( type, controlledByAi )
         end
     end
 
-    ---
-    -- Creates the equipment for a character.
-    -- @param character (Character) The character to equip with new items.
-    --
-    local function createEquipment( character )
-        local weapon = ItemFactory.createWeapon();
-        local magazine = ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() );
-        weapon:reload( magazine );
-
-        character:getEquipment():addItem( weapon );
-        character:getEquipment():addItem( ItemFactory.createBag() );
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.HEADGEAR ));
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.GLOVES   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.SHIRT    ));
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.JACKET   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.TROUSERS ));
-        character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.FOOTWEAR ));
-
-        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));
-        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));
-    end
-
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -87,10 +58,7 @@ function Faction.new( type, controlledByAi )
     --
     function self:addCharacter( map, tile )
         -- Create character and calculate initial FOV.
-        local character = Character.new( map, tile, self );
-        createEquipment( character );
-        character:generateFOV();
-
+        local character = CharacterFactory.createCharacter( map, tile, self );
         local node = Node.new( character );
 
         -- Initialise root node.
