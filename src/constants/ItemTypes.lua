@@ -5,8 +5,8 @@ ITEM_TYPES.BAG       = 'Bag';
 ITEM_TYPES.AMMO      = 'Ammunition';
 ITEM_TYPES.HEADGEAR  = 'Headgear';
 ITEM_TYPES.GLOVES    = 'Gloves';
-ITEM_TYPES.JACKET    = 'Shirt';
-ITEM_TYPES.SHIRT     = 'Jacket';
+ITEM_TYPES.JACKET    = 'Jacket';
+ITEM_TYPES.SHIRT     = 'Shirt';
 ITEM_TYPES.TROUSERS  = 'Trousers';
 ITEM_TYPES.FOOTWEAR  = 'Footwear';
 
