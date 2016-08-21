@@ -92,110 +92,113 @@ local function load( dir )
     end
 end
 
+---
+-- Searches the template table for the template for the given item.
+-- @param name      (string) The item name to search for.
+-- @param templates (table)  The template table to look through.
+-- @return          (table)  The template for the given item.
+--
+local function searchTemplate( name, templates )
+    for _, template in ipairs( templates ) do
+        if template.name == name then
+            return template;
+        end
+    end
+end
 
 ---
--- Creates a new random weapon.
--- @return (Weapon) The new weapon instance.
+-- Creates a specific weapon item.
+-- @param name (string) The name of the item to create.
+-- @return     (Weapon) The new weapon object.
 --
-local function createWeapon()
-    local rnd = love.math.random( 1, #items.Weapon );
-    local template = items.Weapon[rnd];
+local function createWeapon( name )
+    local template = searchTemplate( name, items.Weapon );
     return Weapon.new( template );
 end
 
 ---
--- Creates a new magazine for the given caliber.
--- @param caliber  (string)   The specific caliber to create.
--- @param capacity (number)   The magazine's total capacity.
--- @return         (Magazine) The new magazine instance.
+-- Creates a specific magazine item.
+-- @param name (string)   The name of the item to create.
+-- @return     (Magazine) The new magazine object.
 --
-local function createMagazine( caliber, capacity )
-    local ammo;
-    for _, template in ipairs( items.Ammunition ) do
-        if template.caliber == caliber then
-            ammo = template;
-            break;
-        end
+local function createMagazine( name )
+    local template = searchTemplate( name, items.Ammunition );
+    if template.ammoType == 'Rocket' then
+        return Rocket.new( template.name, template.itemType, template.ammoType, template.blastRadius );
+    elseif template.ammoType == 'ShotgunShell' then
+        return ShotgunShell.new( template.name, template.itemType, template.ammoType, template.pellets );
     end
-
-    assert( ammo, 'Ammo type for caliber ' .. caliber .. ' not found!' );
-
-    if ammo.ammoType == 'Rocket' then
-        return Rocket.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.blastRadius );
-    elseif ammo.ammoType == 'ShotgunShell' then
-        return ShotgunShell.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.pellets );
-    end
-    return Magazine.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity );
+    return Magazine.new( template.name, template.itemType, template.ammoType );
 end
 
 ---
--- Creates a random headgear item.
--- @return (Headgear) The new clothing instance.
+-- Creates a specific headgear item.
+-- @param name (string)   The name of the item to create.
+-- @return     (Headgear) The new clothing instance.
 --
-local function createHeadgear()
-    local rnd = love.math.random( 1, #items.Headgear );
-    local template = items.Headgear[rnd];
+local function createHeadgear( name )
+    local template = searchTemplate( name, items.Headgear );
     return Headgear.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a random gloves item.
--- @return (gloves) The new clothing instance.
+-- Creates a specific gloves item.
+-- @param name (string) The name of the item to create.
+-- @return     (Gloves) The new clothing instance.
 --
-local function createGloves()
-    local rnd = love.math.random( 1, #items.Gloves );
-    local template = items.Gloves[rnd];
+local function createGloves( name )
+    local template = searchTemplate( name, items.Gloves );
     return Gloves.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a random jacket item.
--- @return (Jacket) The new clothing instance.
+-- Creates a specific jacket item.
+-- @param name (string) The name of the item to create.
+-- @return     (Jacket) The new clothing instance.
 --
-local function createJacket()
-    local rnd = love.math.random( 1, #items.Jacket );
-    local template = items.Jacket[rnd];
+local function createJacket( name )
+    local template = searchTemplate( name, items.Jacket );
     return Jacket.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a random shirt item.
--- @return (Shirt) The new clothing instance.
+-- Creates a specific shirt item.
+-- @param name (string) The name of the item to create.
+-- @return     (Shirt)  The new clothing instance.
 --
-local function createShirt()
-    local rnd = love.math.random( 1, #items.Shirt );
-    local template = items.Shirt[rnd];
+local function createShirt( name )
+    local template = searchTemplate( name, items.Shirt );
     return Shirt.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a random trousers item.
--- @return (Trousers) The new clothing instance.
+-- Creates a specific Trousers item.
+-- @param name (string)   The name of the item to create.
+-- @return     (Trousers) The new clothing instance.
 --
-local function createTrousers()
-    local rnd = love.math.random( 1, #items.Trousers );
-    local template = items.Trousers[rnd];
+local function createTrousers( name )
+    local template = searchTemplate( name, items.Trousers );
     return Trousers.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a random footwear item.
--- @return (Footwear) The new clothing instance.
+-- Creates a specific footwear item.
+-- @param name (string)   The name of the item to create.
+-- @return     (Footwear) The new clothing instance.
 --
-local function createFootwear()
-    local rnd = love.math.random( 1, #items.Footwear );
-    local template = items.Footwear[rnd];
+local function createFootwear( name )
+    local template = searchTemplate( name, items.Footwear );
     return Footwear.new( template.name, template.itemType, template.armor );
 end
 
 ---
--- Creates a new random bag item.
--- @return (Bag) The new bag instance.
+-- Creates a specific bag item.
+-- @param name (string) The name of the item to create.
+-- @return     (Bag)    The new bag instance.
 --
-local function createBag()
-    local rnd = love.math.random( 1, #items.Bag );
-    local template = items.Bag[rnd];
-    return Bag.new( template.name, template.itemType, template.slots );
+local function createBag( name )
+    local template = searchTemplate( name, items.Bag );
+    return Bag.new( template );
 end
 
 -- ------------------------------------------------
@@ -234,25 +237,72 @@ function ItemFactory.loadTemplates()
     load( TEMPLATES_DIRECTORY_AMMO );
 end
 
-function ItemFactory.createRandomItem( type, ... )
+---
+-- Creates a specific item specified by type and name.
+-- @param type (string) The type of the item to create.
+-- @param name (string) The name of the item to create.
+-- @return     (Item)   The new item.
+--
+function ItemFactory.createItem( type, name )
     if type == ITEM_TYPES.WEAPON then
-        return createWeapon();
+        return createWeapon( name );
     elseif type == ITEM_TYPES.BAG then
-        return createBag();
+        return createBag( name );
     elseif type == ITEM_TYPES.AMMO then
-        return createMagazine( ... );
+        return createMagazine( name );
     elseif type == ITEM_TYPES.HEADGEAR then
-        return createHeadgear();
+        return createHeadgear( name );
     elseif type == ITEM_TYPES.GLOVES then
-        return createGloves();
+        return createGloves( name );
     elseif type == ITEM_TYPES.JACKET then
-        return createJacket();
+        return createJacket( name );
     elseif type == ITEM_TYPES.SHIRT then
-        return createShirt();
+        return createShirt( name );
     elseif type == ITEM_TYPES.TROUSERS then
-        return createTrousers();
+        return createTrousers( name );
     elseif type == ITEM_TYPES.FOOTWEAR then
-        return createFootwear();
+        return createFootwear( name );
+    end
+end
+
+---
+-- Creates a random item of a certain type.
+-- @param type (string) The type of the item to create.
+-- @return     (Item)   The new item.
+--
+function ItemFactory.createRandomItem( type )
+    if type == ITEM_TYPES.WEAPON then
+        local rnd = love.math.random( 1, #items.Weapon );
+        local template = items.Weapon[rnd];
+        return createWeapon( template.name );
+    elseif type == ITEM_TYPES.BAG then
+        local rnd = love.math.random( 1, #items.Bag );
+        local template = items.Bag[rnd];
+        return createBag( template.name );
+    elseif type == ITEM_TYPES.HEADGEAR then
+        local rnd = love.math.random( 1, #items.Headgear );
+        local template = items.Headgear[rnd];
+        return createHeadgear( template.name );
+    elseif type == ITEM_TYPES.GLOVES then
+        local rnd = love.math.random( 1, #items.Gloves );
+        local template = items.Gloves[rnd];
+        return createGloves( template.name );
+    elseif type == ITEM_TYPES.JACKET then
+        local rnd = love.math.random( 1, #items.Jacket );
+        local template = items.Jacket[rnd];
+        return createJacket( template.name );
+    elseif type == ITEM_TYPES.SHIRT then
+        local rnd = love.math.random( 1, #items.Shirt );
+        local template = items.Shirt[rnd];
+        return createShirt( template.name );
+    elseif type == ITEM_TYPES.TROUSERS then
+        local rnd = love.math.random( 1, #items.Trousers );
+        local template = items.Trousers[rnd];
+        return createTrousers( template.name );
+    elseif type == ITEM_TYPES.FOOTWEAR then
+        local rnd = love.math.random( 1, #items.Footwear );
+        local template = items.Footwear[rnd];
+        return createFootwear( template.name );
     end
 end
 

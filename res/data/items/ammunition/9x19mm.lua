@@ -1,4 +1,4 @@
 return {
-    caliber  = "9x19mm",
+    name     = "9x19mm",
     itemType = "Ammunition"
 }

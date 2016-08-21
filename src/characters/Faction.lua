@@ -58,7 +58,7 @@ function Faction.new( type, controlledByAi )
     --
     function self:addCharacter( map, tile )
         -- Create character and calculate initial FOV.
-        local character = CharacterFactory.createCharacter( map, tile, self );
+        local character = CharacterFactory.newCharacter( map, tile, self );
         local node = Node.new( character );
 
         -- Initialise root node.

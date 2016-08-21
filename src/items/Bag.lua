@@ -7,8 +7,8 @@ local Bag = {};
 -- Constructor
 -- ------------------------------------------------
 
-function Bag.new( name, type )
-    local self = Item.new( name, type ):addInstance( 'Bag' );
+function Bag.new( template )
+    local self = Item.new( template.name, template.itemType ):addInstance( 'Bag' );
 
     local inventory = Inventory.new();
 

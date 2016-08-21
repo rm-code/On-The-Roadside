@@ -2,10 +2,11 @@ local Item = require( 'src.items.Item' );
 
 local Magazine = {};
 
-function Magazine.new( caliber, itemType, ammoType, capacity )
-    local self = Item.new( caliber, itemType ):addInstance( 'Magazine' );
+function Magazine.new( name, itemType, ammoType )
+    local self = Item.new( name, itemType ):addInstance( 'Magazine' );
 
-    local rounds = capacity;
+    local capacity = 0;
+    local rounds = 0;
 
     function self:removeShell()
         rounds = rounds - 1;
@@ -20,7 +21,7 @@ function Magazine.new( caliber, itemType, ammoType, capacity )
     end
 
     function self:getCaliber()
-        return caliber;
+        return name;
     end
 
     function self:getAmmoType()
@@ -33,6 +34,14 @@ function Magazine.new( caliber, itemType, ammoType, capacity )
 
     function self:isEmpty()
         return rounds == 0;
+    end
+
+    function self:setRounds( nrounds )
+        rounds = nrounds;
+    end
+
+    function self:setCapacity( ncapacity )
+        capacity = ncapacity;
     end
 
     return self;

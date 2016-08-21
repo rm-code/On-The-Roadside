@@ -32,17 +32,22 @@ local function createEquipment( character )
     character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
 
     local weapon = character:getEquipment():getWeapon();
-    local magazine = ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() );
+    local magazine;
+    for _ = 1, 3 do
+        magazine = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getCaliber() );
+        magazine:setCapacity( weapon:getMagSize() );
+        magazine:setRounds( weapon:getMagSize() );
+        character:getEquipment():getBackpack():getInventory():addItem( magazine );
+    end
     weapon:reload( magazine );
-    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() ));
-    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() ));
+    character:getEquipment():getBackpack():getInventory():removeItem( magazine );
 end
 
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
 
-function CharacterFactory.createCharacter( map, tile, faction )
+function CharacterFactory.newCharacter( map, tile, faction )
     local character = Character.new( map, tile, faction );
     createEquipment( character );
     character:generateFOV();
