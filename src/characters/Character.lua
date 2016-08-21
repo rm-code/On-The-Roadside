@@ -257,7 +257,7 @@ function Character.new( map, tile, faction )
         damage = damage + flukeModifier;
 
         local clothing = equipment:getClothingItem( bodyPart );
-        if clothing:isArmor() then
+        if clothing then
             if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
                 print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
                 damage = damage - clothing:getArmorProtection();

@@ -8,10 +8,6 @@ function Clothing.new( name, itemType, armor )
     local armorProtection = armor.protection;
     local armorCoverage = armor.coverage;
 
-    function self:isArmor()
-        return armor ~= nil;
-    end
-
     function self:getArmorProtection()
         return armorProtection;
     end
