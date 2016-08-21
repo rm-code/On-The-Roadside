@@ -3,6 +3,6 @@ return {
     itemType = "Headgear",
     armor = {
         protection = 30,
-        coverage = 45,
+        coverage = 45
     }
 }

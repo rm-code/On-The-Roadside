@@ -1,4 +1,8 @@
 return {
     name = "Jeans",
-    itemType = "Trousers"
+    itemType = "Trousers",
+    armor = {
+        protection = 4,
+        coverage = 100
+    }
 }

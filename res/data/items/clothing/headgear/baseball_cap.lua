@@ -1,4 +1,8 @@
 return {
     name = "Baseball Cap",
-    itemType = "Headgear"
+    itemType = "Headgear",
+    armor = {
+        protection = 0,
+        coverage = 30
+    }
 }

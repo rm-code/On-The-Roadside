@@ -2,19 +2,22 @@ local Item = require( 'src.items.Item' );
 
 local Clothing = {};
 
-function Clothing.new( name, type, armor )
-    local self = Item.new( name, type ):addInstance( 'Clothing' );
+function Clothing.new( name, itemType, armor )
+    local self = Item.new( name, itemType ):addInstance( 'Clothing' );
+
+    local armorProtection = armor.protection;
+    local armorCoverage = armor.coverage;
 
     function self:isArmor()
         return armor ~= nil;
     end
 
     function self:getArmorProtection()
-        return armor.protection;
+        return armorProtection;
     end
 
     function self:getArmorCoverage()
-        return armor.coverage;
+        return armorCoverage;
     end
 
     return self;
