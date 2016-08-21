@@ -22,21 +22,20 @@ local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    local weapon = ItemFactory.createWeapon();
-    local magazine = ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() );
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
+    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
+
+    local weapon = character:getEquipment():getWeapon();
+    local magazine = ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() );
     weapon:reload( magazine );
-
-    character:getEquipment():addItem( weapon );
-    character:getEquipment():addItem( ItemFactory.createBag() );
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.HEADGEAR ));
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.GLOVES   ));
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.SHIRT    ));
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.JACKET   ));
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.TROUSERS ));
-    character:getEquipment():addItem( ItemFactory.createClothing( ITEM_TYPES.FOOTWEAR ));
-
-    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));
-    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getCaliber(), weapon:getMagSize() ));
+    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() ));
+    character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.AMMO, weapon:getCaliber(), weapon:getMagSize() ));
 end
 
 -- ------------------------------------------------

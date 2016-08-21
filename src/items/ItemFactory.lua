@@ -22,15 +22,6 @@ local ItemFactory = {};
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 
-local CLOTHING = {
-    [ITEM_TYPES.HEADGEAR] = Headgear;
-    [ITEM_TYPES.GLOVES]   = Gloves;
-    [ITEM_TYPES.JACKET]   = Jacket;
-    [ITEM_TYPES.SHIRT]    = Shirt;
-    [ITEM_TYPES.TROUSERS] = Trousers;
-    [ITEM_TYPES.FOOTWEAR] = Footwear;
-}
-
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
 local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
 local TEMPLATES_DIRECTORY_HEADGEAR = 'res/data/items/clothing/headgear/';
@@ -101,6 +92,112 @@ local function load( dir )
     end
 end
 
+
+---
+-- Creates a new random weapon.
+-- @return (Weapon) The new weapon instance.
+--
+local function createWeapon()
+    local rnd = love.math.random( 1, #items.Weapon );
+    local template = items.Weapon[rnd];
+    return Weapon.new( template );
+end
+
+---
+-- Creates a new magazine for the given caliber.
+-- @param caliber  (string)   The specific caliber to create.
+-- @param capacity (number)   The magazine's total capacity.
+-- @return         (Magazine) The new magazine instance.
+--
+local function createMagazine( caliber, capacity )
+    local ammo;
+    for _, template in ipairs( items.Ammunition ) do
+        if template.caliber == caliber then
+            ammo = template;
+            break;
+        end
+    end
+
+    assert( ammo, 'Ammo type for caliber ' .. caliber .. ' not found!' );
+
+    if ammo.ammoType == 'Rocket' then
+        return Rocket.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.blastRadius );
+    elseif ammo.ammoType == 'ShotgunShell' then
+        return ShotgunShell.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.pellets );
+    end
+    return Magazine.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity );
+end
+
+---
+-- Creates a random headgear item.
+-- @return (Headgear) The new clothing instance.
+--
+local function createHeadgear()
+    local rnd = love.math.random( 1, #items.Headgear );
+    local template = items.Headgear[rnd];
+    return Headgear.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a random gloves item.
+-- @return (gloves) The new clothing instance.
+--
+local function createGloves()
+    local rnd = love.math.random( 1, #items.Gloves );
+    local template = items.Gloves[rnd];
+    return Gloves.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a random jacket item.
+-- @return (Jacket) The new clothing instance.
+--
+local function createJacket()
+    local rnd = love.math.random( 1, #items.Jacket );
+    local template = items.Jacket[rnd];
+    return Jacket.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a random shirt item.
+-- @return (Shirt) The new clothing instance.
+--
+local function createShirt()
+    local rnd = love.math.random( 1, #items.Shirt );
+    local template = items.Shirt[rnd];
+    return Shirt.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a random trousers item.
+-- @return (Trousers) The new clothing instance.
+--
+local function createTrousers()
+    local rnd = love.math.random( 1, #items.Trousers );
+    local template = items.Trousers[rnd];
+    return Trousers.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a random footwear item.
+-- @return (Footwear) The new clothing instance.
+--
+local function createFootwear()
+    local rnd = love.math.random( 1, #items.Footwear );
+    local template = items.Footwear[rnd];
+    return Footwear.new( template.name, template.itemType, template.armor );
+end
+
+---
+-- Creates a new random bag item.
+-- @return (Bag) The new bag instance.
+--
+local function createBag()
+    local rnd = love.math.random( 1, #items.Bag );
+    local template = items.Bag[rnd];
+    return Bag.new( template.name, template.itemType, template.slots );
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -137,60 +234,26 @@ function ItemFactory.loadTemplates()
     load( TEMPLATES_DIRECTORY_AMMO );
 end
 
----
--- Creates a new random weapon.
--- @return (Weapon) The new weapon instance.
---
-function ItemFactory.createWeapon()
-    local rnd = love.math.random( 1, #items.Weapon );
-    local template = items.Weapon[rnd];
-    return Weapon.new( template );
-end
-
----
--- Creates a new magazine for the given caliber.
--- @param caliber  (string)   The specific caliber to create.
--- @param capacity (number)   The magazine's total capacity.
--- @return         (Magazine) The new magazine instance.
---
-function ItemFactory.createMagazine( caliber, capacity )
-    local ammo;
-    for _, template in ipairs( items.Ammunition ) do
-        if template.caliber == caliber then
-            ammo = template;
-            break;
-        end
+function ItemFactory.createRandomItem( type, ... )
+    if type == ITEM_TYPES.WEAPON then
+        return createWeapon();
+    elseif type == ITEM_TYPES.BAG then
+        return createBag();
+    elseif type == ITEM_TYPES.AMMO then
+        return createMagazine( ... );
+    elseif type == ITEM_TYPES.HEADGEAR then
+        return createHeadgear();
+    elseif type == ITEM_TYPES.GLOVES then
+        return createGloves();
+    elseif type == ITEM_TYPES.JACKET then
+        return createJacket();
+    elseif type == ITEM_TYPES.SHIRT then
+        return createShirt();
+    elseif type == ITEM_TYPES.TROUSERS then
+        return createTrousers();
+    elseif type == ITEM_TYPES.FOOTWEAR then
+        return createFootwear();
     end
-
-    assert( ammo, 'Ammo type for caliber ' .. caliber .. ' not found!' );
-
-    if ammo.ammoType == 'Rocket' then
-        return Rocket.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.blastRadius );
-    elseif ammo.ammoType == 'ShotgunShell' then
-        return ShotgunShell.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity, ammo.pellets );
-    end
-    return Magazine.new( ammo.caliber, ammo.itemType, ammo.ammoType, capacity );
-end
-
----
--- Creates a random clothing item.
--- @param type (string)   The clothing part to create.
--- @return     (Clothing) The new clothing instance.
---
-function ItemFactory.createClothing( type )
-    local rnd = love.math.random( 1, #items[type] );
-    local template = items[type][rnd];
-    return CLOTHING[type].new( template.name, template.itemType, template.armor );
-end
-
----
--- Creates a new random bag item.
--- @return (Bag) The new bag instance.
---
-function ItemFactory.createBag()
-    local rnd = love.math.random( 1, #items.Bag );
-    local template = items.Bag[rnd];
-    return Bag.new( template.name, template.itemType, template.slots );
 end
 
 return ItemFactory;
