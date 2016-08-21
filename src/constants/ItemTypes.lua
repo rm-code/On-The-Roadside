@@ -2,7 +2,6 @@ local ITEM_TYPES = {};
 
 ITEM_TYPES.WEAPON    = 'Weapon';
 ITEM_TYPES.BAG       = 'Bag';
-ITEM_TYPES.UNIVERSAL = 'Universal';
 ITEM_TYPES.AMMO      = 'Ammunition';
 ITEM_TYPES.HEADGEAR  = 'Headgear';
 ITEM_TYPES.GLOVES    = 'Gloves';
