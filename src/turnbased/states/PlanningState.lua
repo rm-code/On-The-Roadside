@@ -1,3 +1,4 @@
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
 local StandUp = require( 'src.characters.actions.StandUp' );
@@ -81,6 +82,8 @@ function PlanningState.new( stateManager )
         elseif key == 'return' then
             activeHelper = MovementHelper;
             FactionManager.nextFaction();
+        elseif key == 'i' then
+            ScreenManager.push( 'inventory' );
         end
     end
 
