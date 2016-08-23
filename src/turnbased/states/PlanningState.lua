@@ -83,7 +83,7 @@ function PlanningState.new( stateManager )
             activeHelper = MovementHelper;
             FactionManager.nextFaction();
         elseif key == 'i' then
-            ScreenManager.push( 'inventory' );
+            ScreenManager.push( 'inventory', character );
         end
     end
 

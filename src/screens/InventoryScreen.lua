@@ -1,6 +1,5 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
-local FactionManager = require( 'src.characters.FactionManager' );
 local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
 
@@ -25,7 +24,7 @@ local DRAGGED_ITEM_HEIGHT =  30;
 function InventoryScreen.new()
     local self = Screen.new();
 
-    local character = FactionManager.getFaction():getCurrentCharacter();
+    local character;
     local lists;
     local dragboard;
 
@@ -50,7 +49,9 @@ function InventoryScreen.new()
     -- Creates the three inventory lists for the player's equipment, his Backpack
     -- and the tile he is standing on.
     --
-    function self:init()
+    function self:init( ncharacter )
+        character = ncharacter;
+
         love.mouse.setVisible( true );
 
         lists = {};
