@@ -1,6 +1,6 @@
 local Object = require( 'src.Object' );
 local Map = require( 'src.map.Map' );
-local FactionManager = require( 'src.characters.FactionManager' );
+local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
@@ -23,6 +23,7 @@ function Game.new()
     local self = Object.new():addInstance( 'Game' );
 
     local map;
+    local factions;
     local turnManager;
     local observations = {};
 
@@ -39,9 +40,10 @@ function Game.new()
         map = Map.new();
         map:init();
 
-        FactionManager.init( map );
+        factions = Factions.new();
+        factions:init( map );
 
-        turnManager = TurnManager.new( map );
+        turnManager = TurnManager.new( map, factions );
 
         ProjectileManager.init( map );
         ExplosionManager.init( map );
@@ -54,7 +56,7 @@ function Game.new()
         if event == 'TILE_UPDATED' then
             local tile = ...;
             assert( tile:instanceOf( 'Tile' ), 'Expected an object of type Tile.' );
-            FactionManager.getFaction():regenerateFOVSelectively( tile );
+            factions:getFaction():regenerateFOVSelectively( tile );
         end
     end
 
@@ -65,6 +67,10 @@ function Game.new()
 
     function self:getMap()
         return map;
+    end
+
+    function self:getFactions()
+        return factions;
     end
 
     function self:keypressed( key )
@@ -80,7 +86,7 @@ function Game.new()
     end
 
     function self:getCurrentCharacter()
-        return FactionManager.getFaction():getCurrentCharacter();
+        return factions:getFaction():getCurrentCharacter();
     end
 
     return self;

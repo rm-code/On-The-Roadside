@@ -1,5 +1,4 @@
 local State = require( 'src.turnbased.states.State' );
-local FactionManager = require( 'src.characters.FactionManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
@@ -10,7 +9,12 @@ local TURN_STEP_DELAY = 0.15;
 function ExecutionState.new( stateManager )
     local self = State.new():addInstance( 'ExecutionState' );
 
+    local character;
     local actionTimer = 0;
+
+    function self:enter( ncharacter )
+        character = ncharacter;
+    end
 
     function self:update( dt )
         if not ProjectileManager.isDone() then
@@ -23,7 +27,6 @@ function ExecutionState.new( stateManager )
             return;
         end
 
-        local character = FactionManager.getFaction():getCurrentCharacter();
         if actionTimer > TURN_STEP_DELAY then
             if character:hasEnqueuedAction() and character:canPerformAction() then
                 character:performAction();

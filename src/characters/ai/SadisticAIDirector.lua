@@ -1,15 +1,14 @@
 local Object = require('src.Object');
-local FactionManager = require( 'src.characters.FactionManager' );
 
 local SadisticAIDirector = {};
 
-function SadisticAIDirector.new( map, states )
+function SadisticAIDirector.new( map, factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
     local tiles = {};
 
-    local startCharacter = FactionManager.getFaction():getCurrentCharacter();
-    local startFaction   = FactionManager.getFaction();
+    local startCharacter = factions:getFaction():getCurrentCharacter();
+    local startFaction   = factions:getFaction();
 
     local function analyzeMap( character )
         for i, _ in pairs( tiles ) do
@@ -58,7 +57,7 @@ function SadisticAIDirector.new( map, states )
         -- Attack the closest enemy.
         if target then
             states:selectTile( target, 1 );
-            states:push( 'execution' );
+            states:push( 'execution', character );
             return true;
         end
 
@@ -67,23 +66,23 @@ function SadisticAIDirector.new( map, states )
         local target = tiles[love.math.random( 1, #tiles )];
         if target:isPassable() and not target:isOccupied() then
             states:selectTile( target, 1 );
-            states:push( 'execution' );
+            states:push( 'execution', character );
             return true;
         end
     end
 
     function self:update()
-        if FactionManager.getFaction() ~= startFaction then
-            startCharacter = FactionManager.getFaction():getCurrentCharacter();
-            startFaction   = FactionManager.getFaction();
+        if factions:getFaction() ~= startFaction then
+            startCharacter = factions:getFaction():getCurrentCharacter();
+            startFaction   = factions:getFaction();
         end
 
-        local character = FactionManager.getFaction():getCurrentCharacter();
+        local character = factions:getFaction():getCurrentCharacter();
 
         if not analyzeMap( character ) or ( character:hasEnqueuedAction() and not character:canPerformAction() ) then
-            local nextCharacter = FactionManager.getFaction():nextCharacter();
+            local nextCharacter = factions:getFaction():nextCharacter();
             if nextCharacter == startCharacter then
-                FactionManager.nextFaction();
+                factions:nextFaction();
             end
         end
     end

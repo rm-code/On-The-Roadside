@@ -32,7 +32,7 @@ function AttackHelper.request( map, target, character, states )
         generateLineOfSight( target, character, map );
     else
         generateAttack( target, character );
-        states:push( 'execution' );
+        states:push( 'execution', character );
     end
 end
 

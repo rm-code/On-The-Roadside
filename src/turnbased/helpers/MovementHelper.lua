@@ -70,7 +70,7 @@ function MovementHelper.request( map, target, character, states )
         character:removeLineOfSight();
         generatePath( target, character );
     else
-        states:push( 'execution' );
+        states:push( 'execution', character );
     end
 end
 

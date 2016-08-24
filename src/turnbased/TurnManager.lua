@@ -1,6 +1,5 @@
 local StateManager = require( 'src.turnbased.states.StateManager' );
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' );
-local FactionManager = require( 'src.characters.FactionManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -8,7 +7,7 @@ local FactionManager = require( 'src.characters.FactionManager' );
 
 local TurnManager = {};
 
-function TurnManager.new( map )
+function TurnManager.new( map, factions )
     local self = {};
 
     local states = {
@@ -17,16 +16,16 @@ function TurnManager.new( map )
     }
 
     local stateManager = StateManager.new( states );
-    stateManager:push( 'planning', map );
+    stateManager:push( 'planning', map, factions );
 
-    local sadisticAIDirector = SadisticAIDirector.new( map, stateManager );
+    local sadisticAIDirector = SadisticAIDirector.new( map, factions, stateManager );
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
     function self:update( dt )
-        if FactionManager.getFaction():isAIControlled() and not stateManager:blocksInput() then
+        if factions:getFaction():isAIControlled() and not stateManager:blocksInput() then
             sadisticAIDirector:update( dt );
         end
 
@@ -38,7 +37,7 @@ function TurnManager.new( map )
     -- ------------------------------------------------
 
     function self:keypressed( key )
-        if FactionManager.getFaction():isAIControlled() or stateManager:blocksInput() then
+        if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
             return;
         end
 
@@ -46,7 +45,7 @@ function TurnManager.new( map )
     end
 
     function self:mousepressed( mx, my, button )
-        if FactionManager.getFaction():isAIControlled() or stateManager:blocksInput() then
+        if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
             return;
         end
 

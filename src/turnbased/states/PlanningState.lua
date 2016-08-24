@@ -7,7 +7,7 @@ local LieDown = require( 'src.characters.actions.LieDown' );
 local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
 local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
 local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
-local FactionManager = require( 'src.characters.FactionManager' );
+
 -- TODO Proper grenade implementation.
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local MousePointer = require( 'src.ui.MousePointer' );
@@ -18,24 +18,26 @@ function PlanningState.new( stateManager )
     local self = State.new():addInstance( 'PlanningState' );
 
     local map;
+    local factions;
     local activeHelper = MovementHelper;
 
-    function self:enter( nmap )
+    function self:enter( nmap, nfactions )
         map = nmap;
+        factions = nfactions;
     end
 
     function self:update()
-        if FactionManager.getFaction():getCurrentCharacter():isDead() then
-            if FactionManager.getFaction():hasLivingCharacters() then
-                FactionManager.getFaction():nextCharacter();
+        if factions:getFaction():getCurrentCharacter():isDead() then
+            if factions:getFaction():hasLivingCharacters() then
+                factions:getFaction():nextCharacter();
             else
-                FactionManager.nextFaction();
+                factions:nextFaction();
             end
         end
     end
 
     function self:keypressed( key )
-        local character = FactionManager.getFaction():getCurrentCharacter();
+        local character = factions:getFaction():getCurrentCharacter();
         if character:isDead() then
             return;
         end
@@ -47,23 +49,23 @@ function PlanningState.new( stateManager )
         elseif key == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));
-            stateManager:push( 'execution' );
+            stateManager:push( 'execution', character );
         elseif key == 's' then
             character:clearActions();
             character:enqueueAction( StandUp.new( character ));
-            stateManager:push( 'execution' );
+            stateManager:push( 'execution', character );
         elseif key == 'p' then
             character:clearActions();
             character:enqueueAction( LieDown.new( character ));
-            stateManager:push( 'execution' );
+            stateManager:push( 'execution', character );
         elseif key == 'r' then
             character:clearActions();
             character:enqueueAction( Reload.new( character ));
-            stateManager:push( 'execution' );
+            stateManager:push( 'execution', character );
         elseif key == 'g' then
             -- TODO Proper grenade implementation.
             ExplosionManager.register( map:getTileAt( MousePointer.getGridPosition() ), love.math.random( 5, 10 ));
-            stateManager:push( 'execution' );
+            stateManager:push( 'execution', character );
         elseif key == 'a' then
             character:clearActions();
             activeHelper = AttackHelper;
@@ -75,29 +77,29 @@ function PlanningState.new( stateManager )
             activeHelper = MovementHelper;
         elseif key == 'space' then
             activeHelper = MovementHelper;
-            FactionManager.getFaction():nextCharacter();
+            factions:getFaction():nextCharacter();
         elseif key == 'backspace' then
             activeHelper = MovementHelper;
-            FactionManager.getFaction():prevCharacter();
+            factions:getFaction():prevCharacter();
         elseif key == 'return' then
             activeHelper = MovementHelper;
-            FactionManager.nextFaction();
+            factions:nextFaction();
         elseif key == 'i' then
             ScreenManager.push( 'inventory', character );
         end
     end
 
     function self:selectTile( tile, button )
-        if not tile or FactionManager.getFaction():getCurrentCharacter():isDead() then
+        if not tile or factions:getFaction():getCurrentCharacter():isDead() then
             return;
         end
 
         if button == 2 and tile:isOccupied() then
-            FactionManager.getFaction():selectCharacter( tile:getCharacter() );
+            factions:getFaction():selectCharacter( tile:getCharacter() );
             return;
         end
 
-        activeHelper.request( map, tile, FactionManager.getFaction():getCurrentCharacter(), stateManager );
+        activeHelper.request( map, tile, factions:getFaction():getCurrentCharacter(), stateManager );
     end
 
     function self:getHelperType()

@@ -1,4 +1,3 @@
-local FactionManager = require( 'src.characters.FactionManager' );
 local Tileset = require( 'src.ui.Tileset' );
 
 local COLORS = require( 'src.constants.Colors' );
@@ -60,19 +59,19 @@ function WorldPainter.new( game )
     -- @param tile (Tile)  The tile to choose a color for.
     -- @return     (table) A table containing RGBA values.
     --
-    local function selectTileColor( tile )
+    local function selectTileColor( tile, factions )
         -- Hide unexplored tiles.
-        if not FactionManager.getFaction():hasExplored( tile ) then
+        if not factions:getFaction():hasExplored( tile ) then
             return COLORS.DB00;
         end
 
         -- Dim tiles hidden from the player.
-        if not FactionManager.getFaction():canSee( tile ) then
+        if not factions:getFaction():canSee( tile ) then
             return COLORS.DB01;
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == FactionManager.getFaction():getCurrentCharacter() then
+            if tile:getCharacter() == factions:getFaction():getCurrentCharacter() then
                 return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
@@ -95,8 +94,8 @@ function WorldPainter.new( game )
     -- @param tile (Tile) The tile to choose a sprite for.
     -- @return     (Quad) A quad pointing to a sprite on the tileset.
     --
-    local function selectTileSprite( tile )
-        if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
+    local function selectTileSprite( tile, factions )
+        if tile:isOccupied() and factions:getFaction():canSee( tile ) then
             if tile:getCharacter():getStance() == STANCES.STAND then
                 if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
                     return Tileset.getSprite( 3 );
@@ -126,11 +125,11 @@ function WorldPainter.new( game )
     -- tiles which have been marked as dirty will be sent to the spritebatch.
     -- @param map (Map) The game's world map.
     --
-    local function updateSpritebatch( map )
+    local function updateSpritebatch( map, factions )
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
-                spritebatch:setColor( selectTileColor( tile ) );
-                spritebatch:set( tile:getID(), selectTileSprite( tile ), x * TILE_SIZE, y * TILE_SIZE );
+                spritebatch:setColor( selectTileColor( tile, factions ));
+                spritebatch:set( tile:getID(), selectTileSprite( tile, factions ), x * TILE_SIZE, y * TILE_SIZE );
                 tile:setDirty( false );
             end
         end)
@@ -151,7 +150,7 @@ function WorldPainter.new( game )
     end
 
     function self:update()
-        updateSpritebatch( game:getMap() );
+        updateSpritebatch( game:getMap(), game:getFactions() );
     end
 
     return self;

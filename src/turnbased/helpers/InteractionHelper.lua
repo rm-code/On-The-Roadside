@@ -10,7 +10,7 @@ function InteractionHelper.request( map, tile, character, states )
         else
             character:enqueueAction( Open.new( character, tile ));
         end
-        states:push( 'execution' );
+        states:push( 'execution', character );
     end
 end
 

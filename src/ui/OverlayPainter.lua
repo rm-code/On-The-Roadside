@@ -1,4 +1,3 @@
-local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
@@ -149,7 +148,7 @@ function OverlayPainter.new( game, particleLayer )
     -- ------------------------------------------------
 
     function self:draw()
-        local character = FactionManager.getFaction():getCurrentCharacter();
+        local character = game:getFactions():getFaction():getCurrentCharacter();
         drawLineOfSight( character );
         drawPath( character );
         drawParticles();
