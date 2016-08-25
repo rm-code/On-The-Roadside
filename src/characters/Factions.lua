@@ -61,7 +61,7 @@ function Factions.new( map )
     -- @param tile    (Tile)   The tile to place the character on.
     -- @param faction (string) The faction identifier to add the character to.
     --
-    local function addCharacter( map, tile, faction )
+    local function addCharacter( tile, faction )
         local node = root;
         while node do
             if node:getObject():getType() == faction then
@@ -74,13 +74,12 @@ function Factions.new( map )
 
     ---
     -- Spawns characters on the map.
-    -- @param map     (Map)    A reference to the map object.
     -- @param amount  (number) The amount of characters to spawn.
     -- @param faction (string) The faction identifier.
     --
-    local function spawnCharacters( map, amount, faction )
+    local function spawnCharacters( amount, faction )
         for _ = 1, amount do
-            addCharacter( map, map:findSpawnPoint( faction ), faction );
+            addCharacter( map:findSpawnPoint( faction ), faction );
         end
     end
 
@@ -96,10 +95,15 @@ function Factions.new( map )
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
         addFaction( Faction.new( FACTIONS.ALLIED,  false ));
+    end
 
-        spawnCharacters( map, 10, FACTIONS.ALLIED  );
-        spawnCharacters( map,  5, FACTIONS.NEUTRAL );
-        spawnCharacters( map, 10, FACTIONS.ENEMY   );
+    ---
+    -- Spawns characters on the map.
+    --
+    function self:spawnCharacters()
+        spawnCharacters( 10, FACTIONS.ALLIED  );
+        spawnCharacters(  5, FACTIONS.NEUTRAL );
+        spawnCharacters( 10, FACTIONS.ENEMY   );
     end
 
     ---

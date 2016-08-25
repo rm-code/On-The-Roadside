@@ -42,6 +42,7 @@ function Game.new()
 
         factions = Factions.new( map );
         factions:init();
+        factions:spawnCharacters();
 
         turnManager = TurnManager.new( map, factions );
 
