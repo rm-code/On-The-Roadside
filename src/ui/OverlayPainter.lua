@@ -106,7 +106,7 @@ function OverlayPainter.new( game, particleLayer )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
-        if game:getState():instanceOf( 'ExecutionState' ) then
+        if game:getState():instanceOf( 'ExecutionState' ) or game:getFactions():getFaction():isAIControlled() then
             return;
         end
 
