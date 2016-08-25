@@ -2,6 +2,7 @@ local Object = require( 'src.Object' );
 local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.characters.Node' );
 local Messenger = require( 'src.Messenger' );
+local CharacterFactory = require( 'src.characters.CharacterFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -56,16 +57,30 @@ function Factions.new( map )
     end
 
     ---
-    -- Adds a new character.
-    -- @param map     (Map)    A reference to the map object.
-    -- @param tile    (Tile)   The tile to place the character on.
-    -- @param faction (string) The faction identifier to add the character to.
+    -- Spawns characters on the map.
+    -- @param amount  (number) The amount of characters to spawn.
+    -- @param faction (string) The faction identifier.
     --
-    local function addCharacter( tile, faction )
+    local function spawnCharacters( amount, faction )
+        for _ = 1, amount do
+            local spawn = map:findSpawnPoint( faction );
+            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction )));
+        end
+    end
+
+    -- ------------------------------------------------
+    -- Public Functions
+    -- ------------------------------------------------
+
+    ---
+    -- Adds a new character.
+    -- @param character (Character) The character to add.
+    --
+    function self:addCharacter( character )
         local node = root;
         while node do
-            if node:getObject():getType() == faction then
-                node:getObject():addCharacter( map, tile );
+            if node:getObject():getType() == character:getFaction():getType() then
+                node:getObject():addCharacter( character );
                 break;
             end
             node = node:getNext();
@@ -73,19 +88,19 @@ function Factions.new( map )
     end
 
     ---
-    -- Spawns characters on the map.
-    -- @param amount  (number) The amount of characters to spawn.
-    -- @param faction (string) The faction identifier.
+    -- Find the faction object belonging to the specified identifier.
+    -- @param type (string)  The identifier to look for.
+    -- @return     (Faction) The faction.
     --
-    local function spawnCharacters( amount, faction )
-        for _ = 1, amount do
-            addCharacter( map:findSpawnPoint( faction ), faction );
+    function self:findFaction( type )
+        local node = root;
+        while node do
+            if node:getObject():getType() == type then
+                return node:getObject();
+            end
+            node = node:getNext();
         end
     end
-
-    -- ------------------------------------------------
-    -- Public Functions
-    -- ------------------------------------------------
 
     ---
     -- Initialises the Factions object by creating a linked list of factions and

@@ -1,6 +1,5 @@
 local Object = require('src.Object');
 local Node = require('src.characters.Node');
-local CharacterFactory = require( 'src.characters.CharacterFactory' );
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
@@ -37,12 +36,9 @@ function Faction.new( type, controlledByAi )
 
     ---
     -- Adds a new Character to this Faction.
-    -- @param map  (Map)  The game's map.
-    -- @param tile (Tile) The tile on which to spawn this character.
+    -- @param character (Character) The character to add.
     --
-    function self:addCharacter( map, tile )
-        -- Create character and calculate initial FOV.
-        local character = CharacterFactory.newCharacter( map, tile, self );
+    function self:addCharacter( character )
         local node = Node.new( character );
 
         -- Initialise root node.
@@ -210,7 +206,7 @@ function Faction.new( type, controlledByAi )
 
     ---
     -- Returns the faction's type.
-    -- @return (number) The faction's number as defined in the faction constants.
+    -- @return (string) The faction's id as defined in the faction constants.
     --
     function self:getType()
         return type;
