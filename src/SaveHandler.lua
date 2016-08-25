@@ -43,7 +43,10 @@ end
 
 local function cleanup( value )
     for k, v in pairs( value ) do
+        -- If the key can be transformed into a number delete the original
+        -- key-value pair and store the value with the numerical key.
         if tonumber( k ) then
+            value[k] = nil;
             value[tonumber(k)] = v;
         end
 
