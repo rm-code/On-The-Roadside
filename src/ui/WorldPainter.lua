@@ -1,5 +1,15 @@
 local Tileset = require( 'src.ui.Tileset' );
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local WorldPainter = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
 local COLORS = require( 'src.constants.Colors' );
 local FACTIONS = require( 'src.constants.Factions' );
 
@@ -18,12 +28,6 @@ local CHARACTER_COLORS = {
 
 local STANCES = require('src.constants.Stances');
 local TILE_SIZE = require( 'src.constants.TileSize' );
-
--- ------------------------------------------------
--- Module
--- ------------------------------------------------
-
-local WorldPainter = {};
 
 -- ------------------------------------------------
 -- Constructor
@@ -56,8 +60,9 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a color which to use when a tile is drawn based on its contents.
-    -- @param tile (Tile)  The tile to choose a color for.
-    -- @return     (table) A table containing RGBA values.
+    -- @param tile     (Tile)     The tile to choose a color for.
+    -- @param factions (factions) The faction handler.
+    -- @return         (table)    A table containing RGBA values.
     --
     local function selectTileColor( tile, factions )
         -- Hide unexplored tiles.
@@ -91,8 +96,9 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a sprite from the tileset based on the tile and its contents.
-    -- @param tile (Tile) The tile to choose a sprite for.
-    -- @return     (Quad) A quad pointing to a sprite on the tileset.
+    -- @param tile     (Tile)     The tile to choose a sprite for.
+    -- @param factions (factions) The faction handler.
+    -- @return         (Quad)     A quad pointing to a sprite on the tileset.
     --
     local function selectTileSprite( tile, factions )
         if tile:isOccupied() and factions:getFaction():canSee( tile ) then
@@ -123,7 +129,8 @@ function WorldPainter.new( game )
     ---
     -- Updates the spritebatch by going through every tile in the map. Only
     -- tiles which have been marked as dirty will be sent to the spritebatch.
-    -- @param map (Map) The game's world map.
+    -- @param map      (Map)      The game's world map.
+    -- @param factions (factions) The faction handler.
     --
     local function updateSpritebatch( map, factions )
         map:iterate( function( tile, x, y)
