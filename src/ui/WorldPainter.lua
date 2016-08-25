@@ -66,7 +66,7 @@ function WorldPainter.new( game )
     --
     local function selectTileColor( tile, factions )
         -- Hide unexplored tiles.
-        if not factions:getFaction():hasExplored( tile ) then
+        if not tile:isExplored( factions:getFaction():getType() ) then
             return COLORS.DB00;
         end
 

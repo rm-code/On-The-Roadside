@@ -40,8 +40,8 @@ function Game.new()
         map = Map.new();
         map:init();
 
-        factions = Factions.new();
-        factions:init( map );
+        factions = Factions.new( map );
+        factions:init();
 
         turnManager = TurnManager.new( map, factions );
 

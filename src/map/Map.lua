@@ -244,6 +244,20 @@ function Map.new()
         end
     end
 
+    ---
+    -- Marks all tiles which have been explored by this faction as dirty.
+    -- @param faction (string) The faction identifier.
+    --
+    function self:updateExplorationInfo( faction )
+        for x = 1, #tiles do
+            for y = 1, #tiles[x] do
+                if tiles[x][y]:isExplored( faction ) then
+                    tiles[x][y]:setDirty( true );
+                end
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------

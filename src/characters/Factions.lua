@@ -19,7 +19,7 @@ local FACTIONS = require( 'src.constants.Factions' );
 -- Constructor
 -- ------------------------------------------------
 
-function Factions.new()
+function Factions.new( map )
     local self = Object.new():addInstance( 'Factions' );
 
     -- ------------------------------------------------
@@ -91,9 +91,8 @@ function Factions.new()
     ---
     -- Initialises the Factions object by creating a linked list of factions and
     -- spawning the characters for each faction at random locations on the map.
-    -- @param map (Map) A reference to the map object.
     --
-    function self:init( map )
+    function self:init()
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
         addFaction( Faction.new( FACTIONS.ALLIED,  false ));
@@ -109,10 +108,16 @@ function Factions.new()
     --
     function self:nextFaction()
         active:getObject():deactivate();
+
+        map:updateExplorationInfo( active:getObject():getType() );
+
         while active do
             active = active:getNext() or root;
             if active:getObject():hasLivingCharacters() then
                 active:getObject():activate();
+
+                map:updateExplorationInfo( active:getObject():getType() );
+
                 local current = active:getObject():getCurrentCharacter();
                 if current:isDead() then
                     return self:getFaction():nextCharacter();

@@ -35,6 +35,8 @@ function Tile.new( x, y, template )
     local worldObject;
     local inventory = Inventory.new();
 
+    local explored = {};
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -232,6 +234,15 @@ function Tile.new( x, y, template )
     end
 
     ---
+    -- Checks if the tile has been explored by a faction.
+    -- @param  faction (string)  The faction to check for.
+    -- @return         (boolean) True if the tile has been explored.
+    --
+    function self:isExplored( faction )
+        return explored[faction];
+    end
+
+    ---
     -- Checks if the tile has a character on it.
     -- @return (boolean) True a character is standing on the tile.
     --
@@ -260,6 +271,14 @@ function Tile.new( x, y, template )
     --
     function self:setDirty( ndirty )
         dirty = ndirty;
+    end
+
+    ---
+    -- Marks the tile as explored for a specific faction.
+    -- @param  faction (string)  The faction to mark the tile for.
+    --
+    function self:setExplored( faction, nexplored )
+        explored[faction] = nexplored;
     end
 
     ---

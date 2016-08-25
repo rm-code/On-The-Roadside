@@ -23,22 +23,6 @@ function Faction.new( type, controlledByAi )
     local root;
     local active;
     local last;
-    local mapInfo = {};
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Marks all explored tiles for drawing updates.
-    --
-    local function updateExplorationInfo()
-        for _, rx in pairs( mapInfo ) do
-            for _, target in pairs( rx ) do
-                target:setDirty( true );
-            end
-        end
-    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -48,7 +32,7 @@ function Faction.new( type, controlledByAi )
     -- Activates this Faction right before it is selected.
     --
     function self:activate()
-        updateExplorationInfo();
+        return;
     end
 
     ---
@@ -79,17 +63,6 @@ function Faction.new( type, controlledByAi )
     end
 
     ---
-    -- Adds a tile to the list of explored tiles for this faction.
-    -- @param tx     (number) The target-tile's position along the x-axis.
-    -- @param ty     (number) The target-tile's position along the y-axis.
-    -- @param target (Tile)   The target-tile.
-    --
-    function self:addExploredTile( tx, ty, target )
-        mapInfo[tx] = mapInfo[tx] or {};
-        mapInfo[tx][ty] = target;
-    end
-
-    ---
     -- Checks if any of the characters in this Faction can see the target tile.
     -- @param target (Tile)    The tile to check visibility for.
     -- @return       (boolean) Wether a character can see this tile.
@@ -114,7 +87,6 @@ function Faction.new( type, controlledByAi )
             character:removePath();
             character:removeLineOfSight();
         end);
-        updateExplorationInfo();
     end
 
     ---
@@ -158,19 +130,6 @@ function Faction.new( type, controlledByAi )
             node = node:getNext();
         end
         return false;
-    end
-
-    ---
-    -- Checks if the target tile has been explored by this Faction.
-    -- @param target (Tile)    The tile to check.
-    -- @return       (boolean) Wether this tile has been explored.
-    --
-    function self:hasExplored( target )
-        local tx, ty = target:getPosition();
-        if not mapInfo[tx] then
-            return false;
-        end
-        return mapInfo[tx][ty] ~= nil;
     end
 
     ---

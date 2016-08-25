@@ -28,13 +28,13 @@ function UserInterface.new( game )
             return;
         end
 
-        if not factions:getFaction():hasExplored( tile ) then
+        if not tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
         elseif tile:isOccupied() then
             love.graphics.print( 'Health: ' .. tile:getCharacter():getHealth(), 310, love.graphics.getHeight() - 20 );
         elseif tile:hasWorldObject() then
             love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
-        elseif factions:getFaction():hasExplored( tile ) then
+        elseif tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( 'Tile: ' .. tile:getName(), 310, love.graphics.getHeight() - 20 );
         end
     end

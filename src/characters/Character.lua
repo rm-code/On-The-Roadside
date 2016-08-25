@@ -184,8 +184,8 @@ function Character.new( map, tile, faction )
                 -- Add tile to this character's FOV.
                 self:addSeenTile( tx, ty, target );
 
-                -- Add tile to faction's map of explored tiles.
-                faction:addExploredTile( tx, ty, target );
+                -- Mark tile as explored for this character's faction.
+                target:setExplored( faction:getType(), true );
 
                 -- Mark tile for drawing update.
                 target:setDirty( true );
