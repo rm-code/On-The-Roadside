@@ -35,7 +35,7 @@ function Tile.new( x, y, template )
     local worldObject;
     local inventory = Inventory.new();
 
-    local explored = {};
+    local explored;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -239,7 +239,7 @@ function Tile.new( x, y, template )
     -- @return         (boolean) True if the tile has been explored.
     --
     function self:isExplored( faction )
-        return explored[faction];
+        return explored and explored[faction] or false;
     end
 
     ---
@@ -278,6 +278,7 @@ function Tile.new( x, y, template )
     -- @param  faction (string)  The faction to mark the tile for.
     --
     function self:setExplored( faction, nexplored )
+        explored = explored or {};
         explored[faction] = nexplored;
     end
 
