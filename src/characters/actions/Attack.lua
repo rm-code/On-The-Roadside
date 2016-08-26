@@ -14,7 +14,6 @@ function Attack.new( character, target )
 
         local package = ProjectileQueue.new( character, target );
         ProjectileManager.register( package );
-        character:removeLineOfSight();
         return true;
     end
 

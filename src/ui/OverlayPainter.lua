@@ -40,6 +40,10 @@ function OverlayPainter.new( game, particleLayer )
     -- @param character (Character) The character to draw the LOS for.
     --
     local function drawLineOfSight( character )
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
         if character:hasLineOfSight() then
             love.graphics.setBlendMode( 'add' );
             character:getLineOfSight():iterate( function( tile )
