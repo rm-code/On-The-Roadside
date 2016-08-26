@@ -32,6 +32,11 @@ local function createEquipment( character )
     character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
 
     local weapon = character:getEquipment():getWeapon();
+
+    if weapon:getWeaponType() == 'Melee' then
+        return;
+    end
+
     local magazine;
     for _ = 1, 3 do
         magazine = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getCaliber() );

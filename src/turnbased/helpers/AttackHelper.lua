@@ -1,4 +1,5 @@
 local Attack = require( 'src.characters.actions.Attack' );
+local MeleeAttack = require( 'src.characters.actions.MeleeAttack' );
 local Bresenham = require( 'lib.Bresenham' );
 local LineOfSight = require( 'src.characters.LineOfSight' );
 
@@ -23,6 +24,12 @@ local function generateAttack( target, character )
 end
 
 function AttackHelper.request( map, target, character, states )
+    if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+        character:enqueueAction( MeleeAttack.new( character, target ));
+        states:push( 'execution', character );
+        return;
+    end
+
     if not character:hasLineOfSight() then
         generateLineOfSight( target, character, map );
     elseif target ~= character:getLineOfSight():getTarget() then

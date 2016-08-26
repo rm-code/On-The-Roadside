@@ -25,6 +25,7 @@ function SoundManager.loadResources()
     SOUNDS.CLIMB          = love.audio.newSource( 'res/sounds/climb.wav' );
     SOUNDS.EXPLODE        = love.audio.newSource( 'res/sounds/explosion.wav' );
     SOUNDS.ROCKET_LAUNCHER = love.audio.newSource( 'res/sounds/rocket.wav' );
+    SOUNDS.MELEE          = love.audio.newSource( 'res/sounds/melee.wav' );
 end
 
 Messenger.observe( 'ACTION_DOOR', function()
@@ -44,6 +45,8 @@ Messenger.observe( 'SOUND_SHOOT', function( weapon )
         love.audio.play( stopBeforePlaying( SOUNDS.SUBMACHINE_GUN ));
     elseif weapon:getWeaponType() == 'Rocket Launcher' then
         love.audio.play( stopBeforePlaying( SOUNDS.ROCKET_LAUNCHER ));
+    elseif weapon:getWeaponType() == 'Melee' then
+        love.audio.play( stopBeforePlaying( SOUNDS.MELEE ));
     end
 end)
 
