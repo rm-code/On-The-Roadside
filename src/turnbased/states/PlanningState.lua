@@ -14,7 +14,6 @@ local PlanningState = {};
 function PlanningState.new( stateManager )
     local self = State.new():addInstance( 'PlanningState' );
 
-    local map;
     local factions;
     local inputStates = {
         ['attack'] = AttackInput.new( stateManager ),
@@ -23,8 +22,7 @@ function PlanningState.new( stateManager )
     }
     local activeInputState = inputStates['movement'];
 
-    function self:enter( nmap, nfactions )
-        map = nmap;
+    function self:enter( nfactions )
         factions = nfactions;
     end
 
@@ -69,11 +67,9 @@ function PlanningState.new( stateManager )
             activeInputState = inputStates['attack'];
         elseif key == 'e' then
             character:clearActions();
-            character:removeLineOfSight();
             activeInputState = inputStates['interaction'];
         elseif key == 'm' then
             character:clearActions();
-            character:removeLineOfSight();
             activeInputState = inputStates['movement'];
         elseif key == 'space' then
             activeInputState = inputStates['movement'];
@@ -99,7 +95,7 @@ function PlanningState.new( stateManager )
             return;
         end
 
-        activeInputState:request( tile, factions:getFaction():getCurrentCharacter(), map );
+        activeInputState:request( tile, factions:getFaction():getCurrentCharacter() );
     end
 
     function self:getInputMode()

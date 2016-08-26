@@ -47,7 +47,6 @@ function Character.new( map, tile, faction )
     -- Private Variables
     -- ------------------------------------------------
 
-    local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
     local fov = {};
@@ -98,7 +97,6 @@ function Character.new( map, tile, faction )
         end
         self:generateFOV();
         self:clearActions();
-        self:removeLineOfSight();
     end
 
     ---
@@ -158,7 +156,6 @@ function Character.new( map, tile, faction )
         end
         self:generateFOV();
         self:clearActions();
-        self:removeLineOfSight();
     end
 
     ---
@@ -208,21 +205,6 @@ function Character.new( map, tile, faction )
     --
     function self:resetActionPoints()
         actionPoints = DEFAULT_ACTION_POINTS;
-    end
-
-    ---
-    -- Adds a new line of sight for the character.
-    -- @param nlos (LineOfSight) The line of sight to add.
-    --
-    function self:addLineOfSight( nlos )
-        lineOfSight = nlos;
-    end
-
-    ---
-    -- Removes the current line of sight.
-    --
-    function self:removeLineOfSight()
-        lineOfSight = nil;
     end
 
     ---
@@ -350,14 +332,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the line of sight.
-    -- @return (LineOfSight) The character's current line of sight.
-    --
-    function self:getLineOfSight()
-        return lineOfSight;
-    end
-
-    ---
     -- Returns the character's fov.
     -- @return (table) A table containing the tiles this character sees.
     --
@@ -403,14 +377,6 @@ function Character.new( map, tile, faction )
     --
     function self:hasEnqueuedAction()
         return actions:getSize() > 0;
-    end
-
-    ---
-    -- Checks if the character currently has a line of sight.
-    -- @return (boolean) Wether the character has a line of sight.
-    --
-    function self:hasLineOfSight()
-        return lineOfSight ~= nil;
     end
 
     ---

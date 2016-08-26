@@ -1,6 +1,7 @@
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
+local Bresenham = require( 'lib.Bresenham' );
 
 -- ------------------------------------------------
 -- Module
@@ -44,24 +45,41 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        if character:hasLineOfSight() then
-            love.graphics.setBlendMode( 'add' );
-            character:getLineOfSight():iterate( function( tile )
-                if not character:getFaction():canSee( tile ) or
-                   character:getEquipment():getWeapon():getMagazine():isEmpty() or
-                   character:getActionPoints() < character:getEquipment():getWeapon():getAttackCost() then
-                    love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
-                elseif not character:getFaction():canSee( tile ) then
+        if game:getState():instanceOf( 'PlanningState' ) and not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+            return;
+        end
+
+        local ox, oy = character:getTile():getPosition();
+        local map = game:getMap();
+
+        local cx, cy = MousePointer.getGridPosition();
+        local target = map:getTileAt( cx, cy );
+
+        if target then
+            local tx, ty = target:getPosition();
+
+            Bresenham.calculateLine( ox, oy, tx, ty, function( sx, sy )
+                love.graphics.setBlendMode( 'add' );
+
+                local tile = map:getTileAt( sx, sy );
+                local weapon = character:getEquipment():getWeapon();
+                local visible = character:getFaction():canSee( tile );
+
+                if not visible or weapon:getMagazine():isEmpty() or character:getActionPoints() < weapon:getAttackCost() then
                     love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
                 elseif tile:hasWorldObject() or tile:isOccupied() then
                     love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() );
                 else
                     love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
                 end
+
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+
+                -- Reset drawing state.
+                love.graphics.setColor( 255, 255, 255, 255 );
+                love.graphics.setBlendMode( 'alpha' );
+                return true;
             end)
-            love.graphics.setColor( 255, 255, 255, 255 );
-            love.graphics.setBlendMode( 'alpha' );
         end
     end
 
