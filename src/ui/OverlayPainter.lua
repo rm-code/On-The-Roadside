@@ -124,13 +124,13 @@ function OverlayPainter.new( game, particleLayer )
         love.graphics.setColor( 0, 0, 0 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
 
-        if game:getState():getHelperType() == 'move' then
+        if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
             love.graphics.setColor( COLORS.DB18 );
             love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 176 ), cx, cy );
-        elseif game:getState():getHelperType() == 'attack' then
+        elseif game:getState():getInputMode():instanceOf( 'AttackInput' ) then
             love.graphics.setColor( COLORS.DB27 );
             love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 11 ), cx, cy );
-        elseif game:getState():getHelperType() == 'interact' then
+        elseif game:getState():getInputMode():instanceOf( 'InteractionInput' ) then
             love.graphics.setColor( COLORS.DB10 );
             love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 30 ), cx, cy );
         end

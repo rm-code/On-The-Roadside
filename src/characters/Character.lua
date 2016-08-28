@@ -98,6 +98,9 @@ function Character.new( map, tile, faction )
             return;
         end
         self:generateFOV();
+        self:clearActions();
+        self:removeLineOfSight();
+        self:removePath();
     end
 
     ---
@@ -156,6 +159,9 @@ function Character.new( map, tile, faction )
             return;
         end
         self:generateFOV();
+        self:clearActions();
+        self:removeLineOfSight();
+        self:removePath();
     end
 
     ---

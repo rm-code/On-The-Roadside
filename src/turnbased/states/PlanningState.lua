@@ -4,9 +4,10 @@ local Reload = require( 'src.characters.actions.Reload' );
 local StandUp = require( 'src.characters.actions.StandUp' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 local LieDown = require( 'src.characters.actions.LieDown' );
-local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
-local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
-local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
+
+local AttackInput = require( 'src.turnbased.helpers.AttackInput' );
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' );
+local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' );
 
 local PlanningState = {};
 
@@ -15,7 +16,12 @@ function PlanningState.new( stateManager )
 
     local map;
     local factions;
-    local activeHelper = MovementHelper;
+    local inputStates = {
+        ['attack'] = AttackInput.new( stateManager ),
+        ['movement'] = MovementInput.new( stateManager ),
+        ['interaction'] = InteractionInput.new( stateManager ),
+    }
+    local activeInputState = inputStates['movement'];
 
     function self:enter( nmap, nfactions )
         map = nmap;
@@ -60,23 +66,25 @@ function PlanningState.new( stateManager )
             stateManager:push( 'execution', character );
         elseif key == 'a' then
             character:clearActions();
-            activeHelper = AttackHelper;
+            character:removePath();
+            activeInputState = inputStates['attack'];
         elseif key == 'e' then
             character:clearActions();
+            character:removePath();
             character:removeLineOfSight();
-            activeHelper = InteractionHelper;
+            activeInputState = inputStates['interaction'];
         elseif key == 'm' then
             character:clearActions();
             character:removeLineOfSight();
-            activeHelper = MovementHelper;
+            activeInputState = inputStates['movement'];
         elseif key == 'space' then
-            activeHelper = MovementHelper;
+            activeInputState = inputStates['movement'];
             factions:getFaction():nextCharacter();
         elseif key == 'backspace' then
-            activeHelper = MovementHelper;
+            activeInputState = inputStates['movement'];
             factions:getFaction():prevCharacter();
         elseif key == 'return' then
-            activeHelper = MovementHelper;
+            activeInputState = inputStates['movement'];
             factions:nextFaction();
         elseif key == 'i' then
             ScreenManager.push( 'inventory', character );
@@ -93,11 +101,11 @@ function PlanningState.new( stateManager )
             return;
         end
 
-        activeHelper.request( map, tile, factions:getFaction():getCurrentCharacter(), stateManager );
+        activeInputState:request( tile, factions:getFaction():getCurrentCharacter(), map );
     end
 
-    function self:getHelperType()
-        return activeHelper.getType();
+    function self:getInputMode()
+        return activeInputState;
     end
 
     return self;
