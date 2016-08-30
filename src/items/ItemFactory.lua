@@ -1,4 +1,4 @@
-local Weapon = require( 'src.items.weapons.Weapon' );
+local RangedWeapon = require( 'src.items.weapons.RangedWeapon' );
 local Magazine = require( 'src.items.weapons.Magazine' );
 local Rocket = require( 'src.items.weapons.Rocket' );
 local ShotgunShell = require( 'src.items.weapons.ShotgunShell' );
@@ -113,7 +113,7 @@ end
 --
 local function createWeapon( name )
     local template = searchTemplate( name, items.Weapon );
-    return Weapon.new( template );
+    return RangedWeapon.new( template );
 end
 
 ---

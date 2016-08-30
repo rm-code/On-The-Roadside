@@ -19,25 +19,12 @@ function Weapon.new( template )
 
     local weaponType = template.weaponType;
     local damage = template.damage;
-    local caliber = template.caliber;
     local modeIndex = 1;
     local mode = template.mode[modeIndex];
-    local firingDelay = 1 / ( template.rpm / 60 );
-    local magSize = template.magSize;
-    local magazine;
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
-
-    function self:reload( newMag )
-        assert( caliber == newMag:getCaliber(), 'Ammunition Type doesn\'t match the gun!' );
-        magazine = newMag;
-    end
-
-    function self:shoot()
-        magazine:removeShell();
-    end
 
     function self:selectNextFiringMode()
         modeIndex = modeIndex + 1 > #template.mode and 1 or modeIndex + 1;
@@ -55,11 +42,6 @@ function Weapon.new( template )
             ['itemType'] = template.itemType,
             ['modeIndex'] = modeIndex
         };
-
-        if magazine then
-            t['magazine'] = magazine:serialize()
-        end
-
         return t;
     end
 
@@ -71,10 +53,6 @@ function Weapon.new( template )
         return mode.accuracy;
     end
 
-    function self:getCaliber()
-        return caliber;
-    end
-
     function self:getAttackCost()
         return mode.cost;
     end
@@ -83,20 +61,8 @@ function Weapon.new( template )
         return damage;
     end
 
-    function self:getFiringDelay()
-        return firingDelay;
-    end
-
     function self:getFiringMode()
         return mode;
-    end
-
-    function self:getMagazine()
-        return magazine;
-    end
-
-    function self:getMagSize()
-        return magSize;
     end
 
     function self:getShots()
@@ -105,6 +71,10 @@ function Weapon.new( template )
 
     function self:getWeaponType()
         return weaponType;
+    end
+
+    function self:getFiringModeIndex()
+        return modeIndex;
     end
 
     -- ------------------------------------------------

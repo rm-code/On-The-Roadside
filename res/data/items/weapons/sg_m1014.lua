@@ -3,7 +3,6 @@ return {
     itemType   = "Weapon",
     weaponType = "Shotgun",
     damage     = 20,
-    rpm        = 0,
     caliber    = "12 gauge",
     magSize    = 8,
     mode = {

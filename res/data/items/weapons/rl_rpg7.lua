@@ -3,7 +3,6 @@ return {
     itemType = "Weapon",
     weaponType = "Rocket Launcher",
     damage   = 0,
-    rpm      = 4,
     caliber  = "OG-7V",
     magSize  = 1,
     mode = {
