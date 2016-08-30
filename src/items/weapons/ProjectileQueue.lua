@@ -146,6 +146,11 @@ function ProjectileQueue.new( character, target )
     local function applyVectorRotation( px, py, tx, ty, angle )
         local vx, vy = tx - px, ty - py;
 
+        -- Vary the shot distance randomly.
+        local factor = love.math.random( 90, 130 ) / 100;
+        vx = vx * factor;
+        vy = vy * factor;
+
         -- Transform angle from degrees to radians.
         angle = math.rad( angle );
 
