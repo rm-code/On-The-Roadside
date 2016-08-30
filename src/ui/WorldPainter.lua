@@ -60,23 +60,24 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a color which to use when a tile is drawn based on its contents.
-    -- @param tile     (Tile)     The tile to choose a color for.
-    -- @param factions (factions) The faction handler.
-    -- @return         (table)    A table containing RGBA values.
+    -- @param tile      (Tile)      The tile to choose a color for.
+    -- @param faction   (Faction)   The faction to draw for.
+    -- @param character (Character) The faction's currently active character.
+    -- @return          (table)     A table containing RGBA values.
     --
-    local function selectTileColor( tile, factions )
+    local function selectTileColor( tile, faction, character )
         -- Hide unexplored tiles.
-        if not tile:isExplored( factions:getFaction():getType() ) then
+        if not tile:isExplored( faction:getType() ) then
             return COLORS.DB00;
         end
 
         -- Dim tiles hidden from the player.
-        if not factions:getFaction():canSee( tile ) then
+        if not faction:canSee( tile ) then
             return COLORS.DB01;
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == factions:getFaction():getCurrentCharacter() then
+            if tile:getCharacter() == character then
                 return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
@@ -96,12 +97,12 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a sprite from the tileset based on the tile and its contents.
-    -- @param tile     (Tile)     The tile to choose a sprite for.
-    -- @param factions (factions) The faction handler.
-    -- @return         (Quad)     A quad pointing to a sprite on the tileset.
+    -- @param tile    (Tile)    The tile to choose a sprite for.
+    -- @param faction (Faction) The faction to draw for.
+    -- @return        (Quad)    A quad pointing to a sprite on the tileset.
     --
-    local function selectTileSprite( tile, factions )
-        if tile:isOccupied() and factions:getFaction():canSee( tile ) then
+    local function selectTileSprite( tile, faction )
+        if tile:isOccupied() and faction:canSee( tile ) then
             if tile:getCharacter():getStance() == STANCES.STAND then
                 if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
                     return Tileset.getSprite( 3 );
@@ -133,10 +134,13 @@ function WorldPainter.new( game )
     -- @param factions (factions) The faction handler.
     --
     local function updateSpritebatch( map, factions )
+        -- NOTE: Change this line to enable drawing for the AI.
+        local faction = factions:getPlayerFaction();
+
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
-                spritebatch:setColor( selectTileColor( tile, factions ));
-                spritebatch:set( tile:getID(), selectTileSprite( tile, factions ), x * TILE_SIZE, y * TILE_SIZE );
+                spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ));
+                spritebatch:set( tile:getID(), selectTileSprite( tile, faction ), x * TILE_SIZE, y * TILE_SIZE );
                 tile:setDirty( false );
             end
         end)
