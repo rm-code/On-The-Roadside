@@ -10,7 +10,7 @@ return {
             name = "Single",
             cost = 10,
             accuracy = 65,
-            shots = 1,
+            attacks = 1,
         }
     }
 }

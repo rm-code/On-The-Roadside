@@ -107,7 +107,7 @@ function SaveHandler.load()
 
     local function createWeapon( item )
         local weapon = ItemFactory.createItem( item.itemType, item.name );
-        weapon:setFiringMode( item.modeIndex );
+        weapon:setAttackMode( item.modeIndex );
 
         local magazine = createMagazine( item.magazine );
         weapon:reload( magazine );

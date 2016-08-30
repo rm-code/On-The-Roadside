@@ -193,7 +193,7 @@ function ProjectileQueue.new( character, target )
     local function spawnProjectile()
         local projectile = projectileQueue:dequeue();
         Messenger.publish( 'SOUND_ATTACK', weapon );
-        weapon:shoot();
+        weapon:attack();
 
         if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
             for _ = 1, projectile:getWeapon():getMagazine():getPelletAmount() do
@@ -217,7 +217,7 @@ function ProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
+        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
         for i = 1, amount do
             projectileQueue:enqueue( createProjectile( i ));
         end

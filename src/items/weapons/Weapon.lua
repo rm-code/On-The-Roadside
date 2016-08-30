@@ -61,19 +61,19 @@ function Weapon.new( template )
         return damage;
     end
 
-    function self:getFiringMode()
+    function self:getAttackMode()
         return mode;
     end
 
-    function self:getShots()
-        return mode.shots;
+    function self:getAttacks()
+        return mode.attacks;
     end
 
     function self:getWeaponType()
         return weaponType;
     end
 
-    function self:getFiringModeIndex()
+    function self:getAttackModeIndex()
         return modeIndex;
     end
 
@@ -81,7 +81,7 @@ function Weapon.new( template )
     -- Setters
     -- ------------------------------------------------
 
-    function self:setFiringMode( nmodeIndex )
+    function self:setAttackMode( nmodeIndex )
         modeIndex = nmodeIndex;
         mode = template.mode[modeIndex];
     end

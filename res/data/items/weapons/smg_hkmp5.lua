@@ -11,13 +11,13 @@ return {
             name = "Single",
             cost = 3,
             accuracy = 75,
-            shots = 1,
+            attacks = 1,
         },
         {
             name = "5-Round Burst",
             cost = 5,
             accuracy = 60,
-            shots = 5,
+            attacks = 5,
         }
     }
 }

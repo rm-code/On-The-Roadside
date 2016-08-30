@@ -24,7 +24,7 @@ function RangedWeapon.new( template )
         magazine = newMag;
     end
 
-    function self:shoot()
+    function self:attack()
         magazine:removeShell();
     end
 
@@ -32,7 +32,7 @@ function RangedWeapon.new( template )
         local t = {
             ['name'] = template.name,
             ['itemType'] = template.itemType,
-            ['modeIndex'] = self:getFiringModeIndex()
+            ['modeIndex'] = self:getAttackModeIndex()
         };
 
         if magazine then

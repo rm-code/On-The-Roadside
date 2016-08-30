@@ -11,13 +11,13 @@ return {
             name = "Single",
             cost = 3,
             accuracy = 65,
-            shots = 1,
+            attacks = 1,
         },
         {
             name = "Full-Auto",
             cost = 8,
             accuracy = 40,
-            shots = 13,
+            attacks = 13,
         }
     }
 }
