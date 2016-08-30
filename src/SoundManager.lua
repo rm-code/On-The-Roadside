@@ -36,7 +36,7 @@ Messenger.observe( 'SOUND_CLIMB', function()
     love.audio.play( SOUNDS.CLIMB );
 end)
 
-Messenger.observe( 'SOUND_SHOOT', function( weapon )
+Messenger.observe( 'SOUND_ATTACK', function( weapon )
     if weapon:getWeaponType() == 'Assault Rifle' then
         love.audio.play( stopBeforePlaying( SOUNDS.ASSAULT_RIFLE ));
     elseif weapon:getWeaponType() == 'Shotgun' then

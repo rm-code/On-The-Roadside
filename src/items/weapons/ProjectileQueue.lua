@@ -192,7 +192,7 @@ function ProjectileQueue.new( character, target )
     --
     local function spawnProjectile()
         local projectile = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_SHOOT', weapon );
+        Messenger.publish( 'SOUND_ATTACK', weapon );
         weapon:shoot();
 
         if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then

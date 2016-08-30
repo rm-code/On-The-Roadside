@@ -12,7 +12,7 @@ function MeleeAttack.new( character, target )
         end
 
         local weapon = character:getEquipment():getWeapon();
-        Messenger.publish( 'SOUND_SHOOT', weapon );
+        Messenger.publish( 'SOUND_ATTACK', weapon );
         target:hit( weapon:getDamage() );
         return true;
     end
