@@ -1,6 +1,7 @@
 local State = require( 'src.turnbased.states.State' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
+local Messenger = require( 'src.Messenger' );
 
 local ExecutionState = {};
 
@@ -14,6 +15,7 @@ function ExecutionState.new( stateManager )
 
     function self:enter( ncharacter )
         character = ncharacter;
+        Messenger.publish( 'START_EXECUTION' );
     end
 
     function self:update( dt )
@@ -32,6 +34,7 @@ function ExecutionState.new( stateManager )
                 character:performAction();
                 actionTimer = 0;
             else
+                Messenger.publish( 'END_EXECUTION' );
                 stateManager:pop();
             end
         end

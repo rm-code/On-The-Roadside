@@ -79,8 +79,26 @@ function MainScreen.new()
         game:mousepressed( mx, my, button );
     end
 
+    Messenger.observe( 'START_EXECUTION', function()
+        camera:lock();
+        camera:storePosition();
+    end)
+
+    Messenger.observe( 'END_EXECUTION', function()
+        camera:unlock();
+        camera:restorePosition();
+    end)
+
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+    end)
+
+    Messenger.observe( 'CHARACTER_MOVED', function( character )
+        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+    end)
+
+    Messenger.observe( 'START_ATTACK', function( target )
+        camera:setTargetPosition( target:getX() * TILE_SIZE, target:getY() * TILE_SIZE );
     end)
 
     return self;
