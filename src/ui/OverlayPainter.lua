@@ -114,7 +114,7 @@ function OverlayPainter.new( game, particleLayer )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
-        if game:getState():instanceOf( 'ExecutionState' ) or game:getFactions():getFaction():isAIControlled() then
+        if game:getState():instanceOf( 'ExecutionState' ) then
             return;
         end
 
@@ -140,6 +140,10 @@ function OverlayPainter.new( game, particleLayer )
     local function drawParticles()
         for x, row in pairs( particleLayer:getParticleGrid() ) do
             for y, particle in pairs( row ) do
+                if not game:getFactions():getPlayerFaction():canSee( game:getMap():getTileAt( x, y )) then
+                    return;
+                end
+
                 love.graphics.setColor( particle:getColors() );
                 if particle:isAscii() then
                     love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
@@ -157,10 +161,12 @@ function OverlayPainter.new( game, particleLayer )
 
     function self:draw()
         local character = game:getFactions():getFaction():getCurrentCharacter();
-        drawLineOfSight( character );
-        drawPath( character );
+        if not character:getFaction():isAIControlled() then
+            drawLineOfSight( character );
+            drawPath( character );
+            drawMouseCursor();
+        end
         drawParticles();
-        drawMouseCursor();
     end
 
     function self:update( dt )
