@@ -47,7 +47,6 @@ function Character.new( map, tile, faction )
     -- Private Variables
     -- ------------------------------------------------
 
-    local path;
     local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
@@ -100,7 +99,6 @@ function Character.new( map, tile, faction )
         self:generateFOV();
         self:clearActions();
         self:removeLineOfSight();
-        self:removePath();
     end
 
     ---
@@ -161,7 +159,6 @@ function Character.new( map, tile, faction )
         self:generateFOV();
         self:clearActions();
         self:removeLineOfSight();
-        self:removePath();
     end
 
     ---
@@ -211,27 +208,6 @@ function Character.new( map, tile, faction )
     --
     function self:resetActionPoints()
         actionPoints = DEFAULT_ACTION_POINTS;
-    end
-
-    ---
-    -- Adds a new path for the character.
-    -- @param path (Path) The path to add.
-    --
-    function self:addPath( npath )
-        if path then
-            path:refresh();
-        end
-        path = npath;
-    end
-
-    ---
-    -- Removes the current path.
-    --
-    function self:removePath()
-        if path then
-            path:refresh();
-        end
-        path = nil;
     end
 
     ---
@@ -382,14 +358,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the current path.
-    -- @return (Path) The current path.
-    --
-    function self:getPath()
-        return path;
-    end
-
-    ---
     -- Returns the character's fov.
     -- @return (table) A table containing the tiles this character sees.
     --
@@ -443,14 +411,6 @@ function Character.new( map, tile, faction )
     --
     function self:hasLineOfSight()
         return lineOfSight ~= nil;
-    end
-
-    ---
-    -- Checks if the character currently has a path.
-    -- @return (boolean) Wether the character has a path.
-    --
-    function self:hasPath()
-        return path ~= nil;
     end
 
     ---

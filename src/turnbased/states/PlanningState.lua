@@ -66,11 +66,9 @@ function PlanningState.new( stateManager )
             stateManager:push( 'execution', character );
         elseif key == 'a' then
             character:clearActions();
-            character:removePath();
             activeInputState = inputStates['attack'];
         elseif key == 'e' then
             character:clearActions();
-            character:removePath();
             character:removeLineOfSight();
             activeInputState = inputStates['interaction'];
         elseif key == 'm' then

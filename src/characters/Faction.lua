@@ -80,7 +80,6 @@ function Faction.new( type, controlledByAi )
         self:iterate( function( character )
             character:resetActionPoints();
             character:clearActions();
-            character:removePath();
             character:removeLineOfSight();
         end);
     end

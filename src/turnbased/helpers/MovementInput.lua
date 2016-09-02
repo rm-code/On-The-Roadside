@@ -18,8 +18,7 @@ function MovementInput.new( stateManager )
             local path = PathFinder.generatePath( origin, target, true );
 
             if path then
-                character:addPath( path );
-                character:getPath():iterate( function( tile, index )
+                path:iterate( function( tile, index )
                     if tile:hasWorldObject() then
                         if character:getStance() == STANCES.PRONE then
                             character:enqueueAction( Crouch.new( character ));
@@ -50,14 +49,8 @@ function MovementInput.new( stateManager )
     function self:request( ... )
         local target, character = unpack{ ... };
 
-        if character:hasPath() and target == character:getPath():getTarget() then
-            stateManager:push( 'execution', character );
-            return;
-        end
-
-        character:removePath();
-        character:clearActions();
         generatePath( target, character );
+        stateManager:push( 'execution', character );
     end
 
     return self;
