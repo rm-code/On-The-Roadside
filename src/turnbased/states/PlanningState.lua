@@ -63,9 +63,11 @@ function PlanningState.new( stateManager )
             activeHelper = AttackHelper;
         elseif key == 'e' then
             character:clearActions();
+            character:removeLineOfSight();
             activeHelper = InteractionHelper;
         elseif key == 'm' then
             character:clearActions();
+            character:removeLineOfSight();
             activeHelper = MovementHelper;
         elseif key == 'space' then
             activeHelper = MovementHelper;
