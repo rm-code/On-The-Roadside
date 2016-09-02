@@ -90,14 +90,23 @@ function MainScreen.new()
     end)
 
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+            return;
+        end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
     Messenger.observe( 'CHARACTER_MOVED', function( character )
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+            return;
+        end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
     Messenger.observe( 'START_ATTACK', function( target )
+        if not game:getFactions():getPlayerFaction():canSee( target ) then
+            return;
+        end
         camera:setTargetPosition( target:getX() * TILE_SIZE, target:getY() * TILE_SIZE );
     end)
 

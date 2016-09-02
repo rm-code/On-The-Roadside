@@ -29,6 +29,7 @@ function Factions.new( map )
 
     local root;
     local active;
+    local player;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -45,7 +46,7 @@ function Factions.new( map )
         if not root then
             root = node;
             active = root;
-            return;
+            return active:getObject();
         end
 
         -- Doubly link the new node.
@@ -54,6 +55,7 @@ function Factions.new( map )
 
         -- Make it the active node.
         active = node;
+        return active:getObject();
     end
 
     ---
@@ -109,7 +111,7 @@ function Factions.new( map )
     function self:init()
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
-        addFaction( Faction.new( FACTIONS.ALLIED,  false ));
+        player = addFaction( Faction.new( FACTIONS.ALLIED,  false ));
     end
 
     ---
@@ -157,6 +159,10 @@ function Factions.new( map )
     --
     function self:getFaction()
         return active:getObject();
+    end
+
+    function self:getPlayerFaction()
+        return player;
     end
 
     return self;
