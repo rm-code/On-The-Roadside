@@ -5,16 +5,19 @@ local Messenger = require( 'src.Messenger' );
 
 local ExecutionState = {};
 
-local TURN_STEP_DELAY = 0.15;
+local AI_DELAY     = 0;
+local PLAYER_DELAY = 0.15;
 
 function ExecutionState.new( stateManager )
     local self = State.new():addInstance( 'ExecutionState' );
 
     local character;
     local actionTimer = 0;
+    local delay;
 
     function self:enter( ncharacter )
         character = ncharacter;
+        delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY;
         Messenger.publish( 'START_EXECUTION' );
     end
 
@@ -29,7 +32,7 @@ function ExecutionState.new( stateManager )
             return;
         end
 
-        if actionTimer > TURN_STEP_DELAY then
+        if actionTimer > delay then
             if character:hasEnqueuedAction() and character:canPerformAction() then
                 character:performAction();
                 actionTimer = 0;
