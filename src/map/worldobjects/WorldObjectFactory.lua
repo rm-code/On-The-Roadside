@@ -1,11 +1,31 @@
 local WorldObject = require( 'src.map.worldobjects.WorldObject' );
 
-local TEMPLATE_DIRECTORY  = 'res/data/worldobjects/';
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
 local WorldObjectFactory = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local TEMPLATE_DIRECTORY  = 'res/data/worldobjects/';
+
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
+
 local worldobjects = {};
 
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
+
+---
+-- Loads all WorldObject templates found in the specified directory.
+-- @param dir (string) The directory to load the templates from.
+--
 local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
@@ -20,11 +40,23 @@ local function load( dir )
     end
 end
 
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+---
+-- Loads the templates.
+--
 function WorldObjectFactory.loadTemplates()
     print( "Load Tile Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 
+---
+-- Creates a WorldObject of the given type.
+-- @param type (string)      The type of the WorldObject to create.
+-- @return     (WorldObject) The newly created WorldObject.
+--
 function WorldObjectFactory.create( type )
     local template = worldobjects[type];
     assert( template, string.format( 'Requested worldobject type (%s) doesn\'t exist!', type ));
