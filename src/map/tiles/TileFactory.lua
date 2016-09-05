@@ -1,11 +1,31 @@
 local Tile = require( 'src.map.tiles.Tile' );
 
-local TEMPLATE_DIRECTORY  = 'res/data/tiles/';
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
 local TileFactory = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local TEMPLATE_DIRECTORY  = 'res/data/tiles/';
+
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
+
 local tiles = {};
 
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
+
+---
+-- Loads all Tile-templates found in the specified directory.
+-- @param dir (string) The directory to load the templates from.
+--
 local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
@@ -20,11 +40,25 @@ local function load( dir )
     end
 end
 
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+---
+-- Loads the templates.
+--
 function TileFactory.loadTemplates()
     print( "Load Tile Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 
+---
+-- Creates a tile of a certain type at the given coordinates.
+-- @param x    (number) The tile's coordinate along the x-axis.
+-- @param y    (number) The tile's coordinate along the y-axis.
+-- @param type (string) The type of Tile to create.
+-- @return     (Tile)   The newly created Tile.
+--
 function TileFactory.create( x, y, type )
     local template = tiles[type];
     assert( template, string.format( 'Requested tile type (%s) doesn\'t exist!', type ));
