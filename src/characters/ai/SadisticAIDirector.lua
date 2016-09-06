@@ -2,7 +2,7 @@ local Object = require('src.Object');
 
 local SadisticAIDirector = {};
 
-function SadisticAIDirector.new( map, factions, states )
+function SadisticAIDirector.new( factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
     local tiles = {};

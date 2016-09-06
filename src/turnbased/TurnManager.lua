@@ -18,7 +18,7 @@ function TurnManager.new( map, factions )
     local stateManager = StateManager.new( states );
     stateManager:push( 'planning', factions );
 
-    local sadisticAIDirector = SadisticAIDirector.new( map, factions, stateManager );
+    local sadisticAIDirector = SadisticAIDirector.new( factions, stateManager );
 
     -- ------------------------------------------------
     -- Public Methods
