@@ -49,6 +49,10 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
+        if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+            return;
+        end
+
         local ox, oy = character:getTile():getPosition();
         local map = game:getMap();
 
