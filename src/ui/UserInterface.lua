@@ -41,6 +41,9 @@ function UserInterface.new( game )
 
     function self:draw()
         local character = factions:getFaction():getCurrentCharacter();
+        if factions:getFaction():isAIControlled() then
+            return;
+        end
 
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
