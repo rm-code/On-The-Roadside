@@ -8,7 +8,7 @@ local ExecutionState = {};
 local AI_DELAY     = 0;
 local PLAYER_DELAY = 0.15;
 
-function ExecutionState.new( stateManager )
+function ExecutionState.new( stateManager, factions )
     local self = State.new():addInstance( 'ExecutionState' );
 
     local character;
@@ -35,6 +35,13 @@ function ExecutionState.new( stateManager )
         if actionTimer > delay then
             if character:hasEnqueuedAction() and character:canPerformAction() then
                 character:performAction();
+
+                if factions:getPlayerFaction():canSee( character:getTile() ) then
+                    delay = PLAYER_DELAY;
+                else
+                    delay = AI_DELAY;
+                end
+
                 actionTimer = 0;
             else
                 Messenger.publish( 'END_EXECUTION' );

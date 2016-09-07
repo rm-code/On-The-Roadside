@@ -11,20 +11,15 @@ local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' );
 
 local PlanningState = {};
 
-function PlanningState.new( stateManager )
+function PlanningState.new( stateManager, factions )
     local self = State.new():addInstance( 'PlanningState' );
 
-    local factions;
     local inputStates = {
         ['attack'] = AttackInput.new( stateManager ),
         ['movement'] = MovementInput.new( stateManager ),
         ['interaction'] = InteractionInput.new( stateManager ),
     }
     local activeInputState = inputStates['movement'];
-
-    function self:enter( nfactions )
-        factions = nfactions;
-    end
 
     function self:update()
         if factions:getFaction():getCurrentCharacter():isDead() then

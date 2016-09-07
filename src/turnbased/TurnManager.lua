@@ -15,8 +15,8 @@ function TurnManager.new( map, factions )
         planning = require( 'src.turnbased.states.PlanningState' )
     }
 
-    local stateManager = StateManager.new( states );
-    stateManager:push( 'planning', factions );
+    local stateManager = StateManager.new( states, factions );
+    stateManager:push( 'planning' );
 
     local sadisticAIDirector = SadisticAIDirector.new( factions, stateManager );
 
