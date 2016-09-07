@@ -80,7 +80,6 @@ function SaveHandler.save( t )
 
     local str = table.concat( output, '\n' );
     local compress = love.math.compress( str, 'lz4', 9 );
-    love.filesystem.write( 'uncompressed.txt', str )
     love.filesystem.write( 'compressed.data', compress );
 end
 
