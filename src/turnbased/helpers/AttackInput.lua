@@ -14,6 +14,10 @@ function AttackInput.new( stateManager )
     function self:request( ... )
         local target, character = unpack{ ... };
 
+        if not character:getEquipment():getWeapon() then
+            return;
+        end
+
         if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
             stateManager:push( 'execution', character );
