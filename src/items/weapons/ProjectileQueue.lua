@@ -78,7 +78,6 @@ function ProjectileQueue.new( character, target )
     local index = 0;
     local timer = 0;
     local weapon = character:getEquipment():getWeapon();
-    local delay = weapon:getFiringDelay();
 
     -- ------------------------------------------------
     -- Private Methods
@@ -236,7 +235,7 @@ function ProjectileQueue.new( character, target )
         timer = timer - dt;
         if timer <= 0 and not projectileQueue.isEmpty() then
             spawnProjectile();
-            timer = delay;
+            timer = weapon:getFiringDelay();
         end
     end
 
