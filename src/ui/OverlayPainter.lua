@@ -49,7 +49,8 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+        local weapon = character:getEquipment():getWeapon();
+        if not weapon or weapon:getWeaponType() == 'Melee' then
             return;
         end
 
@@ -66,7 +67,6 @@ function OverlayPainter.new( game, particleLayer )
                 love.graphics.setBlendMode( 'add' );
 
                 local tile = map:getTileAt( sx, sy );
-                local weapon = character:getEquipment():getWeapon();
                 local visible = character:getFaction():canSee( tile );
 
                 if not visible or weapon:getMagazine():isEmpty() or character:getActionPoints() < weapon:getAttackCost() then
