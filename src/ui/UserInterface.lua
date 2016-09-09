@@ -55,7 +55,7 @@ function UserInterface.new( game )
         if weapon then
             love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
             love.graphics.print( 'Mode: ' .. weapon:getAttackMode().name, 150, love.graphics.getHeight() - 20 );
-            if weapon:getWeaponType() ~= 'Melee' then
+            if not weapon:getWeaponType() == 'Melee' and not weapon:getWeaponType() == 'Grenade' then
                 love.graphics.print( 'Ammo: ' .. string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 310, love.graphics.getHeight() - 40 );
             end
         end

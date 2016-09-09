@@ -1,6 +1,7 @@
 local Object = require( 'src.Object' );
 local Attack = require( 'src.characters.actions.Attack' );
 local MeleeAttack = require( 'src.characters.actions.MeleeAttack' );
+local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
 
 local AttackInput = {};
 
@@ -20,6 +21,12 @@ function AttackInput.new( stateManager )
 
         if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
+            stateManager:push( 'execution', character );
+            return;
+        end
+
+        if character:getEquipment():getWeapon():getWeaponType() == 'Grenade' then
+            character:enqueueAction( ThrowingAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;
         end

@@ -33,7 +33,7 @@ local function createEquipment( character )
 
     local weapon = character:getEquipment():getWeapon();
 
-    if weapon:getWeaponType() == 'Melee' then
+    if weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
         return;
     end
 

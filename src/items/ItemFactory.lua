@@ -1,5 +1,6 @@
 local RangedWeapon = require( 'src.items.weapons.RangedWeapon' );
 local MeleeWeapon = require( 'src.items.weapons.MeleeWeapon' );
+local Grenade = require( 'src.items.weapons.Grenade' );
 local Magazine = require( 'src.items.weapons.Magazine' );
 local Rocket = require( 'src.items.weapons.Rocket' );
 local ShotgunShell = require( 'src.items.weapons.ShotgunShell' );
@@ -117,6 +118,8 @@ local function createWeapon( name )
 
     if template.weaponType == 'Melee' then
         return MeleeWeapon.new( template );
+    elseif template.weaponType == 'Grenade' then
+        return Grenade.new( template );
     else
         return RangedWeapon.new( template );
     end
