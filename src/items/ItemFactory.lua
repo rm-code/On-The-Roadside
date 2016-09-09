@@ -115,7 +115,7 @@ end
 local function createWeapon( name )
     local template = searchTemplate( name, items.Weapon );
 
-    if items.Weapon.itemType == 'Melee' then
+    if template.weaponType == 'Melee' then
         return MeleeWeapon.new( template );
     else
         return RangedWeapon.new( template );
