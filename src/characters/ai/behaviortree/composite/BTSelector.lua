@@ -9,7 +9,6 @@ function BTSelector.new()
         print( 'BTSelector' );
         for _, child in ipairs( self:getChildren() ) do
             local success = child:traverse( ... );
-            print ( '=> ' .. tostring( success ));
             if success then
                 return true;
             end

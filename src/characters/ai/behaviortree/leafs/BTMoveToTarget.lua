@@ -5,12 +5,12 @@ local Open = require( 'src.characters.actions.Open' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 
-local BTRandomMovement = {};
+local BTMoveToTarget = {};
 
 local STANCES = require('src.constants.Stances');
 
-function BTRandomMovement.new()
-    local self = BTLeaf.new():addInstance( 'BTRandomMovement' );
+function BTMoveToTarget.new()
+    local self = BTLeaf.new():addInstance( 'BTMoveToTarget' );
 
     local function generatePath( target, character )
         if target and not target:isOccupied() then
@@ -47,23 +47,36 @@ function BTRandomMovement.new()
     end
 
     function self:traverse( ... )
-        print( 'BTRandomMovement' );
-        local _, character, states = ...;
+        print( 'BTMoveToTarget' );
+        local blackboard, character, states = ...;
 
-        local tiles = {};
+        local closest;
+        local distance;
 
-        -- Get the character's FOV and store the tiles in a sequence for easier access.
-        local fov = character:getFOV();
-        for _, rx in pairs( fov ) do
-            for _, target in pairs( rx ) do
-                tiles[#tiles + 1] = target;
+        -- Find the closest neighbour tile to move to.
+        for _, neighbour in pairs( blackboard.target:getNeighbours() ) do
+            if neighbour:isPassable() and not neighbour:isOccupied() then
+                if not closest then
+                    closest = neighbour;
+                    local px, py = closest:getPosition();
+                    local cx, cy = character:getTile():getPosition();
+                    distance = math.sqrt(( px - cx ) * ( px - cx ) + ( py - cy ) * ( py - cy ));
+                else
+                    local px, py = neighbour:getPosition();
+                    local cx, cy = character:getTile():getPosition();
+                    local newDistance = math.sqrt(( px - cx ) * ( px - cx ) + ( py - cy ) * ( py - cy ));
+                    if newDistance < distance then
+                        closest = neighbour;
+                        distance = newDistance;
+                    end
+                end
             end
         end
 
-        local target = tiles[love.math.random( 1, #tiles )];
-        if target and target:isPassable() and not target:isOccupied() then
-            generatePath( target, character );
+        if closest then
+            generatePath( closest, character );
             states:push( 'execution', character );
+            print( 'Character moves to target.' );
             return true;
         end
 
@@ -73,4 +86,4 @@ function BTRandomMovement.new()
     return self;
 end
 
-return BTRandomMovement;
+return BTMoveToTarget;

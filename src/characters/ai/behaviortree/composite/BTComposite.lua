@@ -14,7 +14,6 @@ function BTComposite.new()
     function self:traverse( ... )
         for _, child in ipairs( children ) do
             local success = child:traverse( ... );
-            print ( '-> ' .. tostring( success ));
             if not success then
                 return false;
             end

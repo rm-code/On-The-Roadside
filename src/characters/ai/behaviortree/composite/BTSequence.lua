@@ -9,7 +9,6 @@ function BTSequence.new()
         print( 'BTSequence' );
         for _, child in ipairs( self:getChildren() ) do
             local success = child:traverse( ... );
-            print ( '=> ' .. tostring( success ));
             if not success then
                 return false;
             end

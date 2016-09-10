@@ -10,6 +10,7 @@ function BTHasMeleeWeapon.new()
         local _, character = ...;
 
         if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+            print( 'Character has a melee weapon.' );
             return true;
         end
 
