@@ -13,7 +13,7 @@ local BTInverter       = require( 'src.characters.ai.behaviortree.decorators.BTI
 local BehaviorTree = {};
 
 function BehaviorTree.new()
-    local self = BTComposite.new():addInstance( 'BehaviorTree ');
+    local self = BTComposite.new():addInstance( 'BehaviorTree' );
 
     local inverter = BTInverter.new();
     inverter:addNode( BTHasMeleeWeapon.new() );
