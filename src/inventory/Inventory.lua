@@ -28,6 +28,14 @@ function Inventory.new()
         return items;
     end
 
+    function self:serialize()
+        local t = {};
+        for _, item in pairs( items ) do
+            table.insert( t, item:serialize() );
+        end
+        return t;
+    end
+
     return self;
 end
 

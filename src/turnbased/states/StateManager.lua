@@ -1,6 +1,6 @@
 local StateManager = {};
 
-function StateManager.new( states )
+function StateManager.new( states, factions )
     local self = {};
 
     local stack = {};
@@ -27,17 +27,21 @@ function StateManager.new( states )
 
     function self:switch( state, ... )
         stack = {};
-        stack[#stack + 1] = states[state].new( self );
+        stack[#stack + 1] = states[state].new( self, factions );
         stack[#stack]:enter( ... );
     end
 
     function self:push( state, ... )
-        stack[#stack + 1] = states[state].new( self );
+        stack[#stack + 1] = states[state].new( self, factions );
         stack[#stack]:enter( ... );
     end
 
     function self:pop()
         stack[#stack] = nil;
+    end
+
+    function self:getState()
+        return stack[#stack];
     end
 
     return self;

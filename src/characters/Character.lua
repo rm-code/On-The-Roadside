@@ -3,6 +3,12 @@ local Queue = require('src.util.Queue');
 local Equipment = require('src.characters.Equipment');
 
 -- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local Character = {};
+
+-- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
@@ -10,21 +16,19 @@ local DEFAULT_ACTION_POINTS = 20;
 
 local STANCES = require('src.constants.Stances');
 
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+local ITEM_TYPES = require('src.constants.ItemTypes');
 local BODY_PARTS = {
-    CLOTHING_SLOTS.HEADGEAR,
-    CLOTHING_SLOTS.GLOVES,
-    CLOTHING_SLOTS.JACKET,
-    CLOTHING_SLOTS.SHIRT,
-    CLOTHING_SLOTS.TROUSERS,
-    CLOTHING_SLOTS.FOOTWEAR
+    ITEM_TYPES.HEADGEAR,
+    ITEM_TYPES.GLOVES,
+    ITEM_TYPES.JACKET,
+    ITEM_TYPES.SHIRT,
+    ITEM_TYPES.TROUSERS,
+    ITEM_TYPES.FOOTWEAR
 }
 
 -- ------------------------------------------------
--- Module
+-- Constructor
 -- ------------------------------------------------
-
-local Character = {};
 
 ---
 -- Creates a new character and places it on the target tile.
@@ -43,8 +47,6 @@ function Character.new( map, tile, faction )
     -- Private Variables
     -- ------------------------------------------------
 
-    local path;
-    local lineOfSight;
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
     local fov = {};
@@ -78,11 +80,24 @@ function Character.new( map, tile, faction )
         for _, part in pairs( BODY_PARTS ) do
             tile:getInventory():addItem( equipment:getClothingItem( part ));
         end
+
+        equipment:clear();
     end
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
+
+    ---
+    -- Called when this character is made active by the game.
+    --
+    function self:activate()
+        if self:isDead() then
+            return;
+        end
+        self:generateFOV();
+        self:clearActions();
+    end
 
     ---
     -- Adds a tile to this character's FOV.
@@ -133,6 +148,17 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Called when this character is made inactive by the game.
+    --
+    function self:deactivate()
+        if self:isDead() then
+            return;
+        end
+        self:generateFOV();
+        self:clearActions();
+    end
+
+    ---
     -- Casts rays in a circle around the character to determine all tiles he can
     -- see. Rays stop if they reach the map border or a world object which has
     -- the blocksVision attribute set to true.
@@ -158,8 +184,8 @@ function Character.new( map, tile, faction )
                 -- Add tile to this character's FOV.
                 self:addSeenTile( tx, ty, target );
 
-                -- Add tile to faction's map of explored tiles.
-                faction:addExploredTile( tx, ty, target );
+                -- Mark tile as explored for this character's faction.
+                target:setExplored( faction:getType(), true );
 
                 -- Mark tile for drawing update.
                 target:setDirty( true );
@@ -182,42 +208,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Adds a new path for the character.
-    -- @param path (Path) The path to add.
-    --
-    function self:addPath( npath )
-        if path then
-            path:refresh();
-        end
-        path = npath;
-    end
-
-    ---
-    -- Removes the current path.
-    --
-    function self:removePath()
-        if path then
-            path:refresh();
-        end
-        path = nil;
-    end
-
-    ---
-    -- Adds a new line of sight for the character.
-    -- @param nlos (LineOfSight) The line of sight to add.
-    --
-    function self:addLineOfSight( nlos )
-        lineOfSight = nlos;
-    end
-
-    ---
-    -- Removes the current line of sight.
-    --
-    function self:removeLineOfSight()
-        lineOfSight = nil;
-    end
-
-    ---
     -- Hits the character with damage.
     -- @param damage (number) The amount of damage the character is hit with.
     --
@@ -231,7 +221,7 @@ function Character.new( map, tile, faction )
         damage = damage + flukeModifier;
 
         local clothing = equipment:getClothingItem( bodyPart );
-        if clothing:isArmor() then
+        if clothing then
             if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
                 print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
                 damage = damage - clothing:getArmorProtection();
@@ -275,6 +265,18 @@ function Character.new( map, tile, faction )
             return false;
         end
         return fov[tx][ty] ~= nil;
+    end
+
+    function self:serialize()
+        local t = {
+            ['ap'] = actionPoints,
+            ['accuracy'] = accuracy,
+            ['health'] = health,
+            ['stance'] = stance,
+            ['equipment'] = equipment:serialize(),
+            ['faction'] = faction:getType()
+        }
+        return t;
     end
 
     -- ------------------------------------------------
@@ -330,22 +332,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the line of sight.
-    -- @return (LineOfSight) The character's current line of sight.
-    --
-    function self:getLineOfSight()
-        return lineOfSight;
-    end
-
-    ---
-    -- Returns the current path.
-    -- @return (Path) The current path.
-    --
-    function self:getPath()
-        return path;
-    end
-
-    ---
     -- Returns the character's fov.
     -- @return (table) A table containing the tiles this character sees.
     --
@@ -394,22 +380,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Checks if the character currently has a line of sight.
-    -- @return (boolean) Wether the character has a line of sight.
-    --
-    function self:hasLineOfSight()
-        return lineOfSight ~= nil;
-    end
-
-    ---
-    -- Checks if the character currently has a path.
-    -- @return (boolean) Wether the character has a path.
-    --
-    function self:hasPath()
-        return path ~= nil;
-    end
-
-    ---
     -- Returns wether the character is dead or not.
     -- @return (boolean) Wether the character is dead or not.
     --
@@ -420,6 +390,30 @@ function Character.new( map, tile, faction )
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
+
+    ---
+    -- Sets the character's accuracy attribute.
+    -- @param naccuracy (number) The new accuracy value.
+    --
+    function self:setAccuracy( naccuracy )
+        accuracy = naccuracy;
+    end
+
+    ---
+    -- Sets the character's action points.
+    -- @param nap (number) The amount of AP to set.
+    --
+    function self:setActionPoints( nap )
+        actionPoints = nap;
+    end
+
+    ---
+    -- Sets the character's health.
+    -- @param nhp (number) The new health value.
+    --
+    function self:setHealth( nhp )
+        health = nhp;
+    end
 
     ---
     -- Sets the character's tile.

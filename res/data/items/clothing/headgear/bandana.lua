@@ -1,5 +1,8 @@
 return {
     name = "Bandana",
-    itemType = "Clothing",
-    clothingType = "Headgear",
+    itemType = "Headgear",
+    armor = {
+        protection = 0,
+        coverage = 10
+    }
 }

@@ -42,15 +42,15 @@ local WEAPON_MODIFIERS = {
 }
 
 local BURST_MODIFIERS = {
-    [1] = 0,
-    [2] = 1,
-    [3] = 1,
-    [4] = 2,
-    [5] = 2,
-    [6] = 3,
-    [7] = 3,
-    [8] = 3,
-    [9] = 4
+    [1] =  0,
+    [2] =  2,
+    [3] =  3,
+    [4] =  4,
+    [5] =  6,
+    [6] =  7,
+    [7] =  8,
+    [8] =  9,
+    [9] = 10
 }
 
 local STANCES = require('src.constants.Stances');
@@ -78,7 +78,6 @@ function ProjectileQueue.new( character, target )
     local index = 0;
     local timer = 0;
     local weapon = character:getEquipment():getWeapon();
-    local delay = weapon:getFiringDelay();
 
     -- ------------------------------------------------
     -- Private Methods
@@ -121,27 +120,16 @@ function ProjectileQueue.new( character, target )
 
         local derivation = 0;
         -- Random angle based on the character's accuracy skill.
-        derivation = derivation + getRandomAngle( SKILL_MODIFIERS[marksmanSkill] );
+        derivation = derivation + SKILL_MODIFIERS[marksmanSkill];
         -- Random angle based on weapon's accuracy stat.
-        derivation = derivation + getRandomAngle( WEAPON_MODIFIERS[weaponAccuracy] );
+        derivation = derivation + WEAPON_MODIFIERS[weaponAccuracy];
         -- Random angle based on how many bullets have been shot before.
-        derivation = derivation + getRandomAngle( BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )] );
+        derivation = derivation + BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )];
 
         -- Stances influence the whole angle.
         derivation = derivation * STANCE_MODIFIER[character:getStance()];
 
         return derivation;
-    end
-
-    ---
-    -- Removes a projectile from the queue and adds it to the table of active
-    -- projectiles.
-    --
-    local function spawnProjectile()
-        index = index + 1;
-        projectiles[index] = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_SHOOT' );
-        weapon:shoot();
     end
 
     ---
@@ -157,6 +145,11 @@ function ProjectileQueue.new( character, target )
     local function applyVectorRotation( px, py, tx, ty, angle )
         local vx, vy = tx - px, ty - py;
 
+        -- Vary the shot distance randomly.
+        local factor = love.math.random( 90, 130 ) / 100;
+        vx = vx * factor;
+        vy = vy * factor;
+
         -- Transform angle from degrees to radians.
         angle = math.rad( angle );
 
@@ -164,6 +157,63 @@ function ProjectileQueue.new( character, target )
         local ny = vx * math.sin( angle ) + vy * math.cos( angle );
 
         return px + nx, py + ny;
+    end
+
+    ---
+    -- Creates a new projectile.
+    -- @param i (number)     Determines the index number of this projectile.
+    -- @return  (Projectile) The new projectile instance.
+    --
+    local function createProjectile( i )
+        -- Calculate the angle of derivation.
+        local maxDerivation = calculateMaximumDerivation( i or 1 );
+        local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
+
+        -- Apply the angle to find the final target tile.
+        local origin = character:getTile();
+        local px, py = origin:getPosition();
+        local tx, ty = target:getPosition();
+
+        local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
+        nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
+
+        -- Get the coords of all tiles the projectile passes on the way to its target.
+        local tiles = {};
+        Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
+            -- Ignore the origin.
+            if sx ~= px or sy ~= py then
+                tiles[#tiles + 1] = { x = sx, y = sy };
+            end
+            return true;
+        end)
+
+        return Projectile.new( character, tiles );
+    end
+
+    ---
+    -- Removes a projectile from the queue and adds it to the table of active
+    -- projectiles.
+    --
+    local function spawnProjectile()
+        local projectile = projectileQueue:dequeue();
+        Messenger.publish( 'SOUND_ATTACK', weapon );
+
+        if weapon:getWeaponType() == 'Grenade' then
+            index = index + 1;
+            projectiles[index] = createProjectile();
+            return;
+        end
+
+        weapon:attack();
+        if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
+            for _ = 1, projectile:getWeapon():getMagazine():getPelletAmount() do
+                index = index + 1;
+                projectiles[index] = createProjectile();
+            end
+        else
+            index = index + 1;
+            projectiles[index] = projectile;
+        end
     end
 
     -- ------------------------------------------------
@@ -177,31 +227,14 @@ function ProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getShots() );
+        if weapon:getWeaponType() == 'Grenade' then
+            projectileQueue:enqueue( createProjectile( 1 ));
+            return;
+        end
+
+        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
         for i = 1, amount do
-            -- Calculate the angle of derivation.
-            local maxDerivation = calculateMaximumDerivation( i );
-            local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
-
-            -- Apply the angle to find the final target tile.
-            local origin = character:getTile();
-            local px, py = origin:getPosition();
-            local tx, ty = target:getPosition();
-
-            local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
-            nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
-
-            -- Get the coords of all tiles the projectile passes on the way to its target.
-            local tiles = {};
-            Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
-                -- Ignore the origin.
-                if sx ~= px or sy ~= py then
-                    tiles[#tiles + 1] = { x = sx, y = sy };
-                end
-                return true;
-            end)
-
-            projectileQueue:enqueue( Projectile.new( character, tiles ));
+            projectileQueue:enqueue( createProjectile( i ));
         end
     end
 
@@ -213,7 +246,7 @@ function ProjectileQueue.new( character, target )
         timer = timer - dt;
         if timer <= 0 and not projectileQueue.isEmpty() then
             spawnProjectile();
-            timer = delay;
+            timer = weapon:getFiringDelay();
         end
     end
 

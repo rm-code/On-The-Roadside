@@ -1,78 +1,100 @@
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
 local StandUp = require( 'src.characters.actions.StandUp' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 local LieDown = require( 'src.characters.actions.LieDown' );
-local MovementHelper = require( 'src.turnbased.helpers.MovementHelper' );
-local InteractionHelper = require( 'src.turnbased.helpers.InteractionHelper' );
-local AttackHelper = require( 'src.turnbased.helpers.AttackHelper' );
-local FactionManager = require( 'src.characters.FactionManager' );
+
+local AttackInput = require( 'src.turnbased.helpers.AttackInput' );
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' );
+local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' );
 
 local PlanningState = {};
 
-function PlanningState.new( stateManager )
-    local self = State.new();
+function PlanningState.new( stateManager, factions )
+    local self = State.new():addInstance( 'PlanningState' );
 
-    local map;
-    local activeHelper = MovementHelper;
+    local inputStates = {
+        ['attack'] = AttackInput.new( stateManager ),
+        ['movement'] = MovementInput.new( stateManager ),
+        ['interaction'] = InteractionInput.new( stateManager ),
+    }
+    local activeInputState = inputStates['movement'];
 
-    function self:enter( nmap )
-        map = nmap;
+    function self:update()
+        if factions:getFaction():getCurrentCharacter():isDead() then
+            if factions:getFaction():hasLivingCharacters() then
+                factions:getFaction():nextCharacter();
+            else
+                factions:nextFaction();
+            end
+        end
     end
 
     function self:keypressed( key )
+        local character = factions:getFaction():getCurrentCharacter();
+        if character:isDead() then
+            return;
+        end
+
         if key == 'right' then
-            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectNextFiringMode();
+            character:getEquipment():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            FactionManager.getCurrentCharacter():getEquipment():getWeapon():selectPrevFiringMode();
+            character:getEquipment():getWeapon():selectPrevFiringMode();
         elseif key == 'c' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( Crouch.new( FactionManager.getCurrentCharacter() ));
-            stateManager:push( 'execution' );
+            character:clearActions();
+            character:enqueueAction( Crouch.new( character ));
+            stateManager:push( 'execution', character );
         elseif key == 's' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( StandUp.new( FactionManager.getCurrentCharacter() ));
-            stateManager:push( 'execution' );
+            character:clearActions();
+            character:enqueueAction( StandUp.new( character ));
+            stateManager:push( 'execution', character );
         elseif key == 'p' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( LieDown.new( FactionManager.getCurrentCharacter() ));
-            stateManager:push( 'execution' );
+            character:clearActions();
+            character:enqueueAction( LieDown.new( character ));
+            stateManager:push( 'execution', character );
         elseif key == 'r' then
-            FactionManager.getCurrentCharacter():clearActions();
-            FactionManager.getCurrentCharacter():enqueueAction( Reload.new( FactionManager.getCurrentCharacter() ));
-            stateManager:push( 'execution' );
+            character:clearActions();
+            character:enqueueAction( Reload.new( character ));
+            stateManager:push( 'execution', character );
         elseif key == 'a' then
-            FactionManager.getCurrentCharacter():clearActions();
-            activeHelper = AttackHelper;
+            character:clearActions();
+            activeInputState = inputStates['attack'];
         elseif key == 'e' then
-            FactionManager.getCurrentCharacter():clearActions();
-            activeHelper = InteractionHelper;
+            character:clearActions();
+            activeInputState = inputStates['interaction'];
         elseif key == 'm' then
-            FactionManager.getCurrentCharacter():clearActions();
-            activeHelper = MovementHelper;
+            character:clearActions();
+            activeInputState = inputStates['movement'];
         elseif key == 'space' then
-            activeHelper = MovementHelper;
-            FactionManager.nextCharacter();
+            activeInputState = inputStates['movement'];
+            factions:getFaction():nextCharacter();
         elseif key == 'backspace' then
-            activeHelper = MovementHelper;
-            FactionManager.prevCharacter();
+            activeInputState = inputStates['movement'];
+            factions:getFaction():prevCharacter();
         elseif key == 'return' then
-            activeHelper = MovementHelper;
-            FactionManager.nextFaction();
+            activeInputState = inputStates['movement'];
+            factions:nextFaction();
+        elseif key == 'i' then
+            ScreenManager.push( 'inventory', character );
         end
     end
 
     function self:selectTile( tile, button )
-        if not tile then
+        if not tile or factions:getFaction():getCurrentCharacter():isDead() then
             return;
         end
 
-        if button == 2 then
-            FactionManager.selectCharacter( tile );
+        if button == 2 and tile:isOccupied() then
+            factions:getFaction():selectCharacter( tile:getCharacter() );
             return;
         end
 
-        activeHelper.request( map, tile, FactionManager.getCurrentCharacter(), stateManager );
+        activeInputState:request( tile, factions:getFaction():getCurrentCharacter() );
+    end
+
+    function self:getInputMode()
+        return activeInputState;
     end
 
     return self;

@@ -14,5 +14,9 @@ return {
         { r = 160, g =  50, b =   0, object = 'worldobject_chair'     },
         { r =   0, g = 150, b = 255, object = 'worldobject_window'    },
         { r = 160, g =  80, b =   0, object = 'worldobject_table'     }
+    },
+    spawns = {
+        { r =   0, g =   0, b = 255, type = 'allied' },
+        { r = 255, g =   0, b =   0, type = 'enemy'  }
     }
 }

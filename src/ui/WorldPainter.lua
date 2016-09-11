@@ -1,4 +1,14 @@
-local FactionManager = require( 'src.characters.FactionManager' );
+local Tileset = require( 'src.ui.Tileset' );
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local WorldPainter = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
 local FACTIONS = require( 'src.constants.Factions' );
@@ -17,24 +27,7 @@ local CHARACTER_COLORS = {
 }
 
 local STANCES = require('src.constants.Stances');
-
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local TILESET = love.graphics.newImage( 'res/img/16x16_sm.png' );
-
-local TILE_SPRITES = {};
-for x = 1, TILESET:getWidth() / TILE_SIZE do
-    for y = 1, TILESET:getHeight() / TILE_SIZE do
-        TILE_SPRITES[#TILE_SPRITES + 1] = love.graphics.newQuad(( y - 1 ) * TILE_SIZE, ( x - 1 ) * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILESET:getDimensions() );
-    end
-end
-
-print( "Loaded " .. #TILE_SPRITES .. " sprites!" );
-
--- ------------------------------------------------
--- Module
--- ------------------------------------------------
-
-local WorldPainter = {};
 
 -- ------------------------------------------------
 -- Constructor
@@ -58,7 +51,7 @@ function WorldPainter.new( game )
     --
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
-            local id = spritebatch:add( TILE_SPRITES[1], x * TILE_SIZE, y * TILE_SIZE );
+            local id = spritebatch:add( Tileset.getSprite( 1 ), x * TILE_SIZE, y * TILE_SIZE );
             tile:setID( id );
             tile:setDirty( true );
         end)
@@ -67,22 +60,24 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a color which to use when a tile is drawn based on its contents.
-    -- @param tile (Tile)  The tile to choose a color for.
-    -- @return     (table) A table containing RGBA values.
+    -- @param tile      (Tile)      The tile to choose a color for.
+    -- @param faction   (Faction)   The faction to draw for.
+    -- @param character (Character) The faction's currently active character.
+    -- @return          (table)     A table containing RGBA values.
     --
-    local function selectTileColor( tile )
+    local function selectTileColor( tile, faction, character )
         -- Hide unexplored tiles.
-        if not FactionManager.getFaction():hasExplored( tile ) then
+        if not tile:isExplored( faction:getType() ) then
             return COLORS.DB00;
         end
 
         -- Dim tiles hidden from the player.
-        if not FactionManager.getFaction():canSee( tile ) then
+        if not faction:canSee( tile ) then
             return COLORS.DB01;
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == FactionManager.getCurrentCharacter() then
+            if tile:getCharacter() == character then
                 return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
             else
                 return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
@@ -102,45 +97,50 @@ function WorldPainter.new( game )
 
     ---
     -- Selects a sprite from the tileset based on the tile and its contents.
-    -- @param tile (Tile) The tile to choose a sprite for.
-    -- @return     (Quad) A quad pointing to a sprite on the tileset.
+    -- @param tile    (Tile)    The tile to choose a sprite for.
+    -- @param faction (Faction) The faction to draw for.
+    -- @return        (Quad)    A quad pointing to a sprite on the tileset.
     --
-    local function selectTileSprite( tile )
-        if tile:isOccupied() and FactionManager.getFaction():canSee( tile ) then
+    local function selectTileSprite( tile, faction )
+        if tile:isOccupied() and faction:canSee( tile ) then
             if tile:getCharacter():getStance() == STANCES.STAND then
                 if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
-                    return TILE_SPRITES[3];
+                    return Tileset.getSprite( 3 );
                 else
-                    return TILE_SPRITES[2];
+                    return Tileset.getSprite( 2 );
                 end
             elseif tile:getCharacter():getStance() == STANCES.CROUCH then
-                return TILE_SPRITES[32];
+                return Tileset.getSprite( 32 );
             elseif tile:getCharacter():getStance() == STANCES.PRONE then
-                return TILE_SPRITES[23];
+                return Tileset.getSprite( 23 );
             end
         end
 
         if not tile:getInventory():isEmpty() then
-            return TILE_SPRITES[34];
+            return Tileset.getSprite( 34 );
         end
 
         if tile:hasWorldObject() then
-            return TILE_SPRITES[tile:getWorldObject():getSprite()];
+            return Tileset.getSprite( tile:getWorldObject():getSprite() );
         end
 
-        return TILE_SPRITES[tile:getSprite()];
+        return Tileset.getSprite( tile:getSprite() );
     end
 
     ---
     -- Updates the spritebatch by going through every tile in the map. Only
     -- tiles which have been marked as dirty will be sent to the spritebatch.
-    -- @param map (Map) The game's world map.
+    -- @param map      (Map)      The game's world map.
+    -- @param factions (factions) The faction handler.
     --
-    local function updateSpritebatch( map )
+    local function updateSpritebatch( map, factions )
+        -- NOTE: Change this line to enable drawing for the AI.
+        local faction = factions:getPlayerFaction();
+
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
-                spritebatch:setColor( selectTileColor( tile ) );
-                spritebatch:set( tile:getID(), selectTileSprite( tile ), x * TILE_SIZE, y * TILE_SIZE );
+                spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ));
+                spritebatch:set( tile:getID(), selectTileSprite( tile, faction ), x * TILE_SIZE, y * TILE_SIZE );
                 tile:setDirty( false );
             end
         end)
@@ -152,7 +152,7 @@ function WorldPainter.new( game )
 
     function self:init()
         love.graphics.setBackgroundColor( COLORS.DB00 );
-        spritebatch = love.graphics.newSpriteBatch( TILESET, 10000, 'dynamic' );
+        spritebatch = love.graphics.newSpriteBatch( Tileset.getTileset(), 10000, 'dynamic' );
         initSpritebatch( game:getMap() );
     end
 
@@ -161,7 +161,7 @@ function WorldPainter.new( game )
     end
 
     function self:update()
-        updateSpritebatch( game:getMap() );
+        updateSpritebatch( game:getMap(), game:getFactions() );
     end
 
     return self;

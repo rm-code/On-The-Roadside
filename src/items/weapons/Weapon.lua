@@ -17,27 +17,14 @@ function Weapon.new( template )
     -- Private Attributes
     -- ------------------------------------------------
 
+    local weaponType = template.weaponType;
     local damage = template.damage;
-    local range = template.range;
-    local ammoType = template.ammoType;
     local modeIndex = 1;
     local mode = template.mode[modeIndex];
-    local firingDelay = 1 / ( template.rpm / 60 );
-    local magSize = template.magSize;
-    local magazine;
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
-
-    function self:reload( newMag )
-        assert( ammoType == newMag:getAmmoType(), 'Ammunition Type doesn\'t match the gun!' );
-        magazine = newMag;
-    end
-
-    function self:shoot()
-        magazine:removeShell();
-    end
 
     function self:selectNextFiringMode()
         modeIndex = modeIndex + 1 > #template.mode and 1 or modeIndex + 1;
@@ -49,16 +36,21 @@ function Weapon.new( template )
         mode = template.mode[modeIndex];
     end
 
+    function self:serialize()
+        local t = {
+            ['name'] = template.name,
+            ['itemType'] = template.itemType,
+            ['modeIndex'] = modeIndex
+        };
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
 
     function self:getAccuracy()
         return mode.accuracy;
-    end
-
-    function self:getAmmoType()
-        return ammoType;
     end
 
     function self:getAttackCost()
@@ -69,28 +61,29 @@ function Weapon.new( template )
         return damage;
     end
 
-    function self:getFiringDelay()
-        return firingDelay;
-    end
-
-    function self:getFiringMode()
+    function self:getAttackMode()
         return mode;
     end
 
-    function self:getMagazine()
-        return magazine;
+    function self:getAttacks()
+        return mode.attacks;
     end
 
-    function self:getMagSize()
-        return magSize;
+    function self:getWeaponType()
+        return weaponType;
     end
 
-    function self:getRange()
-        return range;
+    function self:getAttackModeIndex()
+        return modeIndex;
     end
 
-    function self:getShots()
-        return mode.shots;
+    -- ------------------------------------------------
+    -- Setters
+    -- ------------------------------------------------
+
+    function self:setAttackMode( nmodeIndex )
+        modeIndex = nmodeIndex;
+        mode = template.mode[modeIndex];
     end
 
     return self;

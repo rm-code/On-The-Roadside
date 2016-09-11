@@ -2,7 +2,7 @@ local Object = require( 'src.Object' );
 
 local Item = {};
 
-function Item.new( name, itemType, subType )
+function Item.new( name, itemType )
     local self = Object.new():addInstance( 'Item' );
 
     function self:getName()
@@ -13,8 +13,12 @@ function Item.new( name, itemType, subType )
         return itemType;
     end
 
-    function self:getSubType()
-        return subType;
+    function self:serialize()
+        local t = {
+            ['name'] = name,
+            ['itemType'] = itemType
+        };
+        return t;
     end
 
     return self;

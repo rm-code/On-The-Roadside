@@ -11,7 +11,7 @@ local UIEquipmentList = {};
 -- Constants
 -- ------------------------------------------------
 
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
+local ITEM_TYPES = require('src.constants.ItemTypes');
 local PADDING = 15;
 local HEADER_HEIGHT = 30;
 local WIDTH = 150;
@@ -37,12 +37,12 @@ function UIEquipmentList.new( x, y, name, equipment )
         list = {
             UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 1, equipment:getWeapon() );
             UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 2, equipment:getBackpack() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getClothingItem( CLOTHING_SLOTS.HEADGEAR ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getClothingItem( CLOTHING_SLOTS.GLOVES ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getClothingItem( CLOTHING_SLOTS.JACKET ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getClothingItem( CLOTHING_SLOTS.SHIRT ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getClothingItem( CLOTHING_SLOTS.TROUSERS ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getClothingItem( CLOTHING_SLOTS.FOOTWEAR ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getClothingItem( ITEM_TYPES.HEADGEAR ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getClothingItem( ITEM_TYPES.GLOVES ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getClothingItem( ITEM_TYPES.JACKET ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getClothingItem( ITEM_TYPES.SHIRT ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getClothingItem( ITEM_TYPES.TROUSERS ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getClothingItem( ITEM_TYPES.FOOTWEAR ));
         };
     end
 

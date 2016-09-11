@@ -1,4 +1,3 @@
-local FactionManager = require( 'src.characters.FactionManager' );
 local MousePointer = require( 'src.ui.MousePointer' );
 
 -- ------------------------------------------------
@@ -15,31 +14,36 @@ local UserInterface = {};
 function UserInterface.new( game )
     local self = {};
 
+    local map = game:getMap();
+    local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
-        local tile = game:getMap():getTileAt( mouseX, mouseY );
+        local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
             return;
         end
 
-        if not FactionManager.getFaction():hasExplored( tile ) then
+        if not tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
         elseif tile:isOccupied() then
             love.graphics.print( 'Health: ' .. tile:getCharacter():getHealth(), 310, love.graphics.getHeight() - 20 );
         elseif tile:hasWorldObject() then
             love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
-        elseif FactionManager.getFaction():hasExplored( tile ) then
+        elseif tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( 'Tile: ' .. tile:getName(), 310, love.graphics.getHeight() - 20 );
         end
     end
 
     function self:draw()
-        local character = FactionManager.getCurrentCharacter();
+        local character = factions:getFaction():getCurrentCharacter();
+        if factions:getFaction():isAIControlled() then
+            return;
+        end
 
         -- Draw tile coordinates.
         love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
@@ -50,8 +54,10 @@ function UserInterface.new( game )
         local weapon = character:getEquipment():getWeapon();
         if weapon then
             love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
-            love.graphics.print( 'Mode: ' .. weapon:getFiringMode().name, 150, love.graphics.getHeight() - 20 );
-            love.graphics.print( 'Ammo: ' .. string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 310, love.graphics.getHeight() - 40 );
+            love.graphics.print( 'Mode: ' .. weapon:getAttackMode().name, 150, love.graphics.getHeight() - 20 );
+            if not weapon:getWeaponType() == 'Melee' and not weapon:getWeaponType() == 'Grenade' then
+                love.graphics.print( 'Ammo: ' .. string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 310, love.graphics.getHeight() - 40 );
+            end
         end
 
         -- Action points

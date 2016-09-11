@@ -1,6 +1,5 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
-local FactionManager = require( 'src.characters.FactionManager' );
 local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
 
@@ -25,9 +24,22 @@ local DRAGGED_ITEM_HEIGHT =  30;
 function InventoryScreen.new()
     local self = Screen.new();
 
-    local character = FactionManager.getCurrentCharacter();
+    local character;
     local lists;
     local dragboard;
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function refreshBackpack()
+        if character:getEquipment():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack:init();
+        else
+            lists.backpack = nil;
+        end
+    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -37,21 +49,23 @@ function InventoryScreen.new()
     -- Creates the three inventory lists for the player's equipment, his Backpack
     -- and the tile he is standing on.
     --
-    function self:init()
-        local characterEquipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
-        characterEquipment:init();
+    function self:init( ncharacter )
+        character = ncharacter;
 
-        local characterInventory = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
-        characterInventory:init();
+        love.mouse.setVisible( true );
 
-        local tileInventory = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
-        tileInventory:init();
+        lists = {};
 
-        lists = {
-            characterEquipment,
-            characterInventory,
-            tileInventory
-        }
+        lists.equipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
+        lists.equipment:init();
+
+        if character:getEquipment():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack:init();
+        end
+
+        lists.ground = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
+        lists.ground:init();
     end
 
     ---
@@ -63,8 +77,8 @@ function InventoryScreen.new()
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
         love.graphics.setColor( 255, 255, 255, 255 );
 
-        for i = 1, #lists do
-            lists[i]:draw();
+        for _, list in pairs( lists ) do
+            list:draw();
         end
 
         if dragboard then
@@ -82,8 +96,8 @@ function InventoryScreen.new()
     -- Updates the inventory lists.
     --
     function self:update( dt )
-        for i = 1, #lists do
-            lists[i]:update( dt );
+        for _, list in pairs( lists ) do
+            list:update( dt );
         end
     end
 
@@ -94,20 +108,29 @@ function InventoryScreen.new()
     end
 
     function self:mousepressed()
-        for _, list in ipairs( lists ) do
+        for _, list in pairs( lists ) do
             if list:isMouseOver() then
                 if dragboard then
                     list:drop( dragboard.item, dragboard.origin );
+                    if dragboard.item:instanceOf( 'Bag' ) then
+                        refreshBackpack();
+                    end
                     dragboard = nil;
-                    return;
                 else
                     local item = list:drag();
                     if item then
                         dragboard = { item = item, origin = list };
+                        if item:instanceOf( 'Bag' ) then
+                            refreshBackpack();
+                        end
                     end
                 end
             end
         end
+    end
+
+    function self:close()
+        love.mouse.setVisible( false );
     end
 
     return self;

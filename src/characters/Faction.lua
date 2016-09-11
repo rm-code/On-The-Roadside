@@ -1,90 +1,44 @@
 local Object = require('src.Object');
 local Node = require('src.characters.Node');
-local Character = require( 'src.characters.Character' );
-local ItemFactory = require('src.items.ItemFactory');
+local Messenger = require( 'src.Messenger' );
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
 local Faction = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local FACTIONS = require( 'src.constants.Factions' );
-local CLOTHING_SLOTS = require('src.constants.ClothingSlots');
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Faction.new( type )
+function Faction.new( type, controlledByAi )
     local self = Object.new():addInstance( 'Faction' );
+
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
 
     local root;
     local active;
     local last;
-    local mapInfo = {};
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Marks all explored tiles for drawing updates.
-    --
-    local function updateExplorationInfo()
-        for _, rx in pairs( mapInfo ) do
-            for _, target in pairs( rx ) do
-                target:setDirty( true );
-            end
-        end
-    end
-
-    ---
-    -- Creates the equipment for a character.
-    -- @param character (Character) The character to equip with new items.
-    --
-    local function createEquipment( character )
-        local weapon = ItemFactory.createWeapon();
-        local magazine = ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() );
-        weapon:reload( magazine );
-
-        character:getEquipment():addItem( weapon );
-        character:getEquipment():addItem( ItemFactory.createBag() );
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.HEADGEAR ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.GLOVES   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.SHIRT    ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.JACKET   ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.TROUSERS ));
-        character:getEquipment():addItem( ItemFactory.createClothing( CLOTHING_SLOTS.FOOTWEAR ));
-
-        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() ));
-        character:getEquipment():getBackpack():getInventory():addItem( ItemFactory.createMagazine( weapon:getAmmoType(), weapon:getMagSize() ));
-    end
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Activates this Faction right before it is selected.
+    --
     function self:activate()
-        updateExplorationInfo();
+        return;
     end
 
-    function self:deactivate()
-        self:iterate( function( character )
-            character:resetActionPoints();
-            character:clearActions();
-            character:removePath();
-            character:removeLineOfSight();
-        end);
-        updateExplorationInfo();
-    end
-
-    function self:addCharacter( map, tile )
-        -- Create character and calculate initial FOV.
-        local character = Character.new( map, tile, self );
-        createEquipment( character );
-        character:generateFOV();
-
+    ---
+    -- Adds a new Character to this Faction.
+    -- @param character (Character) The character to add.
+    --
+    function self:addCharacter( character )
         local node = Node.new( character );
 
         -- Initialise root node.
@@ -105,31 +59,78 @@ function Faction.new( type )
     end
 
     ---
-    -- Adds a tile to the list of explored tiles for this faction.
-    -- @param tx     (number) The target-tile's position along the x-axis.
-    -- @param ty     (number) The target-tile's position along the y-axis.
-    -- @param target (Tile)   The target-tile.
+    -- Checks if any of the characters in this Faction can see the target tile.
+    -- @param target (Tile)    The tile to check visibility for.
+    -- @return       (boolean) Wether a character can see this tile.
     --
-    function self:addExploredTile( tx, ty, target )
-        mapInfo[tx] = mapInfo[tx] or {};
-        mapInfo[tx][ty] = target;
+    function self:canSee( tile )
+        local node = root;
+        while node do
+            if node:getObject():canSee( tile ) then
+                return true;
+            end
+            node = node:getNext();
+        end
     end
 
-    function self:findCharacter( character )
+    ---
+    -- Deactivates this Faction right before it is deselected.
+    --
+    function self:deactivate()
+        self:iterate( function( character )
+            character:resetActionPoints();
+            character:clearActions();
+        end);
+    end
+
+    ---
+    -- Finds a certain Character in this Faction and makes him active.
+    -- @param character (Character) The character to select.
+    --
+    function self:selectCharacter( character )
         assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
         local node = root;
         while node do
             if node:getObject() == character and not node:getObject():isDead() then
-                character:generateFOV();
-                local previous = active;
+                -- Deactivate old character.
+                active:getObject():deactivate();
+
+                -- Activate new character.
                 active = node;
-                previous:getObject():generateFOV();
+                active:getObject():activate();
+
+                Messenger.publish( 'SWITCH_CHARACTERS', active:getObject() );
                 break;
             end
             node = node:getNext();
         end
     end
 
+    ---
+    -- Checks if any of this faction's characters are still alive.
+    -- @return (boolean) True if at least one character is alive.
+    --
+    function self:hasLivingCharacters()
+        local node = root;
+        while node do
+            if not node:getObject():isDead() then
+                return true;
+            end
+
+            if node == last then
+                break;
+            end
+
+            node = node:getNext();
+        end
+        return false;
+    end
+
+    ---
+    -- Iterates over all nodes in this Faction, gets their Characters and passes
+    -- them to the callback function.
+    -- @param callback (function) The callback to use on the characters.
+    --
     function self:iterate( callback )
         local node = root;
         while node do
@@ -138,8 +139,40 @@ function Faction.new( type )
         end
     end
 
-    function self:getCurrentCharacter()
-        return active:getObject();
+    ---
+    -- Selects and returns the next Character.
+    -- @return (Character) The active Character.
+    --
+    function self:nextCharacter()
+        local previousCharacter = active:getObject();
+        while active do
+            active = active:getNext() or root;
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:deactivate();
+                character:activate();
+                Messenger.publish( 'SWITCH_CHARACTERS', character );
+                return character;
+            end
+        end
+    end
+
+    ---
+    -- Selects and returns the previous Character.
+    -- @return (Character) The active Character.
+    --
+    function self:prevCharacter()
+        local previousCharacter = active:getObject();
+        while active do
+            active = active:getPrev() or last;
+            local character = active:getObject();
+            if not character:isDead() then
+                previousCharacter:activate();
+                character:deactivate();
+                Messenger.publish( 'SWITCH_CHARACTERS', character );
+                return character;
+            end
+        end
     end
 
     ---
@@ -157,77 +190,32 @@ function Faction.new( type )
         end
     end
 
-    function self:nextCharacter()
-        local previousCharacter = active:getObject();
-        while active do
-            active = active:getNext() or root;
-            local character = active:getObject();
-            if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
-                return character;
-            end
-        end
-    end
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
 
-    function self:prevCharacter()
-        local previousCharacter = active:getObject();
-        while active do
-            active = active:getPrev() or last;
-            local character = active:getObject();
-            if not character:isDead() then
-                previousCharacter:generateFOV();
-                character:generateFOV();
-                return character;
-            end
-        end
-    end
-
-    function self:hasLivingCharacters()
-        local node = root;
-        while node do
-            if not node:getObject():isDead() then
-                return true;
-            end
-            node = node:getNext();
-        end
-        return false;
+    ---
+    -- Returns this faction's currently active character.
+    -- @return (Character) The active character.
+    --
+    function self:getCurrentCharacter()
+        return active:getObject();
     end
 
     ---
-    -- Checks if any of the characters in this Faction can see the target tile.
-    -- @param target (Tile)    The tile to check visibility for.
-    -- @return       (boolean) Wether a character can see this tile.
+    -- Returns the faction's type.
+    -- @return (string) The faction's id as defined in the faction constants.
     --
-    function self:canSee( tile )
-        local node = root;
-        while node do
-            if node:getObject():canSee( tile ) then
-                return true;
-            end
-            node = node:getNext();
-        end
-    end
-
-    ---
-    -- Checks if the target tile has been explored by this Faction.
-    -- @param target (Tile)    The tile to check.
-    -- @return       (boolean) Wether this tile has been explored.
-    --
-    function self:hasExplored( target )
-        local tx, ty = target:getPosition();
-        if not mapInfo[tx] then
-            return false;
-        end
-        return mapInfo[tx][ty] ~= nil;
-    end
-
     function self:getType()
         return type;
     end
 
+    ---
+    -- Wether this faction is controlled by the game's AI.
+    -- @return (boolean) True if it is controlled by the AI.
+    --
     function self:isAIControlled()
-        return type == FACTIONS.NEUTRAL or type == FACTIONS.ENEMY;
+        return controlledByAi;
     end
 
     return self;

@@ -1,5 +1,8 @@
 return {
     name = "Leather Gloves",
-    itemType = "Clothing",
-    clothingType = "Gloves",
+    itemType = "Gloves",
+    armor = {
+        protection = 1,
+        coverage = 100
+    }
 }

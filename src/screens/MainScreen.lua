@@ -1,4 +1,3 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
@@ -8,6 +7,7 @@ local UserInterface = require( 'src.ui.UserInterface' );
 local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
+local Tileset = require( 'src.ui.Tileset' );
 
 -- ------------------------------------------------
 -- Module
@@ -39,15 +39,17 @@ function MainScreen.new()
         game = Game.new();
         game:init();
 
+        Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
+
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
 
         userInterface = UserInterface.new( game );
-        camera = CameraHandler.new();
+        camera = CameraHandler.new( game:getMap(), game.getCurrentCharacter():getTile():getX() * TILE_SIZE, game.getCurrentCharacter():getTile():getY() * TILE_SIZE );
 
         particleLayer = ParticleLayer.new();
 
-        overlayPainter = OverlayPainter.new( particleLayer );
+        overlayPainter = OverlayPainter.new( game, particleLayer );
 
         MousePointer.init( camera );
     end
@@ -70,10 +72,6 @@ function MainScreen.new()
 
     function self:keypressed( key )
         game:keypressed( key );
-
-        if key == 'i' then
-            ScreenManager.push( 'inventory' );
-        end
     end
 
     function self:mousepressed( _, _, button )
@@ -81,8 +79,35 @@ function MainScreen.new()
         game:mousepressed( mx, my, button );
     end
 
+    Messenger.observe( 'START_EXECUTION', function()
+        camera:lock();
+        camera:storePosition();
+    end)
+
+    Messenger.observe( 'END_EXECUTION', function()
+        camera:unlock();
+        camera:restorePosition();
+    end)
+
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+            return;
+        end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+    end)
+
+    Messenger.observe( 'CHARACTER_MOVED', function( character )
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+            return;
+        end
+        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+    end)
+
+    Messenger.observe( 'START_ATTACK', function( target )
+        if not game:getFactions():getPlayerFaction():canSee( target ) then
+            return;
+        end
+        camera:setTargetPosition( target:getX() * TILE_SIZE, target:getY() * TILE_SIZE );
     end)
 
     return self;

@@ -13,16 +13,6 @@ local Path = {};
 function Path.new( path )
     local self = Object.new():addInstance( 'Path' );
 
-    -- Initialise the tiles along the path as dirty.
-    local length = #path;
-    for i = 1, #path do
-        path[i]:setDirty( true );
-    end
-
-    -- ------------------------------------------------
-    -- Public Functions
-    -- ------------------------------------------------
-
     ---
     -- Checks if the path contains a certain tile.
     -- @param tile (Tile)   The tile to check for.
@@ -46,16 +36,6 @@ function Path.new( path )
         end
     end
 
-    ---
-    -- Sets the tiles the path leads through to dirty to make sure the path
-    -- is drawn correctly.
-    --
-    function self:refresh()
-        for i = 1, #path do
-            path[i]:setDirty( true );
-        end
-    end
-
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -65,7 +45,7 @@ function Path.new( path )
     -- @return (number) The length of the path.
     --
     function self:getLength()
-        return length;
+        return #path;
     end
 
     ---

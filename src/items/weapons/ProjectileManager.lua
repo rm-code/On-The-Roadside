@@ -1,4 +1,5 @@
 local Messenger = require( 'src.Messenger' );
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
 local ProjectileManager = {};
 
@@ -22,7 +23,14 @@ local map;
 --
 local function hitTile( index, tile, projectile )
     queue:removeProjectile( index );
-    tile:hit( projectile:getDamage() );
+    if projectile:getWeapon():getWeaponType() == 'Grenade' then
+        ExplosionManager.register( tile, 3 );
+        projectile:getCharacter():getEquipment():removeItem( projectile:getWeapon() );
+    elseif projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
+        ExplosionManager.register( tile, projectile:getWeapon():getMagazine():getBlastRadius() );
+    else
+        tile:hit( projectile:getDamage() );
+    end
 end
 
 ---
@@ -60,36 +68,57 @@ function ProjectileManager.update( dt )
             Messenger.publish( 'PROJECTILE_MOVED', projectile );
 
             local tile = projectile:getTile();
+            -- Exit if we reached the map border.
             if not tile then
                 print( "Reached map border" );
                 queue:removeProjectile( i );
-            elseif tile:hasWorldObject() then
-                if love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
-                    if not tile:getWorldObject():isDestructible() then
-                        hitTile( i, tile, projectile );
-                        return;
-                    end
+                return;
+            end
 
-                    local energy = projectile:getEnergy();
-                    local energyReduction = tile:getWorldObject():getEnergyReduction();
-                    energyReduction = love.math.random( energyReduction - 10, energyReduction + 10 );
-                    energyReduction = clamp( 1, energyReduction, 100 );
-
-                    energy = energy - energyReduction;
-                    projectile:setEnergy( energy );
-
-                    tile:hit( projectile:getDamage() * ( energy / 100 ));
-
-                    if energy <= 0 then
-                        queue:removeProjectile( i );
-                    end
+            -- If the tile contains a world object check if the projectile hits it.
+            -- If it hits the world object check for energy reduction.
+            if tile:hasWorldObject() and love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
+                -- Stop the bullet if the object is indestructible.
+                if not tile:getWorldObject():isDestructible() then
+                    print( "Hit indestructible object" );
+                    hitTile( i, tile, projectile );
+                    return;
                 end
-            elseif projectile:hasReachedTarget() then
+
+                -- Explosive weapons never pass through objects.
+                if projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
+                    print( "Hit object with explosive ammunition" );
+                    hitTile( i, tile, projectile );
+                    return;
+                end
+
+                -- Projectiles passing through world objects lose some of their energy.
+                local energy = projectile:getEnergy();
+                local energyReduction = tile:getWorldObject():getEnergyReduction();
+                energyReduction = love.math.random( energyReduction - 10, energyReduction + 10 );
+                energyReduction = clamp( 1, energyReduction, 100 );
+
+                energy = energy - energyReduction;
+                projectile:setEnergy( energy );
+
+                if energy <= 0 or projectile:hasReachedTarget() then
+                    hitTile( i, projectile:getTile(), projectile );
+                end
+
+                tile:hit( projectile:getDamage() * ( energy / 100 ));
+                return;
+            end
+
+            if projectile:hasReachedTarget() then
                 print( "Reached target" );
                 hitTile( i, projectile:getTile(), projectile );
-            elseif tile:isOccupied() then
+                return;
+            end
+
+            if tile:isOccupied() then
                 print( "Hit character" );
                 hitTile( i, tile, projectile );
+                return;
             end
         end
     end

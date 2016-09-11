@@ -1,8 +1,8 @@
 local FACTIONS = {};
 
-FACTIONS.ALLIED  = 1;
-FACTIONS.NEUTRAL = 2;
-FACTIONS.ENEMY   = 3;
+FACTIONS.ALLIED  = 'allied';
+FACTIONS.NEUTRAL = 'neutral';
+FACTIONS.ENEMY   = 'enemy';
 
 -- Make table read-only.
 return setmetatable( FACTIONS, {

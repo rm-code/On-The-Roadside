@@ -1,6 +1,7 @@
-local FactionManager = require( 'src.characters.FactionManager' );
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
+local Tileset = require( 'src.ui.Tileset' );
+local Bresenham = require( 'lib.Bresenham' );
 
 -- ------------------------------------------------
 -- Module
@@ -21,13 +22,15 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 
 ---
 -- Creates an new instance of the OverlayPainter class.
+-- @param game          (Game)           The game object.
 -- @param particleLayer (ParticleLayer)  The layer used for drawing particles.
 -- @return              (OverlayPainter) The new instance.
 --
-function OverlayPainter.new( particleLayer )
+function OverlayPainter.new( game, particleLayer )
     local self = {};
 
     local pulser = Pulser.new( 4, 80, 80 );
+    love.mouse.setVisible( false );
 
     -- ------------------------------------------------
     -- Private Methods
@@ -38,17 +41,49 @@ function OverlayPainter.new( particleLayer )
     -- @param character (Character) The character to draw the LOS for.
     --
     local function drawLineOfSight( character )
-        if character:hasLineOfSight() then
-            love.graphics.setBlendMode( 'add' );
-            character:getLineOfSight():iterate( function( tile )
-                love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
-                if not tile:isPassable() or not character:canSee( tile ) then
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
+        if game:getState():instanceOf( 'PlanningState' ) and not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+            return;
+        end
+
+        local weapon = character:getEquipment():getWeapon();
+        if not weapon or weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
+            return;
+        end
+
+        local ox, oy = character:getTile():getPosition();
+        local map = game:getMap();
+
+        local cx, cy = MousePointer.getGridPosition();
+        local target = map:getTileAt( cx, cy );
+
+        if target then
+            local tx, ty = target:getPosition();
+
+            Bresenham.calculateLine( ox, oy, tx, ty, function( sx, sy )
+                love.graphics.setBlendMode( 'add' );
+
+                local tile = map:getTileAt( sx, sy );
+                local visible = character:getFaction():canSee( tile );
+
+                if not visible or weapon:getMagazine():isEmpty() or character:getActionPoints() < weapon:getAttackCost() then
                     love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
+                elseif tile:hasWorldObject() or tile:isOccupied() then
+                    love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() );
+                else
+                    love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
                 end
+
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+
+                -- Reset drawing state.
+                love.graphics.setColor( 255, 255, 255, 255 );
+                love.graphics.setBlendMode( 'alpha' );
+                return true;
             end)
-            love.graphics.setColor( 255, 255, 255, 255 );
-            love.graphics.setBlendMode( 'alpha' );
         end
     end
 
@@ -101,22 +136,41 @@ function OverlayPainter.new( particleLayer )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
         local mx, my = MousePointer.getWorldPosition();
         local cx, cy = math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE;
 
-        love.graphics.setBlendMode( 'add' );
-        love.graphics.setColor( COLORS.DB19[1], COLORS.DB19[2], COLORS.DB19[3], pulser:getPulse() );
+        love.graphics.setColor( 0, 0, 0 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
+
+        if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
+            love.graphics.setColor( COLORS.DB18 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 176 ), cx, cy );
+        elseif game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+            love.graphics.setColor( COLORS.DB27 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 11 ), cx, cy );
+        elseif game:getState():getInputMode():instanceOf( 'InteractionInput' ) then
+            love.graphics.setColor( COLORS.DB10 );
+            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 30 ), cx, cy );
+        end
         love.graphics.setColor( 255, 255, 255, 255 );
-        love.graphics.setBlendMode( 'alpha' );
     end
 
     local function drawParticles()
         for x, row in pairs( particleLayer:getParticleGrid() ) do
             for y, particle in pairs( row ) do
-                love.graphics.setColor( particle:getColors() );
-                love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-                love.graphics.setColor( 255, 255, 255, 255 );
+                if game:getFactions():getPlayerFaction():canSee( game:getMap():getTileAt( x, y )) then
+                    love.graphics.setColor( particle:getColors() );
+                    if particle:isAscii() then
+                        love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
+                    else
+                        love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+                    end
+                    love.graphics.setColor( 255, 255, 255, 255 );
+                end
             end
         end
     end
@@ -126,11 +180,13 @@ function OverlayPainter.new( particleLayer )
     -- ------------------------------------------------
 
     function self:draw()
-        local character = FactionManager.getCurrentCharacter();
-        drawLineOfSight( character );
-        drawPath( character );
+        local character = game:getFactions():getFaction():getCurrentCharacter();
+        if not character:getFaction():isAIControlled() then
+            drawLineOfSight( character );
+            drawPath( character );
+            drawMouseCursor();
+        end
         drawParticles();
-        drawMouseCursor();
     end
 
     function self:update( dt )

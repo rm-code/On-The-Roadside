@@ -6,11 +6,12 @@ local CAMERA_TRACKING_SPEED = 10;
 local SCROLL_MARGIN = 5;
 local SCROLL_SPEED = 10;
 
-function CameraHandler.new()
+function CameraHandler.new( map, px, py )
     local self = Camera.new();
 
-    local px, py = love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5;
     local tx, ty = px, py;
+    local savedX, savedY;
+    local locked;
 
     ---
     -- Linear interpolation between a and b.
@@ -39,11 +40,16 @@ function CameraHandler.new()
             y = y + SCROLL_SPEED;
         end
 
-        tx, ty = x, y;
+        -- Clamp the camera to the map dimensions.
+        local w, h = map:getPixelDimensions();
+        tx = math.max( 0, math.min( x, w ));
+        ty = math.max( 0, math.min( y, h ));
     end
 
     function self:update( dt )
-        scroll()
+        if not locked then
+            scroll();
+        end
         px = lerp( px, tx, dt * CAMERA_TRACKING_SPEED );
         py = lerp( py, ty, dt * CAMERA_TRACKING_SPEED );
         self:lookAt( math.floor( px ), math.floor( py ));
@@ -55,6 +61,25 @@ function CameraHandler.new()
 
     function self:getMousePosition()
         return self:mousepos();
+    end
+
+    function self:storePosition()
+        savedX, savedY = tx, ty;
+    end
+
+    function self:restorePosition()
+        if savedX and savedY then
+            tx, ty = savedX, savedY;
+            savedX, savedY = nil, nil;
+        end
+    end
+
+    function self:lock()
+        locked = true;
+    end
+
+    function self:unlock()
+        locked = false;
     end
 
     return self;

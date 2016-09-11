@@ -1,11 +1,12 @@
-local Object = require( 'src.Object' );
+local Item = require( 'src.items.Item' );
 
 local Magazine = {};
 
-function Magazine.new( ammoType, capacity )
-    local self = Object.new():addInstance( 'Magazine' );
+function Magazine.new( name, itemType, ammoType )
+    local self = Item.new( name, itemType ):addInstance( 'Magazine' );
 
-    local rounds = capacity;
+    local capacity = 0;
+    local rounds = 0;
 
     function self:removeShell()
         rounds = rounds - 1;
@@ -19,11 +20,11 @@ function Magazine.new( ammoType, capacity )
         return capacity;
     end
 
-    function self:getAmmoType()
-        return ammoType;
+    function self:getCaliber()
+        return name;
     end
 
-    function self:getName()
+    function self:getAmmoType()
         return ammoType;
     end
 
@@ -33,6 +34,24 @@ function Magazine.new( ammoType, capacity )
 
     function self:isEmpty()
         return rounds == 0;
+    end
+
+    function self:setRounds( nrounds )
+        rounds = nrounds;
+    end
+
+    function self:setCapacity( ncapacity )
+        capacity = ncapacity;
+    end
+
+    function self:serialize()
+        local t = {
+            ['name'] = name,
+            ['itemType'] = itemType,
+            ['rounds'] = rounds,
+            ['capacity'] = capacity
+        }
+        return t;
     end
 
     return self;

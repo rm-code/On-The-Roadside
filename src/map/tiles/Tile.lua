@@ -33,7 +33,9 @@ function Tile.new( x, y, template )
     local neighbours;
     local character;
     local worldObject;
-    local inventory = Inventory.new( 15 );
+    local inventory = Inventory.new();
+
+    local explored;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -93,6 +95,29 @@ function Tile.new( x, y, template )
     function self:removeWorldObject()
         worldObject = nil;
         self:setDirty( true );
+    end
+
+    function self:serialize()
+        local t = {
+            ['type'] = type,
+            ['x'] = x,
+            ['y'] = y
+        };
+
+        if not inventory:isEmpty() then
+            t['inventory'] = inventory:serialize()
+        end
+        if character then
+            t['character'] = character:serialize();
+        end
+        if worldObject then
+            t['worldObject'] = worldObject:serialize();
+        end
+        if explored then
+            t['explored'] = explored
+        end
+
+        return t;
     end
 
     -- ------------------------------------------------
@@ -232,6 +257,15 @@ function Tile.new( x, y, template )
     end
 
     ---
+    -- Checks if the tile has been explored by a faction.
+    -- @param  faction (string)  The faction to check for.
+    -- @return         (boolean) True if the tile has been explored.
+    --
+    function self:isExplored( faction )
+        return explored and explored[faction] or false;
+    end
+
+    ---
     -- Checks if the tile has a character on it.
     -- @return (boolean) True a character is standing on the tile.
     --
@@ -260,6 +294,15 @@ function Tile.new( x, y, template )
     --
     function self:setDirty( ndirty )
         dirty = ndirty;
+    end
+
+    ---
+    -- Marks the tile as explored for a specific faction.
+    -- @param  faction (string)  The faction to mark the tile for.
+    --
+    function self:setExplored( faction, nexplored )
+        explored = explored or {};
+        explored[faction] = nexplored;
     end
 
     ---
