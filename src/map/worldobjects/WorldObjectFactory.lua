@@ -30,12 +30,15 @@ local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
         if love.filesystem.isFile( dir .. file ) then
-            local template = love.filesystem.load( dir .. file )();
-            local type = template.type;
-
-            worldobjects[type] = template;
-
-            print( string.format( '  %d. %s', i, template.name ));
+            local status, loaded = pcall( love.filesystem.load, dir .. file );
+            if not status then
+                print( 'Can not load ' .. dir .. file );
+            else
+                local template = loaded();
+                local type = template.type;
+                worldobjects[type] = template;
+                print( string.format( '  %d. %s', i, template.name ));
+            end
         end
     end
 end

@@ -81,15 +81,20 @@ local function load( dir )
     local files = love.filesystem.getDirectoryItems( dir );
     for i, file in ipairs( files ) do
         if love.filesystem.isFile( dir .. file ) then
-            local template = love.filesystem.load( dir .. file )();
-            local itemType = template.itemType;
+            local status, loaded = pcall( love.filesystem.load, dir .. file );
+            if not status then
+                print( 'Can not load ' .. dir .. file );
+            else
+                local template = loaded();
+                local itemType = template.itemType;
 
-            assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
+                assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
 
-            items[itemType] = items[itemType] or {};
-            table.insert( items[itemType], template );
+                items[itemType] = items[itemType] or {};
+                table.insert( items[itemType], template );
 
-            print( string.format( '  %d. %s', i, template.name ));
+                print( string.format( '  %d. %s', i, template.name ));
+            end
         end
     end
 end
