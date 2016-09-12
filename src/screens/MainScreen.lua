@@ -71,6 +71,10 @@ function MainScreen.new()
     end
 
     function self:keypressed( key )
+        if key == 'f' then
+            love.window.setFullscreen( not love.window.getFullscreen() );
+        end
+
         game:keypressed( key );
     end
 
