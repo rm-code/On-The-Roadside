@@ -1,3 +1,9 @@
+# Version 0.2.2.455 - 2016-09-13
+## Fixes
+- Fixed drawing of overlays for actions that can't be executed ([#35](https://github.com/rm-code/On-The-Roadside/issues/35))
+- Fixed crash when shooting an adjacent world object ([#39](https://github.com/rm-code/On-The-Roadside/issues/39))
+- Fixed crash when a grenade hit a world object ([#40](https://github.com/rm-code/On-The-Roadside/issues/40))
+
 # Version 0.2.1.450 - 2016-09-12
 ## Fixes
 - Fixed crash when trying to load a savegame containing grenades ([#32](https://github.com/rm-code/On-The-Roadside/issues/32))
