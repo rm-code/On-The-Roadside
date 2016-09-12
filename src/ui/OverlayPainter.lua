@@ -111,7 +111,7 @@ function OverlayPainter.new( game, particleLayer )
     -- @param character (Character) The character to draw the path for.
     --
     local function drawPath( character )
-        if #character:getActions() ~= 0 then
+        if character:getActionPoints() > 0 and #character:getActions() ~= 0 then
             local total = character:getActionPoints();
             local ap = total;
 
