@@ -108,7 +108,7 @@ function SaveHandler.load()
         local weapon = ItemFactory.createItem( item.itemType, item.name );
         weapon:setAttackMode( item.modeIndex );
 
-        if weapon:getWeaponType() ~= 'Melee' then
+        if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
             local magazine = createMagazine( item.magazine );
             weapon:reload( magazine );
         end
