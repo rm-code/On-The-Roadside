@@ -85,8 +85,8 @@ function ProjectileManager.update( dt )
                     return;
                 end
 
-                -- Explosive weapons never pass through objects.
-                if projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
+                -- HACK: Need proper handling for explosive type weapons.
+                if projectile:getWeapon():getWeaponType() == 'Grenade' or projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
                     print( "Hit object with explosive ammunition" );
                     hitTile( i, tile, projectile );
                     return;
