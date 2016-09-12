@@ -81,7 +81,7 @@ function ProjectileManager.update( dt )
                 -- Stop the bullet if the object is indestructible.
                 if not tile:getWorldObject():isDestructible() then
                     print( "Hit indestructible object" );
-                    hitTile( i, tile, projectile );
+                    hitTile( i, projectile:getPreviousTile(), projectile );
                     return;
                 end
 

@@ -1,3 +1,9 @@
+# Version 0.2.1.450 - 2016-09-12
+## Fixes
+- Fixed crash when trying to load a savegame containing grenades ([#32](https://github.com/rm-code/On-The-Roadside/issues/32))
+- Fixed issue with rockets failing to explode when hitting an indestructible object ([#33](https://github.com/rm-code/On-The-Roadside/issues/33))
+- Fixed crash when trying to reload with no (ranged) weapon equipped ([#34](https://github.com/rm-code/On-The-Roadside/issues/34))
+
 # Version 0.2.0.445 - 2016-09-11
 ## Additions
 - Added system to handle calculation, updating and drawing of explosions ([#6](https://github.com/rm-code/On-The-Roadside/issues/6))
