@@ -81,12 +81,17 @@ function ProjectileManager.update( dt )
                 -- Stop the bullet if the object is indestructible.
                 if not tile:getWorldObject():isDestructible() then
                     print( "Hit indestructible object" );
-                    hitTile( i, projectile:getPreviousTile(), projectile );
+                    -- HACK: Need proper handling for explosive type weapons.
+                    if projectile:getWeapon():getWeaponType() == 'Grenade' or projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then                        
+                        hitTile( i, projectile:getPreviousTile(), projectile );
+                        return;
+                    end
+                    hitTile( i, tile, projectile );
                     return;
                 end
 
-                -- Explosive weapons never pass through objects.
-                if projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
+                -- HACK: Need proper handling for explosive type weapons.
+                if projectile:getWeapon():getWeaponType() == 'Grenade' or projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
                     print( "Hit object with explosive ammunition" );
                     hitTile( i, tile, projectile );
                     return;

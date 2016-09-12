@@ -29,7 +29,7 @@ function Projectile.new( character, tiles )
     local energy = 100;
     local timer = 0;
     local index = 1;
-    local tile;
+    local tile = character:getTile();
     local previousTile;
 
     -- ------------------------------------------------
