@@ -30,6 +30,7 @@ function Projectile.new( character, tiles )
     local timer = 0;
     local index = 1;
     local tile;
+    local previousTile;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -44,6 +45,7 @@ function Projectile.new( character, tiles )
     end
 
     function self:updateTile( map )
+        previousTile = tile;
         tile = map:getTileAt( tiles[index].x, tiles[index].y );
     end
 
@@ -65,6 +67,10 @@ function Projectile.new( character, tiles )
 
     function self:getTile()
         return tile;
+    end
+
+    function self:getPreviousTile()
+        return previousTile;
     end
 
     function self:getWeapon()
