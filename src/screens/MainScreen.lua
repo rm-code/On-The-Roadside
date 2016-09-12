@@ -83,6 +83,14 @@ function MainScreen.new()
         game:mousepressed( mx, my, button );
     end
 
+    function self:mousefocus( f )
+        if f then
+            camera:unlock();
+        else
+            camera:lock();
+        end
+    end
+
     Messenger.observe( 'START_EXECUTION', function()
         camera:lock();
         camera:storePosition();

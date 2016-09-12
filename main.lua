@@ -78,3 +78,7 @@ end
 function love.mousepressed( mx, my, button, isTouch )
     ScreenManager.mousepressed( mx, my, button, isTouch );
 end
+
+function love.mousefocus( f )
+    ScreenManager.mousefocus( f );
+end
