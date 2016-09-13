@@ -21,5 +21,24 @@ formatted="$major$minor$patch-$build"
 # Zip files. Exclude git folder and DS_Store files.
 zip -r OTR_$formatted.love ./ -x *.git* -x *.DS_Store*
 
-# Move to releases folder.
+# Move to releases folder and cd to releases.
 mv -i -v OTR_$formatted.love ../releases
+cd ../releases || exit
+
+# Unzip the LÖVE binaries.
+unzip LOVE_bin.zip -d LOVE_0101
+
+# Create the executable.
+cp ./OTR_$formatted.love ./LOVE_0101
+cd LOVE_0101 || exit
+cat love.exe OTR_$formatted.love > OTR_$formatted.exe
+rm love.exe
+rm OTR_$formatted.love
+
+# Zip all files.
+zip -r OTR_$formatted.zip ./ -x *.git* -x *.DS_Store*
+mv -i -v OTR_$formatted.zip ../
+
+# Remove the folder.
+cd ..
+rm -r LOVE_0101
