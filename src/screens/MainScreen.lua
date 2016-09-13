@@ -35,7 +35,11 @@ function MainScreen.new()
     local overlayPainter;
     local camera;
 
+    local exitTimer;
+
     function self:init()
+        exitTimer = 0;
+
         game = Game.new();
         game:init();
 
@@ -60,6 +64,12 @@ function MainScreen.new()
         overlayPainter:draw();
         camera:detach();
         userInterface:draw();
+
+        if exitTimer ~= 0 then
+            love.graphics.setColor( 0, 0, 0, 255 * exitTimer );
+            love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
+            love.graphics.setColor( 255, 255, 255, 255 );
+        end
     end
 
     function self:update( dt )
@@ -68,6 +78,15 @@ function MainScreen.new()
         worldPainter:update( dt );
         overlayPainter:update( dt );
         userInterface:update( dt );
+
+        if love.keyboard.isDown( 'escape' ) then
+            exitTimer = exitTimer + dt * 2;
+            if exitTimer >= 1.0 then
+                love.event.quit();
+            end
+        else
+            exitTimer = 0;
+        end
     end
 
     function self:keypressed( key )
