@@ -19,16 +19,18 @@ build=${version[3]}
 formatted="$major$minor$patch-$build"
 
 # Zip files. Exclude git folder and DS_Store files.
-zip -r OTR_$formatted.love ./ -x *.git* -x *.DS_Store*
+echo "Packing .love file for $major.$minor.$patch.$build"
+zip -r -q OTR_$formatted.love ./ -x *.git* -x *.DS_Store* -x *.sh*
 
 # Move to releases folder and cd to releases.
 mv -i -v OTR_$formatted.love ../releases
 cd ../releases || exit
 
 # Unzip the LÖVE binaries.
-unzip LOVE_bin.zip -d LOVE_0101
+unzip -q LOVE_bin.zip -d LOVE_0101
 
 # Create the executable.
+echo "Creating .exe"
 cp ./OTR_$formatted.love ./LOVE_0101
 cd LOVE_0101 || exit
 cat love.exe OTR_$formatted.love > OTR_$formatted.exe
@@ -36,9 +38,15 @@ rm love.exe
 rm OTR_$formatted.love
 
 # Zip all files.
-zip -r OTR_$formatted.zip ./ -x *.git* -x *.DS_Store*
+echo "Zipping .exe and binary files"
+zip -r -q OTR_$formatted.zip ./ -x *.git* -x *.DS_Store*
 mv -i -v OTR_$formatted.zip ../
 
 # Remove the folder.
 cd ..
 rm -r LOVE_0101
+
+# Publish to itch.io
+echo "Publishing to itch.io"
+butler push OTR_$formatted.zip rmcode/on-the-roadside:win --userversion $major.$minor.$patch.$build
+butler push OTR_$formatted.love rmcode/on-the-roadside:win-osx-linux --userversion $major.$minor.$patch.$build
