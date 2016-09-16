@@ -51,7 +51,7 @@ end
 -- Loads the templates.
 --
 function WorldObjectFactory.loadTemplates()
-    print( "Load Tile Templates:" )
+    print( "Load WorldObject Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 
