@@ -165,6 +165,8 @@ function SaveHandler.load()
             if tile.worldObject then
                 local worldObject = WorldObjectFactory.create( tile.worldObject.type );
                 worldObject:setHitPoints( tile.worldObject.hp );
+                worldObject:setPassable( tile.worldObject.passable );
+                worldObject:setBlocksVision( tile.worldObject.blocksVision );
                 newTile:addWorldObject( worldObject );
             end
             if tile.inventory then

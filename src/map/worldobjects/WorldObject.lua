@@ -55,6 +55,8 @@ function WorldObject.new( template )
     function self:serialize()
         local t = {
             ['type'] = type,
+            ['passable'] = passable,
+            ['blocksVision'] = blocksVision,
             ['hp'] = hp
         }
         return t;
