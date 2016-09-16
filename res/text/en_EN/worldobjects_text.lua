@@ -3,6 +3,7 @@ locale.identifier = 'en_EN';
 
 locale.strings = {
     ['worldobject_chair'] = 'Chair';
+    ['worldobject_crate'] = 'Crate';
     ['worldobject_door'] = 'Door';
     ['worldobject_fence'] = 'Fence';
     ['worldobject_fencegate'] = 'Fence Gate';

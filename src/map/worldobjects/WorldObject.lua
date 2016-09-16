@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Inventory = require( 'src.inventory.Inventory' );
 
 -- ------------------------------------------------
 -- Module
@@ -37,6 +38,8 @@ function WorldObject.new( template )
     local sprite = template.sprite;
     local openSprite = template.openSprite;
     local color = template.color;
+    local container = template.container;
+    local inventory = container and Inventory.new() or nil;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -58,6 +61,9 @@ function WorldObject.new( template )
             ['blocksVision'] = blocksVision,
             ['hp'] = hp
         }
+        if container and not inventory:isEmpty() then
+            t['inventory'] = inventory:serialize();
+        end
         return t;
     end
 
@@ -125,6 +131,14 @@ function WorldObject.new( template )
     end
 
     ---
+    -- Returns this container's inventory.
+    -- @return (Inventory) The inventory.
+    --
+    function self:getInventory()
+        return inventory;
+    end
+
+    ---
     -- Returns the WorldObject's size attribute.
     -- @return (number) The WorldObject's size.
     --
@@ -157,6 +171,14 @@ function WorldObject.new( template )
     --
     function self:isClimbable()
         return climbable;
+    end
+
+    ---
+    -- Checks wether the WorldObject is a container.
+    -- @return (boolean) True if the WorldObject is a container.
+    --
+    function self:isContainer()
+        return container;
     end
 
     ---

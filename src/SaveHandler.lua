@@ -167,6 +167,9 @@ function SaveHandler.load()
                 worldObject:setHitPoints( tile.worldObject.hp );
                 worldObject:setPassable( tile.worldObject.passable );
                 worldObject:setBlocksVision( tile.worldObject.blocksVision );
+                if worldObject:isContainer() and tile.worldObject.inventory then
+                    fillInventory( tile.worldObject.inventory, worldObject:getInventory() );
+                end
                 newTile:addWorldObject( worldObject );
             end
             if tile.inventory then
