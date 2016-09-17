@@ -1,5 +1,5 @@
 return {
-    name = "Baseball Cap",
+    id = "Baseball Cap",
     itemType = "Headgear",
     armor = {
         protection = 0,

@@ -30,7 +30,7 @@ function RangedWeapon.new( template )
 
     function self:serialize()
         local t = {
-            ['name'] = template.name,
+            ['id'] = template.id,
             ['itemType'] = template.itemType,
             ['modeIndex'] = self:getAttackModeIndex()
         };

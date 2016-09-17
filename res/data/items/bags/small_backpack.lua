@@ -1,5 +1,5 @@
 return {
-    name = "Small Backpack",
+    id = "Small Backpack",
     itemType = "Bag",
     slots = 8
 }

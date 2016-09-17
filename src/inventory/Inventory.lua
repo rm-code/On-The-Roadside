@@ -15,7 +15,7 @@ function Inventory.new()
         for i, citem in pairs( items ) do
             if item == citem then
                 table.remove( items, i );
-                print( 'Removed ' .. item:getName() .. ' at index ' .. i );
+                print( 'Removed ' .. item:getID() .. ' at index ' .. i );
             end
         end
     end

@@ -2,8 +2,8 @@ local Item = require( 'src.items.Item' );
 
 local Magazine = {};
 
-function Magazine.new( name, itemType, ammoType )
-    local self = Item.new( name, itemType ):addInstance( 'Magazine' );
+function Magazine.new( id, itemType, ammoType )
+    local self = Item.new( id, itemType ):addInstance( 'Magazine' );
 
     local capacity = 0;
     local rounds = 0;
@@ -21,7 +21,7 @@ function Magazine.new( name, itemType, ammoType )
     end
 
     function self:getCaliber()
-        return name;
+        return id;
     end
 
     function self:getAmmoType()
@@ -46,7 +46,7 @@ function Magazine.new( name, itemType, ammoType )
 
     function self:serialize()
         local t = {
-            ['name'] = name,
+            ['id'] = id,
             ['itemType'] = itemType,
             ['rounds'] = rounds,
             ['capacity'] = capacity

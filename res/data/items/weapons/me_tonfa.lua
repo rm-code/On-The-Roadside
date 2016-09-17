@@ -1,5 +1,5 @@
 return {
-    name       = "Tonfa",
+    id         = "Tonfa",
     itemType   = "Weapon",
     weaponType = "Melee",
     damage     = 30,

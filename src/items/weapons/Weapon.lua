@@ -11,7 +11,7 @@ local Weapon = {};
 -- ------------------------------------------------
 
 function Weapon.new( template )
-    local self = Item.new( template.name, template.itemType ):addInstance( 'Weapon' );
+    local self = Item.new( template.id, template.itemType ):addInstance( 'Weapon' );
 
     -- ------------------------------------------------
     -- Private Attributes
@@ -38,7 +38,7 @@ function Weapon.new( template )
 
     function self:serialize()
         local t = {
-            ['name'] = template.name,
+            ['id'] = template.id,
             ['itemType'] = template.itemType,
             ['modeIndex'] = modeIndex
         };

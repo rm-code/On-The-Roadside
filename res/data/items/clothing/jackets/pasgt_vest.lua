@@ -1,5 +1,5 @@
 return {
-    name = "PASGT Ballistic Vest",
+    id = "PASGT Ballistic Vest",
     itemType = "Jacket",
     armor = {
         protection = 12,

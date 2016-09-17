@@ -93,7 +93,7 @@ local function load( dir )
                 items[itemType] = items[itemType] or {};
                 table.insert( items[itemType], template );
 
-                print( string.format( '  %d. %s', i, template.name ));
+                print( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -101,13 +101,13 @@ end
 
 ---
 -- Searches the template table for the template for the given item.
--- @param name      (string) The item name to search for.
+-- @param id        (string) The item id to search for.
 -- @param templates (table)  The template table to look through.
 -- @return          (table)  The template for the given item.
 --
-local function searchTemplate( name, templates )
+local function searchTemplate( id, templates )
     for _, template in ipairs( templates ) do
-        if template.name == name then
+        if template.id == id then
             return template;
         end
     end
@@ -115,11 +115,11 @@ end
 
 ---
 -- Creates a specific weapon item.
--- @param name (string) The name of the item to create.
--- @return     (Weapon) The new weapon object.
+-- @param id (string) The id of the item to create.
+-- @return   (Weapon) The new weapon object.
 --
-local function createWeapon( name )
-    local template = searchTemplate( name, items.Weapon );
+local function createWeapon( id )
+    local template = searchTemplate( id, items.Weapon );
 
     if template.weaponType == 'Melee' then
         return MeleeWeapon.new( template );
@@ -132,86 +132,86 @@ end
 
 ---
 -- Creates a specific magazine item.
--- @param name (string)   The name of the item to create.
--- @return     (Magazine) The new magazine object.
+-- @param id (string)   The id of the item to create.
+-- @return   (Magazine) The new magazine object.
 --
-local function createMagazine( name )
-    local template = searchTemplate( name, items.Ammunition );
+local function createMagazine( id )
+    local template = searchTemplate( id, items.Ammunition );
     if template.ammoType == 'Rocket' then
-        return Rocket.new( template.name, template.itemType, template.ammoType, template.blastRadius );
+        return Rocket.new( template.id, template.itemType, template.ammoType, template.blastRadius );
     elseif template.ammoType == 'ShotgunShell' then
-        return ShotgunShell.new( template.name, template.itemType, template.ammoType, template.pellets );
+        return ShotgunShell.new( template.id, template.itemType, template.ammoType, template.pellets );
     end
-    return Magazine.new( template.name, template.itemType, template.ammoType );
+    return Magazine.new( template.id, template.itemType, template.ammoType );
 end
 
 ---
 -- Creates a specific headgear item.
--- @param name (string)   The name of the item to create.
--- @return     (Headgear) The new clothing instance.
+-- @param id (string)   The id of the item to create.
+-- @return   (Headgear) The new clothing instance.
 --
-local function createHeadgear( name )
-    local template = searchTemplate( name, items.Headgear );
-    return Headgear.new( template.name, template.itemType, template.armor );
+local function createHeadgear( id )
+    local template = searchTemplate( id, items.Headgear );
+    return Headgear.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific gloves item.
--- @param name (string) The name of the item to create.
--- @return     (Gloves) The new clothing instance.
+-- @param id (string) The id of the item to create.
+-- @return   (Gloves) The new clothing instance.
 --
-local function createGloves( name )
-    local template = searchTemplate( name, items.Gloves );
-    return Gloves.new( template.name, template.itemType, template.armor );
+local function createGloves( id )
+    local template = searchTemplate( id, items.Gloves );
+    return Gloves.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific jacket item.
--- @param name (string) The name of the item to create.
--- @return     (Jacket) The new clothing instance.
+-- @param id (string) The id of the item to create.
+-- @return   (Jacket) The new clothing instance.
 --
-local function createJacket( name )
-    local template = searchTemplate( name, items.Jacket );
-    return Jacket.new( template.name, template.itemType, template.armor );
+local function createJacket( id )
+    local template = searchTemplate( id, items.Jacket );
+    return Jacket.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific shirt item.
--- @param name (string) The name of the item to create.
--- @return     (Shirt)  The new clothing instance.
+-- @param id (string) The id of the item to create.
+-- @return   (Shirt)  The new clothing instance.
 --
-local function createShirt( name )
-    local template = searchTemplate( name, items.Shirt );
-    return Shirt.new( template.name, template.itemType, template.armor );
+local function createShirt( id )
+    local template = searchTemplate( id, items.Shirt );
+    return Shirt.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific Trousers item.
--- @param name (string)   The name of the item to create.
--- @return     (Trousers) The new clothing instance.
+-- @param id (string)   The id of the item to create.
+-- @return   (Trousers) The new clothing instance.
 --
-local function createTrousers( name )
-    local template = searchTemplate( name, items.Trousers );
-    return Trousers.new( template.name, template.itemType, template.armor );
+local function createTrousers( id )
+    local template = searchTemplate( id, items.Trousers );
+    return Trousers.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific footwear item.
--- @param name (string)   The name of the item to create.
--- @return     (Footwear) The new clothing instance.
+-- @param id (string)   The id of the item to create.
+-- @return   (Footwear) The new clothing instance.
 --
-local function createFootwear( name )
-    local template = searchTemplate( name, items.Footwear );
-    return Footwear.new( template.name, template.itemType, template.armor );
+local function createFootwear( id )
+    local template = searchTemplate( id, items.Footwear );
+    return Footwear.new( template.id, template.itemType, template.armor );
 end
 
 ---
 -- Creates a specific bag item.
--- @param name (string) The name of the item to create.
--- @return     (Bag)    The new bag instance.
+-- @param id (string) The id of the item to create.
+-- @return   (Bag)    The new bag instance.
 --
-local function createBag( name )
-    local template = searchTemplate( name, items.Bag );
+local function createBag( id )
+    local template = searchTemplate( id, items.Bag );
     return Bag.new( template );
 end
 
@@ -252,30 +252,30 @@ function ItemFactory.loadTemplates()
 end
 
 ---
--- Creates a specific item specified by type and name.
+-- Creates a specific item specified by type and id.
 -- @param type (string) The type of the item to create.
--- @param name (string) The name of the item to create.
+-- @param id   (string) The id of the item to create.
 -- @return     (Item)   The new item.
 --
-function ItemFactory.createItem( type, name )
+function ItemFactory.createItem( type, id )
     if type == ITEM_TYPES.WEAPON then
-        return createWeapon( name );
+        return createWeapon( id );
     elseif type == ITEM_TYPES.BAG then
-        return createBag( name );
+        return createBag( id );
     elseif type == ITEM_TYPES.AMMO then
-        return createMagazine( name );
+        return createMagazine( id );
     elseif type == ITEM_TYPES.HEADGEAR then
-        return createHeadgear( name );
+        return createHeadgear( id );
     elseif type == ITEM_TYPES.GLOVES then
-        return createGloves( name );
+        return createGloves( id );
     elseif type == ITEM_TYPES.JACKET then
-        return createJacket( name );
+        return createJacket( id );
     elseif type == ITEM_TYPES.SHIRT then
-        return createShirt( name );
+        return createShirt( id );
     elseif type == ITEM_TYPES.TROUSERS then
-        return createTrousers( name );
+        return createTrousers( id );
     elseif type == ITEM_TYPES.FOOTWEAR then
-        return createFootwear( name );
+        return createFootwear( id );
     end
 end
 
@@ -288,35 +288,35 @@ function ItemFactory.createRandomItem( type )
     if type == ITEM_TYPES.WEAPON then
         local rnd = love.math.random( 1, #items.Weapon );
         local template = items.Weapon[rnd];
-        return createWeapon( template.name );
+        return createWeapon( template.id );
     elseif type == ITEM_TYPES.BAG then
         local rnd = love.math.random( 1, #items.Bag );
         local template = items.Bag[rnd];
-        return createBag( template.name );
+        return createBag( template.id );
     elseif type == ITEM_TYPES.HEADGEAR then
         local rnd = love.math.random( 1, #items.Headgear );
         local template = items.Headgear[rnd];
-        return createHeadgear( template.name );
+        return createHeadgear( template.id );
     elseif type == ITEM_TYPES.GLOVES then
         local rnd = love.math.random( 1, #items.Gloves );
         local template = items.Gloves[rnd];
-        return createGloves( template.name );
+        return createGloves( template.id );
     elseif type == ITEM_TYPES.JACKET then
         local rnd = love.math.random( 1, #items.Jacket );
         local template = items.Jacket[rnd];
-        return createJacket( template.name );
+        return createJacket( template.id );
     elseif type == ITEM_TYPES.SHIRT then
         local rnd = love.math.random( 1, #items.Shirt );
         local template = items.Shirt[rnd];
-        return createShirt( template.name );
+        return createShirt( template.id );
     elseif type == ITEM_TYPES.TROUSERS then
         local rnd = love.math.random( 1, #items.Trousers );
         local template = items.Trousers[rnd];
-        return createTrousers( template.name );
+        return createTrousers( template.id );
     elseif type == ITEM_TYPES.FOOTWEAR then
         local rnd = love.math.random( 1, #items.Footwear );
         local template = items.Footwear[rnd];
-        return createFootwear( template.name );
+        return createFootwear( template.id );
     end
 end
 

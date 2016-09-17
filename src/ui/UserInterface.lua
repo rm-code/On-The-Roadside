@@ -62,7 +62,7 @@ function UserInterface.new( game )
         local weapon = character:getEquipment():getWeapon();
         if weapon then
             love.graphics.print( 'Weapon: ', 200, love.graphics.getHeight() - 40 );
-            love.graphics.print( weapon:getName(), 200 + font:getWidth( 'Weapon: ' ), love.graphics.getHeight() - 40 );
+            love.graphics.print( weapon:getID(), 200 + font:getWidth( 'Weapon: ' ), love.graphics.getHeight() - 40 );
 
             love.graphics.print( 'Mode: ', 200, love.graphics.getHeight() - 20 );
             love.graphics.print( weapon:getAttackMode().name, 200 + font:getWidth( 'Mode: ' ), love.graphics.getHeight() - 20 );

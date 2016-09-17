@@ -25,7 +25,7 @@ function UIInventoryItem.new( x, y, item )
 
         love.graphics.setScissor( x, y, WIDTH, HEIGHT );
         love.graphics.setColor( COLORS.DB21 );
-        love.graphics.printf( item and item:getName() or 'Empty', x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( item and item:getID() or 'Empty', x, y + 5, WIDTH, 'center' );
         love.graphics.setScissor();
     end
 

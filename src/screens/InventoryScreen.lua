@@ -88,7 +88,7 @@ function InventoryScreen.new()
             love.graphics.setColor( COLORS.DB23 );
             love.graphics.rectangle( 'line', mx, my, DRAGGED_ITEM_WIDTH, DRAGGED_ITEM_HEIGHT );
             love.graphics.setColor( COLORS.DB21 );
-            love.graphics.printf( dragboard.item:getName(), mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
+            love.graphics.printf( dragboard.item:getID(), mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
         end
     end
 

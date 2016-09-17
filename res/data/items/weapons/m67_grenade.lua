@@ -1,5 +1,5 @@
 return {
-    name     = "M67 Grenade",
+    id       = "M67 Grenade",
     itemType = "Weapon",
     weaponType = "Grenade",
     damage   = 120,

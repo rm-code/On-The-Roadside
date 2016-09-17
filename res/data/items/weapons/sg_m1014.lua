@@ -1,5 +1,5 @@
 return {
-    name       = "Benelli M4 Super 90",
+    id         = "Benelli M4 Super 90",
     itemType   = "Weapon",
     weaponType = "Shotgun",
     damage     = 20,

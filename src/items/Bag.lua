@@ -8,7 +8,7 @@ local Bag = {};
 -- ------------------------------------------------
 
 function Bag.new( template )
-    local self = Item.new( template.name, template.itemType ):addInstance( 'Bag' );
+    local self = Item.new( template.id, template.itemType ):addInstance( 'Bag' );
 
     local inventory = Inventory.new();
 
@@ -18,7 +18,7 @@ function Bag.new( template )
 
     function self:serialize()
         local t = {
-            ['name'] = template.name,
+            ['id'] = template.id,
             ['itemType'] = template.itemType,
             ['inventory'] = inventory:serialize()
         };
