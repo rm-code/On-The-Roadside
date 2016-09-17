@@ -8,6 +8,7 @@ local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -20,6 +21,7 @@ local MainScreen = {};
 -- ------------------------------------------------
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local DEFAULT_LOCALE = 'en_EN';
 
 -- ------------------------------------------------
 -- Constructor
@@ -39,6 +41,8 @@ function MainScreen.new()
 
     function self:init()
         exitTimer = 0;
+
+        Translator.init( DEFAULT_LOCALE );
 
         game = Game.new();
         game:init();

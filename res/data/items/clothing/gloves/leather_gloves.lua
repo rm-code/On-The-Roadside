@@ -1,5 +1,5 @@
 return {
-    id = "Leather Gloves",
+    id = "gloves_leather",
     itemType = "Gloves",
     armor = {
         protection = 1,

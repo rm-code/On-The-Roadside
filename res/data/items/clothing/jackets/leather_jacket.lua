@@ -1,5 +1,5 @@
 return {
-    id = "Leather Jacket",
+    id = "jacket_leather",
     itemType = "Jacket",
     armor = {
         protection = 4,

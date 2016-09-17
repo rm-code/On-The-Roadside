@@ -2,6 +2,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -34,7 +35,7 @@ function InventoryScreen.new()
 
     local function refreshBackpack()
         if character:getEquipment():getBackpack() then
-            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getEquipment():getBackpack():getInventory() );
             lists.backpack:init();
         else
             lists.backpack = nil;
@@ -56,15 +57,15 @@ function InventoryScreen.new()
 
         lists = {};
 
-        lists.equipment = UIEquipmentList.new( 20, 20, 'Equipment', character:getEquipment() );
+        lists.equipment = UIEquipmentList.new( 20, 20, 'inventory_equipment', character:getEquipment() );
         lists.equipment:init();
 
         if character:getEquipment():getBackpack() then
-            lists.backpack = UIInventoryList.new( 220, 20, 'Backpack', character:getEquipment():getBackpack():getInventory() );
+            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getEquipment():getBackpack():getInventory() );
             lists.backpack:init();
         end
 
-        lists.ground = UIInventoryList.new( 420, 20, 'Tile Inventory', character:getTile():getInventory() );
+        lists.ground = UIInventoryList.new( 420, 20, 'inventory_tile_inventory', character:getTile():getInventory() );
         lists.ground:init();
     end
 
@@ -88,7 +89,7 @@ function InventoryScreen.new()
             love.graphics.setColor( COLORS.DB23 );
             love.graphics.rectangle( 'line', mx, my, DRAGGED_ITEM_WIDTH, DRAGGED_ITEM_HEIGHT );
             love.graphics.setColor( COLORS.DB21 );
-            love.graphics.printf( dragboard.item:getID(), mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
+            love.graphics.printf( Translator.getText( dragboard.item:getID() ), mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
         end
     end
 

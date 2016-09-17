@@ -1,5 +1,5 @@
 return {
-    id       = "AKS-74",
+    id       = "weapon_aks74",
     itemType = "Weapon",
     weaponType = "Assault Rifle",
     damage   = 40,

@@ -1,5 +1,5 @@
 return {
-    id       = "RPG-7",
+    id       = "weapon_rpg7",
     itemType = "Weapon",
     weaponType = "Rocket Launcher",
     damage   = 0,

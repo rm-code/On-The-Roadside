@@ -1,5 +1,5 @@
 return {
-    id       = "M67 Grenade",
+    id       = "weapon_m67_grenade",
     itemType = "Weapon",
     weaponType = "Grenade",
     damage   = 120,

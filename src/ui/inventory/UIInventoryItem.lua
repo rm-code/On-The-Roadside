@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Translator = require( 'src.util.Translator' );
 
 local UIInventoryItem = {};
 
@@ -25,7 +26,7 @@ function UIInventoryItem.new( x, y, item )
 
         love.graphics.setScissor( x, y, WIDTH, HEIGHT );
         love.graphics.setColor( COLORS.DB21 );
-        love.graphics.printf( item and item:getID() or 'Empty', x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( item and Translator.getText( item:getID() ) or Translator.getText( 'inventory_empty_slot' ), x, y + 5, WIDTH, 'center' );
         love.graphics.setScissor();
     end
 

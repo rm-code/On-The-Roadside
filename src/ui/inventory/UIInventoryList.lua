@@ -1,5 +1,6 @@
 local Object = require( 'src.Object' );
 local UIInventoryItem = require( 'src.ui.inventory.UIInventoryItem' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -19,7 +20,7 @@ local WIDTH = 150;
 -- Constructor
 -- ------------------------------------------------
 
-function UIInventoryList.new( x, y, name, inventory )
+function UIInventoryList.new( x, y, id, inventory )
     local self = Object.new():addInstance( 'UIInventoryList' );
 
     -- ------------------------------------------------
@@ -54,7 +55,7 @@ function UIInventoryList.new( x, y, name, inventory )
         love.graphics.rectangle( 'line', x, y, WIDTH, HEADER_HEIGHT );
         love.graphics.setColor( 255, 255, 255 );
         love.graphics.setScissor( x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.printf( name, x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( Translator.getText( id ), x, y + 5, WIDTH, 'center' );
         love.graphics.setScissor();
 
         for _, slot in ipairs( list ) do
