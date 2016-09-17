@@ -1,5 +1,4 @@
 return {
-    name = 'Fence Gate',
     type = 'worldobject_fencegate',
     sprite = 241,
     openSprite = 96,

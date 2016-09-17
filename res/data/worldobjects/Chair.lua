@@ -1,5 +1,4 @@
 return {
-    name = 'Chair',
     type = 'worldobject_chair',
     sprite = 111,
     color = { 143, 86, 59 },

@@ -1,5 +1,4 @@
 return {
-    name = 'Table',
     type = 'worldobject_table',
     sprite = 211,
     color = { 143, 86, 59 },

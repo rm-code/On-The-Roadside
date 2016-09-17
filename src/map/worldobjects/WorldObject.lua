@@ -22,7 +22,6 @@ function WorldObject.new( template )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local name = template.name;
     local type = template.type;
     local size = template.size;
     local hp = template.hp;
@@ -123,14 +122,6 @@ function WorldObject.new( template )
     --
     function self:getInteractionCost()
         return interactionCost;
-    end
-
-    ---
-    -- Returns the WorldObject's name.
-    -- @return (string) The WorldObject's human readable name.
-    --
-    function self:getName()
-        return name;
     end
 
     ---

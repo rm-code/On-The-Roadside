@@ -1,5 +1,4 @@
 return {
-    name = 'Door',
     type = 'worldobject_door',
     sprite = 44,
     openSprite = 96,

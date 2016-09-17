@@ -37,7 +37,7 @@ local function load( dir )
                 local template = loaded();
                 local type = template.type;
                 worldobjects[type] = template;
-                print( string.format( '  %d. %s', i, template.name ));
+                print( string.format( '  %d. %s', i, template.type ));
             end
         end
     end

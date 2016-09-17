@@ -1,5 +1,4 @@
 return {
-    name = 'Window',
     type = 'worldobject_window',
     sprite = 177,
     color = { 95, 205, 228 },
