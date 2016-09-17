@@ -41,7 +41,7 @@ function UserInterface.new( game )
         elseif tile:hasWorldObject() then
             love.graphics.print( tile:getWorldObject():getName(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
         elseif tile:isExplored( factions:getFaction():getType() ) then
-            love.graphics.print( tile:getName(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
+            love.graphics.print( tile:getType(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
         end
     end
 

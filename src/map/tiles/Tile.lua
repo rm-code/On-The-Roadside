@@ -21,7 +21,6 @@ local Tile = {};
 function Tile.new( x, y, template )
     local self = Object.new():addInstance( 'Tile' );
 
-    local name = template.name;
     local type = template.type;
     local movementCost = template.movementCost;
     local passable = template.passable;
@@ -154,14 +153,6 @@ function Tile.new( x, y, template )
     --
     function self:getMovementCost()
         return movementCost;
-    end
-
-    ---
-    -- Returns the tile's name.
-    -- @return (string) The tile's name.
-    --
-    function self:getName()
-        return name;
     end
 
     ---
