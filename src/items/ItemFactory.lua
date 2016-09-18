@@ -289,6 +289,10 @@ function ItemFactory.createRandomItem( type )
         local rnd = love.math.random( 1, #items.Weapon );
         local template = items.Weapon[rnd];
         return createWeapon( template.id );
+    elseif type == ITEM_TYPES.AMMO then
+        local rnd = love.math.random( 1, #items.Ammunition );
+        local template = items.Ammunition[rnd];
+        return createMagazine( template.id );
     elseif type == ITEM_TYPES.BAG then
         local rnd = love.math.random( 1, #items.Bag );
         local template = items.Bag[rnd];
