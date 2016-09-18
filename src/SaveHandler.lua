@@ -97,7 +97,7 @@ function SaveHandler.load()
     -- ------------------------------------------------
 
     local function createMagazine( item )
-        local magazine = ItemFactory.createItem( item.itemType, item.name, item );
+        local magazine = ItemFactory.createItem( item.itemType, item.id, item );
         magazine:setRounds( item.rounds );
         magazine:setCapacity( item.capacity );
 
@@ -105,7 +105,7 @@ function SaveHandler.load()
     end
 
     local function createWeapon( item )
-        local weapon = ItemFactory.createItem( item.itemType, item.name );
+        local weapon = ItemFactory.createItem( item.itemType, item.id );
         weapon:setAttackMode( item.modeIndex );
 
         if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
@@ -122,29 +122,29 @@ function SaveHandler.load()
                 local weapon = createWeapon( item );
                 target:addItem( weapon );
             elseif item.itemType == ITEM_TYPES.BAG then
-                local bag = ItemFactory.createItem( item.itemType, item.name );
+                local bag = ItemFactory.createItem( item.itemType, item.id );
                 fillInventory( item.inventory, bag:getInventory() );
                 target:addItem( bag )
             elseif item.itemType == ITEM_TYPES.AMMO then
                 local ammo = createMagazine( item );
                 target:addItem( ammo );
             elseif item.itemType == ITEM_TYPES.HEADGEAR then
-                local headgear = ItemFactory.createItem( item.itemType, item.name );
+                local headgear = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( headgear );
             elseif item.itemType == ITEM_TYPES.GLOVES then
-                local gloves = ItemFactory.createItem( item.itemType, item.name );
+                local gloves = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( gloves );
             elseif item.itemType == ITEM_TYPES.JACKET then
-                local jacket = ItemFactory.createItem( item.itemType, item.name );
+                local jacket = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( jacket );
             elseif item.itemType == ITEM_TYPES.SHIRT then
-                local shirt = ItemFactory.createItem( item.itemType, item.name );
+                local shirt = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( shirt );
             elseif item.itemType == ITEM_TYPES.TROUSERS then
-                local trousers = ItemFactory.createItem( item.itemType, item.name );
+                local trousers = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( trousers );
             elseif item.itemType == ITEM_TYPES.FOOTWEAR then
-                local footwear = ItemFactory.createItem( item.itemType, item.name );
+                local footwear = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( footwear );
             end
         end
