@@ -1,0 +1,25 @@
+language: python
+sudo: false
+
+env:
+  - LUA="lua 5.1"
+  - LUA="lua 5.2"
+  - LUA="lua 5.3"
+  - LUA="luajit 2.0"
+  - LUA="luajit 2.1"
+
+before_install:
+  - pip install hererocks
+  - hererocks here -r^ --$LUA
+  - export PATH=$PATH:$PWD/here/bin
+
+install:
+  - luarocks install busted
+
+script:
+  - busted specs
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
