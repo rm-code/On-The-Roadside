@@ -1,6 +1,6 @@
 return {
     id = 'worldobject_crate',
-    sprite = 246,
+    sprite = 247,
     color = { 102, 57, 49 },
     size = 70,
     hp = 110,
