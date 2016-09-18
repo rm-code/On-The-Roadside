@@ -248,9 +248,11 @@ function Map.new()
                     end
                     if tile:getWorldObject():getDebrisID() then
                         local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisID() );
+                        tile:removeWorldObject();
                         tile:addWorldObject( nobj );
+                    else
+                        tile:removeWorldObject();
                     end
-                    tile:removeWorldObject();
                     self:publish( 'TILE_UPDATED', tile );
                 end
             end
