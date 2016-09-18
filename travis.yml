@@ -19,6 +19,11 @@ install:
 script:
   - busted specs
 
+branches:
+  only:
+  - master
+  - develop
+
 notifications:
   email:
     on_success: change
