@@ -1,5 +1,5 @@
 return {
-    type = 'worldobject_door',
+    id = 'worldobject_door',
     sprite = 44,
     openSprite = 96,
     color = { 102, 57, 49 },

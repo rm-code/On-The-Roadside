@@ -240,8 +240,8 @@ function Map.new()
             for y = 1, #tiles[x] do
                 local tile = tiles[x][y];
                 if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
-                    if tile:getWorldObject():getDebrisType() then
-                        local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisType() );
+                    if tile:getWorldObject():getDebrisID() then
+                        local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisID() );
                         tile:removeWorldObject();
                         tile:addWorldObject( nobj );
                     else

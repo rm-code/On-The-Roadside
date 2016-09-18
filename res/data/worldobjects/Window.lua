@@ -1,12 +1,12 @@
 return {
-    type = 'worldobject_window',
+    id = 'worldobject_window',
     sprite = 177,
     color = { 95, 205, 228 },
     size = 100,
     hp = 25,
     energyReduction = 10,
     destructible = true,
-    debrisType = 'worldobject_lowwall',
+    debrisID = 'worldobject_lowwall',
     blocksVision = false,
     blocksPathfinding = true
 }

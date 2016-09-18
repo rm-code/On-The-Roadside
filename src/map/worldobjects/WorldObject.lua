@@ -22,13 +22,13 @@ function WorldObject.new( template )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local type = template.type;
+    local id = template.id;
     local size = template.size;
     local hp = template.hp;
     local interactionCost = template.interactionCost;
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
-    local debrisType = template.debrisType;
+    local debrisID = template.debrisID;
     local openable = template.openable or false;
     local climbable = template.climbable or false;
     local passable = template.passable or false;
@@ -53,7 +53,7 @@ function WorldObject.new( template )
 
     function self:serialize()
         local t = {
-            ['type'] = type,
+            ['id'] = id,
             ['passable'] = passable,
             ['blocksVision'] = blocksVision,
             ['hp'] = hp
@@ -90,12 +90,12 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject type with which this WorldObject will be replaced
+    -- Returns the WorldObject id with which this WorldObject will be replaced
     -- upon its destruction.
-    -- @return (string) The WorldObject type used for generating debris.
+    -- @return (string) The WorldObject id used for generating debris.
     --
-    function self:getDebrisType()
-        return debrisType;
+    function self:getDebrisID()
+        return debrisID;
     end
 
     ---
@@ -147,8 +147,8 @@ function WorldObject.new( template )
     -- Returns the WorldObject's id.
     -- @return (string) The WorldObject's id.
     --
-    function self:getType()
-        return type;
+    function self:getID()
+        return id;
     end
 
     ---

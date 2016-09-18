@@ -35,9 +35,9 @@ local function load( dir )
                 print( 'Can not load ' .. dir .. file );
             else
                 local template = loaded();
-                local type = template.type;
-                worldobjects[type] = template;
-                print( string.format( '  %d. %s', i, template.type ));
+                local id = template.id;
+                worldobjects[id] = template;
+                print( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -56,13 +56,13 @@ function WorldObjectFactory.loadTemplates()
 end
 
 ---
--- Creates a WorldObject of the given type.
--- @param type (string)      The type of the WorldObject to create.
+-- Creates a WorldObject of the given id.
+-- @param id   (string)      The id of the WorldObject to create.
 -- @return     (WorldObject) The newly created WorldObject.
 --
-function WorldObjectFactory.create( type )
-    local template = worldobjects[type];
-    assert( template, string.format( 'Requested worldobject type (%s) doesn\'t exist!', type ));
+function WorldObjectFactory.create( id )
+    local template = worldobjects[id];
+    assert( template, string.format( 'Requested worldobject id (%s) doesn\'t exist!', id ));
     return WorldObject.new( template );
 end
 

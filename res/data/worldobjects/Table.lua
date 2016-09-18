@@ -1,5 +1,5 @@
 return {
-    type = 'worldobject_table',
+    id = 'worldobject_table',
     sprite = 211,
     color = { 143, 86, 59 },
     size = 25,

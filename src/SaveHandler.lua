@@ -159,11 +159,11 @@ function SaveHandler.load()
         for _, tile in ipairs( save ) do
             local x, y = tile.x, tile.y;
             loadedTiles[x] = loadedTiles[x] or {};
-            loadedTiles[x][y] = TileFactory.create( x, y, tile.type );
+            loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
             local newTile = loadedTiles[x][y];
 
             if tile.worldObject then
-                local worldObject = WorldObjectFactory.create( tile.worldObject.type );
+                local worldObject = WorldObjectFactory.create( tile.worldObject.id );
                 worldObject:setHitPoints( tile.worldObject.hp );
                 worldObject:setPassable( tile.worldObject.passable );
                 worldObject:setBlocksVision( tile.worldObject.blocksVision );

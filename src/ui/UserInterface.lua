@@ -39,9 +39,9 @@ function UserInterface.new( game )
         if not tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( 'Unexplored', 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
         elseif tile:hasWorldObject() then
-            love.graphics.print( tile:getWorldObject():getType(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
+            love.graphics.print( tile:getWorldObject():getID(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
         elseif tile:isExplored( factions:getFaction():getType() ) then
-            love.graphics.print( tile:getType(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
+            love.graphics.print( tile:getID(), 390 + font:getWidth( 'Tile: ' ), love.graphics.getHeight() - 20 );
         end
     end
 
