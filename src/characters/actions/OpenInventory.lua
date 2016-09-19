@@ -7,7 +7,7 @@ function OpenInventory.new( character, target )
     local self = Action.new( 0, target ):addInstance( 'OpenInventory' );
 
     function self:perform()
-        ScreenManager.push( 'inventory', character );
+        ScreenManager.push( 'inventory', character, target );
         return true;
     end
 

@@ -28,6 +28,7 @@ function InventoryScreen.new()
     local character;
     local lists;
     local dragboard;
+    local target;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -49,9 +50,12 @@ function InventoryScreen.new()
     ---
     -- Creates the three inventory lists for the player's equipment, his Backpack
     -- and the tile he is standing on.
+    -- @param ncharacter (Character) The character to open the inventory for.
+    -- @param ntarget    (Tile)      The target tile to open the inventory for.
     --
-    function self:init( ncharacter )
+    function self:init( ncharacter, ntarget )
         character = ncharacter;
+        target = ntarget;
 
         love.mouse.setVisible( true );
 
@@ -65,8 +69,14 @@ function InventoryScreen.new()
             lists.backpack:init();
         end
 
-        lists.ground = UIInventoryList.new( 420, 20, 'inventory_tile_inventory', character:getTile():getInventory() );
-        lists.ground:init();
+        -- Create a list for the tile inventory or a container located on the tile.
+        if target:hasWorldObject() and target:getWorldObject():isContainer() then
+            lists.container = UIInventoryList.new( 420, 20, 'inventory_container_inventory', target:getWorldObject():getInventory() );
+            lists.container:init();
+        else
+            lists.ground = UIInventoryList.new( 420, 20, 'inventory_tile_inventory', target:getInventory() );
+            lists.ground:init();
+        end
     end
 
     ---
