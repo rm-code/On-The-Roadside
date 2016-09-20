@@ -91,11 +91,17 @@ function UIEquipmentList.new( x, y, id, equipment )
     function self:drop( item, origin )
         if equipment:containsItem( item ) then
             local tmp = equipment:removeItem( item );
-            equipment:addItem( item );
-            origin:drop( tmp );
+            local success = equipment:addItem( item );
+            if success then
+                origin:drop( tmp );
+                return true;
+            end
         end
-        equipment:addItem( item );
-        regenerate();
+        local success = equipment:addItem( item );
+        if success then
+            regenerate();
+            return true;
+        end
     end
 
     ---

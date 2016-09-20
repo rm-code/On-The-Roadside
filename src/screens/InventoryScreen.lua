@@ -122,11 +122,16 @@ function InventoryScreen.new()
         for _, list in pairs( lists ) do
             if list:isMouseOver() then
                 if dragboard then
-                    list:drop( dragboard.item, dragboard.origin );
-                    if dragboard.item:instanceOf( 'Bag' ) then
-                        refreshBackpack();
+                    local success = list:drop( dragboard.item, dragboard.origin );
+                    if success then
+                        if dragboard.item:instanceOf( 'Bag' ) then
+                            refreshBackpack();
+                        end
+                        dragboard = nil;
+                    else
+                        dragboard.origin:drop( dragboard.item );
+                        dragboard = nil;
                     end
-                    dragboard = nil;
                 else
                     local item = list:drag();
                     if item then

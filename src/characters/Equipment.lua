@@ -11,6 +11,16 @@ local Equipment = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local SLOTS = {
+    ITEM_TYPES.WEAPON,
+    ITEM_TYPES.BAG,
+    ITEM_TYPES.HEADGEAR,
+    ITEM_TYPES.GLOVES,
+    ITEM_TYPES.JACKET,
+    ITEM_TYPES.SHIRT,
+    ITEM_TYPES.TROUSERS,
+    ITEM_TYPES.FOOTWEAR
+}
 
 -- ------------------------------------------------
 -- Constructor
@@ -30,16 +40,37 @@ function Equipment.new()
     local items = {};
 
     -- ------------------------------------------------
+    -- Private Method
+    -- ------------------------------------------------
+
+    ---
+    -- Checks if the item can be equipped.
+    -- @param item (Item)    The item to check.
+    -- @return     (boolean) True if the item can be equipped.
+    --
+    local function canEquip( item )
+        for i = 1, #SLOTS do
+            if SLOTS[i] == item:getItemType() then
+                return true;
+            end
+        end
+    end
+
+    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
     ---
     -- Adds a new item to its slot.
-    -- @param item (Item) The item to add.
+    -- @param item (Item)    The item to add.
+    -- @return     (boolean) True if the item was succesfully added.
     --
     function self:addItem( item )
         local main = item:getItemType();
-        items[main] = item;
+        if canEquip( item ) then
+            items[main] = item;
+            return true;
+        end
     end
 
     ---
