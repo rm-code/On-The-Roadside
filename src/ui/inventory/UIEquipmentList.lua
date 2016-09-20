@@ -38,12 +38,12 @@ function UIEquipmentList.new( x, y, id, equipment )
         list = {
             UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 1, equipment:getWeapon() );
             UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 2, equipment:getBackpack() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getClothingItem( ITEM_TYPES.HEADGEAR ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getClothingItem( ITEM_TYPES.GLOVES ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getClothingItem( ITEM_TYPES.JACKET ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getClothingItem( ITEM_TYPES.SHIRT ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getClothingItem( ITEM_TYPES.TROUSERS ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getClothingItem( ITEM_TYPES.FOOTWEAR ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getItem( ITEM_TYPES.HEADGEAR ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getItem( ITEM_TYPES.GLOVES ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getItem( ITEM_TYPES.JACKET ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getItem( ITEM_TYPES.SHIRT ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getItem( ITEM_TYPES.TROUSERS ));
+            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getItem( ITEM_TYPES.FOOTWEAR ));
         };
     end
 
@@ -93,14 +93,22 @@ function UIEquipmentList.new( x, y, id, equipment )
             return false;
         end
 
-        if equipment:containsItem( item ) then
-            local tmp = equipment:removeItem( item );
+        -- Check if equipment already contains an item of the given type.
+        if equipment:containsItemType( item:getItemType() ) then
+            -- Remove the old item from the equipment.
+            local old = equipment:getAndRemoveItem( item:getItemType() );
             local success = equipment:addItem( item );
             if success then
-                origin:drop( tmp );
+                origin:drop( old );
+                regenerate();
                 return true;
+            else
+                equipment:drop( old );
+                regenerate();
+                return false;
             end
         end
+
         local success = equipment:addItem( item );
         if success then
             regenerate();
