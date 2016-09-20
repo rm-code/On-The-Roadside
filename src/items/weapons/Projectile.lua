@@ -25,7 +25,7 @@ local SPEED = 30;
 function Projectile.new( character, tiles )
     local self = Object.new():addInstance( 'Projectile' );
 
-    local weapon = character:getEquipment():getWeapon();
+    local weapon = character:getInventory():getWeapon();
     local energy = 100;
     local timer = 0;
     local index = 1;

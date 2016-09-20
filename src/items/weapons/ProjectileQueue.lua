@@ -77,7 +77,7 @@ function ProjectileQueue.new( character, target )
     local projectiles = {};
     local index = 0;
     local timer = 0;
-    local weapon = character:getEquipment():getWeapon();
+    local weapon = character:getInventory():getWeapon();
 
     -- ------------------------------------------------
     -- Private Methods

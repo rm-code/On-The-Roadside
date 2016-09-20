@@ -6,7 +6,7 @@ function Reload.new( character )
     local self = Action.new( 5, character:getTile() ):addInstance( 'Reload' );
 
     function self:perform()
-        local weapon = character:getEquipment():getWeapon();
+        local weapon = character:getInventory():getWeapon();
 
         if not weapon or weapon:getWeaponType() == 'Grenade' or weapon:getWeaponType() == 'Melee' then
             print( 'Can not reload.' );
@@ -18,7 +18,7 @@ function Reload.new( character )
             return false;
         end
 
-        local inventory = character:getEquipment():getBackpack():getInventory();
+        local inventory = character:getInventory():getBackpack():getInventory();
         local magazine;
         for _, item in pairs( inventory:getItems() ) do
             if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then

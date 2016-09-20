@@ -22,16 +22,16 @@ local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
 
-    local weapon = character:getEquipment():getWeapon();
+    local weapon = character:getInventory():getWeapon();
 
     if weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
         return;
@@ -42,10 +42,10 @@ local function createEquipment( character )
         magazine = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getCaliber() );
         magazine:setCapacity( weapon:getMagSize() );
         magazine:setRounds( weapon:getMagSize() );
-        character:getEquipment():getBackpack():getInventory():addItem( magazine );
+        character:getInventory():getBackpack():getInventory():addItem( magazine );
     end
     weapon:reload( magazine );
-    character:getEquipment():getBackpack():getInventory():removeItem( magazine );
+    character:getInventory():getBackpack():getInventory():removeItem( magazine );
 end
 
 -- ------------------------------------------------

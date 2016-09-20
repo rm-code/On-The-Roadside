@@ -195,7 +195,7 @@ function SaveHandler.load()
                 character:setStance( tile.character.stance );
 
                 if tile.character.equipment then
-                    fillInventory( tile.character.equipment, character:getEquipment() );
+                    fillInventory( tile.character.equipment, character:getInventory() );
                 end
 
                 factions:addCharacter( character );

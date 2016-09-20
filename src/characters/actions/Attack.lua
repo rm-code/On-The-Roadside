@@ -6,10 +6,10 @@ local Messenger = require( 'src.Messenger' );
 local Attack = {};
 
 function Attack.new( character, target )
-    local self = Action.new( character:getEquipment():getWeapon():getAttackCost(), target ):addInstance( 'Attack' );
+    local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'Attack' );
 
     function self:perform()
-        if character:getEquipment():getWeapon():getMagazine():isEmpty() then
+        if character:getInventory():getWeapon():getMagazine():isEmpty() then
             return false;
         end
 

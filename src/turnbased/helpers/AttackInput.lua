@@ -15,17 +15,17 @@ function AttackInput.new( stateManager )
     function self:request( ... )
         local target, character = unpack{ ... };
 
-        if not character:getEquipment():getWeapon() then
+        if not character:getInventory():getWeapon() then
             return;
         end
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+        if character:getInventory():getWeapon():getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;
         end
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Grenade' then
+        if character:getInventory():getWeapon():getWeaponType() == 'Grenade' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;

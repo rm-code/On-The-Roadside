@@ -6,7 +6,7 @@ local Messenger = require( 'src.Messenger' );
 local ThrowingAttack = {};
 
 function ThrowingAttack.new( character, target )
-    local self = Action.new( character:getEquipment():getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
+    local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
 
     function self:perform()
         Messenger.publish( 'START_ATTACK', target );

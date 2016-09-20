@@ -35,8 +35,8 @@ function InventoryScreen.new()
     -- ------------------------------------------------
 
     local function refreshBackpack()
-        if character:getEquipment():getBackpack() then
-            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getEquipment():getBackpack():getInventory() );
+        if character:getInventory():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getInventory():getBackpack():getInventory() );
             lists.backpack:init();
         else
             lists.backpack = nil;
@@ -61,11 +61,11 @@ function InventoryScreen.new()
 
         lists = {};
 
-        lists.equipment = UIEquipmentList.new( 20, 20, 'inventory_equipment', character:getEquipment() );
+        lists.equipment = UIEquipmentList.new( 20, 20, 'inventory_equipment', character:getInventory() );
         lists.equipment:init();
 
-        if character:getEquipment():getBackpack() then
-            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getEquipment():getBackpack():getInventory() );
+        if character:getInventory():getBackpack() then
+            lists.backpack = UIInventoryList.new( 220, 20, 'inventory_backpack', character:getInventory():getBackpack():getInventory() );
             lists.backpack:init();
         end
 

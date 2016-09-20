@@ -9,7 +9,7 @@ function BTHasGrenade.new()
         print( 'BTHasGrenade' );
         local _, character = ...;
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Grenade' then
+        if character:getInventory():getWeapon():getWeaponType() == 'Grenade' then
             return true;
         end
 

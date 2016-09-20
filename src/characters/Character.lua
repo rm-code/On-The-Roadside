@@ -327,7 +327,7 @@ function Character.new( map, tile, faction )
     -- Returns the character's equipment.
     -- @return (Inventory) The character's equipment.
     --
-    function self:getEquipment()
+    function self:getInventory()
         return equipment;
     end
 

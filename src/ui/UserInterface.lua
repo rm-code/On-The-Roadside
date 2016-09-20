@@ -63,7 +63,7 @@ function UserInterface.new( game )
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
 
-        local weapon = character:getEquipment():getWeapon();
+        local weapon = character:getInventory():getWeapon();
         if weapon then
             love.graphics.print( Translator.getText( 'ui_weapon' ), 200, love.graphics.getHeight() - 40 );
             love.graphics.print( Translator.getText( weapon:getID() ), 200 + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - 40 );

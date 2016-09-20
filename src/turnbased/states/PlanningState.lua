@@ -38,9 +38,9 @@ function PlanningState.new( stateManager, factions )
         end
 
         if key == 'right' then
-            character:getEquipment():getWeapon():selectNextFiringMode();
+            character:getInventory():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            character:getEquipment():getWeapon():selectPrevFiringMode();
+            character:getInventory():getWeapon():selectPrevFiringMode();
         elseif key == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));

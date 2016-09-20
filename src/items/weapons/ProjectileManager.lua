@@ -25,7 +25,7 @@ local function hitTile( index, tile, projectile )
     queue:removeProjectile( index );
     if projectile:getWeapon():getWeaponType() == 'Grenade' then
         ExplosionManager.register( tile, 3 );
-        projectile:getCharacter():getEquipment():removeItem( projectile:getWeapon() );
+        projectile:getCharacter():getInventory():removeItem( projectile:getWeapon() );
     elseif projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
         ExplosionManager.register( tile, projectile:getWeapon():getMagazine():getBlastRadius() );
     else
