@@ -1,6 +1,7 @@
 return {
     id         = "weapon_tonfa",
     itemType   = "Weapon",
+    weight     = 1.2,
     weaponType = "Melee",
     damage     = 30,
     equippable = true,

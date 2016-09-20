@@ -2,6 +2,7 @@ return {
     id       = "weapon_fnp90",
     itemType = "Weapon",
     weaponType = "Submachine Gun",
+    weight   = 2.1,
     damage   = 38,
     rpm      = 900,
     caliber  = "5.7x28mm",

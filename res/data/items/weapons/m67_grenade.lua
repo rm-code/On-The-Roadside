@@ -1,6 +1,7 @@
 return {
     id       = "weapon_m67_grenade",
     itemType = "Weapon",
+    weight   = 0.2,
     weaponType = "Grenade",
     damage   = 120,
     equippable = true,

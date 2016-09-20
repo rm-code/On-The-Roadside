@@ -1,6 +1,7 @@
 return {
     id       = "weapon_enfield_l85a1",
     itemType = "Weapon",
+    weight   = 3.1,
     weaponType = "Assault Rifle",
     damage   = 45,
     rpm      = 610,

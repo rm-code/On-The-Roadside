@@ -13,6 +13,10 @@ function Item.new( template )
         return template.itemType;
     end
 
+    function self:getWeight()
+        return template.weight;
+    end
+
     function self:isEquippable()
         return template.equippable;
     end

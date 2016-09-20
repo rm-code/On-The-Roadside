@@ -2,6 +2,7 @@ return {
     id       = "weapon_hkmp5",
     itemType = "Weapon",
     weaponType = "Submachine Gun",
+    weight   = 2.0,
     damage   = 36,
     rpm      = 800,
     caliber  = "9x19mm",

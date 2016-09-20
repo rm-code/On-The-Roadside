@@ -3,5 +3,6 @@ return {
     itemType = "Ammunition",
     ammoType = "Rocket",
     blastRadius = 5,
+    weight = 0,
     equippable = false
 }
