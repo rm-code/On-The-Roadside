@@ -89,6 +89,10 @@ function UIEquipmentList.new( x, y, id, equipment )
     -- @param origin (UIInventoryList) The inventory list the item is coming from.
     --
     function self:drop( item, origin )
+        if not item:isEquippable() then
+            return false;
+        end
+
         if equipment:containsItem( item ) then
             local tmp = equipment:removeItem( item );
             local success = equipment:addItem( item );

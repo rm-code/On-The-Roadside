@@ -5,6 +5,7 @@ return {
     damage     = 20,
     caliber    = "12 gauge",
     magSize    = 8,
+    equippable = true,
     mode = {
         {
             name = "Single",

@@ -3,6 +3,7 @@ return {
     itemType   = "Weapon",
     weaponType = "Melee",
     damage     = 30,
+    equippable = true,
     mode = {
         {
             name = "Single",

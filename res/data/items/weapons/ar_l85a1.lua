@@ -6,6 +6,7 @@ return {
     rpm      = 610,
     caliber  = "5.56x45mm",
     magSize  = 30,
+    equippable = true,
     mode = {
         {
             name = "Single",

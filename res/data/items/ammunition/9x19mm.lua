@@ -1,4 +1,5 @@
 return {
     id       = "9x19mm",
-    itemType = "Ammunition"
+    itemType = "Ammunition",
+    equippable = false
 }
