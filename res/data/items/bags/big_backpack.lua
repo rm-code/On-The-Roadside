@@ -3,5 +3,6 @@ return {
     itemType = "Bag",
     equippable = true,
     weight = 2,
+    weightLimit = 20,
     slots = 14
 }

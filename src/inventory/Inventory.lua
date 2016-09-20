@@ -11,12 +11,13 @@ local Inventory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local DEFAULT_WEIGHT_LIMIT = 50;
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Inventory.new()
+function Inventory.new( weightLimit )
     local self = Object.new():addInstance( 'Inventory' );
 
     -- ------------------------------------------------
@@ -24,6 +25,19 @@ function Inventory.new()
     -- ------------------------------------------------
 
     local items = {};
+    weightLimit = weightLimit or DEFAULT_WEIGHT_LIMIT;
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function calculateWeight()
+        local weight = 0;
+        for _, item in ipairs( items ) do
+            weight = weight + item:getWeight();
+        end
+        return weight;
+    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -35,6 +49,11 @@ function Inventory.new()
     -- @return     (boolean) True if the item was added successfully.
     --
     function self:addItem( item )
+        local weight = calculateWeight();
+        if weight + item:getWeight() > weightLimit then
+            return false;
+        end
+
         items[#items + 1] = item;
         return true;
     end
@@ -115,6 +134,10 @@ function Inventory.new()
 
     function self:isEmpty()
         return #items == 0;
+    end
+
+    function self:getWeightLimit()
+        return weightLimit;
     end
 
     return self;

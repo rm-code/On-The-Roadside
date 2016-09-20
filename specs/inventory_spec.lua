@@ -4,16 +4,30 @@ describe( 'Inventory class', function()
     local Item = require( 'src.items.Item' );
 
     describe( 'when creating a new Inventory', function()
-        local inventory = Inventory.new();
+        local inventory;
+
+        describe( 'when created without parameters', function()
+            inventory = Inventory.new()
+            it( 'should have a weight limit of 50', function()
+                assert.is_true( inventory:getWeightLimit() == 50 );
+            end)
+        end)
+
+        describe( 'when created with parameters', function()
+            inventory = Inventory.new( 20 )
+            it( 'should have the specified weight limit', function()
+                assert.is_true( inventory:getWeightLimit() == 20 );
+            end)
+        end)
 
         it( 'should be empty', function()
-            assert.is_true( inventory.isEmpty() );
+            assert.is_true( inventory:isEmpty() );
         end)
     end)
 
     describe( 'when adding a new item', function()
         local inventory = Inventory.new();
-        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy' });
+        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2 });
 
         it( 'should return true if the item was added successfully', function()
             assert.is_true( inventory:addItem( item ));
@@ -26,7 +40,7 @@ describe( 'Inventory class', function()
 
     describe( 'when removing an item', function()
         local inventory = Inventory.new();
-        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy' });
+        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2 });
         inventory:addItem( item );
 
         it( 'should return true if the item has been removed successfully', function()
@@ -51,14 +65,14 @@ describe( 'Inventory class', function()
 
     describe( 'when accessing items', function()
         local inventory = Inventory.new();
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON   }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.BAG      }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.HEADGEAR }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.GLOVES   }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.JACKET   }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.SHIRT    }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.TROUSERS }));
-        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.FOOTWEAR }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON,   weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.BAG,      weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.HEADGEAR, weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.GLOVES,   weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.JACKET,   weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.SHIRT,    weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.TROUSERS, weight = 2 }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.FOOTWEAR, weight = 2 }));
 
         it( 'should find items of a specific type', function()
             assert.is_true( inventory:containsItemType( ITEM_TYPES.WEAPON ));
@@ -73,6 +87,14 @@ describe( 'Inventory class', function()
             assert.is_true( inventory:getItem( ITEM_TYPES.SHIRT    ):getItemType() == ITEM_TYPES.SHIRT    );
             assert.is_true( inventory:getItem( ITEM_TYPES.TROUSERS ):getItemType() == ITEM_TYPES.TROUSERS );
             assert.is_true( inventory:getItem( ITEM_TYPES.FOOTWEAR ):getItemType() == ITEM_TYPES.FOOTWEAR );
+        end)
+    end)
+
+    describe( 'when being at full capacity', function()
+        it( 'should fail when adding an item', function()
+            local inventory = Inventory.new( 10 );
+            inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON, weight = 6 }));
+            assert.is_false( inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.BAG, weight = 6 })));
         end)
     end)
 end)

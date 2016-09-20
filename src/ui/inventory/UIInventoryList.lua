@@ -75,9 +75,12 @@ function UIInventoryList.new( x, y, id, inventory )
     end
 
     function self:drop( item )
-        inventory:addItem( item );
-        regenerate();
-        return true;
+        local success = inventory:addItem( item );
+        if success then
+            regenerate();
+            return true;
+        end
+        return false;
     end
 
     function self:drag()
