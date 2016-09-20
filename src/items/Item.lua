@@ -2,21 +2,21 @@ local Object = require( 'src.Object' );
 
 local Item = {};
 
-function Item.new( id, itemType )
+function Item.new( template )
     local self = Object.new():addInstance( 'Item' );
 
     function self:getID()
-        return id;
+        return template.id;
     end
 
     function self:getItemType()
-        return itemType;
+        return template.itemType;
     end
 
     function self:serialize()
         local t = {
-            ['id'] = id,
-            ['itemType'] = itemType
+            ['id'] = template.id,
+            ['itemType'] = template.itemType
         };
         return t;
     end

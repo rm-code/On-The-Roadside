@@ -2,11 +2,11 @@ local Magazine = require( 'src.items.weapons.Magazine' );
 
 local ShotgunShell = {};
 
-function ShotgunShell.new( caliber, itemType, ammoType, pellets )
-    local self = Magazine.new( caliber, itemType, ammoType ):addInstance( 'ShotgunShell' );
+function ShotgunShell.new( template )
+    local self = Magazine.new( template ):addInstance( 'ShotgunShell' );
 
     function self:getPelletAmount()
-        return pellets;
+        return template.pellets;
     end
 
     return self;

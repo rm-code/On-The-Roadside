@@ -8,7 +8,7 @@ local Bag = {};
 -- ------------------------------------------------
 
 function Bag.new( template )
-    local self = Item.new( template.id, template.itemType ):addInstance( 'Bag' );
+    local self = Item.new( template ):addInstance( 'Bag' );
 
     local inventory = Inventory.new();
 

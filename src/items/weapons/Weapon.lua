@@ -11,7 +11,7 @@ local Weapon = {};
 -- ------------------------------------------------
 
 function Weapon.new( template )
-    local self = Item.new( template.id, template.itemType ):addInstance( 'Weapon' );
+    local self = Item.new( template ):addInstance( 'Weapon' );
 
     -- ------------------------------------------------
     -- Private Attributes

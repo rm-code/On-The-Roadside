@@ -2,11 +2,11 @@ local Magazine = require( 'src.items.weapons.Magazine' );
 
 local Rocket = {};
 
-function Rocket.new( caliber, itemType, ammoType, blastRadius )
-    local self = Magazine.new( caliber, itemType, ammoType ):addInstance( 'Rocket' );
+function Rocket.new( template )
+    local self = Magazine.new( template ):addInstance( 'Rocket' );
 
     function self:getBlastRadius()
-        return blastRadius;
+        return template.blastRadius;
     end
 
     return self;

@@ -138,11 +138,11 @@ end
 local function createMagazine( id )
     local template = searchTemplate( id, items.Ammunition );
     if template.ammoType == 'Rocket' then
-        return Rocket.new( template.id, template.itemType, template.ammoType, template.blastRadius );
+        return Rocket.new( template );
     elseif template.ammoType == 'ShotgunShell' then
-        return ShotgunShell.new( template.id, template.itemType, template.ammoType, template.pellets );
+        return ShotgunShell.new( template );
     end
-    return Magazine.new( template.id, template.itemType, template.ammoType );
+    return Magazine.new( template );
 end
 
 ---
@@ -152,7 +152,7 @@ end
 --
 local function createHeadgear( id )
     local template = searchTemplate( id, items.Headgear );
-    return Headgear.new( template.id, template.itemType, template.armor );
+    return Headgear.new( template );
 end
 
 ---
@@ -162,7 +162,7 @@ end
 --
 local function createGloves( id )
     local template = searchTemplate( id, items.Gloves );
-    return Gloves.new( template.id, template.itemType, template.armor );
+    return Gloves.new( template );
 end
 
 ---
@@ -172,7 +172,7 @@ end
 --
 local function createJacket( id )
     local template = searchTemplate( id, items.Jacket );
-    return Jacket.new( template.id, template.itemType, template.armor );
+    return Jacket.new( template );
 end
 
 ---
@@ -182,7 +182,7 @@ end
 --
 local function createShirt( id )
     local template = searchTemplate( id, items.Shirt );
-    return Shirt.new( template.id, template.itemType, template.armor );
+    return Shirt.new( template );
 end
 
 ---
@@ -192,7 +192,7 @@ end
 --
 local function createTrousers( id )
     local template = searchTemplate( id, items.Trousers );
-    return Trousers.new( template.id, template.itemType, template.armor );
+    return Trousers.new( template );
 end
 
 ---
@@ -202,7 +202,7 @@ end
 --
 local function createFootwear( id )
     local template = searchTemplate( id, items.Footwear );
-    return Footwear.new( template.id, template.itemType, template.armor );
+    return Footwear.new( template );
 end
 
 ---
