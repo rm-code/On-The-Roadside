@@ -10,13 +10,15 @@ env:
 
 before_install:
   - pip install hererocks
-  - hererocks here -r^ --$LUA
-  - export PATH=$PATH:$PWD/here/bin
+  - hererocks lua_install -r^ --$LUA
+  - export PATH=$PATH:$PWD/lua_install/bin
 
 install:
+  - luarocks install luacheck
   - luarocks install busted
 
 script:
+  - luacheck . --no-self --no-redefined --globals love getVersion getTitle --std +busted
   - busted specs
 
 branches:
