@@ -14,6 +14,7 @@ local SaveHandler = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local loadstring = loadstring or load; -- Lua 5.1+ compatibility.
 
 -- ------------------------------------------------
 -- Private Functions
