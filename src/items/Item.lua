@@ -21,6 +21,10 @@ function Item.new( template )
         return template.equippable;
     end
 
+    function self:isStackable()
+        return template.stackable;
+    end
+
     function self:serialize()
         local t = {
             ['id'] = template.id,

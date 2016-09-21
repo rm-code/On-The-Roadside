@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local ItemStack = require( 'src.inventory.ItemStack' );
 
 -- ------------------------------------------------
 -- Module
@@ -39,6 +40,22 @@ function Inventory.new( weightLimit )
         return weight;
     end
 
+    local function addStackableItem( item )
+        -- Check if we already have an item stack to add this item to.
+        for _, stack in ipairs( items ) do
+            if stack:instanceOf( 'ItemStack' ) and stack:getID() == item:getID() then
+                stack:addItem( item );
+                return true;
+            end
+        end
+
+        -- If not we create a new stack.
+        local stack = ItemStack.new( item:getID() );
+        stack:addItem( item );
+        items[#items + 1] = stack;
+        return true;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -54,6 +71,10 @@ function Inventory.new( weightLimit )
             return false;
         end
 
+        if item:isStackable() then
+            return addStackableItem( item );
+        end
+
         items[#items + 1] = item;
         return true;
     end
@@ -65,7 +86,16 @@ function Inventory.new( weightLimit )
     --
     function self:removeItem( item )
         for i = 1, #items do
-            if items[i] == item then
+            if items[i]:instanceOf( 'ItemStack' ) then
+                local success = items[i]:removeItem( item );
+                if success then
+                    -- Remove the stack if it is empty.
+                    if items[i]:isEmpty() then
+                        table.remove( items, i );
+                    end
+                    return true;
+                end
+            elseif items[i] == item then
                 table.remove( items, i );
                 return true;
             end
@@ -102,8 +132,14 @@ function Inventory.new( weightLimit )
     function self:getAndRemoveItem( type )
         for _, item in ipairs( items ) do
             if item:getItemType() == type then
-                self:removeItem( item );
-                return item;
+                if item:instanceOf( 'ItemStack' ) then
+                    local i = item:getItem();
+                    self:removeItem( i );
+                    return i;
+                else
+                    self:removeItem( item );
+                    return item;
+                end
             end
         end
     end

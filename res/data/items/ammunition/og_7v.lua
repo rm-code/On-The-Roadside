@@ -4,5 +4,6 @@ return {
     ammoType = "Rocket",
     blastRadius = 5,
     weight = 0,
+    stackable = true,
     equippable = false
 }

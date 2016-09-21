@@ -36,25 +36,64 @@ describe( 'Inventory class', function()
         it( 'should no longer be empty', function()
             assert.is_false( inventory.isEmpty() );
         end)
+
     end)
 
-    describe( 'when removing an item', function()
+    describe( 'when adding a stackable item', function()
         local inventory = Inventory.new();
-        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2 });
+        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true });
+        local stack;
+
+        it( 'should create an ItemStack for the new item', function()
+            assert.is_true( inventory:addItem( item ));
+            stack = inventory:getItems()[1];
+            assert.is_not_nil( stack );
+            assert.is_true( stack:instanceOf( 'ItemStack' ));
+        end)
+        it( 'should add items to an existing ItemStack if the IDs match', function()
+            local newItem = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true });
+            inventory:addItem( newItem );
+            assert.is_true( #inventory:getItems() == 1 );
+            assert.is_true( stack:getItemCount() == 2 );
+        end)
+    end)
+
+    describe( 'when removing an unstackable item', function()
+        local inventory = Inventory.new();
+        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = false });
         inventory:addItem( item );
 
         it( 'should return true if the item has been removed successfully', function()
             assert.is_true( inventory:removeItem( item ));
         end)
-
         it( 'should be empty when all items have been removed', function()
             assert.is_true( inventory:isEmpty() );
         end)
-
         it( 'should return false if the removal of an item has failed', function()
             assert.is_false( inventory:removeItem( 'fail' ));
         end)
+        it( 'should be able to get and remove a specific item type', function()
+            inventory:addItem( item );
+            assert.is_false( inventory:isEmpty() );
+            assert.is_true( inventory:getAndRemoveItem( 'Dummy' ):getItemType() == 'Dummy' );
+            assert.is_true( inventory:isEmpty() );
+        end)
+    end)
 
+    describe( 'when removing a stackable item', function()
+        local inventory = Inventory.new();
+        local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true });
+        inventory:addItem( item );
+
+        it( 'should return true if the item has been removed successfully', function()
+            assert.is_true( inventory:removeItem( item ));
+        end)
+        it( 'should be empty when all items have been removed', function()
+            assert.is_true( inventory:isEmpty() );
+        end)
+        it( 'should return false if the removal of an item has failed', function()
+            assert.is_false( inventory:removeItem( 'fail' ));
+        end)
         it( 'should be able to get and remove a specific item type', function()
             inventory:addItem( item );
             assert.is_false( inventory:isEmpty() );
