@@ -13,7 +13,7 @@ function AttackInput.new( stateManager )
     end
 
     function self:request( ... )
-        local target, character = unpack{ ... };
+        local target, character = ...;
 
         if not character:getInventory():getWeapon() then
             return;

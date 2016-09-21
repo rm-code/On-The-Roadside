@@ -9,7 +9,7 @@ function InteractionInput.new( stateManager )
     local self = Object.new():addInstance( 'InteractionInput' );
 
     function self:request( ... )
-        local target, character = unpack{ ... };
+        local target, character = ...;
 
         if target:hasWorldObject() then
             if target:getWorldObject():isOpenable() and target:isAdjacent( character:getTile() ) then
