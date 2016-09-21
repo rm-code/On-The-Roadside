@@ -15,8 +15,8 @@ function Observable.new()
         return index;
     end
 
-    function self:remove( index )
-        observers[index] = nil;
+    function self:remove( nindex )
+        observers[nindex] = nil;
     end
 
     function self:publish( event, ... )
