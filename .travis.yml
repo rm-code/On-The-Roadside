@@ -18,7 +18,7 @@ install:
   - luarocks install busted
 
 script:
-  - luacheck . --no-self --no-redefined --globals love getVersion getTitle --std +busted
+  - luacheck . --no-self --no-redefined --globals love getVersion getTitle --std +busted --exclude-files ./lua_install/*
   - busted specs
 
 branches:
