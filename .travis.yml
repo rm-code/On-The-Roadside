@@ -19,7 +19,7 @@ install:
 
 script:
   - luacheck . --no-self --ignore /self --globals love getVersion getTitle --std max+busted --exclude-files ./lua_install/*
-  - busted specs
+  - busted spc
 
 branches:
   only:
