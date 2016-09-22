@@ -130,6 +130,23 @@ function Inventory.new( weightLimit )
         return false;
     end
 
+    local function merge( stack, ostack )
+        assert( stack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
+        assert( ostack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
+
+        for _, item in pairs( ostack:getItems() ) do
+            local weight = calculateWeight();
+            if weight + item:getWeight() > weightLimit then
+                return false;
+            end
+
+            stack:addItem( item );
+            ostack:removeItem( item );
+        end
+
+        return true;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -170,6 +187,11 @@ function Inventory.new( weightLimit )
     function self:insertItem( item, oitem )
         for i = 1, #items do
             if items[i] == oitem then
+                if oitem:instanceOf( 'ItemStack' ) and oitem:getID() == item:getID() then
+                    if item:instanceOf( 'ItemStack' ) then
+                        return merge( oitem, item );
+                    end
+                end
                 return self:addItem( item, i );
             end
         end

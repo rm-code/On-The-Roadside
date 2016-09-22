@@ -74,6 +74,9 @@ function UIInventoryList.new( x, y, id, inventory )
 
     function self:isMouseOver()
         local mx = love.mouse.getX();
+        for _, uiItem in ipairs( list ) do
+            uiItem:isMouseOver();
+        end
         return ( mx > x and mx < x + WIDTH );
     end
 
