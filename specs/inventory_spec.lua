@@ -70,7 +70,8 @@ describe( 'Inventory class', function()
             assert.is_true( inventory:isEmpty() );
         end)
         it( 'should return false if the removal of an item has failed', function()
-            assert.is_false( inventory:removeItem( 'fail' ));
+            local other = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = false });
+            assert.is_false( inventory:removeItem( other ));
         end)
         it( 'should be able to get and remove a specific item type', function()
             inventory:addItem( item );
@@ -92,7 +93,8 @@ describe( 'Inventory class', function()
             assert.is_true( inventory:isEmpty() );
         end)
         it( 'should return false if the removal of an item has failed', function()
-            assert.is_false( inventory:removeItem( 'fail' ));
+            local other = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true });
+            assert.is_false( inventory:removeItem( other ));
         end)
         it( 'should be able to get and remove a specific item type', function()
             inventory:addItem( item );
