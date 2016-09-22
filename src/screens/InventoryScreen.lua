@@ -73,7 +73,7 @@ function InventoryScreen.new()
         if target:hasWorldObject() and target:getWorldObject():isContainer() then
             lists.container = UIInventoryList.new( 420, 20, 'inventory_container_inventory', target:getWorldObject():getInventory() );
             lists.container:init();
-        elseif target:isOccupied() and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
+        elseif target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
             lists.oequipment = UIEquipmentList.new( 420, 20, 'inventory_equipment', target:getCharacter():getInventory() );
             lists.oequipment:init();
             lists.obackpack = UIInventoryList.new( 620, 20, 'inventory_backpack', target:getCharacter():getInventory():getBackpack():getInventory() );
