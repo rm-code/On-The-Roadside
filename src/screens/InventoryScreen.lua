@@ -124,7 +124,7 @@ function InventoryScreen.new()
         end
     end
 
-    function self:mousepressed( x, y, button )
+    function self:mousepressed( _, _, button )
         for _, list in pairs( lists ) do
             if list:isMouseOver() then
                 if dragboard then
