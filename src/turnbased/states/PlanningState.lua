@@ -38,8 +38,14 @@ function PlanningState.new( stateManager, factions )
         end
 
         if key == 'right' then
+            if not character:getInventory():getWeapon() then
+                return;
+            end
             character:getInventory():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
+            if not character:getInventory():getWeapon() then
+                return;
+            end
             character:getInventory():getWeapon():selectPrevFiringMode();
         elseif key == 'c' then
             character:clearActions();
