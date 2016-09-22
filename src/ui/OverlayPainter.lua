@@ -50,7 +50,7 @@ function OverlayPainter.new( game, particleLayer )
         end
 
         local weapon = character:getInventory():getWeapon();
-        if not weapon or weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
+        if not weapon or weapon:getWeaponType() == 'Melee' then
             return;
         end
 
@@ -70,7 +70,7 @@ function OverlayPainter.new( game, particleLayer )
                 local visible = character:getFaction():canSee( tile );
 
                 if not visible
-                        or weapon:getMagazine():isEmpty()
+                        or ( not weapon:instanceOf( 'Grenade' ) and weapon:getMagazine():isEmpty() )
                         or character:getActionPoints() < weapon:getAttackCost()
                         or count > weapon:getRange() then
                     love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
