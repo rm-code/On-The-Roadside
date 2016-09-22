@@ -286,6 +286,14 @@ function Inventory.new( weightLimit )
     end
 
     ---
+    -- Gets the used weight for this inventory.
+    -- @return (number) The weight for this inventory.
+    --
+    function self:getWeight()
+        return calculateWeight();
+    end
+
+    ---
     -- Gets the weight limit for this inventory.
     -- @return (number) The weight limit for this inventory.
     --
