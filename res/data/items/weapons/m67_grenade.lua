@@ -5,6 +5,7 @@ return {
     weaponType = "Grenade",
     damage   = 120,
     equippable = true,
+    range = 10,
     mode = {
         {
             name = "Throw",

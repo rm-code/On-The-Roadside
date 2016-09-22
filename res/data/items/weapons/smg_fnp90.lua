@@ -8,6 +8,7 @@ return {
     caliber  = "5.7x28mm",
     magSize  = 50,
     equippable = true,
+    range = 25,
     mode = {
         {
             name = "Single",

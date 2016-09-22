@@ -9,6 +9,10 @@ function Grenade.new( template )
         return 1;
     end
 
+    function self:getRange()
+        return template.range;
+    end
+
     return self;
 end
 

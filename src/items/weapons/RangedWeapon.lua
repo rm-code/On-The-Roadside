@@ -14,6 +14,7 @@ function RangedWeapon.new( template )
     local caliber = template.caliber;
     local magSize = template.magSize;
     local magazine;
+    local range = template.range;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -60,6 +61,10 @@ function RangedWeapon.new( template )
 
     function self:getMagSize()
         return magSize;
+    end
+
+    function self:getRange()
+        return range;
     end
 
     return self;
