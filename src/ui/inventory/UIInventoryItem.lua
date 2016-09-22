@@ -12,6 +12,18 @@ function UIInventoryItem.new( x, y, item )
 
     local mouseOver = false;
 
+    local function createLabel()
+        if not item then
+            return Translator.getText( 'inventory_empty_slot' );
+        else
+            local text = Translator.getText( item:getID() )
+            if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
+                text = string.format( '%s (%d)', text, item:getItemCount() );
+            end
+            return text;
+        end
+    end
+
     function self:draw()
         if mouseOver then
             love.graphics.setColor( COLORS.DB15 );
@@ -26,12 +38,7 @@ function UIInventoryItem.new( x, y, item )
 
         love.graphics.setScissor( x, y, WIDTH, HEIGHT );
         love.graphics.setColor( COLORS.DB21 );
-
-        local str = item and Translator.getText( item:getID() ) or Translator.getText( 'inventory_empty_slot' );
-        if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
-            str = string.format( '%s (%d)', str, item:getItemCount() );
-        end
-        love.graphics.printf( str, x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( createLabel(), x, y + 5, WIDTH, 'center' );
         love.graphics.setScissor();
     end
 
@@ -44,10 +51,8 @@ function UIInventoryItem.new( x, y, item )
         return mouseOver;
     end
 
-    function self:drag( rmb, fullstack )
-        if item:instanceOf( 'ItemStack' ) and rmb then
-            return item:split();
-        elseif item:instanceOf( 'ItemStack' ) and not fullstack then
+    function self:drag()
+        if item:instanceOf( 'ItemStack' ) then
             return item:getItem();
         end
         return item;
