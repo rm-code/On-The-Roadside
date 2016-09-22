@@ -83,10 +83,10 @@ function UIInventoryList.new( x, y, id, inventory )
         return false;
     end
 
-    function self:drag( fullstack )
+    function self:drag( rmb, fullstack )
         for _, uiItem in ipairs( list ) do
             if uiItem:isMouseOver() then
-                local item = uiItem:drag( fullstack );
+                local item = uiItem:drag( rmb, fullstack );
                 inventory:removeItem( item );
                 regenerate();
                 return item;

@@ -33,6 +33,18 @@ function ItemStack.new( id )
         return weight;
     end
 
+    function self:split()
+        if #items > 1 then
+            local count = math.floor( #items * 0.5 );
+            local newStack = ItemStack.new( id );
+            for i = 1, count do
+                newStack:addItem( items[i] );
+                self:removeItem( items[i] );
+            end
+            return newStack;
+        end
+    end
+
     function self:getItem()
         return items[#items];
     end

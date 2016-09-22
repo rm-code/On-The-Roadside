@@ -44,8 +44,10 @@ function UIInventoryItem.new( x, y, item )
         return mouseOver;
     end
 
-    function self:drag( fullstack )
-        if item:instanceOf( 'ItemStack' ) and not fullstack then
+    function self:drag( rmb, fullstack )
+        if item:instanceOf( 'ItemStack' ) and rmb then
+            return item:split();
+        elseif item:instanceOf( 'ItemStack' ) and not fullstack then
             return item:getItem();
         end
         return item;

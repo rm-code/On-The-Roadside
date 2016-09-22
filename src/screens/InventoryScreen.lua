@@ -124,7 +124,7 @@ function InventoryScreen.new()
         end
     end
 
-    function self:mousepressed()
+    function self:mousepressed( x, y, button )
         for _, list in pairs( lists ) do
             if list:isMouseOver() then
                 if dragboard then
@@ -139,7 +139,7 @@ function InventoryScreen.new()
                         dragboard = nil;
                     end
                 else
-                    local item = list:drag( love.keyboard.isDown( 'lshift' ));
+                    local item = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
                     if item then
                         dragboard = { item = item, origin = list };
                         if item:instanceOf( 'Bag' ) then

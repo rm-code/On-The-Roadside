@@ -72,4 +72,19 @@ describe( 'ItemStack class', function()
             assert.is_true( stack:getWeight() == 6 );
         end)
     end)
+
+    describe( 'when splitting the stack', function()
+        it( 'should create a new item stack with half the item count', function()
+            local stack = ItemStack.new( 'id_dummy' );
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            local nstack = stack:split();
+            assert.is_not_nil( nstack );
+            assert.is_true( nstack:instanceOf( 'ItemStack' ));
+            assert.is_true(  stack:getItemCount() == 2 );
+            assert.is_true( nstack:getItemCount() == 2 );
+        end)
+    end)
 end)
