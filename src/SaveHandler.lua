@@ -1,6 +1,7 @@
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local ItemFactory = require( 'src.items.ItemFactory' );
+local ItemStack = require( 'src.inventory.ItemStack' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' );
 
 -- ------------------------------------------------
@@ -119,7 +120,11 @@ function SaveHandler.load()
 
     local function fillInventory( source, target )
         for _, item in pairs( source ) do
-            if item.itemType == ITEM_TYPES.WEAPON then
+            if item.ItemStack then
+                local itemStack = ItemStack.new( item.id );
+                fillInventory( item.items, itemStack );
+                target:addItem( itemStack );
+            elseif item.itemType == ITEM_TYPES.WEAPON then
                 local weapon = createWeapon( item );
                 target:addItem( weapon );
             elseif item.itemType == ITEM_TYPES.BAG then

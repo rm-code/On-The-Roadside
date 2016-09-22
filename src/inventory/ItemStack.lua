@@ -45,6 +45,18 @@ function ItemStack.new( id )
         end
     end
 
+    function self:serialize()
+        local t = {
+            ['ItemStack'] = true,
+            ['id'] = id,
+            ['items'] = {}
+        };
+        for i = 1, #items do
+            t['items'][i] = items[i]:serialize();
+        end
+        return t;
+    end
+
     function self:getItem()
         return items[#items];
     end
