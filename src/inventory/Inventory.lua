@@ -32,6 +32,10 @@ function Inventory.new( weightLimit )
     -- Private Methods
     -- ------------------------------------------------
 
+    ---
+    -- Returns the combined weight of all items in the inventory.
+    -- @return (number) The total weight of all items in the inventory.
+    --
     local function calculateWeight()
         local weight = 0;
         for _, item in ipairs( items ) do
@@ -40,6 +44,33 @@ function Inventory.new( weightLimit )
         return weight;
     end
 
+    ---
+    -- Adds an Item to the inventory.
+    -- @param item (Item)    The Item to add.
+    -- @return     (boolean) True if the Item was added successfully.
+    --
+    local function addItem( item )
+        items[#items + 1] = item;
+        return true;
+    end
+
+    ---
+    -- Adds an ItemStack to the inventory.
+    -- @param stack (ItemStack) The ItemStack to add.
+    -- @return      (boolean)   True if the ItemStack was added successfully.
+    --
+    local function addItemStack( stack )
+        items[#items + 1] = stack;
+        return true;
+    end
+
+    ---
+    -- Adds a stackable item to the inventory. If the inventory already contains
+    -- an ItemStack for this Item's ID, it will be added to the existing stack.
+    -- If not, a new ItemStack for this item will be created.
+    -- @param item (Item)    The stackable item to add.
+    -- @return     (boolean) True if the item was added successfully.
+    --
     local function addStackableItem( item )
         -- Check if we already have an item stack to add this item to.
         for _, stack in ipairs( items ) do
@@ -56,11 +87,36 @@ function Inventory.new( weightLimit )
         return true;
     end
 
-    local function addItemStack( stack )
-        items[#items + 1] = stack;
-        return true;
+    ---
+    -- Removes an Item from the inventory.
+    -- @param item (Item)    The Item to remove.
+    -- @return     (boolean) True if the Item was removed successfully.
+    --
+    local function removeItem( item )
+        for i = 1, #items do
+            -- Check if item is part of a stack.
+            if items[i]:instanceOf( 'ItemStack' ) then
+                local success = items[i]:removeItem( item );
+                if success then
+                    -- Remove the stack if it is empty.
+                    if items[i]:isEmpty() then
+                        table.remove( items, i );
+                    end
+                    return true;
+                end
+            elseif items[i] == item then
+                table.remove( items, i );
+                return true;
+            end
+        end
+        return false;
     end
 
+    ---
+    -- Removes an ItemStack from the inventory.
+    -- @param stack (ItemStack) The ItemStack to remove.
+    -- @return      (boolean)   True if the ItemStack was removed successfully.
+    --
     local function removeItemStack( stack )
         for i = 1, #items do
             if items[i]:instanceOf( 'ItemStack' ) and items[i] == stack then
@@ -90,12 +146,13 @@ function Inventory.new( weightLimit )
             return addItemStack( item );
         end
 
-        if item:isStackable() then
-            return addStackableItem( item );
+        if item:instanceOf( 'Item' ) then
+            if item:isStackable() then
+                return addStackableItem( item );
+            else
+                return addItem( item );
+            end
         end
-
-        items[#items + 1] = item;
-        return true;
     end
 
     ---
@@ -108,22 +165,9 @@ function Inventory.new( weightLimit )
             return removeItemStack( item );
         end
 
-        for i = 1, #items do
-            if items[i]:instanceOf( 'ItemStack' ) then
-                local success = items[i]:removeItem( item );
-                if success then
-                    -- Remove the stack if it is empty.
-                    if items[i]:isEmpty() then
-                        table.remove( items, i );
-                    end
-                    return true;
-                end
-            elseif items[i] == item then
-                table.remove( items, i );
-                return true;
-            end
+        if item:instanceOf( 'Item') then
+            return removeItem( item );
         end
-        return false;
     end
 
     ---
@@ -152,6 +196,11 @@ function Inventory.new( weightLimit )
         return false;
     end
 
+    ---
+    -- Gets an item of the specified type and removes it from the inventory.
+    -- @param type (string) The type of item to remove.
+    -- @return     (Item)   An item of the specified type.
+    --
     function self:getAndRemoveItem( type )
         for _, item in ipairs( items ) do
             if item:getItemType() == type then
@@ -171,14 +220,27 @@ function Inventory.new( weightLimit )
     -- Getters
     -- ------------------------------------------------
 
+    ---
+    -- Gets an item of type bag.
+    -- @return (Bag) The bag item.
+    --
     function self:getBackpack()
         return self:getItem( ITEM_TYPES.BAG );
     end
 
+    ---
+    -- Gets an item of type weapon.
+    -- @return (Weapon) The weapon item.
+    --
     function self:getWeapon()
         return self:getItem( ITEM_TYPES.WEAPON );
     end
 
+    ---
+    -- Gets an item of the specified type without removing it from the inventory.
+    -- @param type (string) The type of item to get.
+    -- @return     (Item)   An item of the specified type.
+    --
     function self:getItem( type )
         for i = 1, #items do
             if items[i]:getItemType() == type then
@@ -187,14 +249,26 @@ function Inventory.new( weightLimit )
         end
     end
 
+    ---
+    -- Gets the table of items this inventory contains.
+    -- @return (table) A sequence containing the items and stacks in this inventory.
+    --
     function self:getItems()
         return items;
     end
 
+    ---
+    -- Checks if the inventory is empty.
+    -- @return (boolean) True if the inventory doesn't contain any items or stacks.
+    --
     function self:isEmpty()
         return #items == 0;
     end
 
+    ---
+    -- Gets the weight limit for this inventory.
+    -- @return (number) The weight limit for this inventory.
+    --
     function self:getWeightLimit()
         return weightLimit;
     end
