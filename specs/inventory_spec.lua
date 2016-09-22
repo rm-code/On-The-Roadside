@@ -165,6 +165,15 @@ describe( 'Inventory class', function()
             inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON, weight = 6 }));
             assert.is_false( inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.BAG, weight = 6 })));
         end)
+        it( 'should fail when adding an item stack', function()
+            local inventory = Inventory.new( 8 );
+            inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON, weight = 6 }));
+
+            local stack = ItemStack.new( 'id_dummy' );
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            assert.is_false( inventory:addItem( stack ));
+        end)
     end)
 
     describe( 'when inserting an item', function()
