@@ -89,7 +89,7 @@ function UIEquipmentList.new( x, y, id, equipment )
     -- @param origin (UIInventoryList) The inventory list the item is coming from.
     --
     function self:drop( item, origin )
-        if not item:isEquippable() then
+        if item:instanceOf( 'ItemStack' ) or not item:isEquippable() then
             return false;
         end
 

@@ -56,6 +56,21 @@ function Inventory.new( weightLimit )
         return true;
     end
 
+    local function addItemStack( stack )
+        items[#items + 1] = stack;
+        return true;
+    end
+
+    local function removeItemStack( stack )
+        for i = 1, #items do
+            if items[i]:instanceOf( 'ItemStack' ) and items[i] == stack then
+                table.remove( items, i );
+                return true;
+            end
+        end
+        return false;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -69,6 +84,10 @@ function Inventory.new( weightLimit )
         local weight = calculateWeight();
         if weight + item:getWeight() > weightLimit then
             return false;
+        end
+
+        if item:instanceOf( 'ItemStack' ) then
+            return addItemStack( item );
         end
 
         if item:isStackable() then
@@ -85,6 +104,10 @@ function Inventory.new( weightLimit )
     -- @return     (boolean) True if the item was removed successfully.
     --
     function self:removeItem( item )
+        if item:instanceOf( 'ItemStack' ) then
+            return removeItemStack( item );
+        end
+
         for i = 1, #items do
             if items[i]:instanceOf( 'ItemStack' ) then
                 local success = items[i]:removeItem( item );

@@ -1,6 +1,7 @@
 describe( 'Inventory class', function()
     local ITEM_TYPES = require( 'src.constants.ItemTypes' );
     local Inventory = require( 'src.inventory.Inventory' );
+    local ItemStack = require( 'src.inventory.ItemStack' );
     local Item = require( 'src.items.Item' );
 
     describe( 'when creating a new Inventory', function()
@@ -58,6 +59,17 @@ describe( 'Inventory class', function()
         end)
     end)
 
+    describe( 'when adding an ItemStack', function()
+        local inventory = Inventory.new();
+        local stack = ItemStack.new( 'id_dummy' );
+        stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+        stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+
+        it( 'should return true if the ItemStack has been added successfully', function()
+            assert.is_true( inventory:addItem( stack ));
+        end)
+    end)
+
     describe( 'when removing an unstackable item', function()
         local inventory = Inventory.new();
         local item = Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = false });
@@ -101,6 +113,22 @@ describe( 'Inventory class', function()
             assert.is_false( inventory:isEmpty() );
             assert.is_true( inventory:getAndRemoveItem( 'Dummy' ):getItemType() == 'Dummy' );
             assert.is_true( inventory:isEmpty() );
+        end)
+    end)
+
+    describe( 'when removing an ItemStack', function()
+        local inventory = Inventory.new();
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+        inventory:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+        local stack = inventory:getItems()[1];
+
+        it( 'should return true if the ItemStack has been removed successfully', function()
+            assert.is_true( inventory:removeItem( stack ));
+            assert.is_true( inventory:isEmpty() );
+        end)
+        it( 'should return false if the ItemStack has not been removed successfully', function()
+            local other = ItemStack.new( 'id_not_dummy' );
+            assert.is_false( inventory:removeItem( other ));
         end)
     end)
 

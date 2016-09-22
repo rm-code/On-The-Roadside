@@ -99,7 +99,13 @@ function InventoryScreen.new()
             love.graphics.setColor( COLORS.DB23 );
             love.graphics.rectangle( 'line', mx, my, DRAGGED_ITEM_WIDTH, DRAGGED_ITEM_HEIGHT );
             love.graphics.setColor( COLORS.DB21 );
-            love.graphics.printf( Translator.getText( dragboard.item:getID() ), mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
+
+            local item = dragboard.item;
+            local str = item and Translator.getText( item:getID() ) or Translator.getText( 'inventory_empty_slot' );
+            if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
+                str = string.format( '%s (%d)', str, item:getItemCount() );
+            end
+            love.graphics.printf( str, mx, my + 5, DRAGGED_ITEM_WIDTH, 'center' );
         end
     end
 
@@ -133,7 +139,7 @@ function InventoryScreen.new()
                         dragboard = nil;
                     end
                 else
-                    local item = list:drag();
+                    local item = list:drag( love.keyboard.isDown( 'lshift' ));
                     if item then
                         dragboard = { item = item, origin = list };
                         if item:instanceOf( 'Bag' ) then
