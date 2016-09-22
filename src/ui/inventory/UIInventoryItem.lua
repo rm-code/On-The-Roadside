@@ -55,6 +55,10 @@ function UIInventoryItem.new( x, y, item )
         return item;
     end
 
+    function self:hasItem()
+        return item ~= nil;
+    end
+
     function self:drag( rmb, fullstack )
         if item:instanceOf( 'ItemStack' ) and rmb then
             return item:split();

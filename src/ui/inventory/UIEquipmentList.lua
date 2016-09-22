@@ -123,14 +123,8 @@ function UIEquipmentList.new( x, y, id, equipment )
     --
     function self:drag()
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() then
+            if uiItem:isMouseOver() and uiItem:hasItem() then
                 local item = uiItem:drag();
-
-                -- Ignore empty slots.
-                if not item then
-                    return;
-                end
-
                 equipment:removeItem( item );
                 regenerate();
                 return item;
