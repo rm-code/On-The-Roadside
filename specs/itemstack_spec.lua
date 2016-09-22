@@ -62,4 +62,14 @@ describe( 'ItemStack class', function()
             assert.is_true( stack:getItemCount() == 3 );
         end)
     end)
+
+    describe( 'when calculating the weight', function()
+        it( 'should use the weight of all items in the stack', function()
+            local stack = ItemStack.new( 'id_dummy' );
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            stack:addItem( Item.new({ id = 'id_dummy', itemType = 'Dummy', weight = 2, stackable = true }));
+            assert.is_true( stack:getWeight() == 6 );
+        end)
+    end)
 end)

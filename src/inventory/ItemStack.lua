@@ -26,7 +26,11 @@ function ItemStack.new( id )
     end
 
     function self:getWeight()
-        return items[#items]:getWeight();
+        local weight = 0;
+        for i = 1, #items do
+            weight = weight + items[i]:getWeight();
+        end
+        return weight;
     end
 
     function self:getItem()
