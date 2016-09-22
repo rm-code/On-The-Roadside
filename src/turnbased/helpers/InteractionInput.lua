@@ -23,6 +23,12 @@ function InteractionInput.new( stateManager )
                 character:enqueueAction( OpenInventory.new( character, target ));
                 stateManager:push( 'execution', character );
             end
+        elseif target:isOccupied() then
+            if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
+                print( target:getCharacter():getFaction():getType(), character:getFaction():getType())
+                character:enqueueAction( OpenInventory.new( character, target ));
+                stateManager:push( 'execution', character );
+            end
         end
     end
 
