@@ -51,6 +51,10 @@ function UIInventoryItem.new( x, y, item )
         return mouseOver;
     end
 
+    function self:getItem()
+        return item;
+    end
+
     function self:drag( rmb, fullstack )
         if item:instanceOf( 'ItemStack' ) and rmb then
             return item:split();

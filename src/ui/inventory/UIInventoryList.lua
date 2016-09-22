@@ -75,6 +75,16 @@ function UIInventoryList.new( x, y, id, inventory )
     end
 
     function self:drop( item )
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                local success = inventory:insertItem( item, uiItem:getItem() );
+                if success then
+                    regenerate();
+                    return true;
+                end
+            end
+        end
+
         local success = inventory:addItem( item );
         if success then
             regenerate();

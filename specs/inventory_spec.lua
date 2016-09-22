@@ -166,4 +166,16 @@ describe( 'Inventory class', function()
             assert.is_false( inventory:addItem( Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.BAG, weight = 6 })));
         end)
     end)
+
+    describe( 'when inserting an item', function()
+        it( 'it should place the item at the position of the other item', function()
+            local inventory = Inventory.new( 10 );
+            local item  = Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON, weight = 1 });
+            local oitem = Item.new({ id = 'id_dummy', itemType = ITEM_TYPES.WEAPON, weight = 1 });
+            inventory:addItem( item );
+            assert.is_true( inventory:insertItem( oitem, item ));
+            assert.is_true( inventory:getItems()[1] == oitem );
+            assert.is_true( inventory:getItems()[2] == item );
+        end)
+    end)
 end)

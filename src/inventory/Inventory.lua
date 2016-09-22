@@ -46,21 +46,23 @@ function Inventory.new( weightLimit )
 
     ---
     -- Adds an Item to the inventory.
-    -- @param item (Item)    The Item to add.
-    -- @return     (boolean) True if the Item was added successfully.
+    -- @param item  (Item)    The Item to add.
+    -- @param index (number)  The index at which to insert the item.
+    -- @return      (boolean) True if the Item was added successfully.
     --
-    local function addItem( item )
-        items[#items + 1] = item;
+    local function addItem( item, index )
+        table.insert( items, index, item );
         return true;
     end
 
     ---
     -- Adds an ItemStack to the inventory.
     -- @param stack (ItemStack) The ItemStack to add.
+    -- @param index (number)    The index at which to insert the stack.
     -- @return      (boolean)   True if the ItemStack was added successfully.
     --
-    local function addItemStack( stack )
-        items[#items + 1] = stack;
+    local function addItemStack( stack, index )
+        table.insert( items, index, stack );
         return true;
     end
 
@@ -68,10 +70,11 @@ function Inventory.new( weightLimit )
     -- Adds a stackable item to the inventory. If the inventory already contains
     -- an ItemStack for this Item's ID, it will be added to the existing stack.
     -- If not, a new ItemStack for this item will be created.
-    -- @param item (Item)    The stackable item to add.
-    -- @return     (boolean) True if the item was added successfully.
+    -- @param item  (Item)    The stackable item to add.
+    -- @param index (number)  The index at which to insert the item.
+    -- @return      (boolean) True if the item was added successfully.
     --
-    local function addStackableItem( item )
+    local function addStackableItem( item, index )
         -- Check if we already have an item stack to add this item to.
         for _, stack in ipairs( items ) do
             if stack:instanceOf( 'ItemStack' ) and stack:getID() == item:getID() then
@@ -83,7 +86,7 @@ function Inventory.new( weightLimit )
         -- If not we create a new stack.
         local stack = ItemStack.new( item:getID() );
         stack:addItem( item );
-        items[#items + 1] = stack;
+        table.insert( items, index, stack );
         return true;
     end
 
@@ -133,24 +136,41 @@ function Inventory.new( weightLimit )
 
     ---
     -- Adds an item to the inventory.
-    -- @param item (Item)    The item to add.
-    -- @return     (boolean) True if the item was added successfully.
+    -- @param item  (Item)    The item to add.
+    -- @param index (number)  The index at which to insert the item (optional).
+    -- @return      (boolean) True if the item was added successfully.
     --
-    function self:addItem( item )
+    function self:addItem( item, index )
+        index = index or ( #items + 1 );
+
         local weight = calculateWeight();
         if weight + item:getWeight() > weightLimit then
             return false;
         end
 
         if item:instanceOf( 'ItemStack' ) then
-            return addItemStack( item );
+            return addItemStack( item, index );
         end
 
         if item:instanceOf( 'Item' ) then
             if item:isStackable() then
-                return addStackableItem( item );
+                return addStackableItem( item, index );
             else
-                return addItem( item );
+                return addItem( item, index );
+            end
+        end
+    end
+
+    ---
+    -- Inserts an item at the position of another item.
+    -- @param item  (Item)    The item to insert.
+    -- @param oitem (Item)    The item to use as the position.
+    -- @return      (boolean) True if the item was inserted successfully;
+    --
+    function self:insertItem( item, oitem )
+        for i = 1, #items do
+            if items[i] == oitem then
+                return self:addItem( item, i );
             end
         end
     end
