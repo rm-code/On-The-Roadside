@@ -1,5 +1,5 @@
 local Object = require('src.Object');
-local Node = require('src.characters.Node');
+local Node = require('src.util.Node');
 local Messenger = require( 'src.Messenger' );
 
 -- ------------------------------------------------
