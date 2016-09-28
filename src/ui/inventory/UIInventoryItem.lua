@@ -61,7 +61,11 @@ function UIInventoryItem.new( x, y, item )
 
     function self:drag( rmb, fullstack )
         if item:instanceOf( 'ItemStack' ) and rmb then
-            return item:split();
+            if item:getItemCount() == 1 then
+                return item;
+            else
+                return item:split();
+            end
         elseif item:instanceOf( 'ItemStack' ) and not fullstack then
             return item:getItem();
         end
