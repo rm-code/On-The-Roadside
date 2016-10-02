@@ -21,6 +21,9 @@ function Reload.new( character )
         local inventory = character:getInventory():getBackpack():getInventory();
         local magazine;
         for _, item in pairs( inventory:getItems() ) do
+            if item:instanceOf( 'ItemStack' ) then
+                item = item:getItem();
+            end
             if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
                 magazine = item;
                 inventory:removeItem( item );
