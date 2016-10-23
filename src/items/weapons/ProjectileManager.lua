@@ -25,7 +25,6 @@ local function hitTile( index, tile, projectile )
     queue:removeProjectile( index );
     if projectile:getWeapon():getWeaponType() == 'Grenade' then
         ExplosionManager.register( tile, 3 );
-        projectile:getCharacter():getInventory():removeItem( projectile:getWeapon() );
     elseif projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
         ExplosionManager.register( tile, projectile:getWeapon():getMagazine():getBlastRadius() );
     else
@@ -82,7 +81,7 @@ function ProjectileManager.update( dt )
                 if not tile:getWorldObject():isDestructible() then
                     print( "Hit indestructible object" );
                     -- HACK: Need proper handling for explosive type weapons.
-                    if projectile:getWeapon():getWeaponType() == 'Grenade' or projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then                        
+                    if projectile:getWeapon():getWeaponType() == 'Grenade' or projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
                         hitTile( i, projectile:getPreviousTile(), projectile );
                         return;
                     end

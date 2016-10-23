@@ -201,6 +201,7 @@ function ProjectileQueue.new( character, target )
         if weapon:getWeaponType() == 'Grenade' then
             index = index + 1;
             projectiles[index] = createProjectile();
+            character:getInventory():removeItem( weapon );
             return;
         end
 
