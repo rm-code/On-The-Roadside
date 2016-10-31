@@ -42,10 +42,7 @@ function ParticleLayer.new()
         local projectile = ...;
         local tile = projectile:getTile();
         if tile then
-            if projectile:getWeapon():getWeaponType() == 'Grenade' then
-                addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 3000, true );
-                return;
-            elseif projectile:getWeapon():getMagazine():getEffects():isExplosive() then
+            if projectile:getWeapon():getMagazine():getEffects():isExplosive() then
                 local col = love.math.random( 150, 255 );
                 addParticleEffect( tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 );
                 return;

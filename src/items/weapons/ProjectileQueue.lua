@@ -198,13 +198,6 @@ function ProjectileQueue.new( character, target )
         local projectile = projectileQueue:dequeue();
         Messenger.publish( 'SOUND_ATTACK', weapon );
 
-        if weapon:getWeaponType() == 'Grenade' then
-            index = index + 1;
-            projectiles[index] = createProjectile();
-            character:getInventory():removeItem( weapon );
-            return;
-        end
-
         weapon:attack();
         if projectile:getWeapon():getMagazine():getEffects():spreadsOnShot() then
             for _ = 1, projectile:getWeapon():getMagazine():getEffects():getPellets() do
@@ -228,11 +221,6 @@ function ProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        if weapon:getWeaponType() == 'Grenade' then
-            projectileQueue:enqueue( createProjectile( 1 ));
-            return;
-        end
-
         local amount = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
         for i = 1, amount do
             projectileQueue:enqueue( createProjectile( i ));
