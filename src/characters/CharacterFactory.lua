@@ -37,15 +37,17 @@ local function createEquipment( character )
         return;
     end
 
-    local magazine;
-    for _ = 1, 3 do
-        magazine = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getCaliber() );
-        magazine:setCapacity( weapon:getMagSize() );
-        magazine:setRounds( weapon:getMagSize() );
-        character:getInventory():getBackpack():getInventory():addItem( magazine );
+    local amount = weapon:getMagazine():getCapacity();
+    for _ = 1, amount do
+        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        weapon:getMagazine():addRound( round );
     end
-    weapon:reload( magazine );
-    character:getInventory():getBackpack():getInventory():removeItem( magazine );
+
+    amount = weapon:getMagazine():getCapacity() * 2;
+    for _ = 1, amount do
+        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        character:getInventory():getBackpack():getInventory():addItem( round );
+    end
 end
 
 -- ------------------------------------------------

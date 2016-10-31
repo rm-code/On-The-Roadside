@@ -98,12 +98,8 @@ function SaveHandler.load()
     -- Private Methods
     -- ------------------------------------------------
 
-    local function createMagazine( item )
-        local magazine = ItemFactory.createItem( item.itemType, item.id, item );
-        magazine:setRounds( item.rounds );
-        magazine:setCapacity( item.capacity );
-
-        return magazine;
+    local function createRound( item )
+        return ItemFactory.createItem( item.itemType, item.id );
     end
 
     local function createWeapon( item )
@@ -111,8 +107,9 @@ function SaveHandler.load()
         weapon:setAttackMode( item.modeIndex );
 
         if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
-            local magazine = createMagazine( item.magazine );
-            weapon:reload( magazine );
+            for _, round in ipairs( item.magazine.rounds ) do
+                weapon:getMagazine():addRound( createRound( round ));
+            end
         end
 
         return weapon;
@@ -132,7 +129,7 @@ function SaveHandler.load()
                 fillInventory( item.inventory, bag:getInventory() );
                 target:addItem( bag )
             elseif item.itemType == ITEM_TYPES.AMMO then
-                local ammo = createMagazine( item );
+                local ammo = createRound( item );
                 target:addItem( ammo );
             elseif item.itemType == ITEM_TYPES.HEADGEAR then
                 local headgear = ItemFactory.createItem( item.itemType, item.id );

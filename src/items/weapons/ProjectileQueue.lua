@@ -73,7 +73,8 @@ local STANCE_MODIFIER = {
 function ProjectileQueue.new( character, target )
     local self = {};
 
-    local projectileQueue = Queue.new();
+    local ammoQueue = Queue.new();
+    local shots;
     local projectiles = {};
     local index = 0;
     local timer = 0;
@@ -160,11 +161,11 @@ function ProjectileQueue.new( character, target )
     end
 
     ---
-    -- Creates a new projectile.
+    -- Creates a projectile path.
     -- @param i (number)     Determines the index number of this projectile.
     -- @return  (Projectile) The new projectile instance.
     --
-    local function createProjectile( i )
+    local function createProjectilePath( i )
         -- Calculate the angle of derivation.
         local maxDerivation = calculateMaximumDerivation( i or 1 );
         local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
@@ -187,7 +188,7 @@ function ProjectileQueue.new( character, target )
             return true;
         end)
 
-        return Projectile.new( character, tiles );
+        return tiles;
     end
 
     ---
@@ -195,19 +196,28 @@ function ProjectileQueue.new( character, target )
     -- projectiles.
     --
     local function spawnProjectile()
-        local projectile = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_ATTACK', weapon );
+        local round = ammoQueue:dequeue();
 
-        weapon:attack();
-        if projectile:getWeapon():getMagazine():getEffects():spreadsOnShot() then
-            for _ = 1, projectile:getWeapon():getMagazine():getEffects():getPellets() do
+        local tiles = createProjectilePath( shots - ammoQueue:getSize() );
+        local projectile = Projectile.new( character, tiles, round );
+
+        -- Play sound and remove the round from the magazine.
+        Messenger.publish( 'SOUND_ATTACK', weapon );
+        weapon:getMagazine():removeRound();
+
+        -- Spawn projectiles for the spread shot.
+        if round:getEffects():spreadsOnShot() then
+            for _ = 1, round:getEffects():getPellets() do
                 index = index + 1;
-                projectiles[index] = createProjectile();
+                local spreadTiles = createProjectilePath();
+                projectiles[index] = Projectile.new( character, spreadTiles, round );
             end
-        else
-            index = index + 1;
-            projectiles[index] = projectile;
+            return;
         end
+
+        -- Spawn default projectile.
+        index = index + 1;
+        projectiles[index] = projectile;
     end
 
     -- ------------------------------------------------
@@ -221,9 +231,9 @@ function ProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
-        for i = 1, amount do
-            projectileQueue:enqueue( createProjectile( i ));
+        shots = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
+        for i = 1, shots do
+            ammoQueue:enqueue( weapon:getMagazine():getRound( i ));
         end
     end
 
@@ -233,7 +243,7 @@ function ProjectileQueue.new( character, target )
     --
     function self:update( dt )
         timer = timer - dt;
-        if timer <= 0 and not projectileQueue.isEmpty() then
+        if timer <= 0 and not ammoQueue.isEmpty() then
             spawnProjectile();
             timer = weapon:getFiringDelay();
         end
@@ -271,7 +281,7 @@ function ProjectileQueue.new( character, target )
     -- @return (boolean) True if it is done.
     --
     function self:isDone()
-        if not projectileQueue.isEmpty() then
+        if not ammoQueue:isEmpty() then
             return false;
         end
 

@@ -1,7 +1,7 @@
 local RangedWeapon = require( 'src.items.weapons.RangedWeapon' );
 local MeleeWeapon = require( 'src.items.weapons.MeleeWeapon' );
 local Grenade = require( 'src.items.weapons.Grenade' );
-local Magazine = require( 'src.items.weapons.Magazine' );
+local Ammunition = require( 'src.items.weapons.Ammunition' );
 local Footwear = require( 'src.items.clothes.Footwear' );
 local Gloves = require( 'src.items.clothes.Gloves' );
 local Headgear = require( 'src.items.clothes.Headgear' );
@@ -135,7 +135,7 @@ end
 --
 local function createMagazine( id )
     local template = searchTemplate( id, items.Ammunition );
-    return Magazine.new( template );
+    return Ammunition.new( template );
 end
 
 ---

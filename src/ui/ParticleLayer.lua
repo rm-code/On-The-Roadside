@@ -42,11 +42,11 @@ function ParticleLayer.new()
         local projectile = ...;
         local tile = projectile:getTile();
         if tile then
-            if projectile:getWeapon():getMagazine():getEffects():isExplosive() then
+            if projectile:getEffects():isExplosive() then
                 local col = love.math.random( 150, 255 );
                 addParticleEffect( tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 );
                 return;
-            elseif projectile:getWeapon():getMagazine():getEffects():spreadsOnShot() then
+            elseif projectile:getEffects():spreadsOnShot() then
                 addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, true );
                 return;
             end

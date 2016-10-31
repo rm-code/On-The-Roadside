@@ -22,10 +22,9 @@ local SPEED = 30;
 -- @param tiles     (table)      A sequence containing all tiles this projectile will pass.
 -- @return          (Projectile) A new instance of the Projectile class.
 --
-function Projectile.new( character, tiles )
+function Projectile.new( character, tiles, round )
     local self = Object.new():addInstance( 'Projectile' );
 
-    local weapon = character:getInventory():getWeapon();
     local energy = 100;
     local timer = 0;
     local index = 1;
@@ -57,8 +56,12 @@ function Projectile.new( character, tiles )
         return character;
     end
 
+    function self:getEffects()
+        return round:getEffects();
+    end
+
     function self:getDamage()
-        return weapon:getDamage();
+        return character:getInventory():getWeapon():getDamage();
     end
 
     function self:getEnergy()
@@ -71,10 +74,6 @@ function Projectile.new( character, tiles )
 
     function self:getPreviousTile()
         return previousTile;
-    end
-
-    function self:getWeapon()
-        return weapon;
     end
 
     function self:hasMoved( map )

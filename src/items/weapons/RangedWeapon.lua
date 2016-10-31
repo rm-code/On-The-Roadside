@@ -1,4 +1,5 @@
 local Weapon = require( 'src.items.weapons.Weapon' );
+local Magazine = require( 'src.items.weapons.Magazine' );
 
 local RangedWeapon = {};
 
@@ -11,19 +12,12 @@ function RangedWeapon.new( template )
 
     local rpm = template.rpm or 60;
     local firingDelay = 1 / ( rpm / 60 );
-    local caliber = template.caliber;
-    local magSize = template.magSize;
-    local magazine;
+    local magazine = Magazine.new( template.caliber, template.magSize );
     local range = template.range;
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
-
-    function self:reload( newMag )
-        assert( caliber == newMag:getCaliber(), 'Ammunition Type doesn\'t match the gun!' );
-        magazine = newMag;
-    end
 
     function self:attack()
         magazine:removeShell();
@@ -47,20 +41,12 @@ function RangedWeapon.new( template )
     -- Getters
     -- ------------------------------------------------
 
-    function self:getCaliber()
-        return caliber;
-    end
-
     function self:getFiringDelay()
         return firingDelay;
     end
 
     function self:getMagazine()
         return magazine;
-    end
-
-    function self:getMagSize()
-        return magSize;
     end
 
     function self:getRange()
