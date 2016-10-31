@@ -206,8 +206,8 @@ function ProjectileQueue.new( character, target )
         end
 
         weapon:attack();
-        if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
-            for _ = 1, projectile:getWeapon():getMagazine():getPelletAmount() do
+        if projectile:getWeapon():getMagazine():getEffects():spreadsOnShot() then
+            for _ = 1, projectile:getWeapon():getMagazine():getEffects():getPellets() do
                 index = index + 1;
                 projectiles[index] = createProjectile();
             end

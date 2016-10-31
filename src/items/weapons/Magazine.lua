@@ -1,4 +1,5 @@
 local Item = require( 'src.items.Item' );
+local AmmunitionEffects = require( 'src.items.weapons.AmmunitionEffects' );
 
 local Magazine = {};
 
@@ -7,6 +8,7 @@ function Magazine.new( template )
 
     local capacity = 0;
     local rounds = 0;
+    local effects = AmmunitionEffects.new( template.effects );
 
     function self:removeShell()
         rounds = rounds - 1;
@@ -24,10 +26,6 @@ function Magazine.new( template )
         return template.id;
     end
 
-    function self:getAmmoType()
-        return template.ammoType;
-    end
-
     function self:isFull()
         return rounds == capacity;
     end
@@ -42,6 +40,10 @@ function Magazine.new( template )
 
     function self:setCapacity( ncapacity )
         capacity = ncapacity;
+    end
+
+    function self:getEffects()
+        return effects;
     end
 
     function self:serialize()

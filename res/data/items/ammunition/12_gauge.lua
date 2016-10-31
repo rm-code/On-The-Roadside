@@ -1,9 +1,10 @@
 return {
-    id       = "12 gauge",
+    id = "12 gauge",
     itemType = "Ammunition",
-    ammoType = "ShotgunShell",
-    pellets = 12,
     weight = 0,
     stackable = true,
-    equippable = false
+    equippable = false,
+    effects = {
+        spreadsOnShot = { pellets = 12 }
+    }
 }

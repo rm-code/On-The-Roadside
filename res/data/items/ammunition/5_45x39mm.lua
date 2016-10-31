@@ -1,7 +1,8 @@
 return {
-    id       = "5.45x39mm",
+    id = "5.45x39mm",
     itemType = "Ammunition",
     weight = 0,
     stackable = true,
-    equippable = false
+    equippable = false,
+    effects = {}
 }

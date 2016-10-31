@@ -45,11 +45,11 @@ function ParticleLayer.new()
             if projectile:getWeapon():getWeaponType() == 'Grenade' then
                 addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 3000, true );
                 return;
-            elseif projectile:getWeapon():getMagazine():getAmmoType() == 'Rocket' then
+            elseif projectile:getWeapon():getMagazine():getEffects():isExplosive() then
                 local col = love.math.random( 150, 255 );
                 addParticleEffect( tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 );
                 return;
-            elseif projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
+            elseif projectile:getWeapon():getMagazine():getEffects():spreadsOnShot() then
                 addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, true );
                 return;
             end
