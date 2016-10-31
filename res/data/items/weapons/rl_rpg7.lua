@@ -7,6 +7,7 @@ return {
     caliber  = "OG-7V",
     magSize  = 1,
     equippable = true,
+    reloadable = true,
     range = 30,
     mode = {
         {

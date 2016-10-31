@@ -7,6 +7,7 @@ locale.strings = {
     ['weapon_tonfa'] = "Tonfa",
     ['weapon_rpg7'] = "RPG-7",
     ['weapon_benelli_m4'] = "Benelli M4 Super 90",
+    ['weapon_shuriken'] = "Shuriken",
     ['bag_small_backpack'] = "Small Backpack",
     ['footwear_combat_boots'] = "Combat Boots",
     ['gloves_leather'] = "Leather Gloves",

@@ -70,7 +70,7 @@ function OverlayPainter.new( game, particleLayer )
                 local visible = character:getFaction():canSee( tile );
 
                 if not visible
-                        or ( not weapon:instanceOf( 'Grenade' ) and weapon:getMagazine():isEmpty() )
+                        or ( weapon:isReloadable() and weapon:getMagazine():isEmpty() )
                         or character:getActionPoints() < weapon:getAttackCost()
                         or count > weapon:getRange() then
                     love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
@@ -173,6 +173,8 @@ function OverlayPainter.new( game, particleLayer )
                     love.graphics.setColor( particle:getColors() );
                     if particle:isAscii() then
                         love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
+                    elseif particle:getSprite() then
+                        love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( particle:getSprite() ), x * TILE_SIZE, y * TILE_SIZE );
                     else
                         love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
                     end

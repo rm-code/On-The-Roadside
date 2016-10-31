@@ -25,7 +25,7 @@ function AttackInput.new( stateManager )
             return;
         end
 
-        if character:getInventory():getWeapon():getWeaponType() == 'Grenade' then
+        if character:getInventory():getWeapon():getWeaponType() == 'Thrown' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;

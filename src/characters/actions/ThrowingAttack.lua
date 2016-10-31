@@ -1,6 +1,6 @@
 local Action = require('src.characters.actions.Action');
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local ProjectileQueue = require( 'src.items.weapons.ProjectileQueue' );
+local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' );
 local Messenger = require( 'src.Messenger' );
 local Bresenham = require( 'lib.Bresenham' );
 
@@ -10,7 +10,6 @@ function ThrowingAttack.new( character, target )
     local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
 
     function self:perform()
-        -- TODO: Fix grenades.
         -- Pick the actual target based on the weapon's range attribute.
         local ox, oy = character:getTile():getPosition();
         local tx, ty = target:getPosition();
@@ -25,7 +24,7 @@ function ThrowingAttack.new( character, target )
         end);
 
         Messenger.publish( 'START_ATTACK', actualTarget );
-        local package = ProjectileQueue.new( character, actualTarget );
+        local package = ThrownProjectileQueue.new( character, actualTarget );
         ProjectileManager.register( package );
         return true;
     end

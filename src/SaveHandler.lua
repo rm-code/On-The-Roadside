@@ -106,7 +106,7 @@ function SaveHandler.load()
         local weapon = ItemFactory.createItem( item.itemType, item.id );
         weapon:setAttackMode( item.modeIndex );
 
-        if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
+        if weapon:isReloadable() then
             for _, round in ipairs( item.magazine.rounds ) do
                 weapon:getMagazine():addRound( createRound( round ));
             end

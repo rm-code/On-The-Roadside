@@ -7,6 +7,7 @@ return {
     caliber    = "12 gauge",
     magSize    = 8,
     equippable = true,
+    reloadable = true,
     range = 15,
     mode = {
         {

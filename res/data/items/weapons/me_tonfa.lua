@@ -5,6 +5,7 @@ return {
     weaponType = "Melee",
     damage     = 30,
     equippable = true,
+    reloadable = false,
     mode = {
         {
             name = "Single",

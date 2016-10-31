@@ -54,6 +54,7 @@ function Character.new( map, tile, faction )
     local inventory = Inventory.new();
 
     local accuracy = love.math.random( 60, 90 );
+    local throwingSkill = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
@@ -344,6 +345,14 @@ function Character.new( map, tile, faction )
     --
     function self:getStance()
         return stance;
+    end
+
+    ---
+    -- Gets the character's throwing skill.
+    -- @return (number) The character's throwing skill.
+    --
+    function self:getThrowingSkill()
+        return throwingSkill;
     end
 
     ---

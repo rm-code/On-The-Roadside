@@ -52,12 +52,13 @@ local function createEquipment( character )
     character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
 
     local weapon = character:getInventory():getWeapon();
-
-    if weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
-        return;
+    if weapon:isReloadable() then
+        createAmmunition( character, weapon );
+    elseif weapon:getWeaponType() == 'Thrown' then
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
     end
-
-    createAmmunition( character, weapon );
 end
 
 -- ------------------------------------------------

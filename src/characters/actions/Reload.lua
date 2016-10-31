@@ -13,7 +13,7 @@ function Reload.new( character )
     function self:perform()
         local weapon = character:getInventory():getWeapon();
 
-        if not weapon or weapon:getWeaponType() == 'Grenade' or weapon:getWeaponType() == 'Melee' then
+        if not weapon or not weapon:isReloadable() then
             print( 'Can not reload.' );
             return false;
         end

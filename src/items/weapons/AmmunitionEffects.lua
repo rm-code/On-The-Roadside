@@ -29,6 +29,18 @@ function AmmunitionEffects.new( template )
         return template.spreadsOnShot.pellets;
     end
 
+    -- ------------------------------------------------
+    -- Ammunition has custom sprite
+    -- ------------------------------------------------
+
+    function self:hasCustomSprite()
+        return template.customSprite;
+    end
+
+    function self:getCustomSprite()
+        return template.customSprite.sprite;
+    end
+
     return self;
 end
 

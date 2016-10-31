@@ -71,7 +71,7 @@ function UserInterface.new( game )
             love.graphics.print( Translator.getText( 'ui_mode' ), 200, love.graphics.getHeight() - 20 );
             love.graphics.print( weapon:getAttackMode().name, 200 + font:getWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - 20 );
 
-            if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
+            if weapon:isReloadable() then
                 love.graphics.print( Translator.getText( 'ui_ammo' ), 390, love.graphics.getHeight() - 40 );
                 love.graphics.print( string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 390 + font:getWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - 40 );
             end

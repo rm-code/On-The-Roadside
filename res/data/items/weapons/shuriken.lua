@@ -1,9 +1,9 @@
 return {
-    id       = "weapon_m67_grenade",
+    id       = "weapon_shuriken",
     itemType = "Weapon",
     weight   = 0.2,
     weaponType = "Thrown",
-    damage   = 120,
+    damage   = 40,
     equippable = true,
     reloadable = false,
     range = 10,
@@ -14,7 +14,6 @@ return {
         }
     },
     effects = {
-        explosive = { blastRadius = 2 },
-        customSprite = { sprite = 8 }
+        customSprite = { sprite = 16 }
     }
 }
