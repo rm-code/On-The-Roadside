@@ -18,11 +18,12 @@ local SPEED = 30;
 
 ---
 -- Creates a new Projectile.
--- @param character (Character)  The character this projectile belongs to.
--- @param tiles     (table)      A sequence containing all tiles this projectile will pass.
+-- @param character (Character)         The character this projectile belongs to.
+-- @param tiles     (table)             A sequence containing all tiles this projectile will pass.
+-- @param effects   (AmmunitionEffects) An object containing different effects associated with ammunition.
 -- @return          (Projectile) A new instance of the Projectile class.
 --
-function Projectile.new( character, tiles, round )
+function Projectile.new( character, tiles, effects )
     local self = Object.new():addInstance( 'Projectile' );
 
     local energy = 100;
@@ -57,7 +58,7 @@ function Projectile.new( character, tiles, round )
     end
 
     function self:getEffects()
-        return round:getEffects();
+        return effects;
     end
 
     function self:getDamage()

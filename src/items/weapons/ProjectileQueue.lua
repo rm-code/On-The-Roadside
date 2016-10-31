@@ -199,7 +199,7 @@ function ProjectileQueue.new( character, target )
         local round = ammoQueue:dequeue();
 
         local tiles = createProjectilePath( shots - ammoQueue:getSize() );
-        local projectile = Projectile.new( character, tiles, round );
+        local projectile = Projectile.new( character, tiles, round:getEffects() );
 
         -- Play sound and remove the round from the magazine.
         Messenger.publish( 'SOUND_ATTACK', weapon );
@@ -210,7 +210,7 @@ function ProjectileQueue.new( character, target )
             for _ = 1, round:getEffects():getPellets() do
                 index = index + 1;
                 local spreadTiles = createProjectilePath();
-                projectiles[index] = Projectile.new( character, spreadTiles, round );
+                projectiles[index] = Projectile.new( character, spreadTiles, round:getEffects() );
             end
             return;
         end
