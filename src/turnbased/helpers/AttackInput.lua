@@ -15,6 +15,11 @@ function AttackInput.new( stateManager )
     function self:request( ... )
         local target, character = ...;
 
+        -- Prevent characters from attacking themselves.
+        if target == character:getTile() then
+            return;
+        end
+
         if not character:getInventory():getWeapon() then
             return;
         end
