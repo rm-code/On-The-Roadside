@@ -11,10 +11,6 @@ function ThrowingAttack.new( character, target )
 
     function self:perform()
         -- TODO: Fix grenades.
-        if true then
-            return;
-        end
-
         -- Pick the actual target based on the weapon's range attribute.
         local ox, oy = character:getTile():getPosition();
         local tx, ty = target:getPosition();
