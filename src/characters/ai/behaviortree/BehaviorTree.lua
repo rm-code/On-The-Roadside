@@ -3,7 +3,7 @@ local BTSequence       = require( 'src.characters.ai.behaviortree.composite.BTSe
 local BTSelector       = require( 'src.characters.ai.behaviortree.composite.BTSelector' );
 local BTRangedTree     = require( 'src.characters.ai.behaviortree.trees.BTRangedTree' );
 local BTMeleeTree      = require( 'src.characters.ai.behaviortree.trees.BTMeleeTree' );
-local BTGrenadeTree    = require( 'src.characters.ai.behaviortree.trees.BTGrenadeTree' );
+local BTThrowTree    = require( 'src.characters.ai.behaviortree.trees.BTThrowTree' );
 local BTRandomMovement = require( 'src.characters.ai.behaviortree.leafs.BTRandomMovement' );
 local BTHasWeapon      = require( 'src.characters.ai.behaviortree.leafs.BTHasWeapon' );
 
@@ -17,7 +17,7 @@ function BehaviorTree.new()
 
     local attackSelector = BTSelector.new();
     attackSelector:addNode( BTMeleeTree.new() );
-    attackSelector:addNode( BTGrenadeTree.new() );
+    attackSelector:addNode( BTThrowTree.new() );
     attackSelector:addNode( BTRangedTree.new() );
 
     local attackSequence = BTSequence.new();
