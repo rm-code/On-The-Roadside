@@ -75,12 +75,18 @@ function Character.new( map, tile, faction )
     -- Drops this character's inventory on the ground.
     --
     local function dropInventory()
-        tile:getInventory():addItem( inventory:getItem( ITEM_TYPES.WEAPON ));
-        tile:getInventory():addItem( inventory:getItem( ITEM_TYPES.BAG ));
-
-        for _, part in pairs( BODY_PARTS ) do
-            print(part)
-            tile:getInventory():addItem( inventory:getItem( part ));
+        local inv = {
+            inventory:getItem( ITEM_TYPES.WEAPON ),
+            inventory:getItem( ITEM_TYPES.BAG ),
+            inventory:getItem( ITEM_TYPES.HEADGEAR ),
+            inventory:getItem( ITEM_TYPES.GLOVES ),
+            inventory:getItem( ITEM_TYPES.JACKET ),
+            inventory:getItem( ITEM_TYPES.SHIRT ),
+            inventory:getItem( ITEM_TYPES.TROUSERS ),
+            inventory:getItem( ITEM_TYPES.FOOTWEAR ),
+        };
+        for _, item in pairs( inv ) do
+            tile:getInventory():addItem( item );
         end
     end
 
