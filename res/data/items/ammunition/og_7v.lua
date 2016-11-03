@@ -6,5 +6,6 @@ return {
     equippable = false,
     effects = {
         explosive = { blastRadius = 5 },
+        customSpeed = { speed = 12, increase = 1, final = 35 }
     }
 }

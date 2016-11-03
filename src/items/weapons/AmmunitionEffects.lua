@@ -30,6 +30,26 @@ function AmmunitionEffects.new( template )
     end
 
     -- ------------------------------------------------
+    -- Ammunition with custom speed
+    -- ------------------------------------------------
+
+    function self:hasCustomSpeed()
+        return template.customSpeed;
+    end
+
+    function self:getCustomSpeed()
+        return template.customSpeed.speed;
+    end
+
+    function self:getSpeedIncrease()
+        return template.customSpeed.increase or 0;
+    end
+
+    function self:getFinalSpeed()
+        return template.customSpeed.final or template.customSpeed.speed;
+    end
+
+    -- ------------------------------------------------
     -- Ammunition has custom sprite
     -- ------------------------------------------------
 

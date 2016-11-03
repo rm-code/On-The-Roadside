@@ -10,7 +10,7 @@ local Projectile = {};
 -- Constants
 -- ------------------------------------------------
 
-local SPEED = 30;
+local DEFAULT_SPEED = 30;
 
 -- ------------------------------------------------
 -- Constructor
@@ -32,16 +32,21 @@ function Projectile.new( character, tiles, damage, effects )
     local index = 1;
     local tile = character:getTile();
     local previousTile;
+    local speed = effects:hasCustomSpeed() and effects:getCustomSpeed() or DEFAULT_SPEED;
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
     function self:update( dt )
-        timer = timer + dt * SPEED;
+        timer = timer + dt * speed;
         if timer > 1 and index < #tiles then
             index = index + 1;
             timer = 0;
+        end
+
+        if effects:hasCustomSpeed() then
+            speed = math.min( speed + effects:getSpeedIncrease(), effects:getFinalSpeed() );
         end
     end
 

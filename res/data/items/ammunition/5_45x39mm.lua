@@ -4,5 +4,7 @@ return {
     weight = 0,
     stackable = true,
     equippable = false,
-    effects = {}
+    effects = {
+        customSpeed = { speed = 35 }
+    }
 }
