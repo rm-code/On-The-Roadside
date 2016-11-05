@@ -1,5 +1,6 @@
 local Stances = require('src.constants.Stances');
 local Bresenham = require( 'lib.Bresenham' );
+local VectorMath = require( 'src.util.VectorMath' );
 
 -- ------------------------------------------------
 -- Module
@@ -150,33 +151,6 @@ local function calculateThrownMaximumDerivation( character )
     return derivation;
 end
 
----
--- Rotates the target position by the given angle.
--- @param px    (number)
--- @param py    (number)
--- @param tx    (number)
--- @param ty    (number)
--- @param angle (number)
--- @return      (number) The new target along the x-axis.
--- @return      (number) The new target along the y-axis.
---
-local function applyVectorRotation( px, py, tx, ty, angle )
-    local vx, vy = tx - px, ty - py;
-
-    -- Vary the shot distance randomly.
-    local factor = love.math.random( 90, 130 ) / 100;
-    vx = vx * factor;
-    vy = vy * factor;
-
-    -- Transform angle from degrees to radians.
-    angle = math.rad( angle );
-
-    local nx = vx * math.cos( angle ) - vy * math.sin( angle );
-    local ny = vx * math.sin( angle ) + vy * math.cos( angle );
-
-    return px + nx, py + ny;
-end
-
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -217,7 +191,7 @@ function ProjectilePath.calculate( character, target, weapon, count )
     local px, py = origin:getPosition();
     local tx, ty = target:getPosition();
 
-    local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
+    local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDerivation, love.math.random( 90, 130 ) / 100 );
     nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
 
     -- Get the coords of all tiles the projectile passes on the way to its target.
