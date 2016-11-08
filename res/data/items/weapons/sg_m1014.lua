@@ -1,7 +1,7 @@
 return {
     id         = "weapon_benelli_m4",
     itemType   = "Weapon",
-    weaponType = "Shotgun",
+    weaponType = "Ranged",
     weight     = 2.3,
     damage     = 20,
     caliber    = "12 gauge",

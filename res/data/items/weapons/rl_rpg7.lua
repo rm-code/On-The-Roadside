@@ -1,7 +1,7 @@
 return {
     id       = "weapon_rpg7",
     itemType = "Weapon",
-    weaponType = "Rocket Launcher",
+    weaponType = "Ranged",
     weight   = 5.7,
     damage   = 0,
     caliber  = "OG-7V",
