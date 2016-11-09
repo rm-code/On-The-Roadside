@@ -10,7 +10,7 @@ local Bag = {};
 function Bag.new( template )
     local self = Item.new( template ):addInstance( 'Bag' );
 
-    local inventory = Inventory.new( template.weightLimit );
+    local inventory = Inventory.new( template.weightLimit, template.volumeLimit );
 
     function self:getInventory()
         return inventory;

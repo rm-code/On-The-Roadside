@@ -2,6 +2,7 @@ return {
     id       = "weapon_aks74",
     itemType = "Weapon",
     weight   = 2.7,
+    volume = 3.0,
     weaponType = "Ranged",
     damage   = 40,
     rpm      = 650,

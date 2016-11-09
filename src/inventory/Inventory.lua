@@ -13,12 +13,13 @@ local Inventory = {};
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local DEFAULT_WEIGHT_LIMIT = 50;
+local DEFAULT_VOLUME_LIMIT = 50;
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Inventory.new( weightLimit )
+function Inventory.new( weightLimit, volumeLimit )
     local self = Object.new():addInstance( 'Inventory' );
 
     -- ------------------------------------------------
@@ -27,6 +28,7 @@ function Inventory.new( weightLimit )
 
     local items = {};
     weightLimit = weightLimit or DEFAULT_WEIGHT_LIMIT;
+    volumeLimit = volumeLimit or DEFAULT_VOLUME_LIMIT;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -42,6 +44,29 @@ function Inventory.new( weightLimit )
             weight = weight + item:getWeight();
         end
         return weight;
+    end
+
+    ---
+    -- Returns the combined volume of all items in the inventory.
+    -- @return (number) The total volume of all items in the inventory.
+    --
+    local function calculateVolume()
+        local volume = 0;
+        for _, item in ipairs( items ) do
+            volume = volume + item:getVolume();
+        end
+        return volume;
+    end
+
+    ---
+    -- Checks if the item fits in the current inventory by checking the weight
+    -- and volume parameters.
+    -- @param weight (number) The weight of the item to check.
+    -- @param volume (number) The volume of the item to check.
+    -- @return (boolean) Returns true if the item fits.
+    --
+    local function doesFit( weight, volume )
+        return ( calculateWeight() + weight < weightLimit ) and ( calculateVolume() + volume < volumeLimit );
     end
 
     ---
@@ -130,13 +155,13 @@ function Inventory.new( weightLimit )
         return false;
     end
 
+    -- TODO: proper documentation
     local function merge( stack, ostack )
         assert( stack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
         assert( ostack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
 
         for _, item in pairs( ostack:getItems() ) do
-            local weight = calculateWeight();
-            if weight + item:getWeight() > weightLimit then
+            if not doesFit( item:getWeight(), item:getVolume() ) then
                 return false;
             end
 
@@ -160,8 +185,7 @@ function Inventory.new( weightLimit )
     function self:addItem( item, index )
         index = index or ( #items + 1 );
 
-        local weight = calculateWeight();
-        if weight + item:getWeight() > weightLimit then
+        if not doesFit( item:getWeight(), item:getVolume() ) then
             return false;
         end
 
@@ -321,6 +345,14 @@ function Inventory.new( weightLimit )
     --
     function self:getWeightLimit()
         return weightLimit;
+    end
+
+    function self:getVolume()
+        return calculateVolume();
+    end
+
+    function self:getVolumeLimit()
+        return volumeLimit;
     end
 
     return self;

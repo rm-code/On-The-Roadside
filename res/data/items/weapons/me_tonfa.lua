@@ -2,6 +2,7 @@ return {
     id         = "weapon_tonfa",
     itemType   = "Weapon",
     weight     = 1.2,
+    volume = 1.3,
     weaponType = "Melee",
     damage     = 30,
     equippable = true,

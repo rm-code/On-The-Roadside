@@ -17,6 +17,10 @@ function Item.new( template )
         return template.weight;
     end
 
+    function self:getVolume()
+        return template.volume;
+    end
+
     function self:isEquippable()
         return template.equippable;
     end

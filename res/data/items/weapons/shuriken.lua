@@ -2,6 +2,7 @@ return {
     id       = "weapon_shuriken",
     itemType = "Weapon",
     weight   = 0.2,
+    volume = 0.0,
     weaponType = "Thrown",
     damage   = 40,
     equippable = true,

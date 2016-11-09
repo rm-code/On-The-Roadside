@@ -33,6 +33,14 @@ function ItemStack.new( id )
         return weight;
     end
 
+    function self:getVolume()
+        local volume = 0;
+        for i = 1, #items do
+            volume = volume + items[i]:getVolume();
+        end
+        return volume;
+    end
+
     function self:split()
         if #items > 1 then
             local count = math.floor( #items * 0.5 );

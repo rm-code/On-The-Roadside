@@ -1,7 +1,8 @@
 return {
     id = "OG-7V",
     itemType = "Ammunition",
-    weight = 0,
+    weight = 2.0,
+    volume = 2.0,
     stackable = true,
     equippable = false,
     effects = {

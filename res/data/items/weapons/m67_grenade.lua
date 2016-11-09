@@ -2,6 +2,7 @@ return {
     id       = "weapon_m67_grenade",
     itemType = "Weapon",
     weight   = 0.2,
+    volume = 0.1,
     weaponType = "Thrown",
     damage   = 120,
     equippable = true,

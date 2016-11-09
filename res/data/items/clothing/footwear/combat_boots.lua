@@ -3,6 +3,7 @@ return {
     itemType = "Footwear",
     equippable = true,
     weight = 3,
+    volume = 2.3,
     armor = {
         protection = 12,
         coverage = 100

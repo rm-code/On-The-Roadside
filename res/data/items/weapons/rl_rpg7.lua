@@ -3,6 +3,7 @@ return {
     itemType = "Weapon",
     weaponType = "Ranged",
     weight   = 5.7,
+    volume = 9.0,
     damage   = 0,
     caliber  = "OG-7V",
     magSize  = 1,
