@@ -1,3 +1,4 @@
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
@@ -96,6 +97,9 @@ function MainScreen.new()
     function self:keypressed( key )
         if key == 'f' then
             love.window.setFullscreen( not love.window.getFullscreen() );
+        end
+        if key == 'h' then
+            ScreenManager.push( 'help' );
         end
 
         game:keypressed( key );

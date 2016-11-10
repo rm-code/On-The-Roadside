@@ -31,6 +31,7 @@ function love.load()
     local screens = {
         main = require('src.screens.MainScreen');
         inventory = require('src.screens.InventoryScreen');
+        help = require('src.screens.HelpScreen');
     };
 
     ScreenManager.init(screens, 'main');
@@ -51,6 +52,7 @@ function love.draw()
 
     love.graphics.setColor( 255, 255, 255, 100 );
     love.graphics.print( versionString, love.graphics.getWidth() - 155, 5 );
+    love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 155, 25 );
     love.graphics.setColor( 255, 255, 255, 255 );
 end
 
