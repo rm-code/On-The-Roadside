@@ -1,3 +1,4 @@
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
 local WorldPainter = require( 'src.ui.WorldPainter' );
@@ -8,6 +9,7 @@ local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -20,6 +22,7 @@ local MainScreen = {};
 -- ------------------------------------------------
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local DEFAULT_LOCALE = 'en_EN';
 
 -- ------------------------------------------------
 -- Constructor
@@ -35,7 +38,13 @@ function MainScreen.new()
     local overlayPainter;
     local camera;
 
+    local exitTimer;
+
     function self:init()
+        exitTimer = 0;
+
+        Translator.init( DEFAULT_LOCALE );
+
         game = Game.new();
         game:init();
 
@@ -60,6 +69,12 @@ function MainScreen.new()
         overlayPainter:draw();
         camera:detach();
         userInterface:draw();
+
+        if exitTimer ~= 0 then
+            love.graphics.setColor( 0, 0, 0, 255 * exitTimer );
+            love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
+            love.graphics.setColor( 255, 255, 255, 255 );
+        end
     end
 
     function self:update( dt )
@@ -68,15 +83,39 @@ function MainScreen.new()
         worldPainter:update( dt );
         overlayPainter:update( dt );
         userInterface:update( dt );
+
+        if love.keyboard.isDown( 'escape' ) then
+            exitTimer = exitTimer + dt * 2;
+            if exitTimer >= 1.0 then
+                love.event.quit();
+            end
+        else
+            exitTimer = 0;
+        end
     end
 
     function self:keypressed( key )
+        if key == 'f' then
+            love.window.setFullscreen( not love.window.getFullscreen() );
+        end
+        if key == 'h' then
+            ScreenManager.push( 'help' );
+        end
+
         game:keypressed( key );
     end
 
     function self:mousepressed( _, _, button )
         local mx, my = MousePointer.getGridPosition();
         game:mousepressed( mx, my, button );
+    end
+
+    function self:mousefocus( f )
+        if f then
+            camera:unlock();
+        else
+            camera:lock();
+        end
     end
 
     Messenger.observe( 'START_EXECUTION', function()

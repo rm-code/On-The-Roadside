@@ -17,6 +17,12 @@ local SaveHandler = require( 'src.SaveHandler' );
 local Game = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local ITEM_TYPES = require('src.constants.ItemTypes');
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -27,6 +33,25 @@ function Game.new()
     local factions;
     local turnManager;
     local observations = {};
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    local function spawnAmmo()
+        map:iterate( function( tile, x, y )
+            if tile:hasWorldObject() and tile:getWorldObject():isContainer() then
+                local tries = love.math.random( 1, 5 );
+                for _ = 1, tries do
+                    if love.math.random( 100 ) < 25 then
+                        local item = ItemFactory.createRandomItem( ITEM_TYPES.AMMO );
+                        tile:getWorldObject():getInventory():addItem( item );
+                        print( string.format( 'Spawned %s in container at %d, %d', item:getID(), x, y ));
+                    end
+                end
+            end
+        end);
+    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -49,6 +74,7 @@ function Game.new()
             savegame:loadCharacters( map, factions );
         else
             map:init();
+            spawnAmmo();
             factions:spawnCharacters();
         end
 

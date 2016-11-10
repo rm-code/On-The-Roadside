@@ -1,14 +1,22 @@
 return {
-    name     = "M67 Grenade",
+    id       = "weapon_m67_grenade",
     itemType = "Weapon",
-    weaponType = "Grenade",
+    weight   = 0.2,
+    volume = 0.1,
+    weaponType = "Thrown",
     damage   = 120,
+    equippable = true,
+    reloadable = false,
+    range = 10,
+    sound = 'MELEE',
     mode = {
         {
             name = "Throw",
             cost = 3,
-            accuracy = 75,
-            attacks = 1,
         }
+    },
+    effects = {
+        explosive = { blastRadius = 2 },
+        customSprite = { sprite = 8 }
     }
 }

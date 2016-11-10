@@ -1,16 +1,16 @@
 local BTComposite = require( 'src.characters.ai.behaviortree.composite.BTComposite' );
 local BTSequence = require( 'src.characters.ai.behaviortree.composite.BTSequence' );
-local BTHasGrenade = require( 'src.characters.ai.behaviortree.leafs.BTHasGrenade' );
+local BTHasThrowingWeapon = require( 'src.characters.ai.behaviortree.leafs.BTHasThrowingWeapon' );
 local BTAquireTarget = require( 'src.characters.ai.behaviortree.leafs.BTAquireTarget' );
 local BTGrenadeAttack = require( 'src.characters.ai.behaviortree.leafs.BTGrenadeAttack' );
 
-local BTGrenadeTree = {};
+local BTThrowTree = {};
 
-function BTGrenadeTree.new()
-    local self = BTComposite.new():addInstance( 'BTGrenadeTree');
+function BTThrowTree.new()
+    local self = BTComposite.new():addInstance( 'BTThrowTree');
 
     local baseSequence = BTSequence.new();
-    baseSequence:addNode( BTHasGrenade.new() );
+    baseSequence:addNode( BTHasThrowingWeapon.new() );
     baseSequence:addNode( BTAquireTarget.new() );
     baseSequence:addNode( BTGrenadeAttack.new() );
 
@@ -19,4 +19,4 @@ function BTGrenadeTree.new()
     return self;
 end
 
-return BTGrenadeTree;
+return BTThrowTree;

@@ -9,7 +9,7 @@ function BTCanAttack.new()
         print( 'BTCanAttack' );
         local _, character = ...;
 
-        if character:getEquipment():getWeapon():getMagazine():isEmpty() then
+        if character:getInventory():getWeapon():getMagazine():isEmpty() then
             return false;
         end
 

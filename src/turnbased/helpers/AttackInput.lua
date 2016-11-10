@@ -13,19 +13,24 @@ function AttackInput.new( stateManager )
     end
 
     function self:request( ... )
-        local target, character = unpack{ ... };
+        local target, character = ...;
 
-        if not character:getEquipment():getWeapon() then
+        -- Prevent characters from attacking themselves.
+        if target == character:getTile() then
             return;
         end
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Melee' then
+        if not character:getInventory():getWeapon() then
+            return;
+        end
+
+        if character:getInventory():getWeapon():getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;
         end
 
-        if character:getEquipment():getWeapon():getWeaponType() == 'Grenade' then
+        if character:getInventory():getWeapon():getWeaponType() == 'Thrown' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;

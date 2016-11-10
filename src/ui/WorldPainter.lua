@@ -52,7 +52,7 @@ function WorldPainter.new( game )
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
             local id = spritebatch:add( Tileset.getSprite( 1 ), x * TILE_SIZE, y * TILE_SIZE );
-            tile:setID( id );
+            tile:setSpriteID( id );
             tile:setDirty( true );
         end)
         print( string.format('Initialised %d tiles.', spritebatch:getCount()) );
@@ -140,7 +140,7 @@ function WorldPainter.new( game )
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
                 spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ));
-                spritebatch:set( tile:getID(), selectTileSprite( tile, faction ), x * TILE_SIZE, y * TILE_SIZE );
+                spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * TILE_SIZE, y * TILE_SIZE );
                 tile:setDirty( false );
             end
         end)

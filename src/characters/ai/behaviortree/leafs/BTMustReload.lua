@@ -9,7 +9,7 @@ function BTMustReload.new()
         print( 'BTMustReload' );
         local _, character = ...;
 
-        if character:getEquipment():getWeapon():getMagazine():isEmpty() then
+        if character:getInventory():getWeapon():getMagazine():isEmpty() then
             print( 'Magazine is empty -> We must reload!' );
             return true;
         end

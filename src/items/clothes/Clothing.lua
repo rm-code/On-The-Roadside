@@ -2,11 +2,11 @@ local Item = require( 'src.items.Item' );
 
 local Clothing = {};
 
-function Clothing.new( name, itemType, armor )
-    local self = Item.new( name, itemType ):addInstance( 'Clothing' );
+function Clothing.new( template )
+    local self = Item.new( template ):addInstance( 'Clothing' );
 
-    local armorProtection = armor.protection;
-    local armorCoverage = armor.coverage;
+    local armorProtection = template.armor.protection;
+    local armorCoverage = template.armor.coverage;
 
     function self:getArmorProtection()
         return armorProtection;

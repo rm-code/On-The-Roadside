@@ -9,8 +9,8 @@ function BTHasRangedWeapon.new()
         print( 'BTHasRangedWeapon' );
         local _, character = ...;
 
-        local type = character:getEquipment():getWeapon():getWeaponType();
-        if type ~= 'Melee' and type ~= 'Grenade' then
+        local type = character:getInventory():getWeapon():getWeaponType();
+        if type ~= 'Melee' and type ~= 'Thrown' then
             print( 'Character has a ranged weapon.' )
             return true;
         end

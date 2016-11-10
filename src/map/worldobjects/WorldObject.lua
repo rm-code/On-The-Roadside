@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Inventory = require( 'src.inventory.Inventory' );
 
 -- ------------------------------------------------
 -- Module
@@ -22,14 +23,13 @@ function WorldObject.new( template )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local name = template.name;
-    local type = template.type;
+    local id = template.id;
     local size = template.size;
     local hp = template.hp;
     local interactionCost = template.interactionCost;
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
-    local debrisType = template.debrisType;
+    local debrisID = template.debrisID;
     local openable = template.openable or false;
     local climbable = template.climbable or false;
     local passable = template.passable or false;
@@ -38,6 +38,8 @@ function WorldObject.new( template )
     local sprite = template.sprite;
     local openSprite = template.openSprite;
     local color = template.color;
+    local container = template.container;
+    local inventory = container and Inventory.new() or nil;
 
     -- ------------------------------------------------
     -- Public Methods
@@ -54,9 +56,14 @@ function WorldObject.new( template )
 
     function self:serialize()
         local t = {
-            ['type'] = type,
+            ['id'] = id,
+            ['passable'] = passable,
+            ['blocksVision'] = blocksVision,
             ['hp'] = hp
         }
+        if container and not inventory:isEmpty() then
+            t['inventory'] = inventory:serialize();
+        end
         return t;
     end
 
@@ -89,12 +96,12 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject type with which this WorldObject will be replaced
+    -- Returns the WorldObject id with which this WorldObject will be replaced
     -- upon its destruction.
-    -- @return (string) The WorldObject type used for generating debris.
+    -- @return (string) The WorldObject id used for generating debris.
     --
-    function self:getDebrisType()
-        return debrisType;
+    function self:getDebrisID()
+        return debrisID;
     end
 
     ---
@@ -124,11 +131,11 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject's name.
-    -- @return (string) The WorldObject's human readable name.
+    -- Returns this container's inventory.
+    -- @return (Inventory) The inventory.
     --
-    function self:getName()
-        return name;
+    function self:getInventory()
+        return inventory;
     end
 
     ---
@@ -154,8 +161,8 @@ function WorldObject.new( template )
     -- Returns the WorldObject's id.
     -- @return (string) The WorldObject's id.
     --
-    function self:getType()
-        return type;
+    function self:getID()
+        return id;
     end
 
     ---
@@ -164,6 +171,14 @@ function WorldObject.new( template )
     --
     function self:isClimbable()
         return climbable;
+    end
+
+    ---
+    -- Checks wether the WorldObject is a container.
+    -- @return (boolean) True if the WorldObject is a container.
+    --
+    function self:isContainer()
+        return container;
     end
 
     ---

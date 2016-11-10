@@ -1,11 +1,17 @@
 return {
-    name     = "AKS-74",
+    id       = "weapon_aks74",
     itemType = "Weapon",
-    weaponType = "Assault Rifle",
+    weight   = 2.7,
+    volume = 3.0,
+    weaponType = "Ranged",
     damage   = 40,
     rpm      = 650,
     caliber  = "5.45x39mm",
     magSize  = 30,
+    equippable = true,
+    reloadable = true,
+    range = 30,
+    sound = 'ASSAULT_RIFLE',
     mode = {
         {
             name = "Single",

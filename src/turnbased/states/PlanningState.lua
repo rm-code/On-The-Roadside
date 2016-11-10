@@ -1,9 +1,9 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
 local StandUp = require( 'src.characters.actions.StandUp' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 local LieDown = require( 'src.characters.actions.LieDown' );
+local OpenInventory = require( 'src.characters.actions.OpenInventory' );
 
 local AttackInput = require( 'src.turnbased.helpers.AttackInput' );
 local MovementInput = require( 'src.turnbased.helpers.MovementInput' );
@@ -38,9 +38,15 @@ function PlanningState.new( stateManager, factions )
         end
 
         if key == 'right' then
-            character:getEquipment():getWeapon():selectNextFiringMode();
+            if not character:getInventory():getWeapon() then
+                return;
+            end
+            character:getInventory():getWeapon():selectNextFiringMode();
         elseif key == 'left' then
-            character:getEquipment():getWeapon():selectPrevFiringMode();
+            if not character:getInventory():getWeapon() then
+                return;
+            end
+            character:getInventory():getWeapon():selectPrevFiringMode();
         elseif key == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));
@@ -76,7 +82,8 @@ function PlanningState.new( stateManager, factions )
             activeInputState = inputStates['movement'];
             factions:nextFaction();
         elseif key == 'i' then
-            ScreenManager.push( 'inventory', character );
+            character:enqueueAction( OpenInventory.new( character, character:getTile() ));
+            stateManager:push( 'execution', character );
         end
     end
 

@@ -3,7 +3,7 @@ local Camera = require('lib.Camera');
 local CameraHandler = {};
 
 local CAMERA_TRACKING_SPEED = 10;
-local SCROLL_MARGIN = 5;
+local SCROLL_MARGIN = 15;
 local SCROLL_SPEED = 10;
 
 function CameraHandler.new( map, px, py )

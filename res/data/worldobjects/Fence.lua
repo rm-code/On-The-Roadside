@@ -1,6 +1,5 @@
 return {
-    name = 'Fence',
-    type = 'worldobject_fence',
+    id = 'worldobject_fence',
     sprite = 62,
     color = { 143, 86, 59 },
     size = 35,

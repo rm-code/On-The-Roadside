@@ -18,34 +18,47 @@ local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 -- ------------------------------------------------
 
 ---
+-- Loads the character's weapon and adds ammunition to his inventory.
+-- @param character (Character) The character to create ammunition for.
+-- @param weapon    (Weapon)    The weapon to load.
+--
+local function createAmmunition( character, weapon )
+    -- Load the weapon.
+    local amount = weapon:getMagazine():getCapacity();
+    for _ = 1, amount do
+        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        weapon:getMagazine():addRound( round );
+    end
+
+    -- Add twice the amount of ammunition to the inventory.
+    for _ = 1, amount * 2 do
+        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        character:getInventory():getBackpack():getInventory():addItem( round );
+    end
+end
+
+---
 -- Creates the equipment for a character.
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
-    character:getEquipment():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
+    character:getInventory():addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
 
-    local weapon = character:getEquipment():getWeapon();
-
-    if weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
-        return;
+    local weapon = character:getInventory():getWeapon();
+    if weapon:isReloadable() then
+        createAmmunition( character, weapon );
+    elseif weapon:getWeaponType() == 'Thrown' then
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        character:getInventory():getBackpack():getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
     end
-
-    local magazine;
-    for _ = 1, 3 do
-        magazine = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getCaliber() );
-        magazine:setCapacity( weapon:getMagSize() );
-        magazine:setRounds( weapon:getMagSize() );
-        character:getEquipment():getBackpack():getInventory():addItem( magazine );
-    end
-    weapon:reload( magazine );
-    character:getEquipment():getBackpack():getInventory():removeItem( magazine );
 end
 
 -- ------------------------------------------------

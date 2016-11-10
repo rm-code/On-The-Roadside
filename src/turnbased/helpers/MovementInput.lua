@@ -47,7 +47,7 @@ function MovementInput.new( stateManager )
     end
 
     function self:request( ... )
-        local target, character = unpack{ ... };
+        local target, character = ...;
 
         generatePath( target, character );
         stateManager:push( 'execution', character );

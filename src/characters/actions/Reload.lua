@@ -5,10 +5,15 @@ local Reload = {};
 function Reload.new( character )
     local self = Action.new( 5, character:getTile() ):addInstance( 'Reload' );
 
-    function self:perform()
-        local weapon = character:getEquipment():getWeapon();
+    local function reload( weapon, inventory, item )
+        weapon:getMagazine():addRound( item );
+        inventory:removeItem( item );
+    end
 
-        if not weapon or weapon:getWeaponType() == 'Grenade' or weapon:getWeaponType() == 'Melee' then
+    function self:perform()
+        local weapon = character:getInventory():getWeapon();
+
+        if not weapon or not weapon:isReloadable() then
             print( 'Can not reload.' );
             return false;
         end
@@ -18,21 +23,20 @@ function Reload.new( character )
             return false;
         end
 
-        local inventory = character:getEquipment():getBackpack():getInventory();
-        local magazine;
+        local inventory = character:getInventory():getBackpack():getInventory();
         for _, item in pairs( inventory:getItems() ) do
-            if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
-                magazine = item;
-                inventory:removeItem( item );
+            if item:instanceOf( 'Ammunition' ) and item:getCaliber() == weapon:getMagazine():getCaliber() then
+                reload( weapon, inventory, item );
+            elseif item:instanceOf( 'ItemStack' ) then
+                for _, sitem in pairs( item:getItems() ) do
+                    reload( weapon, inventory, sitem );
+                    if weapon:getMagazine():isFull() then
+                        break;
+                    end
+                end
             end
         end
 
-        if not magazine then
-            print( 'No magazine found.' );
-            return false;
-        end
-
-        weapon:reload( magazine );
         return true;
     end
 

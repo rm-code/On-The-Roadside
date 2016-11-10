@@ -1,6 +1,6 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
-local Equipment = require('src.characters.Equipment');
+local Inventory = require('src.inventory.Inventory');
 
 -- ------------------------------------------------
 -- Module
@@ -51,9 +51,10 @@ function Character.new( map, tile, faction )
     local actions = Queue.new();
     local fov = {};
 
-    local equipment = Equipment.new();
+    local inventory = Inventory.new();
 
     local accuracy = love.math.random( 60, 90 );
+    local throwingSkill = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
@@ -74,14 +75,19 @@ function Character.new( map, tile, faction )
     -- Drops this character's inventory on the ground.
     --
     local function dropInventory()
-        tile:getInventory():addItem( equipment:getWeapon() );
-        tile:getInventory():addItem( equipment:getBackpack() );
-
-        for _, part in pairs( BODY_PARTS ) do
-            tile:getInventory():addItem( equipment:getClothingItem( part ));
+        local inv = {
+            inventory:getItem( ITEM_TYPES.WEAPON ),
+            inventory:getItem( ITEM_TYPES.BAG ),
+            inventory:getItem( ITEM_TYPES.HEADGEAR ),
+            inventory:getItem( ITEM_TYPES.GLOVES ),
+            inventory:getItem( ITEM_TYPES.JACKET ),
+            inventory:getItem( ITEM_TYPES.SHIRT ),
+            inventory:getItem( ITEM_TYPES.TROUSERS ),
+            inventory:getItem( ITEM_TYPES.FOOTWEAR ),
+        };
+        for _, item in pairs( inv ) do
+            tile:getInventory():addItem( item );
         end
-
-        equipment:clear();
     end
 
     -- ------------------------------------------------
@@ -220,7 +226,7 @@ function Character.new( map, tile, faction )
         local flukeModifier = math.floor( damage * randomSign() * ( love.math.random( 15 ) / 100 ));
         damage = damage + flukeModifier;
 
-        local clothing = equipment:getClothingItem( bodyPart );
+        local clothing = inventory:getItem( bodyPart );
         if clothing then
             if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
                 print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
@@ -273,7 +279,7 @@ function Character.new( map, tile, faction )
             ['accuracy'] = accuracy,
             ['health'] = health,
             ['stance'] = stance,
-            ['equipment'] = equipment:serialize(),
+            ['inventory'] = inventory:serialize(),
             ['faction'] = faction:getType()
         }
         return t;
@@ -324,11 +330,11 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the character's equipment.
-    -- @return (Inventory) The character's equipment.
+    -- Returns the character's inventory.
+    -- @return (Inventory) The character's inventory.
     --
-    function self:getEquipment()
-        return equipment;
+    function self:getInventory()
+        return inventory;
     end
 
     ---
@@ -348,11 +354,27 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Gets the character's throwing skill.
+    -- @return (number) The character's throwing skill.
+    --
+    function self:getThrowingSkill()
+        return throwingSkill;
+    end
+
+    ---
     -- Gets the character's tile.
     -- @return (Tile) The tile the character is located on.
     --
     function self:getTile()
         return tile;
+    end
+
+    ---
+    -- Returns the game's map.
+    -- @return (Map) The map the character is existing on.
+    --
+    function self:getMap()
+        return map;
     end
 
     ---

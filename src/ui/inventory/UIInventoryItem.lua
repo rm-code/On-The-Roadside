@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local Translator = require( 'src.util.Translator' );
 
 local UIInventoryItem = {};
 
@@ -10,6 +11,18 @@ function UIInventoryItem.new( x, y, item )
     local self = Object.new():addInstance( 'UIInventoryItem' );
 
     local mouseOver = false;
+
+    local function createLabel()
+        if not item then
+            return Translator.getText( 'inventory_empty_slot' );
+        else
+            local text = Translator.getText( item:getID() )
+            if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
+                text = string.format( '%s (%d)', text, item:getItemCount() );
+            end
+            return text;
+        end
+    end
 
     function self:draw()
         if mouseOver then
@@ -25,7 +38,7 @@ function UIInventoryItem.new( x, y, item )
 
         love.graphics.setScissor( x, y, WIDTH, HEIGHT );
         love.graphics.setColor( COLORS.DB21 );
-        love.graphics.printf( item and item:getName() or 'Empty', x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( createLabel(), x, y + 5, WIDTH, 'center' );
         love.graphics.setScissor();
     end
 
@@ -38,7 +51,24 @@ function UIInventoryItem.new( x, y, item )
         return mouseOver;
     end
 
-    function self:drag()
+    function self:getItem()
+        return item;
+    end
+
+    function self:hasItem()
+        return item ~= nil;
+    end
+
+    function self:drag( rmb, fullstack )
+        if item:instanceOf( 'ItemStack' ) and rmb then
+            if item:getItemCount() == 1 then
+                return item;
+            else
+                return item:split();
+            end
+        elseif item:instanceOf( 'ItemStack' ) and not fullstack then
+            return item:getItem();
+        end
         return item;
     end
 

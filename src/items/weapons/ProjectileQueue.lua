@@ -1,64 +1,13 @@
 local Projectile = require( 'src.items.weapons.Projectile' );
+local ProjectilePath = require( 'src.items.weapons.ProjectilePath' );
 local Queue = require( 'src.util.Queue' );
 local Messenger = require( 'src.Messenger' );
-local Bresenham = require( 'lib.Bresenham' );
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local ProjectileQueue = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local SKILL_MODIFIERS = {
-      [0] = 30,
-     [10] = 28,
-     [20] = 25,
-     [30] = 23,
-     [40] = 20,
-     [50] = 15,
-     [60] = 11,
-     [70] =  8,
-     [80] =  4,
-     [90] =  2,
-    [100] =  1,
-}
-
-local WEAPON_MODIFIERS = {
-    [0] = 27,
-   [10] = 23,
-   [20] = 20,
-   [30] = 17,
-   [40] = 14,
-   [50] = 11,
-   [60] =  8,
-   [70] =  5,
-   [80] =  3,
-   [90] =  1,
-  [100] =  0,
-}
-
-local BURST_MODIFIERS = {
-    [1] =  0,
-    [2] =  2,
-    [3] =  3,
-    [4] =  4,
-    [5] =  6,
-    [6] =  7,
-    [7] =  8,
-    [8] =  9,
-    [9] = 10
-}
-
-local STANCES = require('src.constants.Stances');
-local STANCE_MODIFIER = {
-    [STANCES.STAND]  = 1.0,
-    [STANCES.CROUCH] = 0.7,
-    [STANCES.PRONE]  = 0.5,
-}
 
 -- ------------------------------------------------
 -- Constructor
@@ -73,147 +22,44 @@ local STANCE_MODIFIER = {
 function ProjectileQueue.new( character, target )
     local self = {};
 
-    local projectileQueue = Queue.new();
+    local ammoQueue = Queue.new();
+    local shots;
     local projectiles = {};
     local index = 0;
     local timer = 0;
-    local weapon = character:getEquipment():getWeapon();
+    local weapon = character:getInventory():getWeapon();
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
 
     ---
-    -- Returns a random sign.
-    -- @return (number) Either one or minus one.
-    --
-    local function randomSign()
-        return love.math.random( 0, 1 ) == 0 and -1 or 1;
-    end
-
-    ---
-    -- Rounds a value to the next multiple of ten.
-    -- @param value (number) The value to round.
-    -- @return      (number) The rounded value.
-    --
-    local function roundToMultipleOfTen( value )
-        return math.floor( value / 10 + 0.5 ) * 10;
-    end
-
-    ---
-    -- Generates a random angle in the specified range.
-    -- @param range (number) The range to choose from.
-    -- @return      (number) The random angle.
-    --
-    local function getRandomAngle( range )
-        return love.math.random( range * 100 ) / 100;
-    end
-
-    ---
-    -- Calculates the maximum angle of derivation for the shot.
-    -- @param i (number) Determines how many projectiles have been fired already.
-    -- @return  (number) The maximum range for the derivation.
-    --
-    local function calculateMaximumDerivation( i )
-        local marksmanSkill = roundToMultipleOfTen( character:getAccuracy() );
-        local weaponAccuracy = roundToMultipleOfTen( weapon:getAccuracy() );
-
-        local derivation = 0;
-        -- Random angle based on the character's accuracy skill.
-        derivation = derivation + SKILL_MODIFIERS[marksmanSkill];
-        -- Random angle based on weapon's accuracy stat.
-        derivation = derivation + WEAPON_MODIFIERS[weaponAccuracy];
-        -- Random angle based on how many bullets have been shot before.
-        derivation = derivation + BURST_MODIFIERS[math.min( i, #BURST_MODIFIERS )];
-
-        -- Stances influence the whole angle.
-        derivation = derivation * STANCE_MODIFIER[character:getStance()];
-
-        return derivation;
-    end
-
-    ---
-    -- Rotates the target position by the given angle.
-    -- @param px    (number)
-    -- @param py    (number)
-    -- @param tx    (number)
-    -- @param ty    (number)
-    -- @param angle (number)
-    -- @return      (number) The new target along the x-axis.
-    -- @return      (number) The new target along the y-axis.
-    --
-    local function applyVectorRotation( px, py, tx, ty, angle )
-        local vx, vy = tx - px, ty - py;
-
-        -- Vary the shot distance randomly.
-        local factor = love.math.random( 90, 130 ) / 100;
-        vx = vx * factor;
-        vy = vy * factor;
-
-        -- Transform angle from degrees to radians.
-        angle = math.rad( angle );
-
-        local nx = vx * math.cos( angle ) - vy * math.sin( angle );
-        local ny = vx * math.sin( angle ) + vy * math.cos( angle );
-
-        return px + nx, py + ny;
-    end
-
-    ---
-    -- Creates a new projectile.
-    -- @param i (number)     Determines the index number of this projectile.
-    -- @return  (Projectile) The new projectile instance.
-    --
-    local function createProjectile( i )
-        -- Calculate the angle of derivation.
-        local maxDerivation = calculateMaximumDerivation( i or 1 );
-        local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
-
-        -- Apply the angle to find the final target tile.
-        local origin = character:getTile();
-        local px, py = origin:getPosition();
-        local tx, ty = target:getPosition();
-
-        local nx, ny = applyVectorRotation( px, py, tx, ty, actualDerivation );
-        nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
-
-        -- Get the coords of all tiles the projectile passes on the way to its target.
-        local tiles = {};
-        Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
-            -- Ignore the origin.
-            if sx ~= px or sy ~= py then
-                tiles[#tiles + 1] = { x = sx, y = sy };
-            end
-            return true;
-        end)
-
-        return Projectile.new( character, tiles );
-    end
-
-    ---
     -- Removes a projectile from the queue and adds it to the table of active
     -- projectiles.
     --
     local function spawnProjectile()
-        local projectile = projectileQueue:dequeue();
-        Messenger.publish( 'SOUND_ATTACK', weapon );
+        local round = ammoQueue:dequeue();
 
-        if weapon:getWeaponType() == 'Grenade' then
-            index = index + 1;
-            projectiles[index] = createProjectile();
+        local tiles = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() );
+        local projectile = Projectile.new( character, tiles, weapon:getDamage(), round:getEffects() );
+
+        -- Play sound and remove the round from the magazine.
+        Messenger.publish( 'SOUND_ATTACK', weapon );
+        weapon:getMagazine():removeRound();
+
+        -- Spawn projectiles for the spread shot.
+        if round:getEffects():spreadsOnShot() then
+            for _ = 1, round:getEffects():getPellets() do
+                index = index + 1;
+                local spreadTiles = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() );
+                projectiles[index] = Projectile.new( character, spreadTiles, weapon:getDamage(), round:getEffects() );
+            end
             return;
         end
 
-        weapon:attack();
-        if projectile:getWeapon():getMagazine():getAmmoType() == 'ShotgunShell' then
-            for _ = 1, projectile:getWeapon():getMagazine():getPelletAmount() do
-                index = index + 1;
-                projectiles[index] = createProjectile();
-            end
-        else
-            index = index + 1;
-            projectiles[index] = projectile;
-        end
+        -- Spawn default projectile.
+        index = index + 1;
+        projectiles[index] = projectile;
     end
 
     -- ------------------------------------------------
@@ -227,14 +73,9 @@ function ProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        if weapon:getWeaponType() == 'Grenade' then
-            projectileQueue:enqueue( createProjectile( 1 ));
-            return;
-        end
-
-        local amount = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
-        for i = 1, amount do
-            projectileQueue:enqueue( createProjectile( i ));
+        shots = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
+        for i = 1, shots do
+            ammoQueue:enqueue( weapon:getMagazine():getRound( i ));
         end
     end
 
@@ -244,7 +85,7 @@ function ProjectileQueue.new( character, target )
     --
     function self:update( dt )
         timer = timer - dt;
-        if timer <= 0 and not projectileQueue.isEmpty() then
+        if timer <= 0 and not ammoQueue.isEmpty() then
             spawnProjectile();
             timer = weapon:getFiringDelay();
         end
@@ -282,7 +123,7 @@ function ProjectileQueue.new( character, target )
     -- @return (boolean) True if it is done.
     --
     function self:isDone()
-        if not projectileQueue.isEmpty() then
+        if not ammoQueue:isEmpty() then
             return false;
         end
 

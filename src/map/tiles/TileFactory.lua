@@ -35,9 +35,9 @@ local function load( dir )
                 print( 'Can not load ' .. dir .. file );
             else
                 local template = loaded();
-                local type = template.type;
-                tiles[type] = template;
-                print( string.format( '  %d. %s', i, template.name ));
+                local id = template.id;
+                tiles[id] = template;
+                print( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -56,15 +56,15 @@ function TileFactory.loadTemplates()
 end
 
 ---
--- Creates a tile of a certain type at the given coordinates.
+-- Creates a tile of a certain id at the given coordinates.
 -- @param x    (number) The tile's coordinate along the x-axis.
 -- @param y    (number) The tile's coordinate along the y-axis.
--- @param type (string) The type of Tile to create.
+-- @param id   (string) The id of Tile to create.
 -- @return     (Tile)   The newly created Tile.
 --
-function TileFactory.create( x, y, type )
-    local template = tiles[type];
-    assert( template, string.format( 'Requested tile type (%s) doesn\'t exist!', type ));
+function TileFactory.create( x, y, id )
+    local template = tiles[id];
+    assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ));
     return Tile.new( x, y, template );
 end
 

@@ -1,6 +1,7 @@
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local ItemFactory = require( 'src.items.ItemFactory' );
+local ItemStack = require( 'src.inventory.ItemStack' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' );
 
 -- ------------------------------------------------
@@ -14,6 +15,7 @@ local SaveHandler = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local loadstring = loadstring and loadstring or load; -- Lua 5.1+ compatibility.
 
 -- ------------------------------------------------
 -- Private Functions
@@ -96,21 +98,18 @@ function SaveHandler.load()
     -- Private Methods
     -- ------------------------------------------------
 
-    local function createMagazine( item )
-        local magazine = ItemFactory.createItem( item.itemType, item.name, item );
-        magazine:setRounds( item.rounds );
-        magazine:setCapacity( item.capacity );
-
-        return magazine;
+    local function createRound( item )
+        return ItemFactory.createItem( item.itemType, item.id );
     end
 
     local function createWeapon( item )
-        local weapon = ItemFactory.createItem( item.itemType, item.name );
+        local weapon = ItemFactory.createItem( item.itemType, item.id );
         weapon:setAttackMode( item.modeIndex );
 
-        if weapon:getWeaponType() ~= 'Melee' and weapon:getWeaponType() ~= 'Grenade' then
-            local magazine = createMagazine( item.magazine );
-            weapon:reload( magazine );
+        if weapon:isReloadable() then
+            for _, round in ipairs( item.magazine.rounds ) do
+                weapon:getMagazine():addRound( createRound( round ));
+            end
         end
 
         return weapon;
@@ -118,33 +117,37 @@ function SaveHandler.load()
 
     local function fillInventory( source, target )
         for _, item in pairs( source ) do
-            if item.itemType == ITEM_TYPES.WEAPON then
+            if item.ItemStack then
+                local itemStack = ItemStack.new( item.id );
+                fillInventory( item.items, itemStack );
+                target:addItem( itemStack );
+            elseif item.itemType == ITEM_TYPES.WEAPON then
                 local weapon = createWeapon( item );
                 target:addItem( weapon );
             elseif item.itemType == ITEM_TYPES.BAG then
-                local bag = ItemFactory.createItem( item.itemType, item.name );
+                local bag = ItemFactory.createItem( item.itemType, item.id );
                 fillInventory( item.inventory, bag:getInventory() );
                 target:addItem( bag )
             elseif item.itemType == ITEM_TYPES.AMMO then
-                local ammo = createMagazine( item );
+                local ammo = createRound( item );
                 target:addItem( ammo );
             elseif item.itemType == ITEM_TYPES.HEADGEAR then
-                local headgear = ItemFactory.createItem( item.itemType, item.name );
+                local headgear = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( headgear );
             elseif item.itemType == ITEM_TYPES.GLOVES then
-                local gloves = ItemFactory.createItem( item.itemType, item.name );
+                local gloves = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( gloves );
             elseif item.itemType == ITEM_TYPES.JACKET then
-                local jacket = ItemFactory.createItem( item.itemType, item.name );
+                local jacket = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( jacket );
             elseif item.itemType == ITEM_TYPES.SHIRT then
-                local shirt = ItemFactory.createItem( item.itemType, item.name );
+                local shirt = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( shirt );
             elseif item.itemType == ITEM_TYPES.TROUSERS then
-                local trousers = ItemFactory.createItem( item.itemType, item.name );
+                local trousers = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( trousers );
             elseif item.itemType == ITEM_TYPES.FOOTWEAR then
-                local footwear = ItemFactory.createItem( item.itemType, item.name );
+                local footwear = ItemFactory.createItem( item.itemType, item.id );
                 target:addItem( footwear );
             end
         end
@@ -159,12 +162,17 @@ function SaveHandler.load()
         for _, tile in ipairs( save ) do
             local x, y = tile.x, tile.y;
             loadedTiles[x] = loadedTiles[x] or {};
-            loadedTiles[x][y] = TileFactory.create( x, y, tile.type );
+            loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
             local newTile = loadedTiles[x][y];
 
             if tile.worldObject then
-                local worldObject = WorldObjectFactory.create( tile.worldObject.type );
+                local worldObject = WorldObjectFactory.create( tile.worldObject.id );
                 worldObject:setHitPoints( tile.worldObject.hp );
+                worldObject:setPassable( tile.worldObject.passable );
+                worldObject:setBlocksVision( tile.worldObject.blocksVision );
+                if worldObject:isContainer() and tile.worldObject.inventory then
+                    fillInventory( tile.worldObject.inventory, worldObject:getInventory() );
+                end
                 newTile:addWorldObject( worldObject );
             end
             if tile.inventory then
@@ -189,8 +197,8 @@ function SaveHandler.load()
                 character:setAccuracy( tile.character.accuracy );
                 character:setStance( tile.character.stance );
 
-                if tile.character.equipment then
-                    fillInventory( tile.character.equipment, character:getEquipment() );
+                if tile.character.inventory then
+                    fillInventory( tile.character.inventory, character:getInventory() );
                 end
 
                 factions:addCharacter( character );

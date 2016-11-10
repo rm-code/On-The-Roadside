@@ -21,14 +21,13 @@ local Tile = {};
 function Tile.new( x, y, template )
     local self = Object.new():addInstance( 'Tile' );
 
-    local name = template.name;
-    local type = template.type;
+    local id = template.id;
     local movementCost = template.movementCost;
     local passable = template.passable;
     local sprite = template.sprite;
     local color = template.color;
 
-    local id;
+    local spriteID;
     local dirty;
     local neighbours;
     local character;
@@ -99,7 +98,7 @@ function Tile.new( x, y, template )
 
     function self:serialize()
         local t = {
-            ['type'] = type,
+            ['id'] = id,
             ['x'] = x,
             ['y'] = y
         };
@@ -141,11 +140,11 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Returns the tile's unique ID.
-    -- @return (number) The tile's ID.
+    -- Returns the tile's unique spriteID.
+    -- @return (number) The tile's spriteID.
     --
-    function self:getID()
-        return id;
+    function self:getSpriteID()
+        return spriteID;
     end
 
     ---
@@ -154,14 +153,6 @@ function Tile.new( x, y, template )
     --
     function self:getMovementCost()
         return movementCost;
-    end
-
-    ---
-    -- Returns the tile's name.
-    -- @return (string) The tile's name.
-    --
-    function self:getName()
-        return name;
     end
 
     ---
@@ -197,11 +188,11 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Returns the tile's type.
-    -- @return (string) The tile's type.
+    -- Returns the tile's ID.
+    -- @return (string) The tile's ID.
     --
-    function self:getType()
-        return type;
+    function self:getID()
+        return id;
     end
 
     ---
@@ -306,11 +297,11 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Sets the tile's unique ID.
-    -- @param nid (number) The tile's new ID.
+    -- Sets the tile's unique spriteID.
+    -- @param nid (number) The tile's new spriteID.
     --
-    function self:setID( nid )
-        id = nid;
+    function self:setSpriteID( nid )
+        spriteID = nid;
     end
 
     return self;

@@ -13,6 +13,7 @@ return {
         { r =   0, g =   0, b =   0, object = 'worldobject_wall'      },
         { r = 160, g =  50, b =   0, object = 'worldobject_chair'     },
         { r =   0, g = 150, b = 255, object = 'worldobject_window'    },
+        { r =  89, g =  43, b =  38, object = 'worldobject_crate'     },
         { r = 160, g =  80, b =   0, object = 'worldobject_table'     }
     },
     spawns = {

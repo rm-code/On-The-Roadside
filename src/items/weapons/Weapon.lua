@@ -11,7 +11,7 @@ local Weapon = {};
 -- ------------------------------------------------
 
 function Weapon.new( template )
-    local self = Item.new( template.name, template.itemType ):addInstance( 'Weapon' );
+    local self = Item.new( template ):addInstance( 'Weapon' );
 
     -- ------------------------------------------------
     -- Private Attributes
@@ -38,7 +38,7 @@ function Weapon.new( template )
 
     function self:serialize()
         local t = {
-            ['name'] = template.name,
+            ['id'] = template.id,
             ['itemType'] = template.itemType,
             ['modeIndex'] = modeIndex
         };
@@ -75,6 +75,14 @@ function Weapon.new( template )
 
     function self:getAttackModeIndex()
         return modeIndex;
+    end
+
+    function self:getSound()
+        return template.sound;
+    end
+
+    function self:isReloadable()
+        return template.reloadable;
     end
 
     -- ------------------------------------------------

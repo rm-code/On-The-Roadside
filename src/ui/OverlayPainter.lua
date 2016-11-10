@@ -2,6 +2,8 @@ local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
 local Bresenham = require( 'lib.Bresenham' );
+local ProjectilePath = require( 'src.items.weapons.ProjectilePath' );
+local VectorMath = require( 'src.util.VectorMath' );
 
 -- ------------------------------------------------
 -- Module
@@ -15,6 +17,8 @@ local OverlayPainter = {};
 
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
+
+local weaponCone = {};
 
 -- ------------------------------------------------
 -- Constructor
@@ -36,6 +40,74 @@ function OverlayPainter.new( game, particleLayer )
     -- Private Methods
     -- ------------------------------------------------
 
+    local function buildConeOutline( character, weapon )
+        -- Get the tile at the mouse pointer's position.
+        local cx, cy = MousePointer.getGridPosition();
+        local target = game:getMap():getTileAt( cx, cy );
+
+        -- Exit early if we don't have a valid target.
+        if not target then
+            return;
+        end
+
+        -- Fake the last bullet in the magazine so the maximum derivation
+        -- represents that of a full weapon burst.
+        local count;
+        if weapon:getWeaponType() == 'Ranged' then
+            count = weapon:getAttacks()
+        end
+
+        -- Calculate the derivation.
+        local derivation = ProjectilePath.getMaximumDerivation( character, weapon, count );
+        local origin = character:getTile();
+        local px, py = origin:getPosition();
+        local tx, ty = target:getPosition();
+
+        do
+            -- Callback function used in bresenham's algorithm.
+            -- The status variable has to be declared here so it carries over
+            -- between different tiles in bresenham's line algorithm.
+            local status = 1;
+            local function callback( sx, sy, counter )
+                -- Get the tile at the rounded integer coordinates.
+                local tile = game:getMap():getTileAt( math.floor( sx + 0.5 ), math.floor( sy + 0.5 ));
+                -- If it is not a valid tile or the character's faction can't see the tile stop the
+                -- ray. Always advance the ray if the tile is the character's tile.
+                if not tile or not character:getFaction():canSee(tile) then
+                    return false;
+                elseif tile == origin then
+                    return true;
+                end
+
+                -- Assign a status for this tile.
+                -- 1 means the projectile can pass freely.
+                -- 2 means the projectile might be blocked by a world object or character.
+                -- 3 means the projectile will be blocked by a world object.
+                -- 4 means the projectile can't reach this tile.
+                if tile:isOccupied() or ( tile:hasWorldObject() and tile:getWorldObject():isDestructible() ) then
+                    status = 2;
+                elseif tile:hasWorldObject() and not tile:getWorldObject():isDestructible() then
+                    status = 3;
+                elseif counter > weapon:getRange() then
+                    status = 4;
+                end
+
+                -- Since multiple arrays might touch the same tile we use the maximum
+                -- value stored for this tile.
+                weaponCone[tile] = math.max( status, ( weaponCone[tile] or 1 ));
+                return true;
+            end
+
+            -- Shoot multiple rays from the negative to the positive maxima for the
+            -- weapon's "spread" angle.
+            for angle = -derivation, derivation, 0.2 do
+                local nx, ny = VectorMath.rotate( px, py, tx, ty, angle );
+                status = 1;
+                Bresenham.calculateLine( px, py, nx, ny, callback );
+            end
+        end
+    end
+
     ---
     -- Draws a line from the character to a selected target.
     -- @param character (Character) The character to draw the LOS for.
@@ -49,41 +121,27 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        local weapon = character:getEquipment():getWeapon();
-        if not weapon or weapon:getWeaponType() == 'Melee' or weapon:getWeaponType() == 'Grenade' then
+        local weapon = character:getInventory():getWeapon();
+        if not weapon or weapon:getWeaponType() == 'Melee' then
             return;
         end
 
-        local ox, oy = character:getTile():getPosition();
-        local map = game:getMap();
-
-        local cx, cy = MousePointer.getGridPosition();
-        local target = map:getTileAt( cx, cy );
-
-        if target then
-            local tx, ty = target:getPosition();
-
-            Bresenham.calculateLine( ox, oy, tx, ty, function( sx, sy )
-                love.graphics.setBlendMode( 'add' );
-
-                local tile = map:getTileAt( sx, sy );
-                local visible = character:getFaction():canSee( tile );
-
-                if not visible or weapon:getMagazine():isEmpty() or character:getActionPoints() < weapon:getAttackCost() then
-                    love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
-                elseif tile:hasWorldObject() or tile:isOccupied() then
-                    love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() );
-                else
-                    love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
-                end
-
+        buildConeOutline( character, weapon );
+        for tile, status in pairs( weaponCone ) do
+            if status == 1 then
+                love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() );
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-
-                -- Reset drawing state.
-                love.graphics.setColor( 255, 255, 255, 255 );
-                love.graphics.setBlendMode( 'alpha' );
-                return true;
-            end)
+            elseif status == 2 then
+                love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() );
+                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+            elseif status == 3 then
+                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
+                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+            elseif status == 4 then
+                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() );
+                love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 89 ), tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE );
+            end
+            weaponCone[tile] = nil;
         end
     end
 
@@ -166,6 +224,8 @@ function OverlayPainter.new( game, particleLayer )
                     love.graphics.setColor( particle:getColors() );
                     if particle:isAscii() then
                         love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
+                    elseif particle:getSprite() then
+                        love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( particle:getSprite() ), x * TILE_SIZE, y * TILE_SIZE );
                     else
                         love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
                     end

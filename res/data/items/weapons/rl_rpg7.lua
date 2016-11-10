@@ -1,10 +1,16 @@
 return {
-    name     = "RPG-7",
+    id       = "weapon_rpg7",
     itemType = "Weapon",
-    weaponType = "Rocket Launcher",
+    weaponType = "Ranged",
+    weight   = 5.7,
+    volume = 9.0,
     damage   = 0,
     caliber  = "OG-7V",
     magSize  = 1,
+    equippable = true,
+    reloadable = true,
+    range = 30,
+    sound = 'ROCKET_LAUNCHER',
     mode = {
         {
             name = "Single",

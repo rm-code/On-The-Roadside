@@ -27,11 +27,7 @@ local PathFinder = {};
 local function calculateHeuristic( a, b )
     local distanceX = math.abs( a:getX() - b:getX() );
     local distanceY = math.abs( a:getY() - b:getY() );
-    if distanceX > distanceY then
-        return SQRT * distanceY + ( distanceX - distanceY );
-    else
-        return SQRT * distanceX + ( distanceY - distanceX );
-    end
+    return math.max( distanceX, distanceY );
 end
 
 ---

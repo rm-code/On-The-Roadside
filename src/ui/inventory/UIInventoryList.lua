@@ -1,5 +1,6 @@
 local Object = require( 'src.Object' );
 local UIInventoryItem = require( 'src.ui.inventory.UIInventoryItem' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -19,7 +20,7 @@ local WIDTH = 150;
 -- Constructor
 -- ------------------------------------------------
 
-function UIInventoryList.new( x, y, name, inventory )
+function UIInventoryList.new( x, y, id, inventory )
     local self = Object.new():addInstance( 'UIInventoryList' );
 
     -- ------------------------------------------------
@@ -27,6 +28,8 @@ function UIInventoryList.new( x, y, name, inventory )
     -- ------------------------------------------------
 
     local list;
+    local weightText;
+    local volumeText;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -37,6 +40,8 @@ function UIInventoryList.new( x, y, name, inventory )
         for i, item in ipairs( inventory:getItems() ) do
             list[#list + 1] = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * i, item );
         end
+        weightText = string.format( '%.1f/%.1f', inventory:getWeight(), inventory:getWeightLimit() );
+        volumeText = string.format( '%.1f/%.1f', inventory:getVolume(), inventory:getVolumeLimit() );
     end
 
     -- ------------------------------------------------
@@ -54,7 +59,9 @@ function UIInventoryList.new( x, y, name, inventory )
         love.graphics.rectangle( 'line', x, y, WIDTH, HEADER_HEIGHT );
         love.graphics.setColor( 255, 255, 255 );
         love.graphics.setScissor( x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.printf( name, x, y + 5, WIDTH, 'center' );
+        love.graphics.printf( Translator.getText( id ), x + 5, y + 5, WIDTH - 10, 'left' );
+        love.graphics.printf( weightText, x + 5, y +  1, WIDTH - 10, 'right' );
+        love.graphics.printf( volumeText, x + 5, y + 15, WIDTH - 10, 'right' );
         love.graphics.setScissor();
 
         for _, slot in ipairs( list ) do
@@ -70,19 +77,35 @@ function UIInventoryList.new( x, y, name, inventory )
 
     function self:isMouseOver()
         local mx = love.mouse.getX();
+        for _, uiItem in ipairs( list ) do
+            uiItem:isMouseOver();
+        end
         return ( mx > x and mx < x + WIDTH );
     end
 
     function self:drop( item )
-        inventory:addItem( item );
-        regenerate();
-        return true;
-    end
-
-    function self:drag()
         for _, uiItem in ipairs( list ) do
             if uiItem:isMouseOver() then
-                local item = uiItem:drag();
+                local success = inventory:insertItem( item, uiItem:getItem() );
+                if success then
+                    regenerate();
+                    return true;
+                end
+            end
+        end
+
+        local success = inventory:addItem( item );
+        if success then
+            regenerate();
+            return true;
+        end
+        return false;
+    end
+
+    function self:drag( rmb, fullstack )
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                local item = uiItem:drag( rmb, fullstack );
                 inventory:removeItem( item );
                 regenerate();
                 return item;

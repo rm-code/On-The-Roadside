@@ -1,4 +1,5 @@
 local MousePointer = require( 'src.ui.MousePointer' );
+local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
 -- Module
@@ -17,46 +18,62 @@ function UserInterface.new( game )
     local map = game:getMap();
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
+    local font = love.graphics.newFont( 12 );
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
+        local x, y = 390, love.graphics.getHeight() - 20;
         local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
             return;
         end
 
+        if tile:isOccupied() then
+            love.graphics.print( Translator.getText( 'ui_health' ), x, y );
+            love.graphics.print( tile:getCharacter():getHealth(), x + font:getWidth( Translator.getText( 'ui_health' )), y );
+            return;
+        end
+
+        love.graphics.print( Translator.getText( 'ui_tile' ), x, y );
+
+        local sw = font:getWidth( Translator.getText( 'ui_tile' ));
         if not tile:isExplored( factions:getFaction():getType() ) then
-            love.graphics.print( 'Tile: Unexplored', 310, love.graphics.getHeight() - 20 );
-        elseif tile:isOccupied() then
-            love.graphics.print( 'Health: ' .. tile:getCharacter():getHealth(), 310, love.graphics.getHeight() - 20 );
+            love.graphics.print( Translator.getText( 'ui_tile_unexplored' ), x + sw, y );
         elseif tile:hasWorldObject() then
-            love.graphics.print( 'Tile: ' .. tile:getWorldObject():getName(), 310, love.graphics.getHeight() - 20 );
+            love.graphics.print( Translator.getText( tile:getWorldObject():getID() ), x + sw, y );
         elseif tile:isExplored( factions:getFaction():getType() ) then
-            love.graphics.print( 'Tile: ' .. tile:getName(), 310, love.graphics.getHeight() - 20 );
+            love.graphics.print( Translator.getText( tile:getID() ), x + sw, y );
         end
     end
 
     function self:draw()
+        love.graphics.setFont( font );
         local character = factions:getFaction():getCurrentCharacter();
         if factions:getFaction():isAIControlled() then
             return;
         end
 
         -- Draw tile coordinates.
-        love.graphics.print( 'Coords: ' .. mouseX .. ', ' .. mouseY, 10, love.graphics.getHeight() - 20 );
+        love.graphics.print( Translator.getText( 'ui_coordinates' ), 10, love.graphics.getHeight() - 20 );
+        love.graphics.print( mouseX .. ', ' .. mouseY, 10 + font:getWidth( Translator.getText( 'ui_coordinates' )), love.graphics.getHeight() - 20 );
 
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
 
-        local weapon = character:getEquipment():getWeapon();
+        local weapon = character:getInventory():getWeapon();
         if weapon then
-            love.graphics.print( 'Weapon: ' .. weapon:getName(), 150, love.graphics.getHeight() - 40 );
-            love.graphics.print( 'Mode: ' .. weapon:getAttackMode().name, 150, love.graphics.getHeight() - 20 );
-            if not weapon:getWeaponType() == 'Melee' and not weapon:getWeaponType() == 'Grenade' then
-                love.graphics.print( 'Ammo: ' .. string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 310, love.graphics.getHeight() - 40 );
+            love.graphics.print( Translator.getText( 'ui_weapon' ), 200, love.graphics.getHeight() - 40 );
+            love.graphics.print( Translator.getText( weapon:getID() ), 200 + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - 40 );
+
+            love.graphics.print( Translator.getText( 'ui_mode' ), 200, love.graphics.getHeight() - 20 );
+            love.graphics.print( weapon:getAttackMode().name, 200 + font:getWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - 20 );
+
+            if weapon:isReloadable() then
+                love.graphics.print( Translator.getText( 'ui_ammo' ), 390, love.graphics.getHeight() - 40 );
+                love.graphics.print( string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 390 + font:getWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - 40 );
             end
         end
 

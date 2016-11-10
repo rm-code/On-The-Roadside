@@ -1,6 +1,6 @@
 local Object = require( 'src.Object' );
 local Faction = require( 'src.characters.Faction' );
-local Node = require( 'src.characters.Node' );
+local Node = require( 'src.util.Node' );
 local Messenger = require( 'src.Messenger' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' );
 
