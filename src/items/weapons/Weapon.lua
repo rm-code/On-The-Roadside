@@ -77,6 +77,10 @@ function Weapon.new( template )
         return modeIndex;
     end
 
+    function self:getSound()
+        return template.sound;
+    end
+
     function self:isReloadable()
         return template.reloadable;
     end

@@ -11,6 +11,7 @@ return {
     equippable = true,
     reloadable = true,
     range = 30,
+    sound = 'ASSAULT_RIFLE',
     mode = {
         {
             name = "Single",

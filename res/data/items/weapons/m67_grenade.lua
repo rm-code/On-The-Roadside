@@ -8,6 +8,7 @@ return {
     equippable = true,
     reloadable = false,
     range = 10,
+    sound = 'MELEE',
     mode = {
         {
             name = "Throw",

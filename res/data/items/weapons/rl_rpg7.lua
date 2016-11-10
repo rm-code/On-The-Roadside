@@ -10,6 +10,7 @@ return {
     equippable = true,
     reloadable = true,
     range = 30,
+    sound = 'ROCKET_LAUNCHER',
     mode = {
         {
             name = "Single",

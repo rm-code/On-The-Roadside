@@ -10,6 +10,7 @@ return {
     equippable = true,
     reloadable = true,
     range = 15,
+    sound = 'SHOTGUN',
     mode = {
         {
             name = "Single",
