@@ -7,6 +7,7 @@ local ProFi = require( 'lib.ProFi' );
 
 -- TODO Remove profiling code.
 local profile = 0;
+local versionString = "WIP - Version: " .. getVersion();
 
 -- ------------------------------------------------
 -- Callbacks
@@ -47,6 +48,10 @@ function love.draw()
         ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
         profile = 0;
     end
+
+    love.graphics.setColor( 255, 255, 255, 100 );
+    love.graphics.print( versionString, love.graphics.getWidth() - 155, 5 );
+    love.graphics.setColor( 255, 255, 255, 255 );
 end
 
 function love.update(dt)
