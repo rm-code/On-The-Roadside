@@ -4,6 +4,7 @@ local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
+local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
@@ -60,6 +61,7 @@ function Game.new()
     function self:init()
         ItemFactory.loadTemplates();
         TileFactory.loadTemplates();
+        BodyFactory.loadTemplates();
         WorldObjectFactory.loadTemplates();
         SoundManager.loadResources();
 

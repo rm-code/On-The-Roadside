@@ -1,6 +1,7 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
 local Inventory = require('src.inventory.Inventory');
+local BodyFactory = require( 'src.characters.body.BodyFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -17,14 +18,6 @@ local DEFAULT_ACTION_POINTS = 20;
 local STANCES = require('src.constants.Stances');
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
-local BODY_PARTS = {
-    ITEM_TYPES.HEADGEAR,
-    ITEM_TYPES.GLOVES,
-    ITEM_TYPES.JACKET,
-    ITEM_TYPES.SHIRT,
-    ITEM_TYPES.TROUSERS,
-    ITEM_TYPES.FOOTWEAR
-}
 
 -- ------------------------------------------------
 -- Constructor
@@ -35,9 +28,10 @@ local BODY_PARTS = {
 -- @param map     (Map)       A reference to the map object.
 -- @param tile    (Tile)      The tile to spawn the character on.
 -- @param faction (Faction)   The Faction object determining the character's faction.
+-- @param bodyID  (string)    The body id to use for this character.
 -- @return        (Character) A new instance of the Character class.
 --
-function Character.new( map, tile, faction )
+function Character.new( map, tile, faction, bodyID )
     local self = Object.new():addInstance( 'Character' );
 
     -- Add character to the tile.
@@ -58,18 +52,11 @@ function Character.new( map, tile, faction )
     local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
+    local body = BodyFactory.create( bodyID );
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
-
-    --
-    -- Returns a random sign (+ or -).
-    -- @return (number) Randomly returns either -1 or 1.
-    --
-    local function randomSign()
-        return love.math.random( 0, 1 ) == 0 and -1 or 1;
-    end
 
     ---
     -- Drops this character's inventory on the ground.
@@ -219,28 +206,7 @@ function Character.new( map, tile, faction )
     -- @param damageType (string) The type of damage the tile is hit with.
     --
     function self:hit( damage, damageType )
-        -- Randomly determine the body part which was hit by the attack and
-        -- get the clothing item on that body part.
-        local bodyPart = BODY_PARTS[love.math.random( #BODY_PARTS )];
-
-        -- Randomly increases or reduces the base damage by 15%.
-        local flukeModifier = math.floor( damage * randomSign() * ( love.math.random( 15 ) / 100 ));
-        damage = damage + flukeModifier;
-
-        local clothing = inventory:getItem( bodyPart );
-        if clothing then
-            if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
-                print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
-                damage = damage - clothing:getArmorProtection();
-            end
-        end
-
-        -- Prevent negative damage.
-        damage = math.max( damage, 0 );
-
-        print( string.format( "%d points of %s damage!", damage, damageType ));
-
-        health = health - damage;
+        body:hit( damage, damageType );
 
         if self:isDead() then
             dropInventory();
@@ -415,7 +381,7 @@ function Character.new( map, tile, faction )
     -- @return (boolean) Wether the character is dead or not.
     --
     function self:isDead()
-        return health <= 0;
+        return body:isDead();
     end
 
     -- ------------------------------------------------

@@ -3,3 +3,6 @@
 .idea/*
 *.iml
 
+# Ignore yEd graph files
+
+*.graphml

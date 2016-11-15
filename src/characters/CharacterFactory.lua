@@ -72,7 +72,7 @@ function CharacterFactory.loadCharacter( map, tile, faction )
 end
 
 function CharacterFactory.newCharacter( map, tile, faction )
-    local character = Character.new( map, tile, faction );
+    local character = Character.new( map, tile, faction, 'human' );
     createEquipment( character );
     character:generateFOV();
     return character;
