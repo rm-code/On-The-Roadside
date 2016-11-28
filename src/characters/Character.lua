@@ -216,8 +216,9 @@ function Character.new( map, tile, faction )
     ---
     -- Hits the character with damage.
     -- @param damage (number) The amount of damage the character is hit with.
+    -- @param damageType (string) The type of damage the tile is hit with.
     --
-    function self:hit( damage )
+    function self:hit( damage, damageType )
         -- Randomly determine the body part which was hit by the attack and
         -- get the clothing item on that body part.
         local bodyPart = BODY_PARTS[love.math.random( #BODY_PARTS )];
@@ -237,7 +238,7 @@ function Character.new( map, tile, faction )
         -- Prevent negative damage.
         damage = math.max( damage, 0 );
 
-        print( "Damage: " .. damage );
+        print( string.format( "%d points of %s damage!", damage, damageType ));
 
         health = health - damage;
 

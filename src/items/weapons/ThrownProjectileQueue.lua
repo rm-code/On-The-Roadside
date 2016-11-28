@@ -42,7 +42,7 @@ function ThrownProjectileQueue.new( character, target )
         character:getInventory():removeItem( weapon );
 
         local tiles = ProjectilePath.calculate( character, target, weapon );
-        local projectile = Projectile.new( character, tiles, weapon:getDamage(), weapon:getEffects() );
+        local projectile = Projectile.new( character, tiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() );
         index = index + 1;
         projectiles[index] = projectile;
 

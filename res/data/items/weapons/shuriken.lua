@@ -13,6 +13,7 @@ return {
         {
             name = "Throw",
             cost = 3,
+            damageType = 'piercing'
         }
     },
     effects = {

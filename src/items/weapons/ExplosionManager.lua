@@ -146,7 +146,8 @@ function ExplosionManager.update( dt )
         Messenger.publish( 'EXPLOSION', explosionLayout[explosionIndex] );
         -- Damage the hit tiles.
         for tile, life in pairs( explosionLayout[explosionIndex] ) do
-            tile:hit( love.math.random( 50, 50 * life ));
+            -- TODO: Better handling of explosive damage.
+            tile:hit( love.math.random( 50, 50 * life ), 'explosive' );
         end
         -- Advance the step index.
         explosionIndex = explosionIndex + 1;

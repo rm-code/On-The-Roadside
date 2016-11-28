@@ -70,13 +70,14 @@ function Tile.new( x, y, template )
     ---
     -- Hits the tile with a certain amount of damage. The tile will distribute
     -- the damage to any character or world object which it contains.
-    -- @param damage (number) The damage the tile receives.
+    -- @param damage     (number) The damage the tile receives.
+    -- @param damageType (string) The type of damage the tile is hit with.
     --
-    function self:hit( damage )
+    function self:hit( damage, damageType )
         if self:isOccupied() then
-            character:hit( damage );
+            character:hit( damage, damageType );
         elseif self:hasWorldObject() and worldObject:isDestructible() then
-            worldObject:damage( damage );
+            worldObject:damage( damage, damageType );
         end
     end
 

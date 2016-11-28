@@ -8,6 +8,10 @@ function Ammunition.new( template )
 
     local effects = AmmunitionEffects.new( template.effects );
 
+    function self:getDamageType()
+        return template.damageType;
+    end
+
     -- TODO: Add caliber to templates.
     function self:getCaliber()
         return template.id;
