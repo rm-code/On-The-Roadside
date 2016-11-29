@@ -39,7 +39,8 @@ function HelpScreen.new()
         '',
         'MISC',
         '  f - Switch between windowed and fullscreen modes',
-        '  . - Save current game (experimental)'
+        '  . - Save current game (experimental)',
+        '  - - Delete current game'
     }
 
     function self:draw()
