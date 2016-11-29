@@ -36,6 +36,10 @@ function HelpScreen.new()
         '  a - Switch to Attack Mode',
         '  m - Switch to Movement Mode',
         '  e - Switch to Interaction Mode (e.g. to open barrels or doors)',
+        '',
+        'MISC',
+        '  f - Switch between windowed and fullscreen modes',
+        '  . - Save current game (experimental)'
     }
 
     function self:draw()
