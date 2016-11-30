@@ -123,9 +123,11 @@ function MainScreen.new()
         camera:storePosition();
     end)
 
-    Messenger.observe( 'END_EXECUTION', function()
+    Messenger.observe( 'END_EXECUTION', function( restore )
         camera:unlock();
-        camera:restorePosition();
+        if restore then
+            camera:restorePosition();
+        end
     end)
 
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )

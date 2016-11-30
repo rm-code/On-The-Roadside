@@ -315,6 +315,14 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Returns the action queue.
+    -- @return (Queue) A queue containing all actions.
+    --
+    function self:getActionQueue()
+        return actions;
+    end
+
+    ---
     -- Returns the faction the character belongs to.
     -- @return (Faction) The Faction object.
     --
