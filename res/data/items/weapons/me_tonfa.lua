@@ -14,6 +14,7 @@ return {
             cost = 3,
             accuracy = 85,
             attacks = 1,
+            damageType = 'bludgeoning'
         }
     }
 }

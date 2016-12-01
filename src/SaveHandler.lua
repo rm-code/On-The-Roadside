@@ -213,4 +213,10 @@ function SaveHandler.hasSaveFile()
     return love.filesystem.exists( 'compressed.data' );
 end
 
+function SaveHandler.deleteSaveFile()
+    if SaveHandler.hasSaveFile() then
+        love.filesystem.remove( 'compressed.data' );
+    end
+end
+
 return SaveHandler;

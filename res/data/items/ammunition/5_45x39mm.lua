@@ -5,6 +5,7 @@ return {
     volume = 0,
     stackable = true,
     equippable = false,
+    damageType = 'piercing',
     effects = {
         customSpeed = { speed = 35 }
     }

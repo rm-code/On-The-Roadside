@@ -8,6 +8,10 @@ function ThrownWeapon.new( template )
 
     local effects = AmmunitionEffects.new( template.effects );
 
+    function self:getDamageType()
+        return self:getAttackMode().damageType;
+    end
+
     function self:getEffects()
         return effects;
     end

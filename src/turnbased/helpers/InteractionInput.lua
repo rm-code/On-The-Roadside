@@ -11,8 +11,12 @@ function InteractionInput.new( stateManager )
     function self:request( ... )
         local target, character = ...;
 
+        if not target:isAdjacent( character:getTile() ) then
+            return;
+        end
+
         if target:hasWorldObject() then
-            if target:getWorldObject():isOpenable() and target:isAdjacent( character:getTile() ) then
+            if target:getWorldObject():isOpenable() then
                 if target:isPassable() then
                     character:enqueueAction( Close.new( character, target ));
                 else

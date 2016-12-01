@@ -117,6 +117,8 @@ function Game.new()
             -- TODO Optimisation!
             SaveHandler.save( map:serialize() );
             collectgarbage( 'collect' );
+        elseif key == '-' then
+            SaveHandler.deleteSaveFile();
         end
     end
 

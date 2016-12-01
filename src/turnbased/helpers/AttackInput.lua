@@ -2,6 +2,7 @@ local Object = require( 'src.Object' );
 local Attack = require( 'src.characters.actions.Attack' );
 local MeleeAttack = require( 'src.characters.actions.MeleeAttack' );
 local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
+local Rearm = require( 'src.characters.actions.Rearm' );
 
 local AttackInput = {};
 
@@ -20,18 +21,20 @@ function AttackInput.new( stateManager )
             return;
         end
 
-        if not character:getInventory():getWeapon() then
+        local weapon = character:getInventory():getWeapon();
+        if not weapon then
             return;
         end
 
-        if character:getInventory():getWeapon():getWeaponType() == 'Melee' then
+        if weapon:getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
             stateManager:push( 'execution', character );
             return;
         end
 
-        if character:getInventory():getWeapon():getWeaponType() == 'Thrown' then
+        if weapon:getWeaponType() == 'Thrown' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
+            character:enqueueAction( Rearm.new( character, weapon:getID() ));
             stateManager:push( 'execution', character );
             return;
         end

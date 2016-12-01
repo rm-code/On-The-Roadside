@@ -26,7 +26,7 @@ local function hitTile( index, tile, projectile )
     if projectile:getEffects():isExplosive() then
         ExplosionManager.register( tile, projectile:getEffects():getBlastRadius() );
     else
-        tile:hit( projectile:getDamage() );
+        tile:hit( projectile:getDamage(), projectile:getDamageType() );
     end
 end
 
@@ -107,7 +107,7 @@ function ProjectileManager.update( dt )
                     hitTile( i, projectile:getTile(), projectile );
                 end
 
-                tile:hit( projectile:getDamage() * ( energy / 100 ));
+                tile:hit( projectile:getDamage() * ( energy / 100 ), projectile:getDamageType() );
                 return;
             end
 
