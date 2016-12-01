@@ -27,7 +27,7 @@ function Attack.new( character, target )
             return true;
         end);
 
-        Messenger.publish( 'START_ATTACK', actualTarget );
+        Messenger.publish( 'START_ATTACK', character, actualTarget );
         local package = ProjectileQueue.new( character, actualTarget );
         ProjectileManager.register( package );
         return true;
