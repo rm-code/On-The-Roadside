@@ -1,3 +1,19 @@
+# Version 0.3.1.573 - 2016-12-01
+
+## Additions
+- Added damage types for weapons: currently doesn't have effects on gameplay yet ([#74](https://github.com/rm-code/On-The-Roadside/issues/74))
+- Added keybinding for deleting the save file
+
+## Fixes
+- Prevent interaction with world objects if character isn't adjacent to them ([#75](https://github.com/rm-code/On-The-Roadside/issues/75))
+
+## Other Changes
+- Improved help screen ([#80](https://github.com/rm-code/On-The-Roadside/issues/80))
+- Characters rearm with throwing weapons after using them ([#77](https://github.com/rm-code/On-The-Roadside/issues/77))
+
+
+
+
 # Version 0.3.0.564 - 2016-11-10
 
 ## Additions
