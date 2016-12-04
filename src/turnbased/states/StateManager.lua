@@ -13,8 +13,8 @@ function StateManager.new( states, factions )
         stack[#stack]:update( dt );
     end
 
-    function self:keypressed( key )
-        stack[#stack]:keypressed( key );
+    function self:keypressed( key, scancode, isrepeat )
+        stack[#stack]:keypressed( key, scancode, isrepeat )
     end
 
     function self:selectTile( tile, button )

@@ -31,57 +31,57 @@ function PlanningState.new( stateManager, factions )
         end
     end
 
-    function self:keypressed( key )
+    function self:keypressed( _, scancode, _ )
         local character = factions:getFaction():getCurrentCharacter();
         if character:isDead() then
             return;
         end
 
-        if key == 'right' then
+        if scancode == 'right' then
             if not character:getInventory():getWeapon() then
                 return;
             end
             character:getInventory():getWeapon():selectNextFiringMode();
-        elseif key == 'left' then
+        elseif scancode == 'left' then
             if not character:getInventory():getWeapon() then
                 return;
             end
             character:getInventory():getWeapon():selectPrevFiringMode();
-        elseif key == 'c' then
+        elseif scancode == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));
             stateManager:push( 'execution', character );
-        elseif key == 's' then
+        elseif scancode == 's' then
             character:clearActions();
             character:enqueueAction( StandUp.new( character ));
             stateManager:push( 'execution', character );
-        elseif key == 'p' then
+        elseif scancode == 'p' then
             character:clearActions();
             character:enqueueAction( LieDown.new( character ));
             stateManager:push( 'execution', character );
-        elseif key == 'r' then
+        elseif scancode == 'r' then
             character:clearActions();
             character:enqueueAction( Reload.new( character ));
             stateManager:push( 'execution', character );
-        elseif key == 'a' then
+        elseif scancode == 'a' then
             character:clearActions();
             activeInputState = inputStates['attack'];
-        elseif key == 'e' then
+        elseif scancode == 'e' then
             character:clearActions();
             activeInputState = inputStates['interaction'];
-        elseif key == 'm' then
+        elseif scancode == 'm' then
             character:clearActions();
             activeInputState = inputStates['movement'];
-        elseif key == 'space' then
+        elseif scancode == 'space' then
             activeInputState = inputStates['movement'];
             factions:getFaction():nextCharacter();
-        elseif key == 'backspace' then
+        elseif scancode == 'backspace' then
             activeInputState = inputStates['movement'];
             factions:getFaction():prevCharacter();
-        elseif key == 'return' then
+        elseif scancode == 'return' then
             activeInputState = inputStates['movement'];
             factions:nextFaction();
-        elseif key == 'i' then
+        elseif scancode == 'i' then
             character:enqueueAction( OpenInventory.new( character, character:getTile() ));
             stateManager:push( 'execution', character );
         end

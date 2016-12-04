@@ -111,13 +111,13 @@ function Game.new()
         return factions;
     end
 
-    function self:keypressed( key )
-        turnManager:keypressed( key );
-        if key == '.' then
+    function self:keypressed( key, scancode, isrepeat )
+        turnManager:keypressed( key, scancode, isrepeat );
+        if scancode == '.' then
             -- TODO Optimisation!
             SaveHandler.save( map:serialize() );
             collectgarbage( 'collect' );
-        elseif key == '-' then
+        elseif scancode == '-' then
             SaveHandler.deleteSaveFile();
         end
     end

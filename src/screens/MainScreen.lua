@@ -84,7 +84,7 @@ function MainScreen.new()
         overlayPainter:update( dt );
         userInterface:update( dt );
 
-        if love.keyboard.isDown( 'escape' ) then
+        if love.keyboard.isScancodeDown( 'escape' ) then
             exitTimer = exitTimer + dt * 2;
             if exitTimer >= 1.0 then
                 love.event.quit();
@@ -94,15 +94,15 @@ function MainScreen.new()
         end
     end
 
-    function self:keypressed( key )
-        if key == 'f' then
+    function self:keypressed( key, scancode, isrepeat )
+        if scancode == 'f' then
             love.window.setFullscreen( not love.window.getFullscreen() );
         end
-        if key == 'h' then
+        if scancode == 'h' then
             ScreenManager.push( 'help' );
         end
 
-        game:keypressed( key );
+        game:keypressed( key, scancode, isrepeat );
     end
 
     function self:mousepressed( _, _, button )

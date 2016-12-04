@@ -74,10 +74,11 @@ function love.quit(q)
     ScreenManager.quit(q);
 end
 
-function love.keypressed(key)
-    ScreenManager.keypressed(key);
+function love.keypressed( key, scancode, isrepeat )
+    ScreenManager.keypressed( key, scancode, isrepeat );
 
-    if key == '0' then
+    print( key, scancode )
+    if scancode == '0' then
         profile = 1;
     end
 end
