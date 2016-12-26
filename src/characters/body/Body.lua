@@ -16,6 +16,7 @@ function Body.new()
     local nodes = {};
     local edges = {};
     local dead  = false;
+    local blind = false;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -54,11 +55,6 @@ function Body.new()
     local function propagateDamage( node, damage, damageType )
         node:hit( damage, damageType );
 
-        if node:isDestroyed() and node:isVital() then
-            print( string.format( "The attack destroyed vital organ %s and killed the character.", node:getID() ));
-            dead = true;
-        end
-
         local connectedNodes = getConnectedNodes( node:getIndex() );
         for _, n in ipairs( connectedNodes ) do
             propagateDamage( n, damage, damageType );
@@ -74,6 +70,19 @@ function Body.new()
         print( "Attack enters body at " .. entryNode:getID() );
 
         propagateDamage( entryNode, damage, damageType );
+
+        -- Set effects.
+        for _, node in pairs( nodes ) do
+            if node:isDestroyed() then
+                if node:isVital() then
+                    print( string.format( "The attack destroyed vital organ %s and killed the character.", node:getID() ));
+                    dead = true;
+                elseif node:isVisual() then
+                    print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
+                    blind = true;
+                end
+            end
+        end
 
         -- Reset nodes.
         for _, node in pairs( nodes ) do
@@ -97,6 +106,10 @@ function Body.new()
 
     function self:isDead()
         return dead;
+    end
+
+    function self:isBlind()
+        return blind;
     end
 
     return self;

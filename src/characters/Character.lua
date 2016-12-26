@@ -159,7 +159,7 @@ function Character.new( map, tile, faction, bodyID )
     function self:generateFOV()
         self:resetFOV();
 
-        local range = self:getViewRange();
+        local range = body:isBlind() and 1 or self:getViewRange();
 
         -- Calculate the new FOV information.
         for i = 1, 360 do
@@ -207,6 +207,8 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:hit( damage, damageType )
         body:hit( damage, damageType );
+
+        self:generateFOV();
 
         if self:isDead() then
             dropInventory();

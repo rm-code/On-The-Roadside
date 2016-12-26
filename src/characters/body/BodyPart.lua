@@ -30,6 +30,10 @@ function BodyPart.new( index, template )
         return template.vital;
     end
 
+    function self:isVisual()
+        return template.visual;
+    end
+
     function self:isDestroyed()
         return health <= 0;
     end
