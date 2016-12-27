@@ -1,23 +1,25 @@
-1 head
-2 eyes
-3 nose
-4 skull
-5 brain
-6 ears
-7 throat
-8 torso
-9 lungs
-10 liver
-11 heart
-12 kidneys
+1 torso
+2 lungs
+3 liver
+4 heart
+5 kidneys
+6 head
+7 eyes
+8 nose
+9 skull
+10 brain
+11 ears
+12 throat
+13 ribcage
 #
-1 2 20
-1 3 30
-1 4 60
-4 5 40
-1 6 30
-1 7 20
-8 9 30
-8 10 20
-8 11 15
-8 12 30
+13 2 30
+13 3 20
+13 4 15
+1 5 30
+6 7 20
+6 8 30
+6 9 60
+6 11 30
+6 12 20
+9 10 40
+1 13 60
