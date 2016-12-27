@@ -38,7 +38,7 @@ function Body.new()
         -- Find all nodes connected to the original node.
         for _, edge in ipairs( edges ) do
 
-            if edge.from == origin and not nodes[edge.to]:isVisited() then
+            if edge.from == origin then
                 print( string.format( "Chance that damage propagates from %s to %s was %d%%.", nodes[edge.from]:getID(), nodes[edge.to]:getID(), edge.name ));
 
                 local rnd = love.math.random( 100 );
@@ -87,11 +87,6 @@ function Body.new()
                     end
                 end
             end
-        end
-
-        -- Reset nodes.
-        for _, node in pairs( nodes ) do
-            node:setVisited( false );
         end
     end
 

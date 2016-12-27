@@ -5,12 +5,10 @@ local BodyPart = {};
 function BodyPart.new( index, template )
     local self = Object.new():addInstance( 'BodyPart' );
 
-    local visited = false;
     local health = template.health;
 
     function self:hit( damage, damageType )
         health = health - damage;
-        visited = true;
         print( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
     end
 
@@ -44,14 +42,6 @@ function BodyPart.new( index, template )
 
     function self:isContainer()
         return template.type == 'container';
-    end
-
-    function self:isVisited()
-        return visited;
-    end
-
-    function self:setVisited( nvisited )
-        visited = nvisited;
     end
 
     function self:setHealth( nhealth )
