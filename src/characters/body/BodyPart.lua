@@ -12,6 +12,10 @@ function BodyPart.new( index, template )
         print( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
     end
 
+    function self:destroy()
+        health = 0;
+    end
+
     function self:getIndex()
         return index;
     end

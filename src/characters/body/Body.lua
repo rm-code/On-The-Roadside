@@ -29,7 +29,7 @@ function Body.new()
     local function selectEntryNode()
         local entryNodes = {};
         for _, node in pairs( nodes ) do
-            if node:isEntryNode() then
+            if node:isEntryNode() and not node:isDestroyed() then
                 entryNodes[#entryNodes + 1] = node;
             end
         end
@@ -42,12 +42,43 @@ function Body.new()
     -- @param damage     (number)   The amount of damage.
     -- @param damageType (string)   The type of damage.
     --
-    local function propagateDamage( node, damage, damageType )
-        node:hit( damage, damageType );
+    local function destroyChildNodes( node )
+        node:destroy();
+
+        if node:isVital() then
+            print( string.format( "The attack destroyed vital organ %s and killed the character.", node:getID() ));
+            dead = true;
+        elseif node:isVisual() then
+            print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
+            blind = true;
+        end
 
         -- Randomly propagate the damage to connected nodes.
         for _, edge in ipairs( edges ) do
-            if edge.from == node:getIndex() and love.math.random( 100 ) < edge.name then
+            if edge.from == node:getIndex() then
+                destroyChildNodes( nodes[edge.to] );
+            end
+        end
+    end
+
+    ---
+    -- Propagates the damage from parent to child nodes.
+    -- @param node       (BodyPart) The body part to damage.
+    -- @param damage     (number)   The amount of damage.
+    -- @param damageType (string)   The type of damage.
+    --
+    local function propagateDamage( node, damage, damageType )
+        node:hit( damage, damageType );
+
+        -- Manually destroy child nodes if parent node is destroyed.
+        if node:isDestroyed() then
+            destroyChildNodes( node );
+            return;
+        end
+
+        -- Randomly propagate the damage to connected nodes.
+        for _, edge in ipairs( edges ) do
+            if edge.from == node:getIndex() and not nodes[edge.to]:isDestroyed() and love.math.random( 100 ) < edge.name then
                 propagateDamage( nodes[edge.to], damage, damageType );
             end
         end
@@ -62,20 +93,6 @@ function Body.new()
         print( "Attack enters body at " .. entryNode:getID() );
 
         propagateDamage( entryNode, damage, damageType );
-
-        -- Set effects.
-        -- TODO handle destroyed nodes
-        for _, node in pairs( nodes ) do
-            if node:isDestroyed() then
-                if node:isVital() then
-                    print( string.format( "The attack destroyed vital organ %s and killed the character.", node:getID() ));
-                    dead = true;
-                elseif node:isVisual() then
-                    print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
-                    blind = true;
-                end
-            end
-        end
     end
 
     function self:addBodyPart( bodyPart )
