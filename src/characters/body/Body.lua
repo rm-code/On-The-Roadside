@@ -22,6 +22,10 @@ function Body.new()
     -- Private Methods
     -- ------------------------------------------------
 
+    ---
+    -- Picks a random entry node and returns it.
+    -- @return (BodyPart) The bodypart used as an entry point for the graph.
+    --
     local function selectEntryNode()
         local entryNodes = {};
         for _, node in pairs( nodes ) do
@@ -32,32 +36,20 @@ function Body.new()
         return entryNodes[love.math.random( #entryNodes )];
     end
 
-    local function getConnectedNodes( origin )
-        local tmp = {};
-
-        -- Find all nodes connected to the original node.
-        for _, edge in ipairs( edges ) do
-
-            if edge.from == origin then
-                print( string.format( "Chance that damage propagates from %s to %s was %d%%.", nodes[edge.from]:getID(), nodes[edge.to]:getID(), edge.name ));
-
-                local rnd = love.math.random( 100 );
-                if rnd < edge.name then
-                    print( string.format( "  -> Rolled a %d", rnd ));
-                    tmp[#tmp + 1] = nodes[edge.to];
-                end
-            end
-        end
-
-        return tmp;
-    end
-
+    ---
+    -- Propagates the damage from parent to child nodes.
+    -- @param node       (BodyPart) The body part to damage.
+    -- @param damage     (number)   The amount of damage.
+    -- @param damageType (string)   The type of damage.
+    --
     local function propagateDamage( node, damage, damageType )
         node:hit( damage, damageType );
 
-        local connectedNodes = getConnectedNodes( node:getIndex() );
-        for _, n in ipairs( connectedNodes ) do
-            propagateDamage( n, damage, damageType );
+        -- Randomly propagate the damage to connected nodes.
+        for _, edge in ipairs( edges ) do
+            if edge.from == node:getIndex() and love.math.random( 100 ) < edge.name then
+                propagateDamage( nodes[edge.to], damage, damageType );
+            end
         end
     end
 
@@ -72,6 +64,7 @@ function Body.new()
         propagateDamage( entryNode, damage, damageType );
 
         -- Set effects.
+        -- TODO handle destroyed nodes
         for _, node in pairs( nodes ) do
             if node:isDestroyed() then
                 if node:isVital() then
@@ -80,11 +73,6 @@ function Body.new()
                 elseif node:isVisual() then
                     print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
                     blind = true;
-                elseif node:isContainer() then
-                    print( string.format( "The attack destroyed container organ %s and all contained organs.", node:getID() ));
-                    for _, n in ipairs( getConnectedNodes( node:getIndex() )) do
-                        n:setHealth( 0 );
-                    end
                 end
             end
         end
