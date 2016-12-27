@@ -54,6 +54,10 @@ function BodyPart.new( index, template )
         visited = nvisited;
     end
 
+    function self:setHealth( nhealth )
+        health = nhealth;
+    end
+
     return self;
 end
 

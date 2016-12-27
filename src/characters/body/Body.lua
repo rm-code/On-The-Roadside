@@ -80,6 +80,11 @@ function Body.new()
                 elseif node:isVisual() then
                     print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
                     blind = true;
+                elseif node:isContainer() then
+                    print( string.format( "The attack destroyed container organ %s and all contained organs.", node:getID() ));
+                    for _, n in ipairs( getConnectedNodes( node:getIndex() )) do
+                        n:setHealth( 0 );
+                    end
                 end
             end
         end
