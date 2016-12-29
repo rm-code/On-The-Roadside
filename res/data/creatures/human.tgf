@@ -3,23 +3,51 @@
 3 liver
 4 heart
 5 kidneys
-6 head
-7 eyes
-8 nose
-9 skull
-10 brain
-11 ears
-12 throat
-13 ribcage
+6 ribcage
+7 head
+8 eyes
+9 nose
+10 skull
+11 brain
+12 ears
+13 throat
+14 femur
+15 leg_left
+16 tibia
+17 foot
+18 femur
+19 leg_right
+20 tibia
+21 foot
+22 arm_left
+23 radius
+24 humerus
+25 hand
+26 arm_right
+27 radius
+28 humerus
+29 hand
 #
-13 2 30
-13 3 20
-13 4 15
+6 2 30
+6 3 20
+6 4 15
 1 5 30
-6 7 20
-6 8 30
-6 9 60
-6 11 30
-6 12 20
-9 10 40
-1 13 60
+7 8 20
+7 9 30
+7 10 60
+7 12 30
+7 13 20
+10 11 40
+1 6 60
+15 16 40
+15 14 50
+15 17 20
+19 20 40
+19 18 50
+19 21 20
+22 25 20
+22 24 40
+22 23 30
+26 29 20
+26 28 40
+26 27 30
