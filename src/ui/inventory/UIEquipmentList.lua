@@ -12,7 +12,6 @@ local UIEquipmentList = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
 local PADDING = 15;
 local HEADER_HEIGHT = 30;
 local WIDTH = 150;
@@ -21,13 +20,14 @@ local WIDTH = 150;
 -- Constructor
 -- ------------------------------------------------
 
-function UIEquipmentList.new( x, y, id, equipment )
+function UIEquipmentList.new( x, y, id, character )
     local self = Object.new():addInstance( 'UIEquipmentList' );
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
+    local equipment = character:getEquipment();
     local list;
 
     -- ------------------------------------------------
@@ -35,16 +35,15 @@ function UIEquipmentList.new( x, y, id, equipment )
     -- ------------------------------------------------
 
     local function regenerate()
-        list = {
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 1, equipment:getWeapon() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 2, equipment:getBackpack() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getItem( ITEM_TYPES.HEADGEAR ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getItem( ITEM_TYPES.GLOVES ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getItem( ITEM_TYPES.JACKET ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getItem( ITEM_TYPES.SHIRT ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getItem( ITEM_TYPES.TROUSERS ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getItem( ITEM_TYPES.FOOTWEAR ));
-        };
+        list = {};
+
+        -- TODO sort the slots so they always appear at the same
+        -- TODO replace with custom EquipmentItem class
+        local counter = 1;
+        for _, slot in pairs( equipment:getSlots() ) do
+            list[#list + 1] = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * counter, slot:getItem(), slot:getID() );
+            counter = counter + 1;
+        end
     end
 
     -- ------------------------------------------------

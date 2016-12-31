@@ -13,6 +13,7 @@ local Body = {};
 function Body.new()
     local self = Object.new():addInstance( 'Body' );
 
+    local equipment;
     local nodes = {};
     local edges = {};
     local dead  = false;
@@ -68,6 +69,15 @@ function Body.new()
     -- @param damageType (string)   The type of damage.
     --
     local function propagateDamage( node, damage, damageType )
+        -- Check if an equipment slot is connected to this body part.
+        for _, edge in ipairs( edges ) do
+            local slots = equipment:getSlots();
+            if slots[edge.from] and edge.to == node:getIndex() then
+                print( '    Equipment slot > ' .. slots[edge.from]:getID() )
+                -- TODO damage reduction based on armor items
+            end
+        end
+
         node:hit( damage, damageType );
 
         -- Manually destroy child nodes if parent node is destroyed.
@@ -78,7 +88,7 @@ function Body.new()
 
         -- Randomly propagate the damage to connected nodes.
         for _, edge in ipairs( edges ) do
-            if edge.from == node:getIndex() and not nodes[edge.to]:isDestroyed() and love.math.random( 100 ) < edge.name then
+            if edge.from == node:getIndex() and not nodes[edge.to]:isDestroyed() and love.math.random( 100 ) < tonumber( edge.name ) then
                 propagateDamage( nodes[edge.to], damage, damageType );
             end
         end
@@ -115,6 +125,14 @@ function Body.new()
 
     function self:isBlind()
         return blind;
+    end
+
+    function self:getEquipment()
+        return equipment;
+    end
+
+    function self:setEquipment( nequipment )
+        equipment = nequipment;
     end
 
     return self;

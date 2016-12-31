@@ -1,6 +1,5 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
-local Inventory = require('src.inventory.Inventory');
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
 
 -- ------------------------------------------------
@@ -45,37 +44,12 @@ function Character.new( map, tile, faction, bodyID )
     local actions = Queue.new();
     local fov = {};
 
-    local inventory = Inventory.new();
-
     local accuracy = love.math.random( 60, 90 );
     local throwingSkill = love.math.random( 60, 90 );
     local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
     local body = BodyFactory.create( bodyID );
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Drops this character's inventory on the ground.
-    --
-    local function dropInventory()
-        local inv = {
-            inventory:getItem( ITEM_TYPES.WEAPON ),
-            inventory:getItem( ITEM_TYPES.BAG ),
-            inventory:getItem( ITEM_TYPES.HEADGEAR ),
-            inventory:getItem( ITEM_TYPES.GLOVES ),
-            inventory:getItem( ITEM_TYPES.JACKET ),
-            inventory:getItem( ITEM_TYPES.SHIRT ),
-            inventory:getItem( ITEM_TYPES.TROUSERS ),
-            inventory:getItem( ITEM_TYPES.FOOTWEAR ),
-        };
-        for _, item in pairs( inv ) do
-            tile:getInventory():addItem( item );
-        end
-    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -212,7 +186,7 @@ function Character.new( map, tile, faction, bodyID )
         self:generateFOV();
 
         if self:isDead() then
-            dropInventory();
+            -- TODO re-implement dropInventory();
             tile:removeCharacter();
             self:resetFOV();
         end
@@ -249,8 +223,8 @@ function Character.new( map, tile, faction, bodyID )
             ['accuracy'] = accuracy,
             ['health'] = health,
             ['stance'] = stance,
-            ['inventory'] = inventory:serialize(),
             ['faction'] = faction:getType()
+            -- TODO: Body serialization
         }
         return t;
     end
@@ -308,11 +282,11 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     ---
-    -- Returns the character's inventory.
-    -- @return (Inventory) The character's inventory.
+    -- Returns the character's equipment.
+    -- @return (Equipment) The character's equipment.
     --
-    function self:getInventory()
-        return inventory;
+    function self:getEquipment()
+        return body:getEquipment();
     end
 
     ---
@@ -392,7 +366,7 @@ function Character.new( map, tile, faction, bodyID )
     -- @return (Bag) The bag item.
     --
     function self:getBackpack()
-        return inventory:getItem( ITEM_TYPES.BAG );
+        return self:getEquipment():getItem( ITEM_TYPES.BAG );
     end
 
     ---
@@ -400,7 +374,7 @@ function Character.new( map, tile, faction, bodyID )
     -- @return (Weapon) The weapon item.
     --
     function self:getWeapon()
-        return inventory:getItem( ITEM_TYPES.WEAPON );
+        return self:getEquipment():getItem( ITEM_TYPES.WEAPON );
     end
 
     -- ------------------------------------------------

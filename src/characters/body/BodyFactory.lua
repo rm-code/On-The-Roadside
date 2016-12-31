@@ -1,5 +1,7 @@
 local Body = require( 'src.characters.body.Body' );
 local BodyPart = require( 'src.characters.body.BodyPart' );
+local Equipment = require( 'src.characters.body.Equipment' );
+local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' );
 local TGFParser = require( 'lib.TGFParser' );
 
 -- ------------------------------------------------
@@ -75,6 +77,24 @@ local function loadTGFTemplates( dir )
 end
 
 ---
+-- Creates a body part based on the id returned from the creature's template. If
+-- a body part is of the type 'equipment' it will be added to the creature's
+-- equipment instead.
+-- @param body      (Body)      The body to add this body part to.
+-- @param equipment (Equipment) The equipment object to add a new slot to.
+-- @param index     (number)    A unique number identifying a specific node in the graph.
+-- @param id        (string)    The id used to determine the body part to create.
+--
+local function createBodyPart( body, equipment, index, id )
+    local template = bodyParts[id];
+    if template.type == 'equipment' then
+        equipment:addSlot( EquipmentSlot.new( index, template ));
+    else
+        body:addBodyPart( BodyPart.new( index, template ));
+    end
+end
+
+---
 -- Assembles a body from the different body parts and connections found in the
 -- body template.
 -- @param  bodyTemplate (table) A table containing the nodes and edges of the body graph.
@@ -82,20 +102,21 @@ end
 --
 local function assembleBody( bodyTemplate )
     local body = Body.new();
+    local equipment = Equipment.new();
 
-    -- Add body parts.
-    for index, type in ipairs( bodyTemplate.nodes ) do
-        assert( bodyParts[type], string.format( "Can't find template for body part '%s'", type ));
-        local template = bodyParts[type];
-        local part = BodyPart.new( index, template );
-        body:addBodyPart( part );
+    -- The index is the number used inside of the graph whereas the id determines
+    -- which type of object to create for this node.
+    for index, id in ipairs( bodyTemplate.nodes ) do
+        createBodyPart( body, equipment, index, id );
     end
 
     -- Connect the bodyparts.
     for _, edge in ipairs( bodyTemplate.edges ) do
-        edge.name = tonumber( edge.name );
         body:addConnection( edge );
     end
+
+    -- Set the equipment to be used for this body.
+    body:setEquipment( equipment );
 
     return body;
 end

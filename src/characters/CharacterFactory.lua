@@ -42,7 +42,7 @@ end
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    local equipment = character:getInventory();
+    local equipment = character:getEquipment();
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
