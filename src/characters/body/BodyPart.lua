@@ -28,12 +28,8 @@ function BodyPart.new( index, template )
         return template.type;
     end
 
-    function self:isVital()
-        return template.vital;
-    end
-
-    function self:isVisual()
-        return template.visual;
+    function self:getEffects()
+        return template.effects;
     end
 
     function self:isDestroyed()

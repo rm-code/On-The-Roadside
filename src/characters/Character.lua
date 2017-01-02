@@ -132,7 +132,7 @@ function Character.new( map, tile, faction, bodyID )
     function self:generateFOV()
         self:resetFOV();
 
-        local range = body:isBlind() and 1 or self:getViewRange();
+        local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
         local x, y = tile:getX() + 0.5, tile:getY() + 0.5;
 
         -- Calculate the new FOV information.
@@ -348,7 +348,7 @@ function Character.new( map, tile, faction, bodyID )
     -- @return (boolean) Wether the character is dead or not.
     --
     function self:isDead()
-        return body:isDead();
+        return body:getStatusEffects():isDead();
     end
 
     ---

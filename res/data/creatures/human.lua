@@ -14,7 +14,9 @@ return {
         id = 'brain',
         type = 'node',
         health = 30,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'ears',
@@ -25,7 +27,9 @@ return {
         id = 'eyes',
         type = 'node',
         health = 30,
-        visual = true
+        effects = {
+            'blindness'
+        }
     },
     {
         id = 'femur',
@@ -51,7 +55,9 @@ return {
         id = 'heart',
         type = 'node',
         health = 50,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'humerus',
@@ -62,7 +68,9 @@ return {
         id = 'kidneys',
         type = 'node',
         health = 60,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'leg_left',
@@ -78,13 +86,17 @@ return {
         id = 'liver',
         type = 'node',
         health = 50,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'lungs',
         type = 'node',
         health = 80,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'nose',
@@ -110,7 +122,9 @@ return {
         id = 'throat',
         type = 'node',
         health = 50,
-        vital = true
+        effects = {
+            'death'
+        }
     },
     {
         id = 'tibia',

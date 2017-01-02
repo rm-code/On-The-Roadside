@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local StatusEffects = require( 'src.characters.StatusEffects' );
 
 -- ------------------------------------------------
 -- Module
@@ -16,8 +17,7 @@ function Body.new()
     local equipment;
     local nodes = {};
     local edges = {};
-    local dead  = false;
-    local blind = false;
+    local statusEffects = StatusEffects.new();
 
     -- ------------------------------------------------
     -- Private Methods
@@ -46,13 +46,8 @@ function Body.new()
     local function destroyChildNodes( node )
         node:destroy();
 
-        if node:isVital() then
-            print( string.format( "The attack destroyed vital organ %s and killed the character.", node:getID() ));
-            dead = true;
-        elseif node:isVisual() then
-            print( string.format( "The attack destroyed visual organ %s and blinded the character.", node:getID() ));
-            blind = true;
-        end
+        -- Add status effects.
+        statusEffects:add( node:getEffects() );
 
         -- Randomly propagate the damage to connected nodes.
         for _, edge in ipairs( edges ) do
@@ -119,20 +114,16 @@ function Body.new()
         return nodes[id];
     end
 
-    function self:isDead()
-        return dead;
-    end
-
-    function self:isBlind()
-        return blind;
-    end
-
     function self:getEquipment()
         return equipment;
     end
 
     function self:setEquipment( nequipment )
         equipment = nequipment;
+    end
+
+    function self:getStatusEffects()
+        return statusEffects;
     end
 
     return self;
