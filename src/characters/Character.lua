@@ -160,19 +160,20 @@ function Character.new( map, tile, faction, bodyID )
         self:resetFOV();
 
         local range = body:isBlind() and 1 or self:getViewRange();
+        local x, y = tile:getX() + 0.5, tile:getY() + 0.5;
 
         -- Calculate the new FOV information.
         for i = 1, 360 do
-            local ox, oy = tile:getX() + 0.5, tile:getY() + 0.5;
+            local ox, oy = x, y;
             local rad    = math.rad( i );
             local rx, ry = math.cos( rad ), math.sin( rad );
 
             for _ = 1, range do
-                local target = map:getTileAt( math.floor( ox ), math.floor( oy ));
+                local tx, ty = math.floor( ox ), math.floor( oy );
+                local target = map:getTileAt( tx, ty );
                 if not target then
                     break;
                 end
-                local tx, ty = target:getPosition();
 
                 -- Add tile to this character's FOV.
                 self:addSeenTile( tx, ty, target );
