@@ -6,7 +6,7 @@ function Rearm.new( character, weaponID )
     local self = Action.new( 0, character:getTile() ):addInstance( 'Rearm' );
 
     function self:perform()
-        local inventory = character:getInventory():getBackpack():getInventory();
+        local inventory = character:getBackpack():getInventory();
         local weapon;
 
         for _, item in pairs( inventory:getItems() ) do

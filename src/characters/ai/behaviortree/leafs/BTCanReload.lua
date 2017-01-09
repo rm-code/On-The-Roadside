@@ -9,8 +9,8 @@ function BTCanReload.new()
         print( 'BTCanReload' );
         local _, character = ...;
 
-        local weapon = character:getInventory():getWeapon();
-        local inventory = character:getInventory():getBackpack():getInventory();
+        local weapon = character:getWeapon();
+        local inventory = character:getBackpack():getInventory();
         for _, item in pairs( inventory:getItems() ) do
             if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
                 print( 'Character has ammo -> Can reload!' );

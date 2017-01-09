@@ -38,15 +38,15 @@ function PlanningState.new( stateManager, factions )
         end
 
         if scancode == 'right' then
-            if not character:getInventory():getWeapon() then
+            if not character:getWeapon() then
                 return;
             end
-            character:getInventory():getWeapon():selectNextFiringMode();
+            character:getWeapon():selectNextFiringMode();
         elseif scancode == 'left' then
-            if not character:getInventory():getWeapon() then
+            if not character:getWeapon() then
                 return;
             end
-            character:getInventory():getWeapon():selectPrevFiringMode();
+            character:getWeapon():selectPrevFiringMode();
         elseif scancode == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));

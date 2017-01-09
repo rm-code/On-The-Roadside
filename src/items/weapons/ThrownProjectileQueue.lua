@@ -23,7 +23,7 @@ function ThrownProjectileQueue.new( character, target )
 
     local projectiles = {};
     local index = 0;
-    local weapon = character:getInventory():getWeapon();
+    local weapon = character:getWeapon();
 
     -- ------------------------------------------------
     -- Public Methods

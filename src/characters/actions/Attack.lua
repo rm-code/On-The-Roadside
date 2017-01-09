@@ -7,10 +7,10 @@ local Bresenham = require( 'lib.Bresenham' );
 local Attack = {};
 
 function Attack.new( character, target )
-    local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'Attack' );
+    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'Attack' );
 
     function self:perform()
-        if character:getInventory():getWeapon():getMagazine():isEmpty() then
+        if character:getWeapon():getMagazine():isEmpty() then
             return false;
         end
 
@@ -20,7 +20,7 @@ function Attack.new( character, target )
 
         local actualTarget;
         Bresenham.calculateLine( ox, oy, tx, ty, function( cx, cy, count )
-            if count > character:getInventory():getWeapon():getRange() then
+            if count > character:getWeapon():getRange() then
                 return false;
             end
             actualTarget = character:getMap():getTileAt( cx, cy );

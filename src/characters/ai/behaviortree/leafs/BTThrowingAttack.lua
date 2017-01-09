@@ -13,7 +13,7 @@ function BTThrowingAttack.new()
 
         character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
 
-        local weapon = character:getInventory():getBackpack():getInventory():getWeapon();
+        local weapon = character:getBackpack():getInventory():getWeapon();
         if weapon then
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
         end

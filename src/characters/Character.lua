@@ -387,6 +387,22 @@ function Character.new( map, tile, faction, bodyID )
         return body:isDead();
     end
 
+    ---
+    -- Gets an item of type bag.
+    -- @return (Bag) The bag item.
+    --
+    function self:getBackpack()
+        return inventory:getItem( ITEM_TYPES.BAG );
+    end
+
+    ---
+    -- Gets an item of type weapon.
+    -- @return (Weapon) The weapon item.
+    --
+    function self:getWeapon()
+        return inventory:getItem( ITEM_TYPES.WEAPON );
+    end
+
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------

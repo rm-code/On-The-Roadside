@@ -9,7 +9,7 @@ function BTHasWeapon.new()
         print( 'BTHasWeapon' );
         local _, character = ...;
 
-        if character:getInventory():getWeapon() then
+        if character:getWeapon() then
             print( 'Character has a weapon.' );
             return true;
         end

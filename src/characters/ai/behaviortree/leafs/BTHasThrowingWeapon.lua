@@ -9,7 +9,7 @@ function BTHasThrowingWeapon.new()
         print( 'BTHasThrowingWeapon' );
         local _, character = ...;
 
-        if character:getInventory():getWeapon():getWeaponType() == 'Thrown' then
+        if character:getWeapon():getWeaponType() == 'Thrown' then
             return true;
         end
 

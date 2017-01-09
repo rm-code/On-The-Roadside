@@ -121,7 +121,7 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
         if not weapon or weapon:getWeaponType() == 'Melee' then
             return;
         end

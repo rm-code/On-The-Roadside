@@ -4,14 +4,14 @@ local Messenger = require( 'src.Messenger' );
 local MeleeAttack = {};
 
 function MeleeAttack.new( character, target )
-    local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'MeleeAttack' );
+    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'MeleeAttack' );
 
     function self:perform()
         if not target:isAdjacent( character:getTile() ) then
             return false;
         end
 
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
         Messenger.publish( 'SOUND_ATTACK', weapon );
         target:hit( weapon:getDamage(), weapon:getDamageType() );
         return true;
