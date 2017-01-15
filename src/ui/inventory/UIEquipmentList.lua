@@ -92,7 +92,7 @@ function UIEquipmentList.new( x, y, id, character )
         end
 
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() then
+            if uiItem:isMouseOver() and uiItem:getSlot():getItemType() == item:getItemType() then
                 if uiItem:getSlot():containsItem() then
                     local tmp = uiItem:getSlot():getAndRemoveItem();
                     success = uiItem:getSlot():addItem( item );
