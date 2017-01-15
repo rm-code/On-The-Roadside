@@ -25,6 +25,16 @@ function Equipment.new()
         end
     end
 
+    function self:removeItem( item )
+        for _, slot in pairs( slots ) do
+            if slot:getItem() == item then
+                slot:removeItem();
+                return true;
+            end
+        end
+        return false;
+    end
+
     function self:addItem( item )
         for _, slot in pairs( slots ) do
             if slot:getItemType() == item:getItemType() then
