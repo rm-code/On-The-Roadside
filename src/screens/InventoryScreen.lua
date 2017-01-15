@@ -139,9 +139,6 @@ function InventoryScreen.new()
                             refreshBackpack();
                         end
                         dragboard = nil;
-                    else
-                        dragboard.origin:drop( dragboard.item );
-                        dragboard = nil;
                     end
                 else
                     local item = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
