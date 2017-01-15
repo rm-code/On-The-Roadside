@@ -31,12 +31,6 @@ function UserInterface.new( game )
             return;
         end
 
-        if tile:isOccupied() then
-            love.graphics.print( Translator.getText( 'ui_health' ), x, y );
-            love.graphics.print( tile:getCharacter():getHealth(), x + font:getWidth( Translator.getText( 'ui_health' )), y );
-            return;
-        end
-
         love.graphics.print( Translator.getText( 'ui_tile' ), x, y );
 
         local sw = font:getWidth( Translator.getText( 'ui_tile' ));
