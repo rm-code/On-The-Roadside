@@ -16,7 +16,9 @@ function EquipmentSlot.new( index, template )
     end
 
     function self:addItem( nitem )
+        assert( nitem:getItemType() == self:getItemType(), "Item types do not match." );
         item = nitem;
+        return true;
     end
 
     function self:getItem()

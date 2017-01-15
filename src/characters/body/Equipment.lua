@@ -37,16 +37,6 @@ function Equipment.new()
         return false;
     end
 
-    function self:removeItem( item )
-        for _, slot in pairs( slots ) do
-            if slot:getItemType() == item:getItemType() and slot:containsItem() then
-                slot:removeItem();
-                return true;
-            end
-        end
-        return false;
-    end
-
     ---
     -- Gets an item of the specified type without removing it from the inventory.
     -- @param type (string) The type of item to get.

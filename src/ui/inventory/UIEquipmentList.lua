@@ -39,7 +39,7 @@ function UIEquipmentList.new( x, y, id, character )
 
         -- TODO replace with custom EquipmentItem class
         for _, slot in pairs( equipment:getSlots() ) do
-            local uiItem = UIEquipmentItem.new( slot:getID(), x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot:getItem() );
+            local uiItem = UIEquipmentItem.new( slot:getID(), x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot );
             table.insert( list, slot:getSortOrder(), uiItem );
         end
     end
@@ -86,31 +86,25 @@ function UIEquipmentList.new( x, y, id, character )
     -- @param origin (UIInventoryList) The inventory list the item is coming from.
     --
     function self:drop( item, origin )
+        local success = false;
         if item:instanceOf( 'ItemStack' ) or not item:isEquippable() then
-            return false;
+            return success;
         end
 
-        -- Check if equipment already contains an item of the given type.
-        if equipment:containsItemType( item:getItemType() ) then
-            -- Remove the old item from the equipment.
-            local old = equipment:getAndRemoveItem( item:getItemType() );
-            local success = equipment:addItem( item );
-            if success then
-                origin:drop( old );
-                regenerate();
-                return true;
-            else
-                equipment:drop( old );
-                regenerate();
-                return false;
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                if uiItem:getSlot():containsItem() then
+                    local tmp = uiItem:getSlot():getAndRemoveItem();
+                    success = uiItem:getSlot():addItem( item );
+                    origin:drop( tmp );
+                else
+                    success = uiItem:getSlot():addItem( item );
+                end
             end
         end
 
-        local success = equipment:addItem( item );
-        if success then
-            regenerate();
-            return true;
-        end
+        regenerate();
+        return success;
     end
 
     ---
@@ -120,9 +114,8 @@ function UIEquipmentList.new( x, y, id, character )
     --
     function self:drag()
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() and uiItem:hasItem() then
+            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() then
                 local item = uiItem:drag();
-                equipment:removeItem( item );
                 regenerate();
                 return item;
             end
