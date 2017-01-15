@@ -14,79 +14,93 @@ local BodyFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_DIRECTORY_BODY_PARTS = 'res/data/creatures/bodyparts/';
 local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/';
 
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
 
-local bodyParts;
-local creatures;
+local templates;    -- Define the attributes for each body part.
+local layouts;      -- Define how body parts are connected.
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
 ---
--- Loads all templates for body parts found in the specified directory.
+-- Returns a list of all files inside the specified directory.
 -- @param dir (string) The directory to load the templates from.
--- @return    (table)  A table containing the body part templates.
+-- @return    (table)  A sequence containing all files in the directory.
 --
-local function loadBodyParts( dir )
-    local files = love.filesystem.getDirectoryItems( dir );
-    local templates = {};
-    for i, file in ipairs( files ) do
-        if love.filesystem.isFile( dir .. file ) then
-            local status, loaded = pcall( love.filesystem.load, dir .. file );
+local function loadFiles( dir )
+    local files = {};
+    for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
+        local fn, fe = file:match( '^(.+)%.(.+)$' );
+        files[i] = { name = fn, extension = fe };
+        print( string.format( '%6d. %s.%s', i, fn, fe ));
+    end
+    return files;
+end
+
+---
+-- Loads all templates for body parts found in the specified directory.
+-- @param files (table) A sequence containing all files in the directory.
+-- @return      (table) A table containing the body part templates.
+--
+local function loadTemplates( files )
+    local tmp = {};
+    for _, file in ipairs( files ) do
+        if file.extension == 'lua' then
+            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
+            local status, loaded = pcall( love.filesystem.load, path );
             if not status then
-                print( 'Can not load ' .. dir .. file );
+                print( 'Can not load ' .. path );
             else
-                local template = loaded();
-                local id = template.id;
-                templates[id] = template;
-                print( string.format( '  %d. %s', i, template.id ));
+                local creature = loaded();
+                tmp[creature.id] = {};
+                -- Create template library for this creature.
+                for _, sub in ipairs( creature ) do
+                    tmp[creature.id][sub.id] = sub;
+                end
             end
         end
     end
-    return templates;
+    return tmp;
 end
 
 ---
 -- Loads all creatures templates and converts them using the TGFParser.
--- @param dir (string) The directory to load the templates from.
--- @return    (table)  A table containing the converted templates.
+-- @param files (table) A sequence containing all files in the directory.
+-- @return      (table) A table containing the converted templates.
 --
-local function loadTGFTemplates( dir )
-    local files = love.filesystem.getDirectoryItems( dir );
-    local templates = {};
-    for i, file in ipairs( files ) do
-        if love.filesystem.isFile( dir .. file ) then
-            local status, template = pcall( TGFParser.parse, dir .. file );
+local function loadLayouts( files )
+    local tmp = {};
+    for _, file in ipairs( files ) do
+        if file.extension == 'tgf' then
+            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
+            local status, template = pcall( TGFParser.parse, path );
             if not status then
-                print( 'Can not load ' .. dir .. file );
+                print( 'Can not load ' .. path );
             else
-                -- Remove file extension and use filename as id.
-                template.id = file:match( '(.+)%.' );
-                templates[template.id] = template;
-                print( string.format( '  %d. %s', i, template.id ));
+                tmp[file.name] = template;
             end
         end
     end
-    return templates;
+    return tmp;
 end
 
 ---
 -- Creates a body part based on the id returned from the creature's template. If
 -- a body part is of the type 'equipment' it will be added to the creature's
 -- equipment instead.
+-- @param cid       (string)    The body id of the creature to create.
 -- @param body      (Body)      The body to add this body part to.
 -- @param equipment (Equipment) The equipment object to add a new slot to.
 -- @param index     (number)    A unique number identifying a specific node in the graph.
 -- @param id        (string)    The id used to determine the body part to create.
 --
-local function createBodyPart( body, equipment, index, id )
-    local template = bodyParts[id];
+local function createBodyPart( cid, body, equipment, index, id )
+    local template = templates[cid][id];
     if template.type == 'equipment' then
         equipment:addSlot( EquipmentSlot.new( index, template ));
     else
@@ -97,21 +111,22 @@ end
 ---
 -- Assembles a body from the different body parts and connections found in the
 -- body template.
--- @param  bodyTemplate (table) A table containing the nodes and edges of the body graph.
--- @return              (Body)  A shiny new Body.
+-- @param cid    (string) The body id of the creature to create.
+-- @param layout (table)  A table containing the nodes and edges of the body graph.
+-- @return       (Body)   A shiny new Body.
 --
-local function assembleBody( bodyTemplate )
+local function assembleBody( cid, layout )
     local body = Body.new();
     local equipment = Equipment.new();
 
     -- The index is the number used inside of the graph whereas the id determines
     -- which type of object to create for this node.
-    for index, id in ipairs( bodyTemplate.nodes ) do
-        createBodyPart( body, equipment, index, id );
+    for index, id in ipairs( layout.nodes ) do
+        createBodyPart( cid, body, equipment, index, id );
     end
 
     -- Connect the bodyparts.
-    for _, edge in ipairs( bodyTemplate.edges ) do
+    for _, edge in ipairs( layout.edges ) do
         body:addConnection( edge );
     end
 
@@ -129,11 +144,10 @@ end
 -- Loads the templates.
 --
 function BodyFactory.loadTemplates()
-    print( "Load Body Parts:" )
-    bodyParts = loadBodyParts( TEMPLATE_DIRECTORY_BODY_PARTS );
-
-    print( "Load Creatures:" )
-    creatures = loadTGFTemplates( TEMPLATE_DIRECTORY_CREATURES );
+    print( "Load Creature-Templates:" )
+    local files = loadFiles( TEMPLATE_DIRECTORY_CREATURES );
+    layouts = loadLayouts( files );
+    templates = loadTemplates( files );
 end
 
 ---
@@ -142,9 +156,9 @@ end
 -- @return   (Body)   The newly created Body.
 --
 function BodyFactory.create( id )
-    local template = creatures[id];
+    local template = layouts[id];
     assert( template, string.format( 'Requested body template (%s) doesn\'t exist!', id ));
-    return assembleBody( template );
+    return assembleBody( id, template );
 end
 
 return BodyFactory;
