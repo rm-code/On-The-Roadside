@@ -1,7 +1,7 @@
 -- ============================================================================== --
 -- MIT License                                                                    --
 --                                                                                --
--- Copyright (c) 2016 Robert Machmer                                              --
+-- Copyright (c) 2016 - 2017 Robert Machmer                                       --
 --                                                                                --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy   --
 -- of this software and associated documentation files (the "Software"), to deal  --
@@ -23,7 +23,7 @@
 -- ============================================================================== --
 
 local TGFParser = {
-    _VERSION     = '1.0.0',
+    _VERSION     = '1.0.2',
     _DESCRIPTION = 'A parser for "Trivial Graph Format" (TGF) files written in Lua.',
     _URL         = 'https://github.com/rm-code/lua-tgf-parser/',
 };
@@ -84,7 +84,7 @@ function TGFParser.parse( path )
     -- Splits each line of the edge definitions and stores them inside of the
     -- edge table as edges[i] = { from = nodeId1, to = nodeId2, name = edgeName }.
     for _, line in ipairs( edges ) do
-        local f, t, e = string.match( line, '(%d+) (%d+) (%d+)' );
+        local f, t, e = string.match( line, '(%d+) (%d+) (.+)' );
         f, t = tonumber( f ), tonumber( t );
         graph.edges[#graph.edges + 1] = { from = f, to = t, name = e };
     end
