@@ -18,7 +18,8 @@ function UserInterface.new( game )
     local map = game:getMap();
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
-    local font = love.graphics.newFont( 12 );
+    local font = love.graphics.newImageFont( 'res/img/imagefont8x16.png', ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?-+/()[]%&"\'*=' );
+    love.graphics.setFont( font );
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.

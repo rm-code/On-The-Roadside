@@ -55,8 +55,8 @@ function love.draw()
     end
 
     love.graphics.setColor( 255, 255, 255, 100 );
-    love.graphics.print( versionString, love.graphics.getWidth() - 155, 5 );
-    love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 155, 25 );
+    love.graphics.print( versionString,         love.graphics.getWidth() - 8 * 26, 16 );
+    love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 8 * 26, 32 );
     love.graphics.setColor( 255, 255, 255, 255 );
 end
 
