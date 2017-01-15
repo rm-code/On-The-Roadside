@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local UIInventoryItem = require( 'src.ui.inventory.UIInventoryItem' );
+local UIEquipmentItem = require( 'src.ui.inventory.UIEquipmentItem' );
 local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
@@ -39,7 +39,7 @@ function UIEquipmentList.new( x, y, id, character )
 
         -- TODO replace with custom EquipmentItem class
         for _, slot in pairs( equipment:getSlots() ) do
-            local uiItem = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot:getItem(), slot:getID() );
+            local uiItem = UIEquipmentItem.new( slot:getID(), x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot:getItem() );
             table.insert( list, slot:getSortOrder(), uiItem );
         end
     end
