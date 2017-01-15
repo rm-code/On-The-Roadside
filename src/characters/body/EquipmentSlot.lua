@@ -42,6 +42,10 @@ function EquipmentSlot.new( index, template )
         return item ~= nil;
     end
 
+    function self:getSortOrder()
+        return template.sort;
+    end
+
     return self;
 end
 

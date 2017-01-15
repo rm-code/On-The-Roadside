@@ -124,33 +124,39 @@ return {
     },
     -- ################################## Equipment
     {
-        id = 'equip_backpack',
-        type = 'equipment',
-        itemType = 'Bag'
-    },
-    {
-        id = 'equip_feet',
-        type = 'equipment',
-        itemType = 'Footwear'
-    },
-    {
-        id = 'equip_hands',
-        type = 'equipment',
-        itemType = 'Weapon'
-    },
-    {
         id = 'equip_head',
         type = 'equipment',
-        itemType = 'Headgear'
+        itemType = 'Headgear',
+        sort = 1
     },
     {
-        id = 'equip_legs',
+        id = 'equip_backpack',
         type = 'equipment',
-        itemType = 'Trousers'
+        itemType = 'Bag',
+        sort = 2
     },
     {
         id = 'equip_torso',
         type = 'equipment',
-        itemType = 'Jacket'
+        itemType = 'Jacket',
+        sort = 3
+    },
+    {
+        id = 'equip_hands',
+        type = 'equipment',
+        itemType = 'Weapon',
+        sort = 4
+    },
+    {
+        id = 'equip_legs',
+        type = 'equipment',
+        itemType = 'Trousers',
+        sort = 5
+    },
+    {
+        id = 'equip_feet',
+        type = 'equipment',
+        itemType = 'Footwear',
+        sort = 6
     }
 }

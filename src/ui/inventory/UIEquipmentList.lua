@@ -37,12 +37,10 @@ function UIEquipmentList.new( x, y, id, character )
     local function regenerate()
         list = {};
 
-        -- TODO sort the slots so they always appear at the same
         -- TODO replace with custom EquipmentItem class
-        local counter = 1;
         for _, slot in pairs( equipment:getSlots() ) do
-            list[#list + 1] = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * counter, slot:getItem(), slot:getID() );
-            counter = counter + 1;
+            local uiItem = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot:getItem(), slot:getID() );
+            table.insert( list, slot:getSortOrder(), uiItem );
         end
     end
 
