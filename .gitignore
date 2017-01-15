@@ -6,3 +6,6 @@
 # Ignore yEd graph files
 
 *.graphml
+
+# Log files
+.consolelog
