@@ -46,7 +46,6 @@ function Character.new( map, tile, faction, bodyID )
 
     local accuracy = love.math.random( 60, 90 );
     local throwingSkill = love.math.random( 60, 90 );
-    local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
     local body = BodyFactory.create( bodyID );
@@ -221,7 +220,6 @@ function Character.new( map, tile, faction, bodyID )
         local t = {
             ['ap'] = actionPoints,
             ['accuracy'] = accuracy,
-            ['health'] = health,
             ['stance'] = stance,
             ['faction'] = faction:getType()
             -- TODO: Body serialization
@@ -271,14 +269,6 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:getFaction()
         return faction;
-    end
-
-    ---
-    -- Returns the character's current health.
-    -- @return (number) The character's health.
-    --
-    function self:getHealth()
-        return health;
     end
 
     ---
@@ -395,14 +385,6 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:setActionPoints( nap )
         actionPoints = nap;
-    end
-
-    ---
-    -- Sets the character's health.
-    -- @param nhp (number) The new health value.
-    --
-    function self:setHealth( nhp )
-        health = nhp;
     end
 
     ---
