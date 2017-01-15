@@ -81,7 +81,6 @@ end
 function love.keypressed( key, scancode, isrepeat )
     ScreenManager.keypressed( key, scancode, isrepeat );
 
-    print( key, scancode )
     if scancode == '0' then
         profile = 1;
     end
