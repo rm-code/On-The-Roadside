@@ -17,6 +17,14 @@ function Equipment.new()
         slots[index] = slot;
     end
 
+    function self:dropAllItems( tile )
+        for _, slot in pairs( slots ) do
+            if slot:containsItem() then
+                tile:getInventory():addItem( slot:getAndRemoveItem() );
+            end
+        end
+    end
+
     function self:addItem( item )
         for _, slot in pairs( slots ) do
             if slot:getItemType() == item:getItemType() then

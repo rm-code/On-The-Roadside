@@ -186,7 +186,7 @@ function Character.new( map, tile, faction, bodyID )
         self:generateFOV();
 
         if self:isDead() then
-            -- TODO re-implement dropInventory();
+            self:getEquipment():dropAllItems( tile );
             tile:removeCharacter();
             self:resetFOV();
         end
