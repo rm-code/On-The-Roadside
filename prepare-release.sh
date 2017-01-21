@@ -56,6 +56,13 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 
+# Update README.md
+tag="[![Version](https://img.shields.io/badge/Version-$formatted-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)";
+sed -n "1, 2p"  ./README.md >> tmp_README.md
+echo $tag                   >> tmp_README.md
+sed -n "4, 28p" ./README.md >> tmp_README.md
+mv tmp_README.md README.md
+
 # Add new section to changelog.
 echo "# Version $formatted - $(date +"%Y-%m-%d")" >> tmp_changelog
 cat CHANGELOG.md >> tmp_changelog
@@ -68,6 +75,8 @@ echo "    minor = $minor,"  >> tmp_version
 echo "    patch = $patch,"  >> tmp_version
 echo "    build = $build,"  >> tmp_version
 echo "}"                    >> tmp_version
+echo ""                     >> tmp_version
+echo 'return string.format( "%d.%d.%d.%d", version.major, version.minor, version.patch, version.build );' >> tmp_version
 mv tmp_version version.lua
 
 # Commit the changes.
@@ -75,8 +84,6 @@ git commit -a -m "Prepare version $formatted"
 
 echo "####################################################"
 echo ""
-echo "Apply changes to README.md and CHANGELOG.md:"
-echo "    - Change Version numbers in README.md"
-echo "    - Update Changelog in CHANGELOG.md"
+echo "           Update the Changelog now!"
 echo ""
 echo "####################################################"
