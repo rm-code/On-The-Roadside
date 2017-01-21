@@ -20,6 +20,10 @@ function StatusEffects.new()
     end
 
     function self:add( effects )
+        if not effects then
+            return;
+        end
+
         for _, effect in pairs( effects ) do
             local valid = validate( effect );
             assert( valid, string.format( "Status effect %s is not valid.", effect ));
