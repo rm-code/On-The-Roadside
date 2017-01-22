@@ -84,6 +84,10 @@ function MainScreen.new()
         overlayPainter:update( dt );
         userInterface:update( dt );
 
+        if self:isActive() then
+            MousePointer.update();
+        end
+
         if love.keyboard.isScancodeDown( 'escape' ) then
             exitTimer = exitTimer + dt * 2;
             if exitTimer >= 1.0 then
