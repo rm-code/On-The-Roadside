@@ -160,7 +160,9 @@ function Inventory.new( weightLimit, volumeLimit )
         assert( stack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
         assert( ostack:instanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' );
 
-        for _, item in pairs( ostack:getItems() ) do
+        for i = #ostack:getItems(), 1, -1 do
+            local item = ostack:getItems()[i];
+
             if not doesFit( item:getWeight(), item:getVolume() ) then
                 return false;
             end
