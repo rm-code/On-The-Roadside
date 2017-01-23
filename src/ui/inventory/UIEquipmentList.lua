@@ -12,15 +12,13 @@ local UIEquipmentList = {};
 -- Constants
 -- ------------------------------------------------
 
-local PADDING = 15;
-local HEADER_HEIGHT = 30;
-local WIDTH = 150;
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function UIEquipmentList.new( x, y, id, character )
+function UIEquipmentList.new( x, y, width, id, character )
     local self = Object.new():addInstance( 'UIEquipmentList' );
 
     -- ------------------------------------------------
@@ -39,7 +37,7 @@ function UIEquipmentList.new( x, y, id, character )
 
         -- TODO replace with custom EquipmentItem class
         for _, slot in pairs( equipment:getSlots() ) do
-            local uiItem = UIEquipmentItem.new( slot:getID(), x, HEADER_HEIGHT + ( y + PADDING ) * slot:getSortOrder(), slot );
+            local uiItem = UIEquipmentItem.new( slot:getID(), x, y + slot:getSortOrder() * TILE_SIZE, width, TILE_SIZE, slot );
             table.insert( list, slot:getSortOrder(), uiItem );
         end
     end
@@ -53,15 +51,6 @@ function UIEquipmentList.new( x, y, id, character )
     end
 
     function self:draw()
-        love.graphics.setColor( 0, 0, 0 );
-        love.graphics.rectangle( 'fill', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 200, 200, 200 );
-        love.graphics.rectangle( 'line', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 255, 255, 255 );
-        love.graphics.setScissor( x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.printf( Translator.getText( id ), x, y + 5, WIDTH, 'center' );
-        love.graphics.setScissor();
-
         for _, slot in ipairs( list ) do
             slot:draw();
         end
@@ -75,7 +64,7 @@ function UIEquipmentList.new( x, y, id, character )
 
     function self:isMouseOver()
         local mx = love.mouse.getX();
-        return ( mx > x and mx < x + WIDTH );
+        return ( mx > x and mx < x + width );
     end
 
     ---
@@ -120,6 +109,16 @@ function UIEquipmentList.new( x, y, id, character )
                 return item;
             end
         end
+    end
+
+    function self:highlightSlot( nitem )
+        for _, uiItem in ipairs( list ) do
+            uiItem:highlight( nitem );
+        end
+    end
+
+    function self:getLabel()
+        return Translator.getText( id );
     end
 
     return self;

@@ -4,10 +4,8 @@ local Translator = require( 'src.util.Translator' );
 local UIInventoryItem = {};
 
 local COLORS = require( 'src.constants.Colors' );
-local WIDTH  = 150;
-local HEIGHT =  30;
 
-function UIInventoryItem.new( x, y, item )
+function UIInventoryItem.new( x, y, width, height, item )
     local self = Object.new():addInstance( 'UIInventoryItem' );
 
     local mouseOver = false;
@@ -30,21 +28,15 @@ function UIInventoryItem.new( x, y, item )
         else
             love.graphics.setColor( COLORS.DB00 );
         end
+        love.graphics.rectangle( 'fill', x, y, width, height );
 
-        love.graphics.rectangle( 'fill', x, y, WIDTH, HEIGHT );
-
-        love.graphics.setColor( COLORS.DB23 );
-        love.graphics.rectangle( 'line', x, y, WIDTH, HEIGHT );
-
-        love.graphics.setScissor( x, y, WIDTH, HEIGHT );
-        love.graphics.setColor( COLORS.DB21 );
-        love.graphics.printf( createLabel(), x, y + 5, WIDTH, 'center' );
-        love.graphics.setScissor();
+        love.graphics.setColor( COLORS.DB20 );
+        love.graphics.print( createLabel(), x, y );
     end
 
     function self:update()
         local mx, my = love.mouse.getPosition();
-        mouseOver = ( mx > x and mx < x + WIDTH and my > y and my < y + HEIGHT );
+        mouseOver = ( mx > x and mx < x + width and my > y and my < y + height );
     end
 
     function self:isMouseOver()

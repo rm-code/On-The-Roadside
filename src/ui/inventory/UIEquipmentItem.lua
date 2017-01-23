@@ -4,16 +4,15 @@ local Translator = require( 'src.util.Translator' );
 local UIEquipmentItem = {};
 
 local COLORS = require( 'src.constants.Colors' );
-local WIDTH  = 150;
-local HEIGHT =  30;
 
 ---
 -- This class actually holds an EquipmentSlot object instead of an item.
 --
-function UIEquipmentItem.new( id, x, y, slot )
+function UIEquipmentItem.new( id, x, y, width, height, slot )
     local self = Object.new():addInstance( 'UIEquipmentItem' );
 
     local mouseOver = false;
+    local highlight = false;
 
     local function createLabel()
         if not slot:containsItem() then
@@ -26,7 +25,7 @@ function UIEquipmentItem.new( id, x, y, slot )
 
     function self:update()
         local mx, my = love.mouse.getPosition();
-        mouseOver = ( mx > x and mx < x + WIDTH and my > y and my < y + HEIGHT );
+        mouseOver = ( mx > x and mx < x + width and my > y and my < y + height );
     end
 
     function self:isMouseOver()
@@ -36,24 +35,28 @@ function UIEquipmentItem.new( id, x, y, slot )
     function self:draw()
         if self:isMouseOver() then
             love.graphics.setColor( COLORS.DB15 );
+        elseif highlight then
+            love.graphics.setColor( COLORS.DB10 );
         else
             love.graphics.setColor( COLORS.DB00 );
         end
-
-        love.graphics.rectangle( 'fill', x, y, WIDTH, HEIGHT );
-
-        love.graphics.setColor( COLORS.DB23 );
-        love.graphics.rectangle( 'line', x, y, WIDTH, HEIGHT );
-
-        love.graphics.setScissor( x, y, WIDTH, HEIGHT );
+        love.graphics.rectangle( 'fill', x, y, width, height );
 
         if not slot:containsItem() then
             love.graphics.setColor( COLORS.DB23 );
         else
-            love.graphics.setColor( COLORS.DB21 );
+            love.graphics.setColor( COLORS.DB20 );
         end
-        love.graphics.printf( createLabel(), x, y + 5, WIDTH, 'center' );
-        love.graphics.setScissor();
+
+        love.graphics.print( createLabel(), x, y );
+    end
+
+    function self:highlight( nitem )
+        if nitem then
+            highlight = nitem:getItemType() == slot:getItemType();
+            return;
+        end
+        highlight = false;
     end
 
     function self:drag()
