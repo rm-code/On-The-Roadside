@@ -18,8 +18,6 @@ local OverlayPainter = {};
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
 
-local VERSION_STRING = "WIP - Version: " .. getVersion();
-
 -- ------------------------------------------------
 -- Local Variables
 -- ------------------------------------------------
@@ -253,11 +251,6 @@ function OverlayPainter.new( game, particleLayer )
             drawMouseCursor();
         end
         drawParticles();
-
-        love.graphics.setColor( 255, 255, 255, 100 );
-        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 8 * 26, 16 );
-        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 8 * 26, 32 );
-        love.graphics.setColor( 255, 255, 255, 255 );
     end
 
     function self:update( dt )

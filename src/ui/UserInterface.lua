@@ -7,6 +7,16 @@ local Translator = require( 'src.util.Translator' );
 
 local UserInterface = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local VERSION_STRING = "WIP - Version: " .. getVersion();
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 ---
 -- Creates an new instance of the UserInterface class.
 -- @param game (Game)          The game object.
@@ -76,6 +86,11 @@ function UserInterface.new( game )
         love.graphics.print( 'AP: ' .. character:getActionPoints(), 10, love.graphics.getHeight() - 40 );
 
         inspectTile();
+
+        love.graphics.setColor( 255, 255, 255, 100 );
+        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 8 * 26, 16 );
+        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 8 * 26, 32 );
+        love.graphics.setColor( 255, 255, 255, 255 );
     end
 
     function self:update()
