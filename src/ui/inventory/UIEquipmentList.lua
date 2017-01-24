@@ -117,6 +117,14 @@ function UIEquipmentList.new( x, y, width, id, character )
         end
     end
 
+    function self:getItemBelowCursor()
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                return uiItem:getSlot():getItem();
+            end
+        end
+    end
+
     function self:getLabel()
         return Translator.getText( id );
     end

@@ -77,6 +77,10 @@ function ItemStack.new( id )
         return items[#items]:getItemType();
     end
 
+    function self:getDescriptionID()
+        return items[#items]:getDescriptionID();
+    end
+
     function self:getID()
         return id;
     end

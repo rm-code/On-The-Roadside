@@ -26,7 +26,7 @@ function InventoryOutlines.new()
     -- ------------------------------------------------
 
     local grid;
-    local w, h, sx, sy;
+    local w, h, sx, sy, itemDescriptionSpacer;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -151,6 +151,15 @@ function InventoryOutlines.new()
                 if y == 2 * sy then
                     grid[x][y] = 1;
                 end
+
+                -- Draw item description separator.
+                if x == itemDescriptionSpacer and y > 2 * sy then
+                    grid[x][y] = 1;
+                end
+
+                if x < itemDescriptionSpacer and y == ( 2 * sy + 2 ) then
+                    grid[x][y] = 1;
+                end
             end
         end
     end
@@ -159,8 +168,8 @@ function InventoryOutlines.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init( nw, nh, nsx, nsy )
-        w, h, sx, sy = nw, nh, nsx, nsy;
+    function self:init( nw, nh, nsx, nsy, nitemDescriptionSpacer )
+        w, h, sx, sy, itemDescriptionSpacer = nw, nh, nsx, nsy, nitemDescriptionSpacer;
         grid = {};
         fillGrid( w, h, sx, sy );
     end

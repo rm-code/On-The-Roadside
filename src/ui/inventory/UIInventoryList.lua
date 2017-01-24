@@ -96,6 +96,14 @@ function UIInventoryList.new( x, y, width, id, inventory )
         end
     end
 
+    function self:getItemBelowCursor()
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                return uiItem:getItem();
+            end
+        end
+    end
+
     function self:getLabel()
         return Translator.getText( id );
     end

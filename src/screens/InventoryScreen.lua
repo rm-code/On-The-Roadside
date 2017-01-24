@@ -3,6 +3,7 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
 local InventoryOutlines = require( 'src.ui.inventory.InventoryOutlines' );
+local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
 local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
@@ -34,6 +35,9 @@ function InventoryScreen.new()
 
     local  w,  h;
     local sx, sy; -- Spacers.
+    local itemDescriptionSpacer; -- Spacers.
+
+    local itemDescriptionArea;
 
     local outlines;
 
@@ -149,6 +153,8 @@ function InventoryScreen.new()
         end
 
         love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), TILE_SIZE );
+
+        love.graphics.print( 'Item Description', getEquipmentColumnOffset(), ( 1 + 2 * sy ) * TILE_SIZE );
     end
 
     local function updateScreenDimensions( nw, nh )
@@ -156,6 +162,7 @@ function InventoryScreen.new()
         h  = math.floor( nh / TILE_SIZE );
         sx = math.floor( w / 3 );
         sy = math.floor( h / 3 );
+        itemDescriptionSpacer = math.floor( w / 2 );
     end
 
     -- ------------------------------------------------
@@ -176,7 +183,9 @@ function InventoryScreen.new()
         updateScreenDimensions( love.graphics.getDimensions() );
 
         outlines = InventoryOutlines.new();
-        outlines:init( w, h, sx, sy );
+        outlines:init( w, h, sx, sy, itemDescriptionSpacer );
+
+        itemDescriptionArea = ScrollArea.new( 1, 3 + 2 * sy, itemDescriptionSpacer - 1, sy - 3 );
 
         lists = {};
 
@@ -199,6 +208,13 @@ function InventoryScreen.new()
 
         for _, list in pairs( lists ) do
             list:draw();
+            if list:isMouseOver() then
+                local item = list:getItemBelowCursor();
+                if item then
+                    itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
+                    itemDescriptionArea:draw();
+                end
+            end
         end
 
         if dragboard then
@@ -211,6 +227,9 @@ function InventoryScreen.new()
                 str = string.format( '%s (%d)', str, item:getItemCount() );
             end
             love.graphics.print( str, mx, my );
+
+            itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
+            itemDescriptionArea:draw();
         end
 
         lists.equipment:highlightSlot( dragboard and dragboard.item );
@@ -226,7 +245,11 @@ function InventoryScreen.new()
     end
 
     function self:keypressed( key )
-        if key == 'escape' or key == 'i' then
+        if key == 'up' then
+            itemDescriptionArea:scrollVertically( -1 );
+        elseif key == 'down' then
+            itemDescriptionArea:scrollVertically( 1 );
+        elseif key == 'escape' or key == 'i' then
             ScreenManager.pop();
         end
     end
@@ -252,6 +275,7 @@ function InventoryScreen.new()
     function self:resize( nw, nh )
         updateScreenDimensions( nw, nh );
         outlines:init( w, h, sx, sy );
+        itemDescriptionArea:setDimensions( 1, 1 + 2 * sy, itemDescriptionSpacer - 1, sy );
     end
 
     function self:close()
