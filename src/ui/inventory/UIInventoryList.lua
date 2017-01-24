@@ -26,8 +26,6 @@ function UIInventoryList.new( x, y, width, id, inventory )
     -- ------------------------------------------------
 
     local list;
-    local weightText;
-    local volumeText;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -38,8 +36,6 @@ function UIInventoryList.new( x, y, width, id, inventory )
         for i, item in ipairs( inventory:getItems() ) do
             list[#list + 1] = UIInventoryItem.new( x, y + i * TILE_SIZE, width, TILE_SIZE, item );
         end
-        weightText = string.format( '%.1f/%.1f', inventory:getWeight(), inventory:getWeightLimit() );
-        volumeText = string.format( '%.1f/%.1f', inventory:getVolume(), inventory:getVolumeLimit() );
     end
 
     -- ------------------------------------------------
