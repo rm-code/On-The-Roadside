@@ -106,7 +106,7 @@ function UIEquipmentList.new( x, y, width, id, character )
             if uiItem:isMouseOver() and uiItem:getSlot():containsItem() then
                 local item = uiItem:drag();
                 regenerate();
-                return item;
+                return item, uiItem:getSlot();
             end
         end
     end

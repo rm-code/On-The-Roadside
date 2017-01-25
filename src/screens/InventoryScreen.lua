@@ -211,9 +211,11 @@ function InventoryScreen.new()
 
         local list = getListBelowCursor();
         if list then
-            local item = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
+            local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
             if item then
-                dragboard = { item = item, origin = list };
+                -- If we have an actual item slot we use it as the origin to
+                -- which the item is returned in case it can't be dropped anywhere.
+                dragboard = { item = item, origin = slot or list };
                 if item:instanceOf( 'Bag' ) then
                     refreshBackpack();
                 end
@@ -229,12 +231,17 @@ function InventoryScreen.new()
         local list = getListBelowCursor();
         if list then
             local success = list:drop( dragboard.item, dragboard.origin );
-            if success then
-                if dragboard.item:instanceOf( 'Bag' ) then
-                    refreshBackpack();
+            -- If item dropping wasn't succesful return it to its original
+            -- inventory and destroy the dragboard.
+            if not success then
+                if dragboard.origin:instanceOf( 'EquipmentSlot' ) then
+                    dragboard.origin:addItem( dragboard.item );
+                else
+                    dragboard.origin:drop( dragboard.item );
                 end
-                dragboard = nil;
             end
+            refreshBackpack();
+            dragboard = nil;
         end
     end
 
