@@ -104,6 +104,15 @@ function InventoryScreen.new()
         love.graphics.print( lists.other:getLabel(), ( 2 + 2 * sx ) * TILE_SIZE, TILE_SIZE );
     end
 
+    local function getListBelowCursor()
+        for _, list in pairs( lists ) do
+            if list:isMouseOver() then
+                return list;
+            end
+        end
+        return false;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -196,25 +205,35 @@ function InventoryScreen.new()
     end
 
     function self:mousepressed( _, _, button )
-        for _, list in pairs( lists ) do
-            if list:isMouseOver() then
-                if dragboard then
-                    local success = list:drop( dragboard.item, dragboard.origin );
-                    if success then
-                        if dragboard.item:instanceOf( 'Bag' ) then
-                            refreshBackpack();
-                        end
-                        dragboard = nil;
-                    end
-                else
-                    local item = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
-                    if item then
-                        dragboard = { item = item, origin = list };
-                        if item:instanceOf( 'Bag' ) then
-                            refreshBackpack();
-                        end
-                    end
+        if dragboard then
+            return;
+        end
+
+        local list = getListBelowCursor();
+        if list then
+            local item = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
+            if item then
+                dragboard = { item = item, origin = list };
+                if item:instanceOf( 'Bag' ) then
+                    refreshBackpack();
                 end
+            end
+        end
+    end
+
+    function self:mousereleased( _, _, _ )
+        if not dragboard then
+            return;
+        end
+
+        local list = getListBelowCursor();
+        if list then
+            local success = list:drop( dragboard.item, dragboard.origin );
+            if success then
+                if dragboard.item:instanceOf( 'Bag' ) then
+                    refreshBackpack();
+                end
+                dragboard = nil;
             end
         end
     end
