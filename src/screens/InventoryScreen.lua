@@ -261,7 +261,11 @@ function InventoryScreen.new()
 
     function self:close()
         love.mouse.setVisible( false );
-        drop(); -- Drop any item that is currently dragged.
+
+        -- Drop any item that is currently dragged.
+        if dragboard then
+            drop();
+        end
     end
 
     return self;
