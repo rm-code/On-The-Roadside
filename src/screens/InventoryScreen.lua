@@ -30,6 +30,8 @@ function InventoryScreen.new()
     local dragboard;
     local target;
 
+    local grid = {};
+
     local  w,  h;
     local sx, sy; -- Spacers.
 
@@ -46,50 +48,113 @@ function InventoryScreen.new()
         end
     end
 
+    ---
+    -- Returns the value of the grid for this position or 0 for coordinates
+    -- outside of the grid.
+    -- @param x (number) The x coordinate in the grid.
+    -- @param y (number) The y coordinate in the grid.
+    -- @return  (number) The grid index or 0.
+    --
+    local function getGridIndex( x, y )
+        if not grid[x] then
+            return 0;
+        elseif not grid[x][y] then
+            return 0;
+        end
+        return grid[x][y];
+    end
+
+    ---
+    -- Checks the NSEW tiles around the given coordinates in the grid and returns
+    -- an index for the appropriate sprite to use.
+    -- @param x (number) The x coordinate in the grid.
+    -- @param y (number) The y coordinate in the grid.
+    -- @return  (number) The sprite index.
+    --
+    local function determineTile( x, y )
+        if -- Connected to all sides.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 198;
+        elseif -- Vertically connected.
+            getGridIndex( x - 1, y     ) == 0 and
+            getGridIndex( x + 1, y     ) == 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 180;
+        elseif -- Horizontally connected.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) == 0 and
+            getGridIndex( x    , y + 1 ) == 0 then
+                return 197;
+        elseif -- Bottom right corner.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) == 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) == 0 then
+                return 218;
+        elseif -- Top left corner.
+            getGridIndex( x - 1, y     ) == 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) == 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 219;
+        elseif -- Top right corner.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) == 0 and
+            getGridIndex( x    , y - 1 ) == 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 192;
+        elseif -- Bottom left corner.
+            getGridIndex( x - 1, y     ) == 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) == 0 then
+                return 193;
+        elseif -- T-intersection down.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) == 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 195;
+        elseif -- T-intersection up.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) == 0 then
+                return 194;
+        elseif -- T-intersection right.
+            getGridIndex( x - 1, y     ) == 0 and
+            getGridIndex( x + 1, y     ) ~= 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 196;
+        elseif -- T-intersection left.
+            getGridIndex( x - 1, y     ) ~= 0 and
+            getGridIndex( x + 1, y     ) == 0 and
+            getGridIndex( x    , y - 1 ) ~= 0 and
+            getGridIndex( x    , y + 1 ) ~= 0 then
+                return 181;
+        end
+        return 1;
+    end
+
     local function drawOutlines()
         local ts = Tileset.getTileset();
 
         love.graphics.setColor( COLORS.DB22 );
 
         -- Draw horizontal lines.
-        for x = 1, w - 2 do
-            love.graphics.draw( ts, Tileset.getSprite( 197 ), x * TILE_SIZE,                          0 );
-            love.graphics.draw( ts, Tileset.getSprite( 197 ), x * TILE_SIZE,            2   * TILE_SIZE );
-            love.graphics.draw( ts, Tileset.getSprite( 197 ), x * TILE_SIZE,      ( h - 1 ) * TILE_SIZE );
-            love.graphics.draw( ts, Tileset.getSprite( 197 ), x * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE );
-        end
-
-        -- Draw vertical lines.
-        for y = 1, h - 2 do
-            love.graphics.draw( ts, Tileset.getSprite( 180 ),                     0, y * TILE_SIZE ); -- Left
-            love.graphics.draw( ts, Tileset.getSprite( 180 ), ( w - 1 ) * TILE_SIZE, y * TILE_SIZE ); -- Right
-
-            if y < ( 1 + 2 * sy ) then
-                love.graphics.draw( ts, Tileset.getSprite( 180 ), ( 1 +     sx ) * TILE_SIZE, y * TILE_SIZE );
-                love.graphics.draw( ts, Tileset.getSprite( 180 ), ( 1 + 2 * sx ) * TILE_SIZE, y * TILE_SIZE );
+        for x = 0, w - 1 do
+            for y = 0, h - 1 do
+                if grid[x][y] ~= 0 then
+                    love.graphics.draw( ts, Tileset.getSprite( determineTile( x, y )), x * TILE_SIZE, y * TILE_SIZE );
+                end
             end
         end
-
-        -- Draw vertical line connectors.
-        love.graphics.draw( ts, Tileset.getSprite( 195 ), ( 1 +     sx ) * TILE_SIZE,                     0 );
-        love.graphics.draw( ts, Tileset.getSprite( 195 ), ( 1 + 2 * sx ) * TILE_SIZE,                     0 );
-
-        -- Draw horizontal line connectors.
-        love.graphics.draw( ts, Tileset.getSprite( 196 ),                          0, 2 * TILE_SIZE ); -- Headline left
-        love.graphics.draw( ts, Tileset.getSprite( 181 ), ( w - 1      ) * TILE_SIZE, 2 * TILE_SIZE ); -- Headline 1st column
-        love.graphics.draw( ts, Tileset.getSprite( 198 ), ( 1 +     sx ) * TILE_SIZE, 2 * TILE_SIZE ); -- Headline 2nd column
-        love.graphics.draw( ts, Tileset.getSprite( 198 ), ( 1 + 2 * sx ) * TILE_SIZE, 2 * TILE_SIZE ); -- Headline right
-
-        love.graphics.draw( ts, Tileset.getSprite( 196 ),                          0, ( 1 + 2 * sy ) * TILE_SIZE ); -- Item description left
-        love.graphics.draw( ts, Tileset.getSprite( 181 ), ( w - 1      ) * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE ); -- Item description 1st column
-        love.graphics.draw( ts, Tileset.getSprite( 194 ), ( 1 +     sx ) * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE ); -- Item description 2nd column
-        love.graphics.draw( ts, Tileset.getSprite( 194 ), ( 1 + 2 * sx ) * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE ); -- Item description right
-
-        -- Draw corners.
-        love.graphics.draw( ts, Tileset.getSprite( 192 ), ( w - 1 ) * TILE_SIZE,                     0 );
-        love.graphics.draw( ts, Tileset.getSprite( 218 ), ( w - 1 ) * TILE_SIZE, ( h - 1 ) * TILE_SIZE );
-        love.graphics.draw( ts, Tileset.getSprite( 219 ),                     0,                     0 );
-        love.graphics.draw( ts, Tileset.getSprite( 193 ),                     0, ( h - 1 ) * TILE_SIZE );
     end
 
     local function drawHeaders()
@@ -170,6 +235,33 @@ function InventoryScreen.new()
         h  = math.floor( love.graphics.getHeight() / TILE_SIZE );
         sx = math.floor( w / 3 );
         sy = math.floor( h / 3 );
+
+        for x = 0, w - 1 do
+            for y = 0, h - 1 do
+                grid[x] = grid[x] or {};
+                grid[x][y] = 0;
+
+                -- Draw screen borders.
+                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
+                    grid[x][y] = 1;
+                end
+
+                -- Draw vertical column lines.
+                if ( x == 1 + sx or x == 1 + 2 * sx ) and ( y < 2 * sy ) then
+                    grid[x][y] = 1;
+                end
+
+                -- Draw bottom line of the column headers.
+                if y == 2 then
+                    grid[x][y] = 1;
+                end
+
+                -- Draw the horizontal line below the inventory columns.
+                if y == 2 * sy then
+                    grid[x][y] = 1;
+                end
+            end
+        end
 
         lists = {};
 
