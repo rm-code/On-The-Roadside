@@ -113,6 +113,43 @@ function InventoryScreen.new()
         return false;
     end
 
+    local function returnItemToOrigin( item, origin )
+        if origin:instanceOf( 'EquipmentSlot' ) then
+            origin:addItem( item );
+        else
+            origin:drop( item );
+        end
+    end
+
+    local function drag( list, button )
+        if not list then
+            return;
+        end
+
+        local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
+        if item then
+            -- If we have an actual item slot we use it as the origin to
+            -- which the item is returned in case it can't be dropped anywhere.
+            dragboard = { item = item, origin = slot or list };
+            if item:instanceOf( 'Bag' ) then
+                refreshBackpack();
+            end
+        end
+    end
+
+    local function drop( list )
+        if not list then
+            returnItemToOrigin( dragboard.item, dragboard.origin );
+        else
+            local success = list:drop( dragboard.item, dragboard.origin );
+            if not success then
+                returnItemToOrigin( dragboard.item, dragboard.origin );
+            end
+        end
+        refreshBackpack();
+        dragboard = nil;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -210,17 +247,7 @@ function InventoryScreen.new()
         end
 
         local list = getListBelowCursor();
-        if list then
-            local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
-            if item then
-                -- If we have an actual item slot we use it as the origin to
-                -- which the item is returned in case it can't be dropped anywhere.
-                dragboard = { item = item, origin = slot or list };
-                if item:instanceOf( 'Bag' ) then
-                    refreshBackpack();
-                end
-            end
-        end
+        drag( list, button );
     end
 
     function self:mousereleased( _, _, _ )
@@ -229,24 +256,12 @@ function InventoryScreen.new()
         end
 
         local list = getListBelowCursor();
-        if list then
-            local success = list:drop( dragboard.item, dragboard.origin );
-            -- If item dropping wasn't succesful return it to its original
-            -- inventory and destroy the dragboard.
-            if not success then
-                if dragboard.origin:instanceOf( 'EquipmentSlot' ) then
-                    dragboard.origin:addItem( dragboard.item );
-                else
-                    dragboard.origin:drop( dragboard.item );
-                end
-            end
-            refreshBackpack();
-            dragboard = nil;
-        end
+        drop( list );
     end
 
     function self:close()
         love.mouse.setVisible( false );
+        drop(); -- Drop any item that is currently dragged.
     end
 
     return self;
