@@ -18,14 +18,15 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 -- Constructor
 -- ------------------------------------------------
 
-function InventoryOutlines.new( w, h, sx, sy )
+function InventoryOutlines.new()
     local self = Object.new():addInstance( 'InventoryOutlines' );
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
-    local grid = {};
+    local grid;
+    local w, h, sx, sy;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -125,11 +126,7 @@ function InventoryOutlines.new( w, h, sx, sy )
         return 1;
     end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init()
+    local function fillGrid()
         for x = 0, w - 1 do
             for y = 0, h - 1 do
                 grid[x] = grid[x] or {};
@@ -156,6 +153,16 @@ function InventoryOutlines.new( w, h, sx, sy )
                 end
             end
         end
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
+    function self:init( nw, nh, nsx, nsy )
+        w, h, sx, sy = nw, nh, nsx, nsy;
+        grid = {};
+        fillGrid( w, h, sx, sy );
     end
 
     function self:draw()

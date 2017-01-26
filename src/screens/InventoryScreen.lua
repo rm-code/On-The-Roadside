@@ -151,6 +151,13 @@ function InventoryScreen.new()
         love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), TILE_SIZE );
     end
 
+    local function updateScreenDimensions( nw, nh )
+        w  = math.floor( nw / TILE_SIZE );
+        h  = math.floor( nh / TILE_SIZE );
+        sx = math.floor( w / 3 );
+        sy = math.floor( h / 3 );
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -166,14 +173,10 @@ function InventoryScreen.new()
         target = ntarget;
 
         love.mouse.setVisible( true );
+        updateScreenDimensions( love.graphics.getDimensions() );
 
-        w  = math.floor( love.graphics.getWidth()  / TILE_SIZE );
-        h  = math.floor( love.graphics.getHeight() / TILE_SIZE );
-        sx = math.floor( w / 3 );
-        sy = math.floor( h / 3 );
-
-        outlines = InventoryOutlines.new( w, h, sx, sy );
-        outlines:init();
+        outlines = InventoryOutlines.new();
+        outlines:init( w, h, sx, sy );
 
         lists = {};
 
@@ -243,6 +246,11 @@ function InventoryScreen.new()
 
         local list = getListBelowCursor();
         drop( list );
+    end
+
+    function self:resize( nw, nh )
+        updateScreenDimensions( nw, nh );
+        outlines:init( w, h, sx, sy );
     end
 
     function self:close()
