@@ -7,6 +7,16 @@ local Translator = require( 'src.util.Translator' );
 
 local UserInterface = {};
 
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local VERSION_STRING = "WIP - Version: " .. getVersion();
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 ---
 -- Creates an new instance of the UserInterface class.
 -- @param game (Game)          The game object.
@@ -18,7 +28,8 @@ function UserInterface.new( game )
     local map = game:getMap();
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
-    local font = love.graphics.newFont( 12 );
+    local font = love.graphics.newImageFont( 'res/img/imagefont8x16.png', ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?-+/()[]%&"\'*=_<>' );
+    love.graphics.setFont( font );
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
@@ -28,12 +39,6 @@ function UserInterface.new( game )
         local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
-            return;
-        end
-
-        if tile:isOccupied() then
-            love.graphics.print( Translator.getText( 'ui_health' ), x, y );
-            love.graphics.print( tile:getCharacter():getHealth(), x + font:getWidth( Translator.getText( 'ui_health' )), y );
             return;
         end
 
@@ -63,7 +68,7 @@ function UserInterface.new( game )
         love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
         love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
 
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
         if weapon then
             love.graphics.print( Translator.getText( 'ui_weapon' ), 200, love.graphics.getHeight() - 40 );
             love.graphics.print( Translator.getText( weapon:getID() ), 200 + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - 40 );
@@ -81,6 +86,11 @@ function UserInterface.new( game )
         love.graphics.print( 'AP: ' .. character:getActionPoints(), 10, love.graphics.getHeight() - 40 );
 
         inspectTile();
+
+        love.graphics.setColor( 255, 255, 255, 100 );
+        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 8 * 26, 16 );
+        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 8 * 26, 32 );
+        love.graphics.setColor( 255, 255, 255, 255 );
     end
 
     function self:update()

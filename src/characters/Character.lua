@@ -1,6 +1,6 @@
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
-local Inventory = require('src.inventory.Inventory');
+local BodyFactory = require( 'src.characters.body.BodyFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -17,14 +17,6 @@ local DEFAULT_ACTION_POINTS = 20;
 local STANCES = require('src.constants.Stances');
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
-local BODY_PARTS = {
-    ITEM_TYPES.HEADGEAR,
-    ITEM_TYPES.GLOVES,
-    ITEM_TYPES.JACKET,
-    ITEM_TYPES.SHIRT,
-    ITEM_TYPES.TROUSERS,
-    ITEM_TYPES.FOOTWEAR
-}
 
 -- ------------------------------------------------
 -- Constructor
@@ -35,9 +27,10 @@ local BODY_PARTS = {
 -- @param map     (Map)       A reference to the map object.
 -- @param tile    (Tile)      The tile to spawn the character on.
 -- @param faction (Faction)   The Faction object determining the character's faction.
+-- @param bodyID  (string)    The body id to use for this character.
 -- @return        (Character) A new instance of the Character class.
 --
-function Character.new( map, tile, faction )
+function Character.new( map, tile, faction, bodyID )
     local self = Object.new():addInstance( 'Character' );
 
     -- Add character to the tile.
@@ -51,44 +44,11 @@ function Character.new( map, tile, faction )
     local actions = Queue.new();
     local fov = {};
 
-    local inventory = Inventory.new();
-
     local accuracy = love.math.random( 60, 90 );
     local throwingSkill = love.math.random( 60, 90 );
-    local health = love.math.random( 50, 100 );
 
     local stance = STANCES.STAND;
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    --
-    -- Returns a random sign (+ or -).
-    -- @return (number) Randomly returns either -1 or 1.
-    --
-    local function randomSign()
-        return love.math.random( 0, 1 ) == 0 and -1 or 1;
-    end
-
-    ---
-    -- Drops this character's inventory on the ground.
-    --
-    local function dropInventory()
-        local inv = {
-            inventory:getItem( ITEM_TYPES.WEAPON ),
-            inventory:getItem( ITEM_TYPES.BAG ),
-            inventory:getItem( ITEM_TYPES.HEADGEAR ),
-            inventory:getItem( ITEM_TYPES.GLOVES ),
-            inventory:getItem( ITEM_TYPES.JACKET ),
-            inventory:getItem( ITEM_TYPES.SHIRT ),
-            inventory:getItem( ITEM_TYPES.TROUSERS ),
-            inventory:getItem( ITEM_TYPES.FOOTWEAR ),
-        };
-        for _, item in pairs( inv ) do
-            tile:getInventory():addItem( item );
-        end
-    end
+    local body = BodyFactory.create( bodyID );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -172,20 +132,21 @@ function Character.new( map, tile, faction )
     function self:generateFOV()
         self:resetFOV();
 
-        local range = self:getViewRange();
+        local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
+        local x, y = tile:getX() + 0.5, tile:getY() + 0.5;
 
         -- Calculate the new FOV information.
         for i = 1, 360 do
-            local ox, oy = tile:getX() + 0.5, tile:getY() + 0.5;
+            local ox, oy = x, y;
             local rad    = math.rad( i );
             local rx, ry = math.cos( rad ), math.sin( rad );
 
             for _ = 1, range do
-                local target = map:getTileAt( math.floor( ox ), math.floor( oy ));
+                local tx, ty = math.floor( ox ), math.floor( oy );
+                local target = map:getTileAt( tx, ty );
                 if not target then
                     break;
                 end
-                local tx, ty = target:getPosition();
 
                 -- Add tile to this character's FOV.
                 self:addSeenTile( tx, ty, target );
@@ -219,31 +180,12 @@ function Character.new( map, tile, faction )
     -- @param damageType (string) The type of damage the tile is hit with.
     --
     function self:hit( damage, damageType )
-        -- Randomly determine the body part which was hit by the attack and
-        -- get the clothing item on that body part.
-        local bodyPart = BODY_PARTS[love.math.random( #BODY_PARTS )];
+        body:hit( damage, damageType );
 
-        -- Randomly increases or reduces the base damage by 15%.
-        local flukeModifier = math.floor( damage * randomSign() * ( love.math.random( 15 ) / 100 ));
-        damage = damage + flukeModifier;
-
-        local clothing = inventory:getItem( bodyPart );
-        if clothing then
-            if love.math.random( 0, 100 ) < clothing:getArmorCoverage() then
-                print( "Hit armor. Damage reduced by " .. clothing:getArmorProtection() );
-                damage = damage - clothing:getArmorProtection();
-            end
-        end
-
-        -- Prevent negative damage.
-        damage = math.max( damage, 0 );
-
-        print( string.format( "%d points of %s damage!", damage, damageType ));
-
-        health = health - damage;
+        self:generateFOV();
 
         if self:isDead() then
-            dropInventory();
+            self:getEquipment():dropAllItems( tile );
             tile:removeCharacter();
             self:resetFOV();
         end
@@ -278,10 +220,9 @@ function Character.new( map, tile, faction )
         local t = {
             ['ap'] = actionPoints,
             ['accuracy'] = accuracy,
-            ['health'] = health,
             ['stance'] = stance,
-            ['inventory'] = inventory:serialize(),
             ['faction'] = faction:getType()
+            -- TODO: Body serialization
         }
         return t;
     end
@@ -315,6 +256,14 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Returns the action queue.
+    -- @return (Queue) A queue containing all actions.
+    --
+    function self:getActionQueue()
+        return actions;
+    end
+
+    ---
     -- Returns the faction the character belongs to.
     -- @return (Faction) The Faction object.
     --
@@ -323,19 +272,11 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the character's current health.
-    -- @return (number) The character's health.
+    -- Returns the character's equipment.
+    -- @return (Equipment) The character's equipment.
     --
-    function self:getHealth()
-        return health;
-    end
-
-    ---
-    -- Returns the character's inventory.
-    -- @return (Inventory) The character's inventory.
-    --
-    function self:getInventory()
-        return inventory;
+    function self:getEquipment()
+        return body:getEquipment();
     end
 
     ---
@@ -407,7 +348,23 @@ function Character.new( map, tile, faction )
     -- @return (boolean) Wether the character is dead or not.
     --
     function self:isDead()
-        return health <= 0;
+        return body:getStatusEffects():isDead();
+    end
+
+    ---
+    -- Gets an item of type bag.
+    -- @return (Bag) The bag item.
+    --
+    function self:getBackpack()
+        return self:getEquipment():getItem( ITEM_TYPES.BAG );
+    end
+
+    ---
+    -- Gets an item of type weapon.
+    -- @return (Weapon) The weapon item.
+    --
+    function self:getWeapon()
+        return self:getEquipment():getItem( ITEM_TYPES.WEAPON );
     end
 
     -- ------------------------------------------------
@@ -428,14 +385,6 @@ function Character.new( map, tile, faction )
     --
     function self:setActionPoints( nap )
         actionPoints = nap;
-    end
-
-    ---
-    -- Sets the character's health.
-    -- @param nhp (number) The new health value.
-    --
-    function self:setHealth( nhp )
-        health = nhp;
     end
 
     ---

@@ -36,16 +36,18 @@ echo "Creating .exe"
 cp ./OTR_$formatted.love ./LOVE_WIN
 cd LOVE_WIN || exit
 cat love.exe OTR_$formatted.love > OTR_$formatted.exe
+
+rm -rf __MACOSX
+rm lovec.exe
 rm love.exe
 rm OTR_$formatted.love
+cd ..
 
 # Zip all files.
 echo "Zipping .exe and binary files"
-zip -r -q OTR_$formatted-WIN.zip ./ -x *.git* -x *.DS_Store*
-mv -i -v OTR_$formatted-WIN.zip ../
+zip -r -q OTR_$formatted-WIN.zip LOVE_WIN/ -x *.git* -x *.DS_Store*
 
 # Remove the folder.
-cd ..
 rm -r LOVE_WIN
 
 ## CREATE MAC OS APPLICATION

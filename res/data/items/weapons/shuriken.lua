@@ -7,6 +7,7 @@ return {
     damage   = 40,
     equippable = true,
     reloadable = false,
+    stackable = true,
     range = 10,
     sound = 'MELEE',
     mode = {

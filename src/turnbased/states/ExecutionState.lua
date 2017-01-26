@@ -14,6 +14,7 @@ function ExecutionState.new( stateManager, factions )
     local character;
     local actionTimer = 0;
     local delay;
+    local restore = true;
 
     function self:enter( ncharacter )
         character = ncharacter;
@@ -34,6 +35,10 @@ function ExecutionState.new( stateManager, factions )
 
         if actionTimer > delay then
             if character:hasEnqueuedAction() and character:canPerformAction() then
+                if character:getActionQueue():peek():instanceOf( 'Walk' ) then
+                    restore = false;
+                end
+
                 character:performAction();
 
                 if factions:getPlayerFaction():canSee( character:getTile() ) then
@@ -44,7 +49,7 @@ function ExecutionState.new( stateManager, factions )
 
                 actionTimer = 0;
             else
-                Messenger.publish( 'END_EXECUTION' );
+                Messenger.publish( 'END_EXECUTION', restore );
                 stateManager:pop();
             end
         end

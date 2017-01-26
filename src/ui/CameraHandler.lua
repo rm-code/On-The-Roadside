@@ -2,6 +2,7 @@ local Camera = require('lib.Camera');
 
 local CameraHandler = {};
 
+local TILE_SIZE = require( 'src.constants.TileSize' );
 local CAMERA_TRACKING_SPEED = 10;
 local SCROLL_MARGIN = 15;
 local SCROLL_SPEED = 10;
@@ -50,8 +51,8 @@ function CameraHandler.new( map, px, py )
         if not locked then
             scroll();
         end
-        px = lerp( px, tx, dt * CAMERA_TRACKING_SPEED );
-        py = lerp( py, ty, dt * CAMERA_TRACKING_SPEED );
+        px = lerp( px, math.floor( tx / TILE_SIZE ) * TILE_SIZE, dt * CAMERA_TRACKING_SPEED );
+        py = lerp( py, math.floor( ty / TILE_SIZE ) * TILE_SIZE, dt * CAMERA_TRACKING_SPEED );
         self:lookAt( math.floor( px ), math.floor( py ));
     end
 

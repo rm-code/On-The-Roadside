@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local UIInventoryItem = require( 'src.ui.inventory.UIInventoryItem' );
+local UIEquipmentItem = require( 'src.ui.inventory.UIEquipmentItem' );
 local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
@@ -12,22 +12,20 @@ local UIEquipmentList = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
-local PADDING = 15;
-local HEADER_HEIGHT = 30;
-local WIDTH = 150;
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function UIEquipmentList.new( x, y, id, equipment )
+function UIEquipmentList.new( x, y, width, id, character )
     local self = Object.new():addInstance( 'UIEquipmentList' );
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
+    local equipment = character:getEquipment();
     local list;
 
     -- ------------------------------------------------
@@ -35,16 +33,13 @@ function UIEquipmentList.new( x, y, id, equipment )
     -- ------------------------------------------------
 
     local function regenerate()
-        list = {
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 1, equipment:getWeapon() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 2, equipment:getBackpack() );
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 3, equipment:getItem( ITEM_TYPES.HEADGEAR ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 4, equipment:getItem( ITEM_TYPES.GLOVES ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 5, equipment:getItem( ITEM_TYPES.JACKET ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 6, equipment:getItem( ITEM_TYPES.SHIRT ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 7, equipment:getItem( ITEM_TYPES.TROUSERS ));
-            UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * 8, equipment:getItem( ITEM_TYPES.FOOTWEAR ));
-        };
+        list = {};
+
+        -- TODO replace with custom EquipmentItem class
+        for _, slot in pairs( equipment:getSlots() ) do
+            local uiItem = UIEquipmentItem.new( slot:getID(), x, y + slot:getSortOrder() * TILE_SIZE, width, TILE_SIZE, slot );
+            table.insert( list, slot:getSortOrder(), uiItem );
+        end
     end
 
     -- ------------------------------------------------
@@ -56,15 +51,6 @@ function UIEquipmentList.new( x, y, id, equipment )
     end
 
     function self:draw()
-        love.graphics.setColor( 0, 0, 0 );
-        love.graphics.rectangle( 'fill', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 200, 200, 200 );
-        love.graphics.rectangle( 'line', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 255, 255, 255 );
-        love.graphics.setScissor( x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.printf( Translator.getText( id ), x, y + 5, WIDTH, 'center' );
-        love.graphics.setScissor();
-
         for _, slot in ipairs( list ) do
             slot:draw();
         end
@@ -78,7 +64,7 @@ function UIEquipmentList.new( x, y, id, equipment )
 
     function self:isMouseOver()
         local mx = love.mouse.getX();
-        return ( mx > x and mx < x + WIDTH );
+        return ( mx > x and mx < x + width );
     end
 
     ---
@@ -89,31 +75,25 @@ function UIEquipmentList.new( x, y, id, equipment )
     -- @param origin (UIInventoryList) The inventory list the item is coming from.
     --
     function self:drop( item, origin )
+        local success = false;
         if item:instanceOf( 'ItemStack' ) or not item:isEquippable() then
-            return false;
+            return success;
         end
 
-        -- Check if equipment already contains an item of the given type.
-        if equipment:containsItemType( item:getItemType() ) then
-            -- Remove the old item from the equipment.
-            local old = equipment:getAndRemoveItem( item:getItemType() );
-            local success = equipment:addItem( item );
-            if success then
-                origin:drop( old );
-                regenerate();
-                return true;
-            else
-                equipment:drop( old );
-                regenerate();
-                return false;
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() and uiItem:getSlot():getItemType() == item:getItemType() then
+                if uiItem:getSlot():containsItem() then
+                    local tmp = uiItem:getSlot():getAndRemoveItem();
+                    success = uiItem:getSlot():addItem( item );
+                    origin:drop( tmp );
+                else
+                    success = uiItem:getSlot():addItem( item );
+                end
             end
         end
 
-        local success = equipment:addItem( item );
-        if success then
-            regenerate();
-            return true;
-        end
+        regenerate();
+        return success;
     end
 
     ---
@@ -123,13 +103,22 @@ function UIEquipmentList.new( x, y, id, equipment )
     --
     function self:drag()
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() and uiItem:hasItem() then
+            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() then
                 local item = uiItem:drag();
-                equipment:removeItem( item );
                 regenerate();
-                return item;
+                return item, uiItem:getSlot();
             end
         end
+    end
+
+    function self:highlightSlot( nitem )
+        for _, uiItem in ipairs( list ) do
+            uiItem:highlight( nitem );
+        end
+    end
+
+    function self:getLabel()
+        return Translator.getText( id );
     end
 
     return self;

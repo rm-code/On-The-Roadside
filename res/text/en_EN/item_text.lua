@@ -5,6 +5,7 @@ locale.strings = {
     ['weapon_aks74'] = "AKS-74",
     ['weapon_m67_grenade'] = "M67 Grenade",
     ['weapon_tonfa'] = "Tonfa",
+    ['weapon_knife'] = "Knife",
     ['weapon_rpg7'] = "RPG-7",
     ['weapon_benelli_m4'] = "Benelli M4 Super 90",
     ['weapon_shuriken'] = "Shuriken",

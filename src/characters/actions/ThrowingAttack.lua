@@ -7,7 +7,7 @@ local Bresenham = require( 'lib.Bresenham' );
 local ThrowingAttack = {};
 
 function ThrowingAttack.new( character, target )
-    local self = Action.new( character:getInventory():getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
+    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
 
     function self:perform()
         -- Pick the actual target based on the weapon's range attribute.
@@ -16,14 +16,14 @@ function ThrowingAttack.new( character, target )
 
         local actualTarget;
         Bresenham.calculateLine( ox, oy, tx, ty, function( cx, cy, count )
-            if count > character:getInventory():getWeapon():getRange() then
+            if count > character:getWeapon():getRange() then
                 return false;
             end
             actualTarget = character:getMap():getTileAt( cx, cy );
             return true;
         end);
 
-        Messenger.publish( 'START_ATTACK', actualTarget );
+        Messenger.publish( 'START_ATTACK', character, actualTarget );
         local package = ThrownProjectileQueue.new( character, actualTarget );
         ProjectileManager.register( package );
         return true;

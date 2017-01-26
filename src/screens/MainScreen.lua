@@ -84,7 +84,11 @@ function MainScreen.new()
         overlayPainter:update( dt );
         userInterface:update( dt );
 
-        if love.keyboard.isDown( 'escape' ) then
+        if self:isActive() then
+            MousePointer.update();
+        end
+
+        if love.keyboard.isScancodeDown( 'escape' ) then
             exitTimer = exitTimer + dt * 2;
             if exitTimer >= 1.0 then
                 love.event.quit();
@@ -94,15 +98,15 @@ function MainScreen.new()
         end
     end
 
-    function self:keypressed( key )
-        if key == 'f' then
+    function self:keypressed( key, scancode, isrepeat )
+        if scancode == 'f' then
             love.window.setFullscreen( not love.window.getFullscreen() );
         end
-        if key == 'h' then
+        if scancode == 'h' then
             ScreenManager.push( 'help' );
         end
 
-        game:keypressed( key );
+        game:keypressed( key, scancode, isrepeat );
     end
 
     function self:mousepressed( _, _, button )
@@ -123,27 +127,29 @@ function MainScreen.new()
         camera:storePosition();
     end)
 
-    Messenger.observe( 'END_EXECUTION', function()
+    Messenger.observe( 'END_EXECUTION', function( restore )
         camera:unlock();
-        camera:restorePosition();
+        if restore then
+            camera:restorePosition();
+        end
     end)
 
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
     Messenger.observe( 'CHARACTER_MOVED', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) or character:getFaction():isAIControlled() then
+        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
-    Messenger.observe( 'START_ATTACK', function( target )
-        if not game:getFactions():getPlayerFaction():canSee( target ) then
+    Messenger.observe( 'START_ATTACK', function( character, target )
+        if not game:getFactions():getPlayerFaction():canSee( target ) or character:getFaction():isAIControlled() then
             return;
         end
         camera:setTargetPosition( target:getX() * TILE_SIZE, target:getY() * TILE_SIZE );

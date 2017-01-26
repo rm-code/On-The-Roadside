@@ -36,12 +36,12 @@ function TurnManager.new( map, factions )
     -- Input Events
     -- ------------------------------------------------
 
-    function self:keypressed( key )
+    function self:keypressed( key, scancode, isrepeat )
         if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
             return;
         end
 
-        stateManager:keypressed( key );
+        stateManager:keypressed( key, scancode, isrepeat );
     end
 
     function self:mousepressed( mx, my, button )

@@ -5,7 +5,7 @@ local Translator = {};
 -- ------------------------------------------------
 
 local LOCALES = {};
-local ERROR = 'TEXT_ERROR';
+local ERROR = 'TEXT_ERROR <%s>';
 local TEMPLATE_DIRECTORY  = 'res/text/';
 
 -- ------------------------------------------------
@@ -67,7 +67,7 @@ function Translator.changeLocale( nlocale )
 end
 
 function Translator.getText( id )
-    return LOCALES[locale][id] or ERROR;
+    return LOCALES[locale][id] or string.format( ERROR, id );
 end
 
 return Translator;
