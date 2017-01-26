@@ -10,6 +10,7 @@ local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
 local Translator = require( 'src.util.Translator' );
+local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
@@ -49,6 +50,7 @@ function MainScreen.new()
         game:init();
 
         Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
+        ImageFont.setFont();
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
