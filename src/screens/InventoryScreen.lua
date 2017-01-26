@@ -181,6 +181,7 @@ function InventoryScreen.new()
         lists = {};
 
         createCharacterInventory();
+        createBackpackInventory();
         createOtherInventory();
     end
 
