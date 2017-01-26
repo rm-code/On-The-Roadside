@@ -80,7 +80,10 @@ function MainScreen.new()
     end
 
     function self:update( dt )
-        camera:update( dt );
+        if self:isActive() then
+            camera:update( dt );
+        end
+
         game:update( dt );
         worldPainter:update( dt );
         overlayPainter:update( dt );
