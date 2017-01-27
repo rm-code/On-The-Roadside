@@ -23,10 +23,16 @@
 -- ============================================================================== --
 
 local TGFParser = {
-    _VERSION     = '1.0.2',
+    _VERSION     = '1.0.3',
     _DESCRIPTION = 'A parser for "Trivial Graph Format" (TGF) files written in Lua.',
     _URL         = 'https://github.com/rm-code/lua-tgf-parser/',
 };
+
+-- ------------------------------------------------
+-- Line iterator
+-- ------------------------------------------------
+
+local lines = love and love.filesystem.lines or io.lines;
 
 -- ------------------------------------------------
 -- Local Functions
@@ -45,7 +51,7 @@ local function loadFile( path )
     local target = nodes;
 
     -- Change the target table once the '#' separator is reached.
-    for line in io.lines( path ) do
+    for line in lines( path ) do
         if line == '#' then
             target = edges;
         else
