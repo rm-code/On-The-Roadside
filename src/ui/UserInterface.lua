@@ -1,5 +1,6 @@
 local MousePointer = require( 'src.ui.MousePointer' );
 local Translator = require( 'src.util.Translator' );
+local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
@@ -28,8 +29,7 @@ function UserInterface.new( game )
     local map = game:getMap();
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
-    local font = love.graphics.newImageFont( 'res/img/imagefont8x16.png', ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?-+/()[]%&"\'*=_<>' );
-    love.graphics.setFont( font );
+    local font = ImageFont.getFont();
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
