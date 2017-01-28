@@ -246,9 +246,9 @@ function InventoryScreen.new()
 
     function self:keypressed( key )
         if key == 'up' then
-            itemDescriptionArea:scrollVertically( -1 );
-        elseif key == 'down' then
             itemDescriptionArea:scrollVertically( 1 );
+        elseif key == 'down' then
+            itemDescriptionArea:scrollVertically( -1 );
         elseif key == 'escape' or key == 'i' then
             ScreenManager.pop();
         end
