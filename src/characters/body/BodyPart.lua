@@ -24,10 +24,6 @@ function BodyPart.new( index, template )
         return template.id;
     end
 
-    function self:getType()
-        return template.type;
-    end
-
     function self:getEffects()
         return template.effects;
     end
