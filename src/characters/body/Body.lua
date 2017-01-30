@@ -8,16 +8,22 @@ local StatusEffects = require( 'src.characters.StatusEffects' );
 local Body = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Body.new()
+function Body.new( bloodVolume )
     local self = Object.new():addInstance( 'Body' );
 
     local equipment;
     local nodes = {};
     local edges = {};
-    local statusEffects = StatusEffects.new();
+    local statusEffects = StatusEffects.new( self );
 
     -- ------------------------------------------------
     -- Private Methods
@@ -75,6 +81,10 @@ function Body.new()
 
         node:hit( damage, damageType );
 
+        -- TODO Base bleeding damage on type of attack, type of hit body part,
+        --      worn armor and so on.
+        statusEffects:addBleeding( love.math.random( 5 ), love.math.random() * 2, node );
+
         -- Manually destroy child nodes if parent node is destroyed.
         if node:isDestroyed() then
             destroyChildNodes( node );
@@ -124,6 +134,17 @@ function Body.new()
 
     function self:getStatusEffects()
         return statusEffects;
+    end
+
+    function self:reduceBloodVolume( amount )
+        bloodVolume = bloodVolume - amount;
+        print( "    => Reduced blood volume to " .. bloodVolume );
+
+        -- TODO Currently character's die when their blood volume reaches zero.
+        --      In reality this happens earlier.
+        if bloodVolume <= 0 then
+            statusEffects:add({ STATUS_EFFECTS.DEATH });
+        end
     end
 
     return self;

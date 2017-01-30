@@ -1,5 +1,6 @@
 return {
     id = 'human',
+    bloodVolume = 5,
     {
         id = 'arm_left',
         type = 'entry',

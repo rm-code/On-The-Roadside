@@ -216,6 +216,15 @@ function Character.new( map, tile, faction, bodyID )
         return fov[tx][ty] ~= nil;
     end
 
+    function self:tickOneTurn()
+        body:getStatusEffects():tickOneTurn();
+        if self:isDead() then
+            self:getEquipment():dropAllItems( tile );
+            tile:removeCharacter();
+            self:resetFOV();
+        end
+    end
+
     function self:serialize()
         local t = {
             ['ap'] = actionPoints,

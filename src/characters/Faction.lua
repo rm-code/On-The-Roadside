@@ -31,6 +31,10 @@ function Faction.new( type, controlledByAi )
     -- Activates this Faction right before it is selected.
     --
     function self:activate()
+        self:iterate( function( character )
+            print( 'Tick character ' .. tostring( character ));
+            character:tickOneTurn();
+        end);
         return;
     end
 

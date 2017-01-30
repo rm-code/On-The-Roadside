@@ -118,7 +118,7 @@ end
 -- @return       (Body)   A shiny new Body.
 --
 local function assembleBody( cid, layout )
-    local body = Body.new();
+    local body = Body.new( templates[cid].bloodVolume );
     local equipment = Equipment.new();
 
     -- The index is the number used inside of the graph whereas the id determines
