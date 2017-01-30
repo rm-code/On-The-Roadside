@@ -157,7 +157,8 @@ function InventoryOutlines.new()
                     grid[x][y] = 1;
                 end
 
-                if x < itemDescriptionSpacer and y == ( 2 * sy + 2 ) then
+                -- Draw horizontal line for item stats and description.
+                if y == ( 2 * sy + 2 ) then
                     grid[x][y] = 1;
                 end
             end

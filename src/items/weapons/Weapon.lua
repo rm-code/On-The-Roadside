@@ -85,6 +85,10 @@ function Weapon.new( template )
         return template.reloadable;
     end
 
+    function self:getModes()
+        return template.mode;
+    end
+
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------

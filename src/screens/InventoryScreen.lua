@@ -4,6 +4,7 @@ local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
 local InventoryOutlines = require( 'src.ui.inventory.InventoryOutlines' );
 local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
+local ItemStats = require( 'src.ui.inventory.ItemStats' );
 local Translator = require( 'src.util.Translator' );
 
 -- ------------------------------------------------
@@ -38,6 +39,7 @@ function InventoryScreen.new()
     local itemDescriptionSpacer; -- Spacers.
 
     local itemDescriptionArea;
+    local itemStatsArea;
 
     local outlines;
 
@@ -155,6 +157,7 @@ function InventoryScreen.new()
         love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), TILE_SIZE );
 
         love.graphics.print( 'Item Description', getEquipmentColumnOffset(), ( 1 + 2 * sy ) * TILE_SIZE );
+        love.graphics.print( 'Item Attributes',  ( itemDescriptionSpacer + 1 ) * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE );
     end
 
     local function updateScreenDimensions( nw, nh )
@@ -186,6 +189,7 @@ function InventoryScreen.new()
         outlines:init( w, h, sx, sy, itemDescriptionSpacer );
 
         itemDescriptionArea = ScrollArea.new( 1, 3 + 2 * sy, itemDescriptionSpacer - 1, sy - 3 );
+        itemStatsArea = ItemStats.new( itemDescriptionSpacer + 1, 3 + 2 * sy, itemDescriptionSpacer - 2, sy - 3 );
 
         lists = {};
 
@@ -213,6 +217,8 @@ function InventoryScreen.new()
                 if item then
                     itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
                     itemDescriptionArea:draw();
+
+                    itemStatsArea:setItem( item );
                 end
             end
         end
@@ -241,9 +247,11 @@ function InventoryScreen.new()
 
             itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
             itemDescriptionArea:draw();
+
         end
 
         lists.equipment:highlightSlot( dragboard and dragboard.item );
+        itemStatsArea:draw();
     end
 
     ---
