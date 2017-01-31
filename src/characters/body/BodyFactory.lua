@@ -58,9 +58,11 @@ local function loadTemplates( files )
             else
                 local creature = loaded();
                 tmp[creature.id] = {};
+
                 -- Create template library for this creature.
-                for _, sub in ipairs( creature ) do
-                    tmp[creature.id][sub.id] = sub;
+                for id, sub in pairs( creature ) do
+                    local i = type( sub ) == 'table' and sub.id or id;
+                    tmp[creature.id][i] = sub;
                 end
             end
         end
