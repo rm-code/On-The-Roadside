@@ -217,7 +217,7 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     function self:tickOneTurn()
-        body:getStatusEffects():tickOneTurn();
+        body:tickOneTurn();
         if self:isDead() then
             self:getEquipment():dropAllItems( tile );
             tile:removeCharacter();

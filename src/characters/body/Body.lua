@@ -23,7 +23,7 @@ function Body.new( bloodVolume )
     local equipment;
     local nodes = {};
     local edges = {};
-    local statusEffects = StatusEffects.new( self );
+    local statusEffects = StatusEffects.new();
 
     -- ------------------------------------------------
     -- Private Methods
@@ -81,10 +81,6 @@ function Body.new( bloodVolume )
 
         node:hit( damage, damageType );
 
-        -- TODO Base bleeding damage on type of attack, type of hit body part,
-        --      worn armor and so on.
-        statusEffects:addBleeding( love.math.random( 5 ), love.math.random() * 2, node );
-
         -- Manually destroy child nodes if parent node is destroyed.
         if node:isDestroyed() then
             destroyChildNodes( node );
@@ -102,6 +98,19 @@ function Body.new( bloodVolume )
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
+
+    function self:tickOneTurn()
+        for _, node in pairs( nodes ) do
+            if node:isBleeding() then
+                bloodVolume = bloodVolume - node:getBloodLoss();
+                print( string.format( '%s is bleeding. Blood volume lowered to %d', node:getID(), bloodVolume ));
+                if bloodVolume <= 0 then
+                    statusEffects:add({ STATUS_EFFECTS.DEATH });
+                    break;
+                end
+            end
+        end
+    end
 
     function self:hit( damage, damageType )
         local entryNode = selectEntryNode();
@@ -134,17 +143,6 @@ function Body.new( bloodVolume )
 
     function self:getStatusEffects()
         return statusEffects;
-    end
-
-    function self:reduceBloodVolume( amount )
-        bloodVolume = bloodVolume - amount;
-        print( "    => Reduced blood volume to " .. bloodVolume );
-
-        -- TODO Currently character's die when their blood volume reaches zero.
-        --      In reality this happens earlier.
-        if bloodVolume <= 0 then
-            statusEffects:add({ STATUS_EFFECTS.DEATH });
-        end
     end
 
     return self;

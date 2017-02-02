@@ -2,14 +2,27 @@ local Object = require( 'src.Object' );
 
 local BodyPart = {};
 
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 function BodyPart.new( index, template )
     local self = Object.new():addInstance( 'BodyPart' );
 
     local health = template.health;
 
+    local bleeding = false;
+    local bloodLoss = 0;
+
     function self:hit( damage, damageType )
         health = health - damage;
         print( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
+
+        if self:isEntryNode() then
+            -- TODO base bleeding on damage type.
+            bleeding = true;
+            bloodLoss = bloodLoss + love.math.random();
+        end
     end
 
     function self:destroy()
@@ -42,6 +55,14 @@ function BodyPart.new( index, template )
 
     function self:setHealth( nhealth )
         health = nhealth;
+    end
+
+    function self:isBleeding()
+        return bleeding;
+    end
+
+    function self:getBloodLoss()
+        return bloodLoss;
     end
 
     return self;
