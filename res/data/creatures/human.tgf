@@ -12,27 +12,19 @@
 12 lungs
 13 torso
 14 hand
-15 humerus
-16 radius
-17 arm_right
-18 hand
-19 humerus
-20 radius
-21 arm_left
-22 foot
-23 tibia
-24 leg_right
-25 femur
-26 foot
-27 tibia
-28 leg_left
-29 femur
-30 equip_head
-31 equip_hands
-32 equip_torso
-33 equip_legs
-34 equip_feet
-35 equip_backpack
+15 arm_right
+16 hand
+17 arm_left
+18 foot
+19 leg_right
+20 foot
+21 leg_left
+22 equip_head
+23 equip_hands
+24 equip_torso
+25 equip_legs
+26 equip_feet
+27 equip_backpack
 #
 8 12 30
 8 11 20
@@ -45,26 +37,18 @@
 1 7 20
 4 5 40
 13 8 60
-28 27 40
-28 29 50
-28 26 20
-24 23 40
-24 25 50
-24 22 20
-21 18 20
-21 19 40
-21 20 30
-17 14 20
-17 15 40
-17 16 30
-30 1 equipment
-31 14 equipment
-31 18 equipment
-32 17 equipment
-32 21 equipment
-32 13 equipment
-33 28 equipment
-33 24 equipment
-34 26 equipment
-34 22 equipment
-35 13 equipment
+21 20 20
+19 18 20
+17 16 20
+15 14 20
+22 1 equipment
+23 14 equipment
+23 16 equipment
+24 15 equipment
+24 17 equipment
+24 13 equipment
+25 21 equipment
+25 19 equipment
+26 20 equipment
+26 18 equipment
+27 13 equipment

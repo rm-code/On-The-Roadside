@@ -33,11 +33,6 @@ return {
         }
     },
     {
-        id = 'femur',
-        type = 'node',
-        health = 100
-    },
-    {
         id = 'foot',
         type = 'node',
         health = 100
@@ -59,11 +54,6 @@ return {
         effects = {
             'death'
         }
-    },
-    {
-        id = 'humerus',
-        type = 'node',
-        health = 100
     },
     {
         id = 'kidneys',
@@ -105,11 +95,6 @@ return {
         health = 40
     },
     {
-        id = 'radius',
-        type = 'node',
-        health = 100
-    },
-    {
         id = 'ribcage',
         type = 'container',
         health = 220
@@ -126,11 +111,6 @@ return {
         effects = {
             'death'
         }
-    },
-    {
-        id = 'tibia',
-        type = 'node',
-        health = 100
     },
     {
         id = 'torso',
