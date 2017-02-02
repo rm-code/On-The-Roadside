@@ -272,6 +272,10 @@ function Character.new( map, tile, faction, bodyID )
         return actions;
     end
 
+    function self:getBody()
+        return body;
+    end
+
     ---
     -- Returns the faction the character belongs to.
     -- @return (Faction) The Faction object.

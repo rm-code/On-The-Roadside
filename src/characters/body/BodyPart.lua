@@ -10,6 +10,7 @@ function BodyPart.new( index, template )
     local self = Object.new():addInstance( 'BodyPart' );
 
     local health = template.health;
+    local maxHealth = health;
 
     local bleeding = false;
     local bloodLoss = 0;
@@ -51,6 +52,14 @@ function BodyPart.new( index, template )
 
     function self:isContainer()
         return template.type == 'container';
+    end
+
+    function self:getHealth()
+        return health;
+    end
+
+    function self:getMaxHealth()
+        return maxHealth;
     end
 
     function self:setHealth( nhealth )

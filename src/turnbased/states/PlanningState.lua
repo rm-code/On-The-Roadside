@@ -1,10 +1,10 @@
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
 local StandUp = require( 'src.characters.actions.StandUp' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 local LieDown = require( 'src.characters.actions.LieDown' );
 local OpenInventory = require( 'src.characters.actions.OpenInventory' );
-
 local AttackInput = require( 'src.turnbased.helpers.AttackInput' );
 local MovementInput = require( 'src.turnbased.helpers.MovementInput' );
 local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' );
@@ -84,6 +84,8 @@ function PlanningState.new( stateManager, factions )
         elseif scancode == 'i' then
             character:enqueueAction( OpenInventory.new( character, character:getTile() ));
             stateManager:push( 'execution', character );
+        elseif scancode == 'q' then
+            ScreenManager.push( 'health', character );
         end
     end
 

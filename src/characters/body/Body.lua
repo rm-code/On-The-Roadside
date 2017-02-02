@@ -129,6 +129,10 @@ function Body.new( bloodVolume )
         edges[#edges + 1] = connection;
     end
 
+    function self:getBodyParts()
+        return nodes;
+    end
+
     function self:getBodyPart( id )
         return nodes[id];
     end
@@ -143,6 +147,10 @@ function Body.new( bloodVolume )
 
     function self:getStatusEffects()
         return statusEffects;
+    end
+
+    function self:getBloodVolume()
+        return bloodVolume;
     end
 
     return self;

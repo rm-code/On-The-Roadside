@@ -35,6 +35,7 @@ function love.load()
         main = require('src.screens.MainScreen');
         inventory = require('src.screens.InventoryScreen');
         help = require('src.screens.HelpScreen');
+        health = require('src.ui.HealthScreen');
     };
 
     ScreenManager.init(screens, 'main');
