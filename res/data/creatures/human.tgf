@@ -11,13 +11,13 @@
 11 liver
 12 lungs
 13 torso
-14 hand
+14 hand_right
 15 arm_right
-16 hand
+16 hand_left
 17 arm_left
-18 foot
+18 foot_right
 19 leg_right
-20 foot
+20 foot_left
 21 leg_left
 22 equip_head
 23 equip_hands

@@ -33,13 +33,23 @@ return {
         }
     },
     {
-        id = 'foot',
-        type = 'node',
+        id = 'foot_left',
+        type = 'entry',
         health = 100
     },
     {
-        id = 'hand',
-        type = 'node',
+        id = 'foot_right',
+        type = 'entry',
+        health = 100
+    },
+    {
+        id = 'hand_right',
+        type = 'entry',
+        health = 80
+    },
+    {
+        id = 'hand_left',
+        type = 'entry',
         health = 80
     },
     {
