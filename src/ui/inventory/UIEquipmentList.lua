@@ -35,10 +35,9 @@ function UIEquipmentList.new( x, y, width, id, character )
     local function regenerate()
         list = {};
 
-        -- TODO replace with custom EquipmentItem class
         for _, slot in pairs( equipment:getSlots() ) do
             local uiItem = UIEquipmentItem.new( slot:getID(), x, y + slot:getSortOrder() * TILE_SIZE, width, TILE_SIZE, slot );
-            table.insert( list, slot:getSortOrder(), uiItem );
+            list[slot:getSortOrder()] = uiItem;
         end
     end
 
