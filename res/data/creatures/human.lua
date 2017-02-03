@@ -1,13 +1,9 @@
 return {
     id = 'human',
     bloodVolume = 5,
+    -- ################################## Head
     {
-        id = 'arm_left',
-        type = 'entry',
-        health = 120
-    },
-    {
-        id = 'arm_right',
+        id = 'head',
         type = 'entry',
         health = 120
     },
@@ -33,19 +29,28 @@ return {
         }
     },
     {
-        id = 'foot_left',
-        type = 'entry',
-        health = 100
+        id = 'nose',
+        type = 'node',
+        health = 40
     },
     {
-        id = 'foot_right',
-        type = 'entry',
-        health = 100
-    },
-    {
-        id = 'hand_right',
-        type = 'entry',
+        id = 'skull',
+        type = 'container',
         health = 80
+    },
+    {
+        id = 'throat',
+        type = 'node',
+        health = 50,
+        effects = {
+            'death'
+        }
+    },
+    -- ################################## Limbs
+    {
+        id = 'arm_left',
+        type = 'entry',
+        health = 120
     },
     {
         id = 'hand_left',
@@ -53,9 +58,40 @@ return {
         health = 80
     },
     {
-        id = 'head',
+        id = 'arm_right',
         type = 'entry',
         health = 120
+    },
+    {
+        id = 'hand_right',
+        type = 'entry',
+        health = 80
+    },
+    {
+        id = 'leg_left',
+        type = 'entry',
+        health = 120
+    },
+    {
+        id = 'foot_right',
+        type = 'entry',
+        health = 100
+    },
+    {
+        id = 'foot_left',
+        type = 'entry',
+        health = 100
+    },
+    {
+        id = 'leg_right',
+        type = 'entry',
+        health = 120
+    },
+    -- ################################## Torso
+    {
+        id = 'torso',
+        type = 'entry',
+        health = 300
     },
     {
         id = 'heart',
@@ -74,16 +110,6 @@ return {
         }
     },
     {
-        id = 'leg_left',
-        type = 'entry',
-        health = 120
-    },
-    {
-        id = 'leg_right',
-        type = 'entry',
-        health = 120
-    },
-    {
         id = 'liver',
         type = 'node',
         health = 50,
@@ -100,32 +126,9 @@ return {
         }
     },
     {
-        id = 'nose',
-        type = 'node',
-        health = 40
-    },
-    {
         id = 'ribcage',
         type = 'container',
         health = 220
-    },
-    {
-        id = 'skull',
-        type = 'container',
-        health = 80
-    },
-    {
-        id = 'throat',
-        type = 'node',
-        health = 50,
-        effects = {
-            'death'
-        }
-    },
-    {
-        id = 'torso',
-        type = 'entry',
-        health = 300
     },
     -- ################################## Equipment
     {
