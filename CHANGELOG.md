@@ -1,3 +1,40 @@
+# Version 0.4.0.658 - 2017-02-04
+
+## Additions
+- Added knife item to test slashing damage
+- Added the first implementation of an in-depth health system
+    - Each create has an actual body model consisting of separate body parts
+    - Each body part does have its own effects and attributes
+        - Destroying a vital organ leads to a character's death
+        - Destroying the eyes will blind the character
+    - Attacks can cause bleeding which can lead to a character's death
+- Added a custom image font for the user interface ([#86](https://github.com/rm-code/On-The-Roadside/issues/86))
+- Added simple (preliminary) health screen
+
+## Fixes
+- Fix merging of item stacks ([#84](https://github.com/rm-code/On-The-Roadside/issues/84))
+- Fix camera moving while inventory is open ([#90](https://github.com/rm-code/On-The-Roadside/issues/90))
+- Fix issue with Lua's default io libs ([#91](https://github.com/rm-code/On-The-Roadside/issues/91))
+
+## Other Changes
+- Do not restore camera position after movement ([#43](https://github.com/rm-code/On-The-Roadside/issues/43))
+- Reduced amount of camera movement during AI turns
+- Taught AI to rearm throwing weapons
+- Use layout-independent key scancodes ([#82](https://github.com/rm-code/On-The-Roadside/issues/82))
+- Added a custom error handler
+- Made throwable weapons stackable ([#83](https://github.com/rm-code/On-The-Roadside/issues/83))
+- Equipment slots are no longer hardcoded but can be determined by a character's body template
+- Hide equipment when looking at another character's inventory
+- The camera actually takes tile sizes into account when moving
+- Mouse Pointer is no longer updated when the inventory is open ([#87](https://github.com/rm-code/On-The-Roadside/issues/87))
+- Made game window resizable (minimum size is locked to 800x600)
+- General inventory layout improvements
+    - Added scrollable item description area
+    - Added item stats area
+
+
+
+
 # Version 0.3.1.573 - 2016-12-01
 
 ## Additions
