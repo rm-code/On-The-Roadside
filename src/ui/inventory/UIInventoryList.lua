@@ -47,6 +47,7 @@ function UIInventoryList.new( x, y, width, id, inventory )
     end
 
     function self:draw()
+        love.graphics.print( string.format( 'W: %0.1f/%0.1f V: %0.1f/%0.1f', inventory:getWeight(), inventory:getWeightLimit(), inventory:getVolume(), inventory:getVolumeLimit() ), x, y );
         for _, slot in ipairs( list ) do
             slot:draw();
         end
