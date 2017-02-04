@@ -109,6 +109,10 @@ function UIInventoryList.new( x, y, width, id, inventory )
         return Translator.getText( id );
     end
 
+    function self:doesFit( item )
+        return inventory:doesFit( item:getWeight(), item:getVolume() );
+    end
+
     return self;
 end
 

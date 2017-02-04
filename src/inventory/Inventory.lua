@@ -59,17 +59,6 @@ function Inventory.new( weightLimit, volumeLimit )
     end
 
     ---
-    -- Checks if the item fits in the current inventory by checking the weight
-    -- and volume parameters.
-    -- @param weight (number) The weight of the item to check.
-    -- @param volume (number) The volume of the item to check.
-    -- @return (boolean) Returns true if the item fits.
-    --
-    local function doesFit( weight, volume )
-        return ( calculateWeight() + weight < weightLimit ) and ( calculateVolume() + volume < volumeLimit );
-    end
-
-    ---
     -- Adds an Item to the inventory.
     -- @param item  (Item)    The Item to add.
     -- @param index (number)  The index at which to insert the item.
@@ -163,7 +152,7 @@ function Inventory.new( weightLimit, volumeLimit )
         for i = #ostack:getItems(), 1, -1 do
             local item = ostack:getItems()[i];
 
-            if not doesFit( item:getWeight(), item:getVolume() ) then
+            if not self:doesFit( item:getWeight(), item:getVolume() ) then
                 return false;
             end
 
@@ -179,6 +168,17 @@ function Inventory.new( weightLimit, volumeLimit )
     -- ------------------------------------------------
 
     ---
+    -- Checks if the item fits in the current inventory by checking the weight
+    -- and volume parameters.
+    -- @param weight (number) The weight of the item to check.
+    -- @param volume (number) The volume of the item to check.
+    -- @return (boolean) Returns true if the item fits.
+    --
+    function self:doesFit( weight, volume )
+        return ( calculateWeight() + weight < weightLimit ) and ( calculateVolume() + volume < volumeLimit );
+    end
+
+    ---
     -- Adds an item to the inventory.
     -- @param item  (Item)    The item to add.
     -- @param index (number)  The index at which to insert the item (optional).
@@ -187,7 +187,7 @@ function Inventory.new( weightLimit, volumeLimit )
     function self:addItem( item, index )
         index = index or ( #items + 1 );
 
-        if not doesFit( item:getWeight(), item:getVolume() ) then
+        if not self:doesFit( item:getWeight(), item:getVolume() ) then
             return false;
         end
 

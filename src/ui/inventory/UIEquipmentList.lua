@@ -128,6 +128,10 @@ function UIEquipmentList.new( x, y, width, id, character )
         return Translator.getText( id );
     end
 
+    function self:doesFit()
+        return true;
+    end
+
     return self;
 end
 

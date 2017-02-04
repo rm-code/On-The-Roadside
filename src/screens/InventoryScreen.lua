@@ -219,7 +219,17 @@ function InventoryScreen.new()
 
         if dragboard then
             local mx, my = love.mouse.getPosition();
+
             love.graphics.setColor( COLORS.DB20 );
+            for _, list in pairs( lists ) do
+                if list:isMouseOver() then
+                    local di = dragboard.item;
+                    if not list:doesFit( di ) then
+                        love.graphics.setColor( COLORS.DB27 );
+                        break;
+                    end
+                end
+            end
 
             local item = dragboard.item;
             local str = item and Translator.getText( item:getID() ) or Translator.getText( 'inventory_empty_slot' );
@@ -227,6 +237,7 @@ function InventoryScreen.new()
                 str = string.format( '%s (%d)', str, item:getItemCount() );
             end
             love.graphics.print( str, mx, my );
+            love.graphics.setColor( COLORS.DB20 );
 
             itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
             itemDescriptionArea:draw();
