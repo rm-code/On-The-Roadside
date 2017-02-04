@@ -21,7 +21,7 @@ function AttackInput.new( stateManager )
             return;
         end
 
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
         if not weapon then
             return;
         end

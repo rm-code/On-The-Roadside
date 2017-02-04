@@ -12,15 +12,13 @@ local UIInventoryList = {};
 -- Constants
 -- ------------------------------------------------
 
-local PADDING = 15;
-local HEADER_HEIGHT = 30;
-local WIDTH = 150;
+local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function UIInventoryList.new( x, y, id, inventory )
+function UIInventoryList.new( x, y, width, id, inventory )
     local self = Object.new():addInstance( 'UIInventoryList' );
 
     -- ------------------------------------------------
@@ -28,8 +26,6 @@ function UIInventoryList.new( x, y, id, inventory )
     -- ------------------------------------------------
 
     local list;
-    local weightText;
-    local volumeText;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -38,10 +34,8 @@ function UIInventoryList.new( x, y, id, inventory )
     local function regenerate()
         list = {};
         for i, item in ipairs( inventory:getItems() ) do
-            list[#list + 1] = UIInventoryItem.new( x, HEADER_HEIGHT + ( y + PADDING ) * i, item );
+            list[#list + 1] = UIInventoryItem.new( x, y + i * TILE_SIZE, width, TILE_SIZE, item );
         end
-        weightText = string.format( '%.1f/%.1f', inventory:getWeight(), inventory:getWeightLimit() );
-        volumeText = string.format( '%.1f/%.1f', inventory:getVolume(), inventory:getVolumeLimit() );
     end
 
     -- ------------------------------------------------
@@ -53,17 +47,7 @@ function UIInventoryList.new( x, y, id, inventory )
     end
 
     function self:draw()
-        love.graphics.setColor( 0, 0, 0 );
-        love.graphics.rectangle( 'fill', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 200, 200, 200 );
-        love.graphics.rectangle( 'line', x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.setColor( 255, 255, 255 );
-        love.graphics.setScissor( x, y, WIDTH, HEADER_HEIGHT );
-        love.graphics.printf( Translator.getText( id ), x + 5, y + 5, WIDTH - 10, 'left' );
-        love.graphics.printf( weightText, x + 5, y +  1, WIDTH - 10, 'right' );
-        love.graphics.printf( volumeText, x + 5, y + 15, WIDTH - 10, 'right' );
-        love.graphics.setScissor();
-
+        love.graphics.print( string.format( 'W: %0.1f/%0.1f V: %0.1f/%0.1f', inventory:getWeight(), inventory:getWeightLimit(), inventory:getVolume(), inventory:getVolumeLimit() ), x, y );
         for _, slot in ipairs( list ) do
             slot:draw();
         end
@@ -80,7 +64,7 @@ function UIInventoryList.new( x, y, id, inventory )
         for _, uiItem in ipairs( list ) do
             uiItem:isMouseOver();
         end
-        return ( mx > x and mx < x + WIDTH );
+        return ( mx > x and mx < x + width );
     end
 
     function self:drop( item )
@@ -111,6 +95,22 @@ function UIInventoryList.new( x, y, id, inventory )
                 return item;
             end
         end
+    end
+
+    function self:getItemBelowCursor()
+        for _, uiItem in ipairs( list ) do
+            if uiItem:isMouseOver() then
+                return uiItem:getItem();
+            end
+        end
+    end
+
+    function self:getLabel()
+        return Translator.getText( id );
+    end
+
+    function self:doesFit( item )
+        return inventory:doesFit( item:getWeight(), item:getVolume() );
     end
 
     return self;

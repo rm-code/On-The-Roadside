@@ -18,6 +18,10 @@ local OverlayPainter = {};
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
 
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
+
 local weaponCone = {};
 
 -- ------------------------------------------------
@@ -121,7 +125,7 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
         if not weapon or weapon:getWeaponType() == 'Melee' then
             return;
         end

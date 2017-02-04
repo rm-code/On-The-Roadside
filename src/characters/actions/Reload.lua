@@ -11,7 +11,7 @@ function Reload.new( character )
     end
 
     function self:perform()
-        local weapon = character:getInventory():getWeapon();
+        local weapon = character:getWeapon();
 
         if not weapon or not weapon:isReloadable() then
             print( 'Can not reload.' );
@@ -23,7 +23,7 @@ function Reload.new( character )
             return false;
         end
 
-        local inventory = character:getInventory():getBackpack():getInventory();
+        local inventory = character:getBackpack():getInventory();
         for _, item in pairs( inventory:getItems() ) do
             if item:instanceOf( 'Ammunition' ) and item:getCaliber() == weapon:getMagazine():getCaliber() then
                 reload( weapon, inventory, item );

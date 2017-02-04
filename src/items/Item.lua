@@ -9,6 +9,10 @@ function Item.new( template )
         return template.id;
     end
 
+    function self:getDescriptionID()
+        return template.idDesc or 'default_item_description';
+    end
+
     function self:getItemType()
         return template.itemType;
     end

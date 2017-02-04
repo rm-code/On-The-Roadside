@@ -23,7 +23,7 @@ function ThrownProjectileQueue.new( character, target )
 
     local projectiles = {};
     local index = 0;
-    local weapon = character:getInventory():getWeapon();
+    local weapon = character:getWeapon();
 
     -- ------------------------------------------------
     -- Public Methods
@@ -39,7 +39,8 @@ function ThrownProjectileQueue.new( character, target )
         assert( weapon:getWeaponType() == 'Thrown', 'Expected a weapon of type Thrown.' );
 
         -- Thrown weapon is removed from the inventory.
-        character:getInventory():removeItem( weapon );
+        local success = character:getEquipment():removeItem( weapon );
+        assert( success, "Couldn't remove the item from the character's equipment." );
 
         local tiles = ProjectilePath.calculate( character, target, weapon );
         local projectile = Projectile.new( character, tiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() );
