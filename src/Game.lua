@@ -115,13 +115,6 @@ function Game.new()
 
     function self:keypressed( key, scancode, isrepeat )
         turnManager:keypressed( key, scancode, isrepeat );
-        if scancode == '.' then
-            -- TODO Optimisation!
-            -- SaveHandler.save( map:serialize() );
-            collectgarbage( 'collect' );
-        elseif scancode == '-' then
-            -- SaveHandler.deleteSaveFile();
-        end
     end
 
     function self:mousepressed( mx, my, button )
