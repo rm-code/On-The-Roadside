@@ -1,3 +1,12 @@
+# Version 0.4.1.664 - 2017-02-04
+
+## Other Changes
+- Deactivated save feature
+- Made chairs and tables climbable ([#94](https://github.com/rm-code/On-The-Roadside/issues/94))
+
+
+
+
 # Version 0.4.0.658 - 2017-02-04
 
 ## Additions
