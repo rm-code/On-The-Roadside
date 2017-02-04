@@ -117,10 +117,10 @@ function Game.new()
         turnManager:keypressed( key, scancode, isrepeat );
         if scancode == '.' then
             -- TODO Optimisation!
-            SaveHandler.save( map:serialize() );
+            -- SaveHandler.save( map:serialize() );
             collectgarbage( 'collect' );
         elseif scancode == '-' then
-            SaveHandler.deleteSaveFile();
+            -- SaveHandler.deleteSaveFile();
         end
     end
 
