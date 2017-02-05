@@ -110,6 +110,9 @@ function MainScreen.new()
         if scancode == 'h' then
             ScreenManager.push( 'help' );
         end
+        if scancode == 'f1' then
+            userInterface:toggleDebugInfo();
+        end
 
         game:keypressed( key, scancode, isrepeat );
     end
