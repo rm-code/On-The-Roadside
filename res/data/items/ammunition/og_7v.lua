@@ -1,5 +1,6 @@
 return {
     id = "OG-7V",
+    idDesc = "OG-7V_desc",
     itemType = "Ammunition",
     weight = 2.0,
     volume = 2.0,

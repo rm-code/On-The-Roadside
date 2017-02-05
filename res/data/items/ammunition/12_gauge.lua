@@ -1,5 +1,6 @@
 return {
     id = "12 gauge",
+    idDesc = "12 gauge_desc",
     itemType = "Ammunition",
     weight = 0,
     volume = 0,

@@ -1,5 +1,6 @@
 return {
     id       = "weapon_rpg7",
+    idDesc = "weapon_rpg7_desc",
     itemType = "Weapon",
     weaponType = "Ranged",
     weight   = 5.7,

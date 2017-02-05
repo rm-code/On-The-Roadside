@@ -1,5 +1,6 @@
 return {
     id         = "weapon_benelli_m4",
+    idDesc = "weapon_benelli_m4_desc",
     itemType   = "Weapon",
     weaponType = "Ranged",
     weight     = 2.3,
