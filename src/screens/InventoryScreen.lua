@@ -291,10 +291,8 @@ function InventoryScreen.new()
         drop( list );
     end
 
-    function self:resize( nw, nh )
-        updateScreenDimensions( nw, nh );
-        outlines:init( w, h, sx, sy );
-        itemDescriptionArea:setDimensions( 1, 1 + 2 * sy, itemDescriptionSpacer - 1, sy );
+    function self:resize()
+        self:init( character, target );
     end
 
     function self:close()
