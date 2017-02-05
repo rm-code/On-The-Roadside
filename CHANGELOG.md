@@ -1,3 +1,11 @@
+# Version 0.4.3.685 - 2017-02-06
+
+## Fixes
+- Revert "Fix impossible actions being added to the queue" as it caused additional problems
+
+
+
+
 # Version 0.4.2.668 - 2017-02-05
 
 ## Fixes
