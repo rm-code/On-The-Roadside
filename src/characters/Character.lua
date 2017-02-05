@@ -78,15 +78,10 @@ function Character.new( map, tile, faction, bodyID )
 
     ---
     -- Adds a new action to the action queue.
-    -- @param action (Action)  The action to enqueue.
-    -- @return       (boolean) True if the action was added, false if it wasn't.
+    -- @param action (Action) The action to enqueue.
     --
     function self:enqueueAction( action )
-        if action:getCost() > actionPoints then
-            return false;
-        end
         actions:enqueue( action );
-        return true;
     end
 
     ---

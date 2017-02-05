@@ -19,29 +19,26 @@ function MovementInput.new( stateManager )
 
             if path then
                 path:iterate( function( tile, index )
-                    local success = true;
                     if tile:hasWorldObject() then
                         if character:getStance() == STANCES.PRONE then
-                            success = character:enqueueAction( Crouch.new( character ));
+                            character:enqueueAction( Crouch.new( character ));
                         end
                         if tile:getWorldObject():isOpenable() then
                             if not tile:isPassable() then
-                                success = character:enqueueAction( Open.new( character, tile ));
-
+                                character:enqueueAction( Open.new( character, tile ));
                                 -- Don't walk on the door tile if the path ends there.
                                 if index ~= 1 then
-                                    success = character:enqueueAction( Walk.new( character, tile ));
+                                    character:enqueueAction( Walk.new( character, tile ));
                                 end
                             else
-                                success = character:enqueueAction( Walk.new( character, tile ));
+                                character:enqueueAction( Walk.new( character, tile ));
                             end
                         elseif tile:getWorldObject():isClimbable() then
-                            success = character:enqueueAction( ClimbOver.new( character, tile ));
+                            character:enqueueAction( ClimbOver.new( character, tile ));
                         end
                     else
-                        success = character:enqueueAction( Walk.new( character, tile ));
+                        character:enqueueAction( Walk.new( character, tile ));
                     end
-                    return success;
                 end)
                 return;
             end
