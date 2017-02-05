@@ -32,10 +32,7 @@ function Path.new( path )
     --
     function self:iterate( callback )
         for i = #path, 1, -1 do
-            local success = callback( path[i], i );
-            if not success then
-                break;
-            end
+            callback( path[i], i );
         end
     end
 
