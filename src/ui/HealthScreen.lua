@@ -231,6 +231,13 @@ function HealthScreen.new()
         end
     end
 
+    function self:resize( sx, sy )
+        px = math.floor( sx / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 );
+        py = math.floor( sy / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
+        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        print( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
+    end
+
     return self;
 end
 
