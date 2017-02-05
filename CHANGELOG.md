@@ -1,3 +1,13 @@
+# Version 0.4.2.668 - 2017-02-05
+
+## Fixes
+- Keep health screen centered when screen is resized ([#103](https://github.com/rm-code/On-The-Roadside/issues/103))
+- Prevent crash when screen is resized while inventory is open ([#98](https://github.com/rm-code/On-The-Roadside/issues/98))
+- Fix enqueuing of action which can't be performed ([#93](https://github.com/rm-code/On-The-Roadside/issues/93))
+
+
+
+
 # Version 0.4.1.664 - 2017-02-04
 
 ## Other Changes
