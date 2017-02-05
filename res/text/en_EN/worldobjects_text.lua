@@ -11,6 +11,7 @@ locale.strings = {
     ['worldobject_table'] = 'Table';
     ['worldobject_wall'] = 'Wall';
     ['worldobject_window'] = 'Window';
+    ['worldobject_tree'] = 'Tree';
 }
 
 return locale;
