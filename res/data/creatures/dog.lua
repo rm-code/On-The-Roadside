@@ -1,26 +1,26 @@
 return {
-    id = 'human',
-    bloodVolume = 5,
-    defaultCarryWeight = 100,
-    defaultCarryVolume = 10,
+    id = 'dog',
+    bloodVolume = 3,
+    defaultCarryWeight = 20,
+    defaultCarryVolume = 5,
     tags = {
         whitelist = {
-            'humanoid'
+            'creature'
         },
         blacklist = {
-            'creature'
+            'humanoid'
         }
     },
     -- ################################## Head
     {
         id = 'head',
         type = 'entry',
-        health = 120
+        health = 60
     },
     {
         id = 'brain',
         type = 'node',
-        health = 30,
+        health = 10,
         effects = {
             'death'
         }
@@ -28,7 +28,7 @@ return {
     {
         id = 'ears',
         type = 'node',
-        health = 40
+        health = 30
     },
     {
         id = 'eyes',
@@ -39,69 +39,34 @@ return {
         }
     },
     {
-        id = 'nose',
+        id = 'muzzle',
         type = 'node',
-        health = 40
+        health = 30
     },
     {
         id = 'skull',
         type = 'container',
-        health = 80
+        health = 60
     },
     {
         id = 'throat',
         type = 'node',
-        health = 50,
+        health = 20,
         effects = {
             'death'
         }
     },
     -- ################################## Limbs
     {
-        id = 'arm_left',
+        id = 'legs',
         type = 'entry',
-        health = 120
-    },
-    {
-        id = 'hand_left',
-        type = 'entry',
-        health = 80
-    },
-    {
-        id = 'arm_right',
-        type = 'entry',
-        health = 120
-    },
-    {
-        id = 'hand_right',
-        type = 'entry',
-        health = 80
-    },
-    {
-        id = 'leg_left',
-        type = 'entry',
-        health = 120
-    },
-    {
-        id = 'foot_right',
-        type = 'entry',
-        health = 100
-    },
-    {
-        id = 'foot_left',
-        type = 'entry',
-        health = 100
-    },
-    {
-        id = 'leg_right',
-        type = 'entry',
-        health = 120
+        health = 90
     },
     -- ################################## Torso
     {
         id = 'torso',
         type = 'entry',
-        health = 300
+        health = 200
     },
     {
         id = 'heart',
@@ -135,50 +100,33 @@ return {
             'death'
         }
     },
-    {
-        id = 'ribcage',
-        type = 'container',
-        health = 220
-    },
     -- ################################## Equipment
+    {
+        id = 'equip_mouth',
+        type = 'equipment',
+        itemType = 'Weapon',
+        subType = 'Melee',
+        sort = 1
+    },
     {
         id = 'equip_head',
         type = 'equipment',
         itemType = 'Armor',
-        subType = 'Headgear',
-        sort = 1
-    },
-    {
-        id = 'equip_backpack',
-        type = 'equipment',
-        itemType = 'Bag',
+        subType = 'Fur',
         sort = 2
     },
     {
         id = 'equip_torso',
         type = 'equipment',
         itemType = 'Armor',
-        subType = 'Jacket',
+        subType = 'Fur',
         sort = 3
-    },
-    {
-        id = 'equip_hands',
-        type = 'equipment',
-        itemType = 'Weapon',
-        sort = 4
     },
     {
         id = 'equip_legs',
         type = 'equipment',
         itemType = 'Armor',
-        subType = 'Trousers',
-        sort = 5
-    },
-    {
-        id = 'equip_feet',
-        type = 'equipment',
-        itemType = 'Armor',
-        subType = 'Footwear',
-        sort = 6
+        subType = 'Fur',
+        sort = 4
     }
 }

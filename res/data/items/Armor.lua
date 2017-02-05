@@ -66,5 +66,22 @@ return {
         tags = {
             'humanoid'
         }
+    },
+    {
+        id         = "thick_fur",
+        idDesc     = "thick_fur_desc",
+        itemType   = "Armor",
+        weight     = 1.0,
+        volume     = 0.5,
+        equippable = true,
+        stackable  = false,
+        subType    = "Fur",
+        armor = {
+            protection = 4,
+            coverage   = 100
+        },
+        tags = {
+            'creature'
+        }
     }
 }

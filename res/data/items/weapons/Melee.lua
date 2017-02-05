@@ -55,5 +55,30 @@ return {
         tags = {
             'humanoid'
         }
+    },
+    {
+        id         = "weapon_bite",
+        idDesc     = "weapon_bite_desc",
+        itemType   = "Weapon",
+        weight     = 0.0,
+        volume     = 0.0,
+        equippable = true,
+        stackable  = false,
+        subType    = "Melee",
+        damage     = 30,
+        reloadable = false,
+        sound      = 'MELEE',
+        mode = {
+            {
+                name = "Bite",
+                cost = 3,
+                accuracy = 90,
+                attacks = 1,
+                damageType = 'piercing'
+            }
+        },
+        tags = {
+            'creature'
+        }
     }
 }

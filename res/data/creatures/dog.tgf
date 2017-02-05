@@ -1,0 +1,30 @@
+1 equip_legs
+2 equip_torso
+3 equip_mouth
+4 legs
+5 torso
+6 lungs
+7 liver
+8 heart
+9 kidneys
+10 throat
+11 ears
+12 brain
+13 skull
+14 muzzle
+15 eyes
+16 head
+#
+5 9 30
+16 15 20
+16 14 30
+16 13 60
+16 11 30
+16 10 20
+13 12 40
+3 16 equipment
+2 5 equipment
+1 4 equipment
+5 7 20
+5 8 10
+5 6 20
