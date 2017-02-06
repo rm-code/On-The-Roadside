@@ -104,8 +104,11 @@ function PlanningState.new( stateManager )
             return;
         end
 
-        inputStateHandler:getState():request( tile, character );
-        stateManager:push( 'execution', factions, character );
+        -- Request actions to execute.
+        local execute = inputStateHandler:getState():request( tile, character );
+        if execute then
+            stateManager:push( 'execution', factions, character );
+        end
     end
 
     function self:getInputMode()

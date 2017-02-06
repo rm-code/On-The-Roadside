@@ -18,27 +18,27 @@ function AttackInput.new()
 
         -- Prevent characters from attacking themselves.
         if target == character:getTile() then
-            return;
+            return false;
         end
 
         local weapon = character:getWeapon();
         if not weapon then
-            return;
+            return false;
         end
 
         if weapon:getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
-            return;
+            return true;
         end
 
         if weapon:getWeaponType() == 'Thrown' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
-            return;
+            return true;
         end
 
         generateAttack( target, character );
-        return;
+        return true;
     end
 
     return self;

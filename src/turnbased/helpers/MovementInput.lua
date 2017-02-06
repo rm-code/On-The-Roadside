@@ -41,15 +41,16 @@ function MovementInput.new()
                         character:enqueueAction( Walk.new( character, tile ));
                     end
                 end)
-                return;
+                return true;
             end
         end
         Log.warn( "Can't find path!");
+        return false;
     end
 
     function self:request( ... )
         local target, character = ...;
-        generatePath( target, character );
+        return generatePath( target, character );
     end
 
     return self;

@@ -13,7 +13,7 @@ function InteractionInput.new()
         local target, character = ...;
 
         if not target:isAdjacent( character:getTile() ) then
-            return;
+            return false;
         end
 
         if target:hasWorldObject() then
@@ -23,15 +23,20 @@ function InteractionInput.new()
                 else
                     character:enqueueAction( Open.new( character, target ));
                 end
+                return true;
             elseif target:getWorldObject():isContainer() then
                 character:enqueueAction( OpenInventory.new( character, target ));
+                return true;
             end
         elseif target:isOccupied() then
             if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
                 Log.info( target:getCharacter():getFaction():getType(), character:getFaction():getType())
                 character:enqueueAction( OpenInventory.new( character, target ));
+                return true;
             end
         end
+
+        return false;
     end
 
     return self;
