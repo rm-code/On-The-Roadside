@@ -4,33 +4,34 @@ local Log = {};
 -- Constants
 -- ------------------------------------------------
 
-local MAX_FILE_SIZE = 500000;
 local FILE_NAME = 'latest.log';
+
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
+
+local file;
 
 -- ------------------------------------------------
 -- Local Functions
 -- ------------------------------------------------
 
 local function appendlineBreak()
-    love.filesystem.append( FILE_NAME, '\n' );
+    file:write( '\n' );
 end
 
 local function write( str, caller, mtype )
-    if love.filesystem.getSize( FILE_NAME ) > MAX_FILE_SIZE then
-        love.filesystem.write( FILE_NAME, '' );
-    end
-
     local c, t = caller and string.format( '[%s]', caller ) or '', mtype or '';
 
-    love.filesystem.append( FILE_NAME, t );
-    love.filesystem.append( FILE_NAME, c );
+    file:write( t );
+    file:write( c );
 
-    love.filesystem.append( FILE_NAME, ' ' );
+    file:write( ' ' );
     if type( str ) ~= 'string' then
-        love.filesystem.append( FILE_NAME, 'Can\'t log ' ..  type( str ));
+        file:write( 'Can\'t log ' ..  type( str ));
         return;
     end
-    love.filesystem.append( FILE_NAME, str );
+    file:write( str );
 
     print( string.format( '%s%s %s', t, c, str ));
 end
@@ -40,7 +41,7 @@ end
 -- ------------------------------------------------
 
 function Log.init()
-    love.filesystem.write( FILE_NAME, '' );
+    file = love.filesystem.newFile( FILE_NAME, 'a' );
 end
 
 function Log.print( str, caller )
