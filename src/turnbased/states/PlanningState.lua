@@ -113,6 +113,10 @@ function PlanningState.new( stateManager )
         return activeInputState;
     end
 
+    function self:blocksInput()
+        return false;
+    end
+
     return self;
 end
 
