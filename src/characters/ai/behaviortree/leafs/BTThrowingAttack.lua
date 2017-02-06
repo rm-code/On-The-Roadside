@@ -10,7 +10,7 @@ function BTThrowingAttack.new()
 
     function self:traverse( ... )
         Log.info( 'BTThrowingAttack' );
-        local blackboard, character, states = ...;
+        local blackboard, character, states, factions = ...;
 
         character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
 
@@ -19,7 +19,7 @@ function BTThrowingAttack.new()
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
         end
 
-        states:push( 'execution', character );
+        states:push( 'execution', factions, character );
 
         return true;
     end

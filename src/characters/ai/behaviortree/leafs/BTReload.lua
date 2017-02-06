@@ -9,10 +9,10 @@ function BTReload.new()
 
     function self:traverse( ... )
         Log.info( 'BTReload' );
-        local _, character, states = ...;
+        local _, character, states, factions = ...;
 
         character:enqueueAction( Reload.new( character ));
-        states:push( 'execution', character );
+        states:push( 'execution', factions, character );
 
         return true;
     end

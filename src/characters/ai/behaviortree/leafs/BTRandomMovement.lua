@@ -49,7 +49,7 @@ function BTRandomMovement.new()
 
     function self:traverse( ... )
         Log.info( 'BTRandomMovement' );
-        local _, character, states = ...;
+        local _, character, states, factions = ...;
 
         local tiles = {};
 
@@ -64,7 +64,7 @@ function BTRandomMovement.new()
         local target = tiles[love.math.random( 1, #tiles )];
         if target and target:isPassable() and not target:isOccupied() then
             generatePath( target, character );
-            states:push( 'execution', character );
+            states:push( 'execution', factions, character );
             return true;
         end
 

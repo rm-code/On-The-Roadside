@@ -49,7 +49,7 @@ function BTMoveToTarget.new()
 
     function self:traverse( ... )
         Log.info( 'BTMoveToTarget' );
-        local blackboard, character, states = ...;
+        local blackboard, character, states, factions = ...;
 
         local closest;
         local distance;
@@ -76,7 +76,7 @@ function BTMoveToTarget.new()
 
         if closest then
             generatePath( closest, character );
-            states:push( 'execution', character );
+            states:push( 'execution', factions, character );
             Log.info( 'Character moves to target.' );
             return true;
         end

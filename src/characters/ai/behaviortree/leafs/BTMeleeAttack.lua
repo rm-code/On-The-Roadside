@@ -9,10 +9,10 @@ function BTMeleeAttack.new()
 
     function self:traverse( ... )
         Log.info( 'BTMeleeAttack' );
-        local blackboard, character, states = ...;
+        local blackboard, character, states, factions = ...;
 
         character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
-        states:push( 'execution', character );
+        states:push( 'execution', factions, character );
 
         return true;
     end

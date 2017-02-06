@@ -14,7 +14,7 @@ function SadisticAIDirector.new( factions, states )
 
     local function tickBehaviorTree( character )
         Log.info( "Tick BehaviorTree for " .. tostring( character ));
-        local success = tree:traverse( {}, character, states );
+        local success = tree:traverse( {}, character, states, factions );
         return success;
     end
 
