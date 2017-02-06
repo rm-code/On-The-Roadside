@@ -1,5 +1,5 @@
+local State = require( 'src.turnbased.states.State' );
 local Log = require( 'src.util.Log' );
-local Object = require( 'src.Object' );
 local Walk = require( 'src.characters.actions.Walk' );
 local Open = require( 'src.characters.actions.Open' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
@@ -11,7 +11,7 @@ local MovementInput = {};
 local STANCES = require('src.constants.Stances');
 
 function MovementInput.new()
-    local self = Object.new():addInstance( 'MovementInput' );
+    local self = State.new():addInstance( 'MovementInput' );
 
     local function generatePath( target, character )
         if target and not target:isOccupied() then

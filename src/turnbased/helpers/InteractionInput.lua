@@ -1,5 +1,5 @@
+local State = require( 'src.turnbased.states.State' );
 local Log = require( 'src.util.Log' );
-local Object = require( 'src.Object' );
 local Open = require( 'src.characters.actions.Open' );
 local Close = require( 'src.characters.actions.Close' );
 local OpenInventory = require( 'src.characters.actions.OpenInventory' );
@@ -7,7 +7,7 @@ local OpenInventory = require( 'src.characters.actions.OpenInventory' );
 local InteractionInput = {};
 
 function InteractionInput.new()
-    local self = Object.new():addInstance( 'InteractionInput' );
+    local self = State.new():addInstance( 'InteractionInput' );
 
     function self:request( ... )
         local target, character = ...;
