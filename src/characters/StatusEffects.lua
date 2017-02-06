@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 
 local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
@@ -27,7 +28,7 @@ function StatusEffects.new()
         for _, effect in pairs( effects ) do
             local valid = validate( effect );
             assert( valid, string.format( "Status effect %s is not valid.", effect ));
-            print( 'Apply status effect ' .. effect );
+            Log.info( 'Apply status effect ' .. effect );
             active[effect] = true;
         end
     end

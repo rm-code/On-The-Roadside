@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local Open = require( 'src.characters.actions.Open' );
 local Close = require( 'src.characters.actions.Close' );
@@ -29,7 +30,7 @@ function InteractionInput.new( stateManager )
             end
         elseif target:isOccupied() then
             if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-                print( target:getCharacter():getFaction():getType(), character:getFaction():getType())
+                Log.info( target:getCharacter():getFaction():getType(), character:getFaction():getType())
                 character:enqueueAction( OpenInventory.new( character, target ));
                 stateManager:push( 'execution', character );
             end

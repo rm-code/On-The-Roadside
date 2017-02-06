@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local WorldObject = require( 'src.map.worldobjects.WorldObject' );
 
 -- ------------------------------------------------
@@ -32,12 +33,12 @@ local function load( dir )
         if love.filesystem.isFile( dir .. file ) then
             local status, loaded = pcall( love.filesystem.load, dir .. file );
             if not status then
-                print( 'Can not load ' .. dir .. file );
+                Log.warn( 'Can not load ' .. dir .. file );
             else
                 local template = loaded();
                 local id = template.id;
                 worldobjects[id] = template;
-                print( string.format( '  %d. %s', i, template.id ));
+                Log.info( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -51,7 +52,7 @@ end
 -- Loads the templates.
 --
 function WorldObjectFactory.loadTemplates()
-    print( "Load WorldObject Templates:" )
+    Log.info( "Load WorldObject Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 

@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Tile = require( 'src.map.tiles.Tile' );
 
 -- ------------------------------------------------
@@ -32,12 +33,12 @@ local function load( dir )
         if love.filesystem.isFile( dir .. file ) then
             local status, loaded = pcall( love.filesystem.load, dir .. file );
             if not status then
-                print( 'Can not load ' .. dir .. file );
+                Log.warn( 'Can not load ' .. dir .. file );
             else
                 local template = loaded();
                 local id = template.id;
                 tiles[id] = template;
-                print( string.format( '  %d. %s', i, template.id ));
+                Log.info( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -51,7 +52,7 @@ end
 -- Loads the templates.
 --
 function TileFactory.loadTemplates()
-    print( "Load Tile Templates:" )
+    Log.info( "Load Tile Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 

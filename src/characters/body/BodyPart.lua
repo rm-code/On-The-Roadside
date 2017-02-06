@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 
 local BodyPart = {};
@@ -17,7 +18,7 @@ function BodyPart.new( index, template )
 
     function self:hit( damage, damageType )
         health = health - damage;
-        print( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
+        Log.info( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
 
         if self:isEntryNode() then
             -- TODO base bleeding on damage type.

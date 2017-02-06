@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Tileset = require( 'src.ui.Tileset' );
@@ -235,7 +236,7 @@ function HealthScreen.new()
         px = math.floor( sx / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 );
         py = math.floor( sy / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
         px, py = px * TILE_SIZE, py * TILE_SIZE;
-        print( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
+        Log.info( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
     end
 
     return self;

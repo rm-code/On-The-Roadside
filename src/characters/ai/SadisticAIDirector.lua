@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local BehaviorTree = require( 'src.characters.ai.behaviortree.BehaviorTree' );
 
@@ -12,7 +13,7 @@ function SadisticAIDirector.new( factions, states )
     local tree = BehaviorTree.new();
 
     local function tickBehaviorTree( character )
-        print( "Tick BehaviorTree for " .. tostring( character ));
+        Log.info( "Tick BehaviorTree for " .. tostring( character ));
         local success = tree:traverse( {}, character, states );
         return success;
     end

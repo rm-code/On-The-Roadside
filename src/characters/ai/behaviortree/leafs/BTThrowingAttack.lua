@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
 local Rearm = require( 'src.characters.actions.Rearm' );
@@ -8,7 +9,7 @@ function BTThrowingAttack.new()
     local self = BTLeaf.new():addInstance( 'BTThrowingAttack' );
 
     function self:traverse( ... )
-        print( 'BTThrowingAttack' );
+        Log.info( 'BTThrowingAttack' );
         local blackboard, character, states = ...;
 
         character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));

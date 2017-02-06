@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local Walk = require( 'src.characters.actions.Walk' );
 local Open = require( 'src.characters.actions.Open' );
@@ -43,7 +44,7 @@ function MovementInput.new( stateManager )
                 return;
             end
         end
-        print( "Can't find path!");
+        Log.warn( "Can't find path!");
     end
 
     function self:request( ... )

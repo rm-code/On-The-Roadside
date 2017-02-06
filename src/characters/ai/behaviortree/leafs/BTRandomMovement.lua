@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
 local Walk = require( 'src.characters.actions.Walk' );
@@ -43,11 +44,11 @@ function BTRandomMovement.new()
                 return;
             end
         end
-        print( "Can't find path!");
+        Log.info( "Can't find path!");
     end
 
     function self:traverse( ... )
-        print( 'BTRandomMovement' );
+        Log.info( 'BTRandomMovement' );
         local _, character, states = ...;
 
         local tiles = {};

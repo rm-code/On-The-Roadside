@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local ItemFactory = require( 'src.items.ItemFactory' );
@@ -63,7 +64,7 @@ end
 
 local function loadFile()
     local compressed, bytes = love.filesystem.read( 'compressed.data' );
-    print( string.format( 'Loaded SaveHandler (Size: %d bytes)', bytes ));
+    Log.info( string.format( 'Loaded SaveHandler (Size: %d bytes)', bytes ));
 
     local decompressed = love.math.decompress( compressed, 'lz4' );
     local rawsave = loadstring( decompressed )();

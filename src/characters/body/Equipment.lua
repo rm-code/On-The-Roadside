@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 
 -- ------------------------------------------------
@@ -39,11 +40,11 @@ function Equipment.new()
         for _, slot in pairs( slots ) do
             if slot:getItemType() == item:getItemType() then
                 slot:addItem( item );
-                print( string.format( 'Added item %s to slots slot %d %s', item:getID(), slot:getIndex(), slot:getID() ));
+                Log.info( string.format( 'Added item %s to slots slot %d %s', item:getID(), slot:getIndex(), slot:getID() ), 'Equipment' );
                 return true;
             end
         end
-        print( string.format( 'No applicable slot found for item %s', item:getID() ));
+        Log.info( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );
         return false;
     end
 

@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Action = require('src.characters.actions.Action');
 
 local Reload = {};
@@ -14,12 +15,12 @@ function Reload.new( character )
         local weapon = character:getWeapon();
 
         if not weapon or not weapon:isReloadable() then
-            print( 'Can not reload.' );
+            Log.info( 'Can not reload.' );
             return false;
         end
 
         if weapon:getMagazine():isFull() then
-            print( 'Weapon is fully loaded.' );
+            Log.info( 'Weapon is fully loaded.' );
             return false;
         end
 

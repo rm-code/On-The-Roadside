@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 
 local SoundManager = {};
@@ -37,7 +38,7 @@ end)
 
 Messenger.observe( 'SOUND_ATTACK', function( weapon )
     if not SOUNDS[weapon:getSound()] then
-        print( string.format( 'ERROR: Sound file for %s doesn\'t exist', weapon:getID() ));
+        Log.warn( string.format( 'Sound file for %s doesn\'t exist', weapon:getID() ));
         return;
     end
     love.audio.play( stopBeforePlaying( SOUNDS[weapon:getSound()] ));
