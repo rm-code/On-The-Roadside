@@ -6,7 +6,7 @@ local OpenInventory = require( 'src.characters.actions.OpenInventory' );
 
 local InteractionInput = {};
 
-function InteractionInput.new( stateManager )
+function InteractionInput.new()
     local self = Object.new():addInstance( 'InteractionInput' );
 
     function self:request( ... )
@@ -23,16 +23,13 @@ function InteractionInput.new( stateManager )
                 else
                     character:enqueueAction( Open.new( character, target ));
                 end
-                stateManager:push( 'execution', character );
             elseif target:getWorldObject():isContainer() then
                 character:enqueueAction( OpenInventory.new( character, target ));
-                stateManager:push( 'execution', character );
             end
         elseif target:isOccupied() then
             if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
                 Log.info( target:getCharacter():getFaction():getType(), character:getFaction():getType())
                 character:enqueueAction( OpenInventory.new( character, target ));
-                stateManager:push( 'execution', character );
             end
         end
     end

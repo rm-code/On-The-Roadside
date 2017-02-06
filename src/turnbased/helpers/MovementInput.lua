@@ -10,7 +10,7 @@ local MovementInput = {};
 
 local STANCES = require('src.constants.Stances');
 
-function MovementInput.new( stateManager )
+function MovementInput.new()
     local self = Object.new():addInstance( 'MovementInput' );
 
     local function generatePath( target, character )
@@ -49,9 +49,7 @@ function MovementInput.new( stateManager )
 
     function self:request( ... )
         local target, character = ...;
-
         generatePath( target, character );
-        stateManager:push( 'execution', character );
     end
 
     return self;

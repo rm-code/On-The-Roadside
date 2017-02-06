@@ -6,7 +6,7 @@ local Rearm = require( 'src.characters.actions.Rearm' );
 
 local AttackInput = {};
 
-function AttackInput.new( stateManager )
+function AttackInput.new()
     local self = Object.new():addInstance( 'AttackInput' );
 
     local function generateAttack( target, character )
@@ -28,19 +28,16 @@ function AttackInput.new( stateManager )
 
         if weapon:getWeaponType() == 'Melee' then
             character:enqueueAction( MeleeAttack.new( character, target ));
-            stateManager:push( 'execution', character );
             return;
         end
 
         if weapon:getWeaponType() == 'Thrown' then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
-            stateManager:push( 'execution', character );
             return;
         end
 
         generateAttack( target, character );
-        stateManager:push( 'execution', character );
         return;
     end
 

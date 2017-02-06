@@ -15,9 +15,9 @@ function PlanningState.new( stateManager, factions )
     local self = State.new():addInstance( 'PlanningState' );
 
     local inputStates = {
-        ['attack'] = AttackInput.new( stateManager ),
-        ['movement'] = MovementInput.new( stateManager ),
-        ['interaction'] = InteractionInput.new( stateManager ),
+        ['attack'] = AttackInput.new(),
+        ['movement'] = MovementInput.new(),
+        ['interaction'] = InteractionInput.new(),
     }
     local activeInputState = inputStates['movement'];
 
@@ -90,7 +90,8 @@ function PlanningState.new( stateManager, factions )
     end
 
     function self:selectTile( tile, button )
-        if not tile or factions:getFaction():getCurrentCharacter():isDead() then
+        local character = factions:getFaction():getCurrentCharacter();
+        if not tile or character:isDead() then
             return;
         end
 
@@ -99,7 +100,8 @@ function PlanningState.new( stateManager, factions )
             return;
         end
 
-        activeInputState:request( tile, factions:getFaction():getCurrentCharacter() );
+        activeInputState:request( tile, character );
+        stateManager:push( 'execution', character );
     end
 
     function self:getInputMode()
