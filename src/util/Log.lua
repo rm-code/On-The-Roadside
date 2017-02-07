@@ -5,6 +5,7 @@ local Log = {};
 -- ------------------------------------------------
 
 local FILE_NAME = 'latest.log';
+local MAX_SIZE = 1000000;
 
 -- ------------------------------------------------
 -- Local Variables
@@ -16,13 +17,21 @@ local file;
 -- Local Functions
 -- ------------------------------------------------
 
+local function recreateFile()
+    file = love.filesystem.remove( FILE_NAME );
+    file = love.filesystem.newFile( FILE_NAME, 'a' );
+end
+
 local function appendlineBreak()
     file:write( '\n' );
 end
 
 local function write( str, caller, mtype )
-    local c, t = caller and string.format( '[%s]', caller ) or '', mtype or '';
+    if love.filesystem.getSize( FILE_NAME ) > MAX_SIZE then
+        recreateFile();
+    end
 
+    local c, t = caller and string.format( '[%s]', caller ) or '', mtype or '';
     file:write( t );
     file:write( c );
 
@@ -41,7 +50,7 @@ end
 -- ------------------------------------------------
 
 function Log.init()
-    file = love.filesystem.newFile( FILE_NAME, 'a' );
+    recreateFile();
 end
 
 function Log.print( str, caller )
