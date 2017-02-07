@@ -53,7 +53,7 @@ function InteractionInput.new()
         -- Handle interactions with world objects.
         if target:hasWorldObject() then
             if target:getWorldObject():isOpenable() then
-                handleDoors();
+                handleDoors( target, character );
             end
 
             if target:getWorldObject():isContainer() then
