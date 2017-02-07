@@ -78,6 +78,8 @@ local THROWN_STANCE_MODIFIERS = {
     [Stances.PRONE]  = 1.2, -- Throwing should be harder from a prone stance.
 }
 
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+
 -- ------------------------------------------------
 -- Local Functions
 -- ------------------------------------------------
@@ -164,9 +166,9 @@ end
 -- @return          (number)    The maximum range for the derivation.
 --
 function ProjectilePath.getMaximumDerivation( character, weapon, count )
-    if weapon:getWeaponType() == 'Ranged' then
+    if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
         return calculateRangedMaximumDerivation( character, weapon, count );
-    elseif weapon:getWeaponType() == 'Thrown' then
+    elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
         return calculateThrownMaximumDerivation( character );
     else
         error( string.format( 'Can\'t calculate a derivation for selected weapon type %s!', weapon:getWeaponType() ));

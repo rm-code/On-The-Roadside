@@ -3,6 +3,8 @@ local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTHasMeleeWeapon = {};
 
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+
 function BTHasMeleeWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasMeleeWeapon' );
 
@@ -10,7 +12,7 @@ function BTHasMeleeWeapon.new()
         Log.info( 'BTHasMeleeWeapon' );
         local _, character = ...;
 
-        if character:getWeapon():getWeaponType() == 'Melee' then
+        if character:getWeapon():getWeaponType() == WEAPON_TYPES.MELEE then
             Log.info( 'Character has a melee weapon.' );
             return true;
         end

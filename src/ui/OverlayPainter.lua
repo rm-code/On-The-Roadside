@@ -17,6 +17,7 @@ local OverlayPainter = {};
 
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 -- ------------------------------------------------
 -- Local Variables
@@ -57,7 +58,7 @@ function OverlayPainter.new( game, particleLayer )
         -- Fake the last bullet in the magazine so the maximum derivation
         -- represents that of a full weapon burst.
         local count;
-        if weapon:getWeaponType() == 'Ranged' then
+        if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
             count = weapon:getAttacks()
         end
 
@@ -126,7 +127,7 @@ function OverlayPainter.new( game, particleLayer )
         end
 
         local weapon = character:getWeapon();
-        if not weapon or weapon:getWeaponType() == 'Melee' then
+        if not weapon or weapon:getWeaponType() == WEAPON_TYPES.MELEE then
             return;
         end
 

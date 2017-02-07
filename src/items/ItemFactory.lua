@@ -22,6 +22,7 @@ local ItemFactory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
 local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
@@ -120,11 +121,11 @@ end
 local function createWeapon( id )
     local template = searchTemplate( id, items.Weapon );
 
-    if template.weaponType == 'Melee' then
+    if template.weaponType == WEAPON_TYPES.MELEE then
         return MeleeWeapon.new( template );
-    elseif template.weaponType == 'Thrown' then
+    elseif template.weaponType == WEAPON_TYPES.THROWN then
         return ThrownWeapon.new( template );
-    else
+    elseif template.weaponType == WEAPON_TYPES.RANGED then
         return RangedWeapon.new( template );
     end
 end

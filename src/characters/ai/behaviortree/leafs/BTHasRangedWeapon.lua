@@ -3,6 +3,8 @@ local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTHasRangedWeapon = {};
 
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+
 function BTHasRangedWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasRangedWeapon' );
 
@@ -11,7 +13,7 @@ function BTHasRangedWeapon.new()
         local _, character = ...;
 
         local type = character:getWeapon():getWeaponType();
-        if type ~= 'Melee' and type ~= 'Thrown' then
+        if type == WEAPON_TYPES.RANGED then
             Log.info( 'Character has a ranged weapon.' )
             return true;
         end
