@@ -34,6 +34,14 @@ function MovementInput.new()
         return path;
     end
 
+    ---
+    -- Returns the predicted ap cost for this action.
+    -- @return (number) The cost.
+    --
+    function self:getPredictedAPCost()
+        return path:getCost();
+    end
+
     return self;
 end
 

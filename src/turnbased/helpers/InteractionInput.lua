@@ -73,6 +73,19 @@ function InteractionInput.new()
         return false;
     end
 
+    ---
+    -- Returns the predicted ap cost for this action.
+    -- @param target    (Tile)      The tile to interact with.
+    -- @param character (Character) The character taking the action.
+    -- @return          (number)    The cost.
+    --
+    function self:getPredictedAPCost( target, character )
+        if target:hasWorldObject() then
+            return target:getWorldObject():getInteractionCost( character:getStance() ) or 0;
+        end
+        return 0;
+    end
+
     return self;
 end
 

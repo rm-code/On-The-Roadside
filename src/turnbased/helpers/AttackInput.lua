@@ -61,6 +61,15 @@ function AttackInput.new()
         return true;
     end
 
+    ---
+    -- Returns the predicted ap cost for this action.
+    -- @param character (Character) The character taking the action.
+    -- @return          (number)    The cost.
+    --
+    function self:getPredictedAPCost( character )
+        return character:getWeapon():getAttackCost();
+    end
+
     return self;
 end
 

@@ -14,6 +14,7 @@ local UserInterface = {};
 
 local VERSION_STRING = "WIP - Version: " .. getVersion();
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local COLORS = require( 'src.constants.Colors' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -86,6 +87,36 @@ function UserInterface.new( game )
         love.graphics.setColor( 255, 255, 255, 255 );
     end
 
+    local function drawActionPoints( character )
+        local mode = game:getState():getInputMode();
+        local tile = game:getMap():getTileAt( MousePointer.getGridPosition() );
+        local cost;
+
+        if tile then
+            if mode:instanceOf( 'AttackInput' ) then
+                cost = mode:getPredictedAPCost( character );
+            elseif mode:instanceOf( 'InteractionInput' ) then
+                cost = mode:getPredictedAPCost( tile, character );
+            elseif mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
+                cost = mode:getPredictedAPCost();
+            end
+        end
+
+        local apString = 'AP: ' .. character:getActionPoints();
+        love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
+
+        if cost then
+            local costString, costOffset = ' - ' .. cost, ImageFont:getFont():getWidth( apString );
+            love.graphics.setColor( COLORS.DB27 );
+            love.graphics.print( costString, TILE_SIZE + costOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+
+            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, ImageFont:getFont():getWidth( apString .. costString );
+            love.graphics.setColor( COLORS.DB10 );
+            love.graphics.print( resultString, TILE_SIZE + resultOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+        end
+        love.graphics.setColor( 255, 255, 255, 255 );
+    end
+
     function self:draw()
         love.graphics.setFont( font );
         local character = factions:getFaction():getCurrentCharacter();
@@ -93,7 +124,7 @@ function UserInterface.new( game )
             return;
         end
 
-        love.graphics.print( 'AP: ' .. character:getActionPoints(), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
+        drawActionPoints( character );
 
         inspectTile();
 
