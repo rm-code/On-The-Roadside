@@ -31,19 +31,29 @@ local function calculateHeuristic( a, b )
 end
 
 ---
+-- Use a modifier for diagonal movement.
+-- @param direction (string) The direction to get the modifier for.
+-- @return          (number) The modifier.
+--
+local function getDirectionModifier( direction )
+    if direction == DIRECTION.NORTH_EAST
+    or direction == DIRECTION.NORTH_WEST
+    or direction == DIRECTION.SOUTH_EAST
+    or direction == DIRECTION.SOUTH_WEST then
+        return SQRT;
+    end
+    return 1;
+end
+
+---
 -- Calculates the cost of moving to a tile.
 -- @param tile      (Tile)      The tile to calculate a cost for.
--- @param dir       (string)    The direction of the tile to move to.
 -- @param character (Character) The character to plot a path for.
 -- @return     (number) The calculated movement cost.
 --
-local function calculateCost( tile, dir, character )
+local function calculateCost( tile, character )
     if tile:hasWorldObject() then
         return tile:getWorldObject():getInteractionCost( character:getStance() ) + tile:getMovementCost();
-    end
-
-    if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
-        return SQRT * tile:getMovementCost();
     end
 
     return tile:getMovementCost();
@@ -123,15 +133,17 @@ end
 -- @return        (Path) A path object containing tiles to form a path.
 --
 local function finalizePath( endNode )
-    local result, parent = { endNode.tile }, endNode.parent;
+    local path = Path.new();
+    path:addNode( endNode.tile, endNode.actualCost );
 
     -- Build the rest of the path.
+    local parent = endNode.parent;
     while parent and parent.parent do
-        result[#result + 1] = parent.tile;
+        path:addNode( parent.tile, parent.actualCost );
         parent = parent.parent;
     end
 
-    return Path.new( result );
+    return path;
 end
 
 -- ------------------------------------------------
@@ -161,7 +173,7 @@ function PathFinder.generatePath( character, target )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current );
+            return finalizePath( current, character );
         elseif counter > MAX_TILES then
             return; -- Abort if we haven't found the tile after searching for a while.
         end
@@ -171,7 +183,8 @@ function PathFinder.generatePath( character, target )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if isValidTile( tile, closedList, target ) then
-                local g = current.g + calculateCost( tile, direction, character );
+                local cost = calculateCost( tile, character );
+                local g = current.g + cost * getDirectionModifier( direction );
                 local f = g + calculateHeuristic( tile, target );
 
                 -- Check if the tile is in the open list. If it is not, then
@@ -179,7 +192,7 @@ function PathFinder.generatePath( character, target )
                 -- the open list, update its cost and parent values.
                 local visitedNode = isInList( openList, tile );
                 if not visitedNode then
-                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, g = g, f = f };
+                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, actualCost = cost, g = g, f = f };
                 elseif g < visitedNode.g then
                     visitedNode.direction = direction;
                     visitedNode.parent = current;

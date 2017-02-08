@@ -8,10 +8,12 @@ local Path = {};
 
 ---
 -- Creates a new path object.
--- @param path (table) A sequence containing a path.
 --
-function Path.new( path )
+function Path.new()
     local self = Object.new():addInstance( 'Path' );
+
+    local path = {};
+    local cost = 0;
 
     ---
     -- Checks if the path contains a certain tile.
@@ -36,6 +38,16 @@ function Path.new( path )
         end
     end
 
+    ---
+    -- Adds a new tile to this path.
+    -- @param tile  (Tile)   A tile to add to this path.
+    -- @param dcost (number) The cost to traverse this tile.
+    --
+    function self:addNode( tile, dcost )
+        path[#path + 1] = tile;
+        cost = cost + dcost;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------
@@ -54,6 +66,10 @@ function Path.new( path )
     --
     function self:getTarget()
         return path[1];
+    end
+
+    function self:getCost()
+        return cost;
     end
 
     return self;
