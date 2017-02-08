@@ -204,8 +204,8 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        local mx, my = MousePointer.getWorldPosition();
-        local cx, cy = math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE;
+        local gx, gy = MousePointer.getGridPosition();
+        local cx, cy = gx * TILE_SIZE, gy * TILE_SIZE;
 
         love.graphics.setColor( 0, 0, 0 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
