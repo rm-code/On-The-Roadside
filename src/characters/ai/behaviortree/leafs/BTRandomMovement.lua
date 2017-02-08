@@ -15,8 +15,7 @@ function BTRandomMovement.new()
 
     local function generatePath( target, character )
         if target and not target:isOccupied() then
-            local origin = character:getTile();
-            local path = PathFinder.generatePath( origin, target, true );
+            local path = PathFinder.generatePath( character, target, true );
 
             if path then
                 path:iterate( function( tile, index )

@@ -16,8 +16,7 @@ function MovementInput.new()
 
     local function generatePath( target, character )
         if target and not target:isOccupied() then
-            local origin = character:getTile();
-            path = PathFinder.generatePath( origin, target, true );
+            path = PathFinder.generatePath( character, target, true );
         end
     end
 

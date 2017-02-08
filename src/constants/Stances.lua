@@ -1,8 +1,8 @@
 local STANCES = {};
 
-STANCES.STAND  = 1;
-STANCES.CROUCH = 2;
-STANCES.PRONE  = 3;
+STANCES.STAND  = 'stand';
+STANCES.CROUCH = 'crouch';
+STANCES.PRONE  = 'prone';
 
 -- Make table read-only.
 return setmetatable( STANCES, {

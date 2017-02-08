@@ -32,13 +32,14 @@ end
 
 ---
 -- Calculates the cost of moving to a tile.
--- @param tile (Tile)   The tile to calculate a cost for.
--- @param dir  (string) The direction of the tile to move to.
+-- @param tile      (Tile)      The tile to calculate a cost for.
+-- @param dir       (string)    The direction of the tile to move to.
+-- @param character (Character) The character to plot a path for.
 -- @return     (number) The calculated movement cost.
 --
-local function calculateCost( tile, dir )
+local function calculateCost( tile, dir, character )
     if tile:hasWorldObject() then
-        return tile:getWorldObject():getInteractionCost() + tile:getMovementCost();
+        return tile:getWorldObject():getInteractionCost( character:getStance() ) + tile:getMovementCost();
     end
 
     if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
@@ -139,15 +140,15 @@ end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param origin (Tile) The origin.
--- @param target (Tile) The target.
--- @return       (Path) A Path object containing tiles to form a path.
+-- @param character (Character) The character to plot a path for.
+-- @param target    (Tile)      The target.
+-- @return          (Path)      A Path object containing tiles to form a path.
 --
-function PathFinder.generatePath( origin, target )
+function PathFinder.generatePath( character, target )
     local counter = 0;
     local closedList = {};
     local openList = {
-        { tile = origin, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
+        { tile = character:getTile(), direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     };
 
     while #openList > 0 do
@@ -170,7 +171,7 @@ function PathFinder.generatePath( origin, target )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if isValidTile( tile, closedList, target ) then
-                local g = current.g + calculateCost( tile, direction );
+                local g = current.g + calculateCost( tile, direction, character );
                 local f = g + calculateHeuristic( tile, target );
 
                 -- Check if the tile is in the open list. If it is not, then
