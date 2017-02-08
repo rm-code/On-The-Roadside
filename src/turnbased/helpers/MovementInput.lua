@@ -3,11 +3,8 @@ local Walk = require( 'src.characters.actions.Walk' );
 local Open = require( 'src.characters.actions.Open' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
-local Crouch = require( 'src.characters.actions.Crouch' );
 
 local MovementInput = {};
-
-local STANCES = require('src.constants.Stances');
 
 function MovementInput.new()
     local self = State.new():addInstance( 'MovementInput' );
@@ -24,9 +21,6 @@ function MovementInput.new()
         if path then
             path:iterate( function( tile, index )
                 if tile:hasWorldObject() then
-                    if character:getStance() == STANCES.PRONE then
-                        character:enqueueAction( Crouch.new( character ));
-                    end
                     if tile:getWorldObject():isOpenable() then
                         if not tile:isPassable() then
                             character:enqueueAction( Open.new( character, tile ));
