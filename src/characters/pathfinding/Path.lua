@@ -30,17 +30,18 @@ function Path.new()
     -- @param character   (Character)   The character that interacts with the object.
     -- @param tile        (Tile)        The tile containing the worldobject.
     -- @param index       (number)      The tile's position in the path.
+    -- @param             (boolean)     Return true if the actions have been enqueued.
     --
     local function handleOpenableObjects( worldObject, character, tile, index )
         if not worldObject:isPassable() then
-            character:enqueueAction( Open.new( character, tile ));
+            local success = character:enqueueAction( Open.new( character, tile ));
             -- Don't create a walk action if the tile is the last one in the path.
             if index ~= 1 then
-                character:enqueueAction( Walk.new( character, tile ));
+                success = character:enqueueAction( Walk.new( character, tile ));
             end
-            return;
+            return success;
         end
-        character:enqueueAction( Walk.new( character, tile ));
+        return character:enqueueAction( Walk.new( character, tile ));
     end
 
     -- ------------------------------------------------
@@ -77,18 +78,25 @@ function Path.new()
     function self:generateActions( character )
         for index = #path, 1, -1 do
             local tile = path[index];
+            local success;
+
             if tile:hasWorldObject() then
                 local worldObject = tile:getWorldObject();
 
                 if worldObject:isOpenable() then
-                    handleOpenableObjects( worldObject, character, tile, index );
+                    success = handleOpenableObjects( worldObject, character, tile, index );
                 end
 
                 if worldObject:isClimbable() then
-                    character:enqueueAction( ClimbOver.new( character, tile ));
+                    success = character:enqueueAction( ClimbOver.new( character, tile ));
                 end
             else
-                character:enqueueAction( Walk.new( character, tile ));
+                success = character:enqueueAction( Walk.new( character, tile ));
+            end
+
+            -- Stop adding actions if the previous one wasn't added correctly.
+            if not success then
+                break;
             end
         end
     end

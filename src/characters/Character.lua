@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
@@ -76,11 +77,24 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     ---
-    -- Adds a new action to the action queue.
-    -- @param action (Action) The action to enqueue.
+    -- Adds a new action to the action queue if the character has enough action
+    -- points to perform it.
+    -- @param naction (Action) The action to enqueue.
+    -- @return       (boolean) True if the action was enqueued.
     --
-    function self:enqueueAction( action )
-        actions:enqueue( action );
+    function self:enqueueAction( naction )
+        local cost = 0;
+        for _, action in ipairs( actions:getItems() ) do
+            cost = cost + action:getCost();
+        end
+
+        if cost + naction:getCost() <= actionPoints then
+            actions:enqueue( naction );
+            return true;
+        end
+
+        Log.info( 'No AP left. Refused to add Action to Queue.', 'Character' );
+        return false;
     end
 
     ---
