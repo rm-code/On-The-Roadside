@@ -127,16 +127,14 @@ function UserInterface.new( game )
         love.graphics.setFont( font );
         local character = factions:getFaction():getCurrentCharacter();
         if factions:getFaction():isAIControlled() then
+            drawHelpInfo();
+            drawDebugInfo();
             return;
         end
 
         drawActionPoints( character );
-
         inspectTile();
-
         drawWeaponInfo( character:getWeapon() );
-        drawHelpInfo();
-        drawDebugInfo();
     end
 
     function self:update()
