@@ -88,6 +88,14 @@ function UserInterface.new( game )
     end
 
     local function drawActionPoints( character )
+        local apString = 'AP: ' .. character:getActionPoints();
+        love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
+
+        -- Hide the cost display during the turn's execution.
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
         local mode = game:getState():getInputMode();
         local tile = game:getMap():getTileAt( MousePointer.getGridPosition() );
         local cost;
@@ -102,8 +110,6 @@ function UserInterface.new( game )
             end
         end
 
-        local apString = 'AP: ' .. character:getActionPoints();
-        love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
 
         if cost then
             local costString, costOffset = ' - ' .. cost, ImageFont:getFont():getWidth( apString );
