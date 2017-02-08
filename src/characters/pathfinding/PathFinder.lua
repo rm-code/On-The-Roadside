@@ -48,12 +48,29 @@ end
 ---
 -- Calculates the cost of moving to a tile.
 -- @param tile      (Tile)      The tile to calculate a cost for.
+-- @param target    (Tile)      The target tile of the path.
 -- @param character (Character) The character to plot a path for.
 -- @return     (number) The calculated movement cost.
 --
-local function calculateCost( tile, character )
+local function calculateCost( tile, target, character )
     if tile:hasWorldObject() then
-        return tile:getWorldObject():getInteractionCost( character:getStance() ) + tile:getMovementCost( character:getStance() );
+        local worldObject = tile:getWorldObject();
+        local interactionCost = worldObject:getInteractionCost( character:getStance() );
+
+        -- We never move on the tile that the character wants to interact with.
+        if tile == target then
+            return interactionCost;
+        end
+
+        -- Open the object and walk on the tile.
+        if worldObject:isOpenable() and not worldObject:isPassable() then
+            return interactionCost + tile:getMovementCost( character:getStance() );
+        end
+
+        -- Climbing ignores the movement cost of the tile the world object is on.
+        if worldObject:isClimbable() then
+            return interactionCost;
+        end
     end
 
     return tile:getMovementCost( character:getStance() );
@@ -183,7 +200,7 @@ function PathFinder.generatePath( character, target )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if isValidTile( tile, closedList, target ) then
-                local cost = calculateCost( tile, character );
+                local cost = calculateCost( tile, target, character );
                 local g = current.g + cost * getDirectionModifier( direction );
                 local f = g + calculateHeuristic( tile, target );
 
