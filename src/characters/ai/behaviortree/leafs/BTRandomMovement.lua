@@ -1,43 +1,18 @@
 local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' );
-local Walk = require( 'src.characters.actions.Walk' );
-local Open = require( 'src.characters.actions.Open' );
-local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 
 local BTRandomMovement = {};
 
 function BTRandomMovement.new()
     local self = BTLeaf.new():addInstance( 'BTRandomMovement' );
 
+    local path;
+
     local function generatePath( target, character )
         if target and not target:isOccupied() then
-            local path = PathFinder.generatePath( character, target, true );
-
-            if path then
-                path:iterate( function( tile, index )
-                    if tile:hasWorldObject() then
-                        if tile:getWorldObject():isOpenable() then
-                            if not tile:isPassable() then
-                                character:enqueueAction( Open.new( character, tile ));
-                                -- Don't walk on the door tile if the path ends there.
-                                if index ~= 1 then
-                                    character:enqueueAction( Walk.new( character, tile ));
-                                end
-                            else
-                                character:enqueueAction( Walk.new( character, tile ));
-                            end
-                        elseif tile:getWorldObject():isClimbable() then
-                            character:enqueueAction( ClimbOver.new( character, tile ));
-                        end
-                    else
-                        character:enqueueAction( Walk.new( character, tile ));
-                    end
-                end)
-                return;
-            end
+            path = PathFinder.generatePath( character, target, true );
         end
-        Log.info( "Can't find path!");
     end
 
     function self:traverse( ... )
@@ -57,6 +32,9 @@ function BTRandomMovement.new()
         local target = tiles[love.math.random( 1, #tiles )];
         if target and target:isPassable() and not target:isOccupied() then
             generatePath( target, character );
+            if path then
+                path:generateActions( character );
+            end
             states:push( 'execution', factions, character );
             return true;
         end
