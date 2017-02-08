@@ -53,10 +53,10 @@ end
 --
 local function calculateCost( tile, character )
     if tile:hasWorldObject() then
-        return tile:getWorldObject():getInteractionCost( character:getStance() ) + tile:getMovementCost();
+        return tile:getWorldObject():getInteractionCost( character:getStance() ) + tile:getMovementCost( character:getStance() );
     end
 
-    return tile:getMovementCost();
+    return tile:getMovementCost( character:getStance() );
 end
 
 ---

@@ -15,12 +15,6 @@ local Character = {};
 local DEFAULT_ACTION_POINTS = 20;
 
 local STANCES = require('src.constants.Stances');
-local STANCE_MODIFIER = {
-    [STANCES.STAND]  = 1.0,
-    [STANCES.CROUCH] = 1.5,
-    [STANCES.PRONE]  = 2.0,
-}
-
 local ITEM_TYPES = require('src.constants.ItemTypes');
 
 -- ------------------------------------------------
@@ -311,15 +305,6 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:getStance()
         return stance;
-    end
-
-    ---
-    -- Returns the character's current stance modifier which will be applied
-    -- to modify the cost of walking actions.
-    -- @return (number) The character's stance modifier.
-    --
-    function self:getStanceModifier()
-        return STANCE_MODIFIER[stance];
     end
 
     ---

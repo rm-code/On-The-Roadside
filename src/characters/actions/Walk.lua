@@ -8,7 +8,7 @@ local Walk = {};
 -- ------------------------------------------------
 
 function Walk.new( character, target )
-    local self = Action.new( math.floor( target:getMovementCost() * character:getStanceModifier() ), target ):addInstance( 'Walk' );
+    local self = Action.new( target:getMovementCost( character:getStance() ), target ):addInstance( 'Walk' );
 
     function self:perform()
         local current = character:getTile();

@@ -183,7 +183,7 @@ function OverlayPainter.new( game, particleLayer )
             local total = character:getActionPoints();
             local ap = total;
             mode:getPath():iterate( function( tile )
-                ap = ap - tile:getMovementCost();
+                ap = ap - tile:getMovementCost( character:getStance() );
 
                 -- Draws the path overlay.
                 love.graphics.setBlendMode( 'add' );
