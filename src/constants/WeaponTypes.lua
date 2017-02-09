@@ -1,11 +1,11 @@
-local STANCES = {};
+local WEAPON_TYPES = {};
 
-STANCES.STAND  = 'stand';
-STANCES.CROUCH = 'crouch';
-STANCES.PRONE  = 'prone';
+WEAPON_TYPES.MELEE  = 'Melee';
+WEAPON_TYPES.RANGED = 'Ranged';
+WEAPON_TYPES.THROWN = 'Thrown';
 
 -- Make table read-only.
-return setmetatable( STANCES, {
+return setmetatable( WEAPON_TYPES, {
     __index = function( _, key )
         error( "Can't access constant value at key: " .. key );
     end,

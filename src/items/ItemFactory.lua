@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local RangedWeapon = require( 'src.items.weapons.RangedWeapon' );
 local MeleeWeapon = require( 'src.items.weapons.MeleeWeapon' );
 local ThrownWeapon = require( 'src.items.weapons.ThrownWeapon' );
@@ -21,6 +22,7 @@ local ItemFactory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
 local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
@@ -81,7 +83,7 @@ local function load( dir )
         if love.filesystem.isFile( dir .. file ) then
             local status, loaded = pcall( love.filesystem.load, dir .. file );
             if not status then
-                print( 'Can not load ' .. dir .. file );
+                Log.warn( 'Can not load ' .. dir .. file );
             else
                 local template = loaded();
                 local itemType = template.itemType;
@@ -91,7 +93,7 @@ local function load( dir )
                 items[itemType] = items[itemType] or {};
                 table.insert( items[itemType], template );
 
-                print( string.format( '  %d. %s', i, template.id ));
+                Log.info( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -119,11 +121,11 @@ end
 local function createWeapon( id )
     local template = searchTemplate( id, items.Weapon );
 
-    if template.weaponType == 'Melee' then
+    if template.weaponType == WEAPON_TYPES.MELEE then
         return MeleeWeapon.new( template );
-    elseif template.weaponType == 'Thrown' then
+    elseif template.weaponType == WEAPON_TYPES.THROWN then
         return ThrownWeapon.new( template );
-    else
+    elseif template.weaponType == WEAPON_TYPES.RANGED then
         return RangedWeapon.new( template );
     end
 end
@@ -216,31 +218,31 @@ end
 -- Loads all templates.
 --
 function ItemFactory.loadTemplates()
-    print( "Load Footwear Templates:" )
+    Log.info( "Load Footwear Templates:" )
     load( TEMPLATES_DIRECTORY_FOOTWEAR );
 
-    print( "Load Glove Templates:" )
+    Log.info( "Load Glove Templates:" )
     load( TEMPLATES_DIRECTORY_GLOVES );
 
-    print( "Load Headgear Templates:" )
+    Log.info( "Load Headgear Templates:" )
     load( TEMPLATES_DIRECTORY_HEADGEAR );
 
-    print( "Load Jacket Templates:" )
+    Log.info( "Load Jacket Templates:" )
     load( TEMPLATES_DIRECTORY_JACKETS );
 
-    print( "Load Shirt Templates:" )
+    Log.info( "Load Shirt Templates:" )
     load( TEMPLATES_DIRECTORY_SHIRTS );
 
-    print( "Load Trouser Templates:" )
+    Log.info( "Load Trouser Templates:" )
     load( TEMPLATES_DIRECTORY_TROUSERS );
 
-    print( "Load Weapon Templates:" )
+    Log.info( "Load Weapon Templates:" )
     load( TEMPLATES_DIRECTORY_WEAPONS );
 
-    print( "Load Bag Templates:" )
+    Log.info( "Load Bag Templates:" )
     load( TEMPLATES_DIRECTORY_BAGS );
 
-    print( "Load Ammunition Templates:" );
+    Log.info( "Load Ammunition Templates:" );
     load( TEMPLATES_DIRECTORY_AMMO );
 end
 

@@ -1,7 +1,7 @@
 return {
-    id = 'tile_grass',
-    sprite = 45,
-    color = { 75, 105, 47 },
+    id = 'tile_woodenfloor',
+    sprite = 173,
+    color = { 102, 57, 49 },
     movementCost = {
         stand  = 1,
         crouch = 1,

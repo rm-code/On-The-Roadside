@@ -13,6 +13,8 @@ local UserInterface = {};
 -- ------------------------------------------------
 
 local VERSION_STRING = "WIP - Version: " .. getVersion();
+local TILE_SIZE = require( 'src.constants.TileSize' );
+local COLORS = require( 'src.constants.Colors' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -30,12 +32,13 @@ function UserInterface.new( game )
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
     local font = ImageFont.getFont();
+    local debug = false;
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
-        local x, y = 390, love.graphics.getHeight() - 20;
+        local x, y = TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 5;
         local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
@@ -54,47 +57,93 @@ function UserInterface.new( game )
         end
     end
 
+    local function drawWeaponInfo( weapon )
+        if weapon then
+            local text = Translator.getText( weapon:getID() );
+            if weapon:isReloadable() then
+                text = text .. string.format( ' (%d/%d)', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() )
+            end
+            love.graphics.print( Translator.getText( 'ui_weapon' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 3 );
+            love.graphics.print( text, TILE_SIZE + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - TILE_SIZE * 3 );
+
+            love.graphics.print( Translator.getText( 'ui_mode' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 2 );
+            love.graphics.print( weapon:getAttackMode().name, TILE_SIZE + font:getWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - TILE_SIZE * 2 );
+
+        end
+    end
+
+    local function drawDebugInfo()
+        if debug then
+            love.graphics.print( love.timer.getFPS() .. ' FPS', TILE_SIZE, TILE_SIZE );
+            love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', TILE_SIZE, TILE_SIZE * 2 );
+            love.graphics.print( 'Mouse: ' .. mouseX .. ', ' .. mouseY, TILE_SIZE, TILE_SIZE * 3 );
+        end
+    end
+
+    local function drawHelpInfo()
+        love.graphics.setColor( 255, 255, 255, 100 );
+        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE );
+        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE * 2 );
+        love.graphics.setColor( 255, 255, 255, 255 );
+    end
+
+    local function drawActionPoints( character )
+        local apString = 'AP: ' .. character:getActionPoints();
+        love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
+
+        -- Hide the cost display during the turn's execution.
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
+        local mode = game:getState():getInputMode();
+        local tile = game:getMap():getTileAt( MousePointer.getGridPosition() );
+        local cost;
+
+        if tile then
+            if mode:instanceOf( 'AttackInput' ) then
+                cost = mode:getPredictedAPCost( character );
+            elseif mode:instanceOf( 'InteractionInput' ) then
+                cost = mode:getPredictedAPCost( tile, character );
+            elseif mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
+                cost = mode:getPredictedAPCost();
+            end
+        end
+
+
+        if cost then
+            local costString, costOffset = ' - ' .. cost, ImageFont:getFont():getWidth( apString );
+            love.graphics.setColor( COLORS.DB27 );
+            love.graphics.print( costString, TILE_SIZE + costOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+
+            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, ImageFont:getFont():getWidth( apString .. costString );
+            love.graphics.setColor( COLORS.DB10 );
+            love.graphics.print( resultString, TILE_SIZE + resultOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+        end
+        love.graphics.setColor( 255, 255, 255, 255 );
+    end
+
     function self:draw()
         love.graphics.setFont( font );
+        drawHelpInfo();
+        drawDebugInfo();
+
         local character = factions:getFaction():getCurrentCharacter();
         if factions:getFaction():isAIControlled() then
             return;
         end
 
-        -- Draw tile coordinates.
-        love.graphics.print( Translator.getText( 'ui_coordinates' ), 10, love.graphics.getHeight() - 20 );
-        love.graphics.print( mouseX .. ', ' .. mouseY, 10 + font:getWidth( Translator.getText( 'ui_coordinates' )), love.graphics.getHeight() - 20 );
-
-        love.graphics.print( love.timer.getFPS() .. ' FPS', love.graphics.getWidth() - 80, love.graphics.getHeight() - 40 );
-        love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', love.graphics.getWidth() - 80, love.graphics.getHeight() - 20 );
-
-        local weapon = character:getWeapon();
-        if weapon then
-            love.graphics.print( Translator.getText( 'ui_weapon' ), 200, love.graphics.getHeight() - 40 );
-            love.graphics.print( Translator.getText( weapon:getID() ), 200 + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - 40 );
-
-            love.graphics.print( Translator.getText( 'ui_mode' ), 200, love.graphics.getHeight() - 20 );
-            love.graphics.print( weapon:getAttackMode().name, 200 + font:getWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - 20 );
-
-            if weapon:isReloadable() then
-                love.graphics.print( Translator.getText( 'ui_ammo' ), 390, love.graphics.getHeight() - 40 );
-                love.graphics.print( string.format( '%2d/%2d', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() ), 390 + font:getWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - 40 );
-            end
-        end
-
-        -- Action points
-        love.graphics.print( 'AP: ' .. character:getActionPoints(), 10, love.graphics.getHeight() - 40 );
-
+        drawActionPoints( character );
         inspectTile();
-
-        love.graphics.setColor( 255, 255, 255, 100 );
-        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 8 * 26, 16 );
-        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 8 * 26, 32 );
-        love.graphics.setColor( 255, 255, 255, 255 );
+        drawWeaponInfo( character:getWeapon() );
     end
 
     function self:update()
         mouseX, mouseY = MousePointer.getGridPosition();
+    end
+
+    function self:toggleDebugInfo()
+        debug = not debug;
     end
 
     return self;

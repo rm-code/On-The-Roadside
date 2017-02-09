@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local Attack = require( 'src.characters.actions.Attack' );
 
@@ -7,13 +8,15 @@ function BTAttackTarget.new()
     local self = BTLeaf.new():addInstance( 'BTAttackTarget' );
 
     function self:traverse( ... )
-        print( 'BTAttackTarget' );
-        local blackboard, character, states = ...;
+        Log.info( 'BTAttackTarget' );
+        local blackboard, character, states, factions = ...;
 
-        character:enqueueAction( Attack.new( character, blackboard.target ));
-        states:push( 'execution', character );
-
-        return true;
+        local success = character:enqueueAction( Attack.new( character, blackboard.target ));
+        if success then
+            states:push( 'execution', factions, character );
+            return true;
+        end
+        return false;
     end
 
     return self;

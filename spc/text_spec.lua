@@ -54,27 +54,4 @@ describe( 'Text file spec', function()
             end
         end)
     end)
-
-    describe( 'for german locale', function()
-        local LOCALE = 'de_DE';
-
-        local fileNames = getDirectoryItems( string.format( FILE_PATH, LOCALE ));
-        local files = loadFiles( fileNames, string.format( MODULE_PATH, LOCALE ));
-
-        it( 'makes sure all files have the correct locale', function()
-            for _, file in ipairs( files ) do
-                assert.is_true( file.identifier == LOCALE );
-            end
-        end)
-
-        it( 'makes sure all text lines have a unique key', function()
-            local keys = {};
-            for _, file in ipairs( files ) do
-                for key, line in pairs( file.strings ) do
-                    assert.is_not_true( keys[key] );
-                    keys[key] = line;
-                end
-            end
-        end)
-    end)
 end)

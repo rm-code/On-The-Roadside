@@ -1,5 +1,6 @@
 return {
     id = "gloves_leather",
+    idDesc = "gloves_leather_desc",
     itemType = "Gloves",
     equippable = true,
     weight = 0.4,

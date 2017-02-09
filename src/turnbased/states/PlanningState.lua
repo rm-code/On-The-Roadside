@@ -1,3 +1,4 @@
+local StateManager = require( 'src.turnbased.states.StateManager' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local State = require( 'src.turnbased.states.State' );
 local Reload = require( 'src.characters.actions.Reload' );
@@ -5,21 +6,24 @@ local StandUp = require( 'src.characters.actions.StandUp' );
 local Crouch = require( 'src.characters.actions.Crouch' );
 local LieDown = require( 'src.characters.actions.LieDown' );
 local OpenInventory = require( 'src.characters.actions.OpenInventory' );
-local AttackInput = require( 'src.turnbased.helpers.AttackInput' );
-local MovementInput = require( 'src.turnbased.helpers.MovementInput' );
-local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' );
 
 local PlanningState = {};
 
-function PlanningState.new( stateManager, factions )
+function PlanningState.new( stateManager )
     local self = State.new():addInstance( 'PlanningState' );
 
+    local factions;
     local inputStates = {
-        ['attack'] = AttackInput.new( stateManager ),
-        ['movement'] = MovementInput.new( stateManager ),
-        ['interaction'] = InteractionInput.new( stateManager ),
+        attack = require( 'src.turnbased.helpers.AttackInput' ),
+        movement = require( 'src.turnbased.helpers.MovementInput' ),
+        interaction = require( 'src.turnbased.helpers.InteractionInput' )
     }
-    local activeInputState = inputStates['movement'];
+    local inputStateHandler = StateManager.new( inputStates );
+    inputStateHandler:switch( 'movement' );
+
+    function self:enter( nfactions )
+        factions = nfactions;
+    end
 
     function self:update()
         if factions:getFaction():getCurrentCharacter():isDead() then
@@ -50,47 +54,48 @@ function PlanningState.new( stateManager, factions )
         elseif scancode == 'c' then
             character:clearActions();
             character:enqueueAction( Crouch.new( character ));
-            stateManager:push( 'execution', character );
+            stateManager:push( 'execution', factions, character );
         elseif scancode == 's' then
             character:clearActions();
             character:enqueueAction( StandUp.new( character ));
-            stateManager:push( 'execution', character );
+            stateManager:push( 'execution', factions, character );
         elseif scancode == 'p' then
             character:clearActions();
             character:enqueueAction( LieDown.new( character ));
-            stateManager:push( 'execution', character );
+            stateManager:push( 'execution', factions, character );
         elseif scancode == 'r' then
             character:clearActions();
             character:enqueueAction( Reload.new( character ));
-            stateManager:push( 'execution', character );
+            stateManager:push( 'execution', factions, character );
         elseif scancode == 'a' then
             character:clearActions();
-            activeInputState = inputStates['attack'];
+            inputStateHandler:switch( 'attack' );
         elseif scancode == 'e' then
             character:clearActions();
-            activeInputState = inputStates['interaction'];
+            inputStateHandler:switch( 'interaction' );
         elseif scancode == 'm' then
             character:clearActions();
-            activeInputState = inputStates['movement'];
+            inputStateHandler:switch( 'movement' );
         elseif scancode == 'space' then
-            activeInputState = inputStates['movement'];
+            inputStateHandler:switch( 'movement' );
             factions:getFaction():nextCharacter();
         elseif scancode == 'backspace' then
-            activeInputState = inputStates['movement'];
+            inputStateHandler:switch( 'movement' );
             factions:getFaction():prevCharacter();
         elseif scancode == 'return' then
-            activeInputState = inputStates['movement'];
+            inputStateHandler:switch( 'movement' );
             factions:nextFaction();
         elseif scancode == 'i' then
             character:enqueueAction( OpenInventory.new( character, character:getTile() ));
-            stateManager:push( 'execution', character );
+            stateManager:push( 'execution', factions, character );
         elseif scancode == 'q' then
             ScreenManager.push( 'health', character );
         end
     end
 
     function self:selectTile( tile, button )
-        if not tile or factions:getFaction():getCurrentCharacter():isDead() then
+        local character = factions:getFaction():getCurrentCharacter();
+        if not tile or character:isDead() then
             return;
         end
 
@@ -99,11 +104,19 @@ function PlanningState.new( stateManager, factions )
             return;
         end
 
-        activeInputState:request( tile, factions:getFaction():getCurrentCharacter() );
+        -- Request actions to execute.
+        local execute = inputStateHandler:getState():request( tile, character );
+        if execute then
+            stateManager:push( 'execution', factions, character );
+        end
     end
 
     function self:getInputMode()
-        return activeInputState;
+        return inputStateHandler:getState();
+    end
+
+    function self:blocksInput()
+        return false;
     end
 
     return self;

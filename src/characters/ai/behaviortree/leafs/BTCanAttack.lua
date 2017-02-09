@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTCanAttack = {};
@@ -6,7 +7,7 @@ function BTCanAttack.new()
     local self = BTLeaf.new():addInstance( 'BTCanAttack' );
 
     function self:traverse( ... )
-        print( 'BTCanAttack' );
+        Log.info( 'BTCanAttack' );
         local _, character = ...;
 
         if character:getWeapon():getMagazine():isEmpty() then

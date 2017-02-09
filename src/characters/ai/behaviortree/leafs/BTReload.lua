@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local Reload = require( 'src.characters.actions.Reload' );
 
@@ -7,11 +8,11 @@ function BTReload.new()
     local self = BTLeaf.new():addInstance( 'BTReload' );
 
     function self:traverse( ... )
-        print( 'BTReload' );
-        local _, character, states = ...;
+        Log.info( 'BTReload' );
+        local _, character, states, factions = ...;
 
         character:enqueueAction( Reload.new( character ));
-        states:push( 'execution', character );
+        states:push( 'execution', factions, character );
 
         return true;
     end

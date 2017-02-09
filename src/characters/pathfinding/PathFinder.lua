@@ -31,21 +31,49 @@ local function calculateHeuristic( a, b )
 end
 
 ---
+-- Use a modifier for diagonal movement.
+-- @param direction (string) The direction to get the modifier for.
+-- @return          (number) The modifier.
+--
+local function getDirectionModifier( direction )
+    if direction == DIRECTION.NORTH_EAST
+    or direction == DIRECTION.NORTH_WEST
+    or direction == DIRECTION.SOUTH_EAST
+    or direction == DIRECTION.SOUTH_WEST then
+        return SQRT;
+    end
+    return 1;
+end
+
+---
 -- Calculates the cost of moving to a tile.
--- @param tile (Tile)   The tile to calculate a cost for.
--- @param dir  (string) The direction of the tile to move to.
+-- @param tile      (Tile)      The tile to calculate a cost for.
+-- @param target    (Tile)      The target tile of the path.
+-- @param character (Character) The character to plot a path for.
 -- @return     (number) The calculated movement cost.
 --
-local function calculateCost( tile, dir )
+local function calculateCost( tile, target, character )
     if tile:hasWorldObject() then
-        return tile:getWorldObject():getInteractionCost() + tile:getMovementCost();
+        local worldObject = tile:getWorldObject();
+        local interactionCost = worldObject:getInteractionCost( character:getStance() );
+
+        -- We never move on the tile that the character wants to interact with.
+        if tile == target then
+            return interactionCost;
+        end
+
+        -- Open the object and walk on the tile.
+        if worldObject:isOpenable() and not worldObject:isPassable() then
+            return interactionCost + tile:getMovementCost( character:getStance() );
+        end
+
+        -- Climbing ignores the movement cost of the tile the world object is on.
+        if worldObject:isClimbable() then
+            return interactionCost;
+        end
     end
 
-    if dir == DIRECTION.NORTH_EAST or dir == DIRECTION.NORTH_WEST or dir == DIRECTION.SOUTH_EAST or dir == DIRECTION.SOUTH_WEST then
-        return SQRT * tile:getMovementCost();
-    end
-
-    return tile:getMovementCost();
+    return tile:getMovementCost( character:getStance() );
 end
 
 ---
@@ -118,27 +146,21 @@ end
 ---
 -- Traces the closed list from the target to the starting point by going to the
 -- parents of each tile in the list.
--- @param endNode       (node)    The last node in the generated path.
--- @param includeTarget (boolean) Wether to include the target tile in the path or not.
--- @return              (Path)    A path object containing tiles to form a path.
+-- @param endNode (node) The last node in the generated path.
+-- @return        (Path) A path object containing tiles to form a path.
 --
-local function finalizePath( endNode, includeTarget )
-    local result, parent;
-
-    -- Skip the target tile (endNode) if necessary.
-    if includeTarget then
-        result, parent = { endNode.tile }, endNode.parent;
-    else
-        result, parent = { endNode.parent.tile }, endNode.parent.parent;
-    end
+local function finalizePath( endNode )
+    local path = Path.new();
+    path:addNode( endNode.tile, endNode.actualCost );
 
     -- Build the rest of the path.
+    local parent = endNode.parent;
     while parent and parent.parent do
-        result[#result + 1] = parent.tile;
+        path:addNode( parent.tile, parent.actualCost );
         parent = parent.parent;
     end
 
-    return Path.new( result );
+    return path;
 end
 
 -- ------------------------------------------------
@@ -147,16 +169,15 @@ end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param origin        (Tile)    The origin.
--- @param target        (Tile)    The target.
--- @param includeTarget (boolean) Wether to include the target tile in the path or not.
--- @return              (Path)    A Path object containing tiles to form a path.
+-- @param character (Character) The character to plot a path for.
+-- @param target    (Tile)      The target.
+-- @return          (Path)      A Path object containing tiles to form a path.
 --
-function PathFinder.generatePath( origin, target, includeTarget )
+function PathFinder.generatePath( character, target )
     local counter = 0;
     local closedList = {};
     local openList = {
-        { tile = origin, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
+        { tile = character:getTile(), direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     };
 
     while #openList > 0 do
@@ -169,7 +190,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current, includeTarget );
+            return finalizePath( current, character );
         elseif counter > MAX_TILES then
             return; -- Abort if we haven't found the tile after searching for a while.
         end
@@ -179,7 +200,8 @@ function PathFinder.generatePath( origin, target, includeTarget )
             -- Check if the tile is passable and not in the closed list or if the
             -- tile is the target we are looking for.
             if isValidTile( tile, closedList, target ) then
-                local g = current.g + calculateCost( tile, direction );
+                local cost = calculateCost( tile, target, character );
+                local g = current.g + cost * getDirectionModifier( direction );
                 local f = g + calculateHeuristic( tile, target );
 
                 -- Check if the tile is in the open list. If it is not, then
@@ -187,7 +209,7 @@ function PathFinder.generatePath( origin, target, includeTarget )
                 -- the open list, update its cost and parent values.
                 local visitedNode = isInList( openList, tile );
                 if not visitedNode then
-                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, g = g, f = f };
+                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, actualCost = cost, g = g, f = f };
                 elseif g < visitedNode.g then
                     visitedNode.direction = direction;
                     visitedNode.parent = current;

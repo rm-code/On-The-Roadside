@@ -12,6 +12,7 @@ local CharacterFactory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require( 'src.constants.ItemTypes' );
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 -- ------------------------------------------------
 -- Private Functions
@@ -56,7 +57,7 @@ local function createEquipment( character )
     local backpack = character:getBackpack();
     if weapon:isReloadable() then
         createAmmunition( weapon, backpack );
-    elseif weapon:getWeaponType() == 'Thrown' then
+    elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
         backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
         backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
         backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));

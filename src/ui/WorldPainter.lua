@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Tileset = require( 'src.ui.Tileset' );
 
 -- ------------------------------------------------
@@ -55,7 +56,7 @@ function WorldPainter.new( game )
             tile:setSpriteID( id );
             tile:setDirty( true );
         end)
-        print( string.format('Initialised %d tiles.', spritebatch:getCount()) );
+        Log.info( string.format('Initialised %d tiles.', spritebatch:getCount()), 'WorldPainter' );
     end
 
     ---

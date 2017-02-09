@@ -1,3 +1,9 @@
+local Log = require( 'src.util.Log' );
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local Translator = {};
 
 -- ------------------------------------------------
@@ -21,7 +27,7 @@ local locale;
 local function loadAdditionalText( path )
     local status, loaded = pcall( love.filesystem.load, path );
     if not status then
-        print( 'Can not load translation file from ' .. path );
+        Log.warn( 'Can not load translation file from ' .. path );
     else
         local template = loaded();
 
@@ -46,7 +52,7 @@ local function load( dir )
             for _, file in ipairs( files ) do
                 loadAdditionalText( path .. file );
             end
-            print( string.format( '  %d. %s', i, subdir ));
+            Log.info( string.format( '  %d. %s', i, subdir ));
         end
     end
 end
@@ -58,7 +64,7 @@ end
 function Translator.init( nlocale )
     locale = nlocale;
 
-    print( 'Load language files:' );
+    Log.info( 'Load language files:' );
     load( TEMPLATE_DIRECTORY );
 end
 

@@ -5,6 +5,7 @@ local ItemStats = {};
 
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 function ItemStats.new( x, y, w, h )
     local self = Object.new():addInstance( 'ItemStats' );
@@ -22,7 +23,7 @@ function ItemStats.new( x, y, w, h )
     local function drawWeaponStats()
         local weaponType = item:getWeaponType();
         love.graphics.print( 'Weapon Type: ' .. weaponType, x * TILE_SIZE, (y + 2) * TILE_SIZE );
-        if weaponType == 'Ranged' then
+        if weaponType == WEAPON_TYPES.RANGED then
             love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (x + w * 0.5) * TILE_SIZE, (y + 2) * TILE_SIZE );
         end
 
@@ -30,7 +31,7 @@ function ItemStats.new( x, y, w, h )
             local mode = item:getModes()[i];
             love.graphics.print( mode.name,                 x      * TILE_SIZE, ( y + 3 + i ) * TILE_SIZE );
             love.graphics.print( 'AP ' .. mode.cost,      ( x+10 ) * TILE_SIZE, ( y + 3 + i ) * TILE_SIZE );
-            if not ( weaponType == 'Thrown' ) then
+            if not ( weaponType == WEAPON_TYPES.THROWN ) then
                 love.graphics.print( 'ACC ' .. mode.accuracy, ( x+15 ) * TILE_SIZE, ( y + 3 + i ) * TILE_SIZE );
                 love.graphics.print( 'ATT ' .. mode.attacks,  ( x+20 ) * TILE_SIZE, ( y + 3 + i ) * TILE_SIZE );
             end

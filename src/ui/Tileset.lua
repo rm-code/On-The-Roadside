@@ -1,3 +1,9 @@
+local Log = require( 'src.util.Log' );
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local Tileset = {};
 
 -- ------------------------------------------------
@@ -19,7 +25,7 @@ function Tileset.init( imageUrl, tilesize )
             sprites[#sprites + 1] = love.graphics.newQuad(( y - 1 ) * tilesize, ( x - 1 ) * tilesize, tilesize, tilesize, tileset:getDimensions() );
         end
     end
-    print( "Loaded " .. #sprites .. " sprites!" );
+    Log.info( string.format( 'Loaded %d sprites!', #sprites ), 'Tileset' );
 end
 
 -- ------------------------------------------------

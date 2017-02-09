@@ -7,9 +7,11 @@ local CAMERA_TRACKING_SPEED = 10;
 local SCROLL_MARGIN = 15;
 local SCROLL_SPEED = 10;
 
-function CameraHandler.new( map, px, py )
+function CameraHandler.new( map )
     local self = Camera.new();
 
+    local mw, mh = map:getPixelDimensions();
+    local px, py = mw * 0.5, mh * 0.5;
     local tx, ty = px, py;
     local savedX, savedY;
     local locked;
@@ -42,9 +44,8 @@ function CameraHandler.new( map, px, py )
         end
 
         -- Clamp the camera to the map dimensions.
-        local w, h = map:getPixelDimensions();
-        tx = math.max( 0, math.min( x, w ));
-        ty = math.max( 0, math.min( y, h ));
+        tx = math.max( 0, math.min( x, mw ));
+        ty = math.max( 0, math.min( y, mh ));
     end
 
     function self:update( dt )

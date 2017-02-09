@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
 local Rearm = require( 'src.characters.actions.Rearm' );
@@ -8,19 +9,21 @@ function BTThrowingAttack.new()
     local self = BTLeaf.new():addInstance( 'BTThrowingAttack' );
 
     function self:traverse( ... )
-        print( 'BTThrowingAttack' );
-        local blackboard, character, states = ...;
+        Log.info( 'BTThrowingAttack' );
+        local blackboard, character, states, factions = ...;
 
-        character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
+        local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
+        if success then
+            local weapon = character:getBackpack():getInventory():getWeapon();
+            if weapon then
+                character:enqueueAction( Rearm.new( character, weapon:getID() ));
+            end
 
-        local weapon = character:getBackpack():getInventory():getWeapon();
-        if weapon then
-            character:enqueueAction( Rearm.new( character, weapon:getID() ));
+            states:push( 'execution', factions, character );
+            return true;
         end
 
-        states:push( 'execution', character );
-
-        return true;
+        return false;
     end
 
     return self;

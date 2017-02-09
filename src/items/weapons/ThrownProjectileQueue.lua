@@ -9,6 +9,12 @@ local Messenger = require( 'src.Messenger' );
 local ThrownProjectileQueue = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -36,7 +42,7 @@ function ThrownProjectileQueue.new( character, target )
     -- the queue.
     --
     function self:init()
-        assert( weapon:getWeaponType() == 'Thrown', 'Expected a weapon of type Thrown.' );
+        assert( weapon:getWeaponType() == WEAPON_TYPES.THROWN, 'Expected a weapon of type Thrown.' );
 
         -- Thrown weapon is removed from the inventory.
         local success = character:getEquipment():removeItem( weapon );

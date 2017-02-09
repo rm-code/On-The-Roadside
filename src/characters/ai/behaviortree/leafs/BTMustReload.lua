@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTMustReload = {};
@@ -6,15 +7,15 @@ function BTMustReload.new()
     local self = BTLeaf.new():addInstance( 'BTMustReload' );
 
     function self:traverse( ... )
-        print( 'BTMustReload' );
+        Log.info( 'BTMustReload' );
         local _, character = ...;
 
         if character:getWeapon():getMagazine():isEmpty() then
-            print( 'Magazine is empty -> We must reload!' );
+            Log.info( 'Magazine is empty -> We must reload!' );
             return true;
         end
 
-        print( 'Magazine is not empty -> We must not reload!' );
+        Log.info( 'Magazine is not empty -> We must not reload!' );
 
         return false;
     end

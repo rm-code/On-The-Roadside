@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 
 local BTInverter = {};
@@ -12,7 +13,7 @@ function BTInverter.new()
     end
 
     function self:traverse( ... )
-        print( 'BTInverter' );
+        Log.info( 'BTInverter' );
         return not child:traverse( ... );
     end
 

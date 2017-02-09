@@ -123,11 +123,16 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject's interaction cost attribute.
-    -- @return (number) The amount of AP it costs to interact with this WorldObject.
+    -- Returns the WorldObject's interaction cost attribute. The cost of interaction
+    -- is dependent on the stance a character is currently in.
+    -- @param  stance (string) The stance the character is currently in.
+    -- @return        (number) The amount of AP it costs to interact with this WorldObject.
     --
-    function self:getInteractionCost()
-        return interactionCost;
+    function self:getInteractionCost( stance )
+        if not interactionCost then
+            return 0;
+        end
+        return interactionCost[stance];
     end
 
     ---

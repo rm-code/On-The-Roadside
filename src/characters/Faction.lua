@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Node = require('src.util.Node');
 local Messenger = require( 'src.Messenger' );
@@ -32,10 +33,11 @@ function Faction.new( type, controlledByAi )
     --
     function self:activate()
         self:iterate( function( character )
-            print( 'Tick character ' .. tostring( character ));
-            character:tickOneTurn();
+            if not character:isDead() then
+                Log.info( 'Tick character ' .. tostring( character ), 'Faction' );
+                character:tickOneTurn();
+            end
         end);
-        return;
     end
 
     ---

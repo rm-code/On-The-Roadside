@@ -4,7 +4,7 @@ local Messenger = require( 'src.Messenger' );
 local ClimbOver = {};
 
 function ClimbOver.new( character, target )
-    local self = Action.new( target:getWorldObject():getInteractionCost(), target ):addInstance( 'ClimbOver' );
+    local self = Action.new( target:getWorldObject():getInteractionCost( character:getStance() ), target ):addInstance( 'ClimbOver' );
 
     function self:perform()
         local current = character:getTile();

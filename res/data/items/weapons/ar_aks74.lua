@@ -1,5 +1,6 @@
 return {
     id       = "weapon_aks74",
+    idDesc = "weapon_aks74_desc",
     itemType = "Weapon",
     weight   = 2.7,
     volume = 3.0,

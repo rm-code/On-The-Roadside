@@ -17,6 +17,7 @@ local OverlayPainter = {};
 
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
+local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 -- ------------------------------------------------
 -- Local Variables
@@ -57,7 +58,7 @@ function OverlayPainter.new( game, particleLayer )
         -- Fake the last bullet in the magazine so the maximum derivation
         -- represents that of a full weapon burst.
         local count;
-        if weapon:getWeaponType() == 'Ranged' then
+        if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
             count = weapon:getAttacks()
         end
 
@@ -126,7 +127,7 @@ function OverlayPainter.new( game, particleLayer )
         end
 
         local weapon = character:getWeapon();
-        if not weapon or weapon:getWeaponType() == 'Melee' then
+        if not weapon or weapon:getWeaponType() == WEAPON_TYPES.MELEE then
             return;
         end
 
@@ -173,24 +174,25 @@ function OverlayPainter.new( game, particleLayer )
     -- @param character (Character) The character to draw the path for.
     --
     local function drawPath( character )
-        if character:getActionPoints() > 0 and #character:getActions() ~= 0 then
+        if game:getState():instanceOf( 'ExecutionState' ) then
+            return;
+        end
+
+        local mode = game:getState():getInputMode();
+        if mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
             local total = character:getActionPoints();
             local ap = total;
-
-            for _, action in ipairs( character:getActions() ) do
-                ap = ap - action:getCost();
-
-                -- Clears the tile.
-                local tile = action:getTarget();
+            mode:getPath():iterate( function( tile )
+                ap = ap - tile:getMovementCost( character:getStance() );
 
                 -- Draws the path overlay.
                 love.graphics.setBlendMode( 'add' );
-                local color = selectPathNodeColor( ap, character:getMaxActionPoints() );
+                local color = selectPathNodeColor( ap, total );
                 love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() );
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
                 love.graphics.setColor( 255, 255, 255, 255 );
                 love.graphics.setBlendMode( 'alpha' );
-            end
+            end);
         end
     end
 
@@ -202,8 +204,8 @@ function OverlayPainter.new( game, particleLayer )
             return;
         end
 
-        local mx, my = MousePointer.getWorldPosition();
-        local cx, cy = math.floor( mx / TILE_SIZE ) * TILE_SIZE, math.floor( my / TILE_SIZE ) * TILE_SIZE;
+        local gx, gy = MousePointer.getGridPosition();
+        local cx, cy = gx * TILE_SIZE, gy * TILE_SIZE;
 
         love.graphics.setColor( 0, 0, 0 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );

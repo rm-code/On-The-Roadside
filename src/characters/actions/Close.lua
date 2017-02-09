@@ -4,7 +4,7 @@ local Messenger = require( 'src.Messenger' );
 local Close = {};
 
 function Close.new( character, tile )
-    local self = Action.new( tile:getWorldObject():getInteractionCost(), tile ):addInstance( 'Close' );
+    local self = Action.new( tile:getWorldObject():getInteractionCost( character:getStance() ), tile ):addInstance( 'Close' );
 
     function self:perform()
         local target = tile:getWorldObject();

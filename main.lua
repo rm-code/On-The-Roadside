@@ -1,5 +1,6 @@
 local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
+local Log = require( 'src.util.Log' );
 
 -- ------------------------------------------------
 -- Local Variables
@@ -14,22 +15,25 @@ local info;
 -- ------------------------------------------------
 
 function love.load()
+    Log.init();
+
     info = {};
     info[#info + 1] = "===================";
     info[#info + 1] = string.format( "Title: '%s'", getTitle() );
     info[#info + 1] = string.format( "Version: %s", getVersion() );
     info[#info + 1] = string.format( "LOVE Version: %d.%d.%d (%s)", love.getVersion() );
-    info[#info + 1] = string.format( "Resolution: %dx%d", love.graphics.getDimensions() );
+    info[#info + 1] = string.format( "Resolution: %dx%d\n", love.graphics.getDimensions() );
 
-    info[#info + 1] = "\n---- RENDERER  ---- ";
+    info[#info + 1] = "---- RENDERER  ---- ";
     local name, version, vendor, device = love.graphics.getRendererInfo()
-    info[#info + 1] = string.format( "Name: %s \nVersion: %s \nVendor: %s \nDevice: %s", name, version, vendor, device );
-    info[#info + 1] = "\n-------------------";
-    info[#info + 1] = os.date( "%a-%d-%b-%Y_%H:%M:%S", os.time() )
-    info[#info + 1] = "===================";
+    info[#info + 1] = string.format( "Name: %s \n Version: %s \n Vendor: %s \n Device: %s\n", name, version, vendor, device );
+    info[#info + 1] = "-------------------";
+    info[#info + 1] = os.date( "%d.%m.%Y %H:%M:%S", os.time() )
+    info[#info + 1] = "===================\n";
 
-    info = table.concat( info, "\n" );
-    print( info );
+    for _, line in ipairs( info ) do
+        Log.print( line );
+    end
 
     local screens = {
         main = require('src.screens.MainScreen');
@@ -100,7 +104,7 @@ end
 function love.errhand( msg )
     msg = tostring( msg );
 
-    print(( debug.traceback( "Error: " .. tostring( msg ), 3 ):gsub( "\n[^\n]+$", "" )));
+    Log.error(( debug.traceback( tostring( msg ), 3 ):gsub( "\n[^\n]+$", "" )));
 
     if not love.window or not love.graphics or not love.event then
         return
@@ -153,11 +157,6 @@ function love.errhand( msg )
 
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
-
-    -- Create an error log.
-    local file = string.format( 'error_%s.log', os.date( "%a-%d-%b-%Y_%H-%M-%S", os.time() ));
-    love.filesystem.write( file, info );
-    love.filesystem.append( file, p );
 
     local function draw()
         local pos = love.window.toPixels(70)

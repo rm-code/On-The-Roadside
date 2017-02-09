@@ -8,15 +8,17 @@ local ExecutionState = {};
 local AI_DELAY     = 0;
 local PLAYER_DELAY = 0.15;
 
-function ExecutionState.new( stateManager, factions )
+function ExecutionState.new( stateManager )
     local self = State.new():addInstance( 'ExecutionState' );
 
     local character;
     local actionTimer = 0;
     local delay;
     local restore = true;
+    local factions;
 
-    function self:enter( ncharacter )
+    function self:enter( nfactions, ncharacter )
+        factions = nfactions;
         character = ncharacter;
         delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY;
         Messenger.publish( 'START_EXECUTION' );

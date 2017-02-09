@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local StatusEffects = require( 'src.characters.StatusEffects' );
 
@@ -74,7 +75,7 @@ function Body.new( bloodVolume )
         for _, edge in ipairs( edges ) do
             local slots = equipment:getSlots();
             if slots[edge.from] and edge.to == node:getIndex() then
-                print( '    Equipment slot > ' .. slots[edge.from]:getID() )
+                Log.info( '    Equipment slot > ' .. slots[edge.from]:getID() )
                 -- TODO damage reduction based on armor items
             end
         end
@@ -103,7 +104,7 @@ function Body.new( bloodVolume )
         for _, node in pairs( nodes ) do
             if node:isBleeding() then
                 bloodVolume = bloodVolume - node:getBloodLoss();
-                print( string.format( '%s is bleeding. Blood volume lowered to %d', node:getID(), bloodVolume ));
+                Log.info( string.format( '%s is bleeding. Blood volume lowered to %d', node:getID(), bloodVolume ));
                 if bloodVolume <= 0 then
                     statusEffects:add({ STATUS_EFFECTS.DEATH });
                     break;
@@ -114,7 +115,7 @@ function Body.new( bloodVolume )
 
     function self:hit( damage, damageType )
         local entryNode = selectEntryNode();
-        print( "Attack enters body at " .. entryNode:getID() );
+        Log.info( "Attack enters body at " .. entryNode:getID() );
 
         propagateDamage( entryNode, damage, damageType );
     end

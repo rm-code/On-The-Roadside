@@ -150,10 +150,11 @@ function Tile.new( x, y, template )
 
     ---
     -- Returns the cost it takes a character to traverse this tile.
-    -- @return (number) The movement cost for this tile.
+    -- @param  stance (string) The stance the character is currently in.
+    -- @return        (number) The movement cost for this tile.
     --
-    function self:getMovementCost()
-        return movementCost;
+    function self:getMovementCost( stance )
+        return movementCost[stance];
     end
 
     ---

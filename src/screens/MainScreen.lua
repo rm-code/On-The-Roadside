@@ -56,7 +56,8 @@ function MainScreen.new()
         worldPainter:init();
 
         userInterface = UserInterface.new( game );
-        camera = CameraHandler.new( game:getMap(), game.getCurrentCharacter():getTile():getX() * TILE_SIZE, game.getCurrentCharacter():getTile():getY() * TILE_SIZE );
+
+        camera = CameraHandler.new( game:getMap() );
 
         particleLayer = ParticleLayer.new();
 
@@ -109,6 +110,9 @@ function MainScreen.new()
         end
         if scancode == 'h' then
             ScreenManager.push( 'help' );
+        end
+        if scancode == 'f1' then
+            userInterface:toggleDebugInfo();
         end
 
         game:keypressed( key, scancode, isrepeat );

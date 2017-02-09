@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Body = require( 'src.characters.body.Body' );
 local BodyPart = require( 'src.characters.body.BodyPart' );
 local Equipment = require( 'src.characters.body.Equipment' );
@@ -37,7 +38,7 @@ local function loadFiles( dir )
     for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
         local fn, fe = file:match( '^(.+)%.(.+)$' );
         files[i] = { name = fn, extension = fe };
-        print( string.format( '%6d. %s.%s', i, fn, fe ));
+        Log.info( string.format( '%6d. %s.%s', i, fn, fe ));
     end
     return files;
 end
@@ -54,7 +55,7 @@ local function loadTemplates( files )
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, loaded = pcall( love.filesystem.load, path );
             if not status then
-                print( 'Can not load ' .. path );
+                Log.warn( 'Can not load ' .. path );
             else
                 local creature = loaded();
                 tmp[creature.id] = {};
@@ -82,7 +83,7 @@ local function loadLayouts( files )
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, template = pcall( TGFParser.parse, path );
             if not status then
-                print( 'Can not load ' .. path );
+                Log.warn( 'Can not load ' .. path );
             else
                 tmp[file.name] = template;
             end
@@ -146,7 +147,7 @@ end
 -- Loads the templates.
 --
 function BodyFactory.loadTemplates()
-    print( "Load Creature-Templates:" )
+    Log.info( "Load Creature-Templates:" )
     local files = loadFiles( TEMPLATE_DIRECTORY_CREATURES );
     layouts = loadLayouts( files );
     templates = loadTemplates( files );

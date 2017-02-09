@@ -1,5 +1,6 @@
 return {
     id = "trousers_jeans",
+    idDesc = "trousers_jeans_desc",
     itemType = "Trousers",
     equippable = true,
     weight = 1.0,

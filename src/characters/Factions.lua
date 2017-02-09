@@ -3,6 +3,7 @@ local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.util.Node' );
 local Messenger = require( 'src.Messenger' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' );
+local Log = require( 'src.util.Log' );
 
 -- ------------------------------------------------
 -- Module
@@ -134,18 +135,21 @@ function Factions.new( map )
 
         while active do
             active = active:getNext() or root;
-            if active:getObject():hasLivingCharacters() then
-                active:getObject():activate();
+            local faction = active:getObject();
+            faction:activate();
 
-                map:updateExplorationInfo( active:getObject():getType() );
+            if faction:hasLivingCharacters() then
+                map:updateExplorationInfo( faction:getType() );
 
-                local current = active:getObject():getCurrentCharacter();
+                local current = faction:getCurrentCharacter();
                 if current:isDead() then
                     return self:getFaction():nextCharacter();
                 end
                 Messenger.publish( 'SWITCH_CHARACTERS', current );
                 return current;
             end
+
+            Log.info( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' );
         end
     end
 

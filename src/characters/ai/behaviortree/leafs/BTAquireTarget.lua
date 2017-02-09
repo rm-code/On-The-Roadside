@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTAquireTarget = {};
@@ -6,7 +7,7 @@ function BTAquireTarget.new()
     local self = BTLeaf.new():addInstance( 'BTAquireTarget' );
 
     function self:traverse( ... )
-        print( 'BTAquireTarget' );
+        Log.info( 'BTAquireTarget' );
         local blackboard, character = ...;
 
         local tiles = {};

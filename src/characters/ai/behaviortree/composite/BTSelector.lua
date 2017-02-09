@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local BTComposite = require( 'src.characters.ai.behaviortree.composite.BTComposite' );
 
 local BTSelector = {};
@@ -6,7 +7,7 @@ function BTSelector.new()
     local self = BTComposite.new():addInstance( 'BTSelector' );
 
     function self:traverse( ... )
-        print( 'BTSelector' );
+        Log.info( 'BTSelector' );
         for _, child in ipairs( self:getChildren() ) do
             local success = child:traverse( ... );
             if success then
