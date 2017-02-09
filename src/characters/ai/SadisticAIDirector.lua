@@ -13,9 +13,8 @@ function SadisticAIDirector.new( factions, states )
     local tree = BehaviorTree.new();
 
     local function tickBehaviorTree( character )
-        Log.info( "Tick BehaviorTree for " .. tostring( character ));
-        local success = tree:traverse( {}, character, states, factions );
-        return success;
+        Log.info( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );
+        return tree:traverse( {}, character, states, factions );
     end
 
     function self:update()
@@ -26,7 +25,7 @@ function SadisticAIDirector.new( factions, states )
 
         local character = factions:getFaction():getCurrentCharacter();
 
-        if not tickBehaviorTree( character ) or ( character:hasEnqueuedAction() and not character:canPerformAction() ) then
+        if not tickBehaviorTree( character ) then
             local nextCharacter = factions:getFaction():nextCharacter();
             if nextCharacter == startCharacter then
                 factions:nextFaction();

@@ -12,16 +12,18 @@ function BTThrowingAttack.new()
         Log.info( 'BTThrowingAttack' );
         local blackboard, character, states, factions = ...;
 
-        character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
+        local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
+        if success then
+            local weapon = character:getBackpack():getInventory():getWeapon();
+            if weapon then
+                character:enqueueAction( Rearm.new( character, weapon:getID() ));
+            end
 
-        local weapon = character:getBackpack():getInventory():getWeapon();
-        if weapon then
-            character:enqueueAction( Rearm.new( character, weapon:getID() ));
+            states:push( 'execution', factions, character );
+            return true;
         end
 
-        states:push( 'execution', factions, character );
-
-        return true;
+        return false;
     end
 
     return self;

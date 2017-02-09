@@ -76,6 +76,7 @@ function Path.new()
     -- @param character (Character) The character to create the actions for.
     --
     function self:generateActions( character )
+        local generatedAction = false;
         for index = #path, 1, -1 do
             local tile = path[index];
             local success;
@@ -97,8 +98,11 @@ function Path.new()
             -- Stop adding actions if the previous one wasn't added correctly.
             if not success then
                 break;
+            else
+                generatedAction = true;
             end
         end
+        return generatedAction;
     end
 
     -- ------------------------------------------------

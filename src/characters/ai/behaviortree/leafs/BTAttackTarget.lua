@@ -11,10 +11,12 @@ function BTAttackTarget.new()
         Log.info( 'BTAttackTarget' );
         local blackboard, character, states, factions = ...;
 
-        character:enqueueAction( Attack.new( character, blackboard.target ));
-        states:push( 'execution', factions, character );
-
-        return true;
+        local success = character:enqueueAction( Attack.new( character, blackboard.target ));
+        if success then
+            states:push( 'execution', factions, character );
+            return true;
+        end
+        return false;
     end
 
     return self;

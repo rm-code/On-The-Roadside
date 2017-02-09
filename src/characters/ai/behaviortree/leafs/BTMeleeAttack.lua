@@ -11,10 +11,12 @@ function BTMeleeAttack.new()
         Log.info( 'BTMeleeAttack' );
         local blackboard, character, states, factions = ...;
 
-        character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
-        states:push( 'execution', factions, character );
-
-        return true;
+        local success = character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
+        if success then
+            states:push( 'execution', factions, character );
+            return true;
+        end
+        return false;
     end
 
     return self;

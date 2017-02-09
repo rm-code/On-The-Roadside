@@ -45,14 +45,16 @@ function BTMoveToTarget.new()
         if closest then
             generatePath( closest, character );
             if path then
-                path:generateActions( character );
+                local success = path:generateActions( character );
+                if success then
+                    states:push( 'execution', factions, character );
+                    Log.info( 'Character moves to target.', 'BTMoveToTarget' );
+                    return true;
+                end
             end
-            states:push( 'execution', factions, character );
-            Log.info( 'Character moves to target.' );
-            return true;
         end
 
-        return true;
+        return false;
     end
 
     return self;

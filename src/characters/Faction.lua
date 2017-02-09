@@ -33,10 +33,11 @@ function Faction.new( type, controlledByAi )
     --
     function self:activate()
         self:iterate( function( character )
-            Log.info( 'Tick character ' .. tostring( character ));
-            character:tickOneTurn();
+            if not character:isDead() then
+                Log.info( 'Tick character ' .. tostring( character ), 'Faction' );
+                character:tickOneTurn();
+            end
         end);
-        return;
     end
 
     ---

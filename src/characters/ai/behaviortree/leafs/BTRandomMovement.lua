@@ -7,11 +7,9 @@ local BTRandomMovement = {};
 function BTRandomMovement.new()
     local self = BTLeaf.new():addInstance( 'BTRandomMovement' );
 
-    local path;
-
     local function generatePath( target, character )
         if target and not target:isOccupied() then
-            path = PathFinder.generatePath( character, target, true );
+            return PathFinder.generatePath( character, target, true );
         end
     end
 
@@ -31,15 +29,18 @@ function BTRandomMovement.new()
 
         local target = tiles[love.math.random( 1, #tiles )];
         if target and target:isPassable() and not target:isOccupied() then
-            generatePath( target, character );
+            local path = generatePath( target, character );
             if path then
-                path:generateActions( character );
+                local success = path:generateActions( character );
+                if success then
+                    states:push( 'execution', factions, character );
+                    Log.info( 'Character moves to target.', 'BTRandomMovement' );
+                    return true;
+                end
             end
-            states:push( 'execution', factions, character );
-            return true;
         end
 
-        return true;
+        return false;
     end
 
     return self;
