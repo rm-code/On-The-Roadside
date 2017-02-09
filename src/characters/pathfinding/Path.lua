@@ -48,19 +48,6 @@ function Path.new()
     -- ------------------------------------------------
 
     ---
-    -- Checks if the path contains a certain tile.
-    -- @param tile (Tile)   The tile to check for.
-    -- @return     (number) The index of the tile in the path.
-    --
-    function self:contains( tile )
-        for i = 1, #path do
-            if tile == path[i] then
-                return i;
-            end
-        end
-    end
-
-    ---
     -- Iterates over the path. The target tile will be processed at last.
     -- @param callback (function) A function to call on every tile.
     --
