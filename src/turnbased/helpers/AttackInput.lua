@@ -67,7 +67,9 @@ function AttackInput.new()
     -- @return          (number)    The cost.
     --
     function self:getPredictedAPCost( character )
-        return character:getWeapon():getAttackCost();
+        if character:getWeapon() then
+            return character:getWeapon():getAttackCost();
+        end
     end
 
     return self;
