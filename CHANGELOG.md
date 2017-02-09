@@ -1,3 +1,39 @@
+# Version 0.5.0.725 - 2017-02-09
+
+## Additions
+- Added a new smaller map with more tactical possibilites
+    - Added new tiles "Gravel" and "Wooden Floor"
+    - Added new world object "Tree"
+- Added preliminary item descriptions
+- Added log file writer
+- Added indicator displaying the AP costs for an action
+
+## Removals
+- Removed german translation files for now
+- Removed automatic changing to crouched mode when a character climbs over a world object
+
+## Fixes
+- Fixed AP cost calculation in pathfinding algorithm
+- Fixed enqueuing of impossible actions ([#104](https://github.com/rm-code/On-The-Roadside/issues/104))
+- Fixed AI getting stuck in behavior tree ([#106](https://github.com/rm-code/On-The-Roadside/issues/106))
+- Fixed crash with the Rearm Action ([#107](https://github.com/rm-code/On-The-Roadside/issues/107))
+
+## Other Changes
+- Changed colors of crate objects
+- General improvements of the user interface
+    - Debug info is hidden by default
+    - Rearranged the other UI components to match the game's grid system
+- Changed movement input to use two stages again
+    - The first click plots the path
+    - The second click starts the actual movement
+- AP cost for interacting with a world object is now dependent on the character's stance
+- AP cost for traversing a tile is now dependent on the character's stance
+- Help and debug info overlays are still visible during AI turns
+- Camera now starts centered on the map
+
+
+
+
 # Version 0.4.3.685 - 2017-02-06
 
 ## Fixes
