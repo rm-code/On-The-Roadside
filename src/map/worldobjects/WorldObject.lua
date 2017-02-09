@@ -129,6 +129,9 @@ function WorldObject.new( template )
     -- @return        (number) The amount of AP it costs to interact with this WorldObject.
     --
     function self:getInteractionCost( stance )
+        if not interactionCost then
+            return 0;
+        end
         return interactionCost[stance];
     end
 
