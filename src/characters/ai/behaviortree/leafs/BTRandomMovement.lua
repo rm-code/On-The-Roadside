@@ -14,7 +14,7 @@ function BTRandomMovement.new()
     end
 
     function self:traverse( ... )
-        local _, character, states, factions = ...;
+        local _, character = ...;
 
         local tiles = {};
 

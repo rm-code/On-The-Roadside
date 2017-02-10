@@ -8,7 +8,7 @@ function BTRearm.new()
     local self = BTLeaf.new():addInstance( 'BTRearm' );
 
     function self:traverse( ... )
-        local blackboard, character, states, factions = ...;
+        local blackboard, character = ...;
 
         local success = character:enqueueAction( Rearm.new( character, blackboard.weaponID ));
         if success then

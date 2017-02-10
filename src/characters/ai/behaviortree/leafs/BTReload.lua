@@ -8,7 +8,7 @@ function BTReload.new()
     local self = BTLeaf.new():addInstance( 'BTReload' );
 
     function self:traverse( ... )
-        local _, character, states, factions = ...;
+        local _, character = ...;
 
         -- TODO check for success
         character:enqueueAction( Reload.new( character ));

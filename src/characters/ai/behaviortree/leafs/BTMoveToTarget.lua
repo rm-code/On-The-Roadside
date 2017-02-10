@@ -16,7 +16,7 @@ function BTMoveToTarget.new()
     end
 
     function self:traverse( ... )
-        local blackboard, character, states, factions = ...;
+        local blackboard, character = ...;
 
         local closest;
         local distance;

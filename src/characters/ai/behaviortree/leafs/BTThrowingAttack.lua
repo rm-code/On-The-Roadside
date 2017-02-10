@@ -8,7 +8,7 @@ function BTThrowingAttack.new()
     local self = BTLeaf.new():addInstance( 'BTThrowingAttack' );
 
     function self:traverse( ... )
-        local blackboard, character, states, factions = ...;
+        local blackboard, character = ...;
 
         local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
         if success then
