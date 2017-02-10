@@ -36,7 +36,7 @@ function ExecutionState.new( stateManager )
         end
 
         if actionTimer > delay then
-            if character:hasEnqueuedAction() and character:canPerformAction() then
+            if character:hasEnqueuedAction() then
                 if character:getActionQueue():peek():instanceOf( 'Walk' ) then
                     restore = false;
                 end

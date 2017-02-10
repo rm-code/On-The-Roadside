@@ -111,15 +111,6 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     ---
-    -- Checks if the character has enough action points to perform the next
-    -- action in the queue.
-    -- @return (boolean) Wether the action can be performed.
-    --
-    function self:canPerformAction()
-        return actions:peek():getCost() <= actionPoints;
-    end
-
-    ---
     -- Cleas the action queue.
     --
     function self:clearActions()
