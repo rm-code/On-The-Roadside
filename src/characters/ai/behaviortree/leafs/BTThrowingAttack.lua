@@ -1,7 +1,6 @@
 local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
-local Rearm = require( 'src.characters.actions.Rearm' );
 
 local BTThrowingAttack = {};
 
@@ -13,11 +12,8 @@ function BTThrowingAttack.new()
 
         local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
         if success then
-            -- TODO move this to its own node
-            local weapon = character:getBackpack():getInventory():getWeapon();
-            if weapon then
-                character:enqueueAction( Rearm.new( character, weapon:getID() ));
-            end
+            -- Store weapon id for the rearm action.
+            blackboard.weaponID = character:getWeapon():getID();
 
             Log.debug( 'Character attacks target', 'BTThrowingAttack' );
             states:push( 'execution', factions, character );
