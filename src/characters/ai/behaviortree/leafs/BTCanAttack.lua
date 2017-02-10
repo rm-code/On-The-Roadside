@@ -7,14 +7,11 @@ function BTCanAttack.new()
     local self = BTLeaf.new():addInstance( 'BTCanAttack' );
 
     function self:traverse( ... )
-        Log.info( 'BTCanAttack' );
         local _, character = ...;
 
-        if character:getWeapon():getMagazine():isEmpty() then
-            return false;
-        end
-
-        return true;
+        local result = not character:getWeapon():getMagazine():isEmpty();
+        Log.debug( result, 'BTCanAttack' );
+        return result;
     end
 
     return self;

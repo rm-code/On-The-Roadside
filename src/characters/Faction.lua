@@ -34,7 +34,7 @@ function Faction.new( type, controlledByAi )
     function self:activate()
         self:iterate( function( character )
             if not character:isDead() then
-                Log.info( 'Tick character ' .. tostring( character ), 'Faction' );
+                Log.debug( 'Tick character ' .. tostring( character ), 'Faction' );
                 character:tickOneTurn();
             end
         end);

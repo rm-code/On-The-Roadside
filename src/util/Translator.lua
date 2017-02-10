@@ -52,7 +52,7 @@ local function load( dir )
             for _, file in ipairs( files ) do
                 loadAdditionalText( path .. file );
             end
-            Log.info( string.format( '  %d. %s', i, subdir ));
+            Log.debug( string.format( '  %d. %s', i, subdir ));
         end
     end
 end
@@ -64,7 +64,7 @@ end
 function Translator.init( nlocale )
     locale = nlocale;
 
-    Log.info( 'Load language files:' );
+    Log.debug( 'Load language files:' );
     load( TEMPLATE_DIRECTORY );
 end
 

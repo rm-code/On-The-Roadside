@@ -56,7 +56,7 @@ function WorldPainter.new( game )
             tile:setSpriteID( id );
             tile:setDirty( true );
         end)
-        Log.info( string.format('Initialised %d tiles.', spritebatch:getCount()), 'WorldPainter' );
+        Log.debug( string.format('Initialised %d tiles.', spritebatch:getCount()), 'WorldPainter' );
     end
 
     ---

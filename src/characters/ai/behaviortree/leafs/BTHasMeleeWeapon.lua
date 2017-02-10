@@ -9,15 +9,11 @@ function BTHasMeleeWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasMeleeWeapon' );
 
     function self:traverse( ... )
-        Log.info( 'BTHasMeleeWeapon' );
         local _, character = ...;
 
-        if character:getWeapon():getWeaponType() == WEAPON_TYPES.MELEE then
-            Log.info( 'Character has a melee weapon.' );
-            return true;
-        end
-
-        return false;
+        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.MELEE;
+        Log.debug( result, 'BTHasMeleeWeapon' );
+        return result;
     end
 
     return self;
