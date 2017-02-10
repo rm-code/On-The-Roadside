@@ -50,6 +50,8 @@ function Character.new( map, tile, faction, bodyID )
     local stance = STANCES.STAND;
     local body = BodyFactory.create( bodyID );
 
+    local finishedTurn = false;
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -384,6 +386,14 @@ function Character.new( map, tile, faction, bodyID )
         return self:getEquipment():getItem( ITEM_TYPES.WEAPON );
     end
 
+    ---
+    -- Gets wether the character has finished a turn or not.
+    -- @return (boolean) Wether the character has finished a turn or not.
+    --
+    function self:hasFinishedTurn()
+        return finishedTurn;
+    end
+
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
@@ -410,6 +420,15 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:setTile( ntile )
         tile = ntile;
+    end
+
+    ---
+    -- Sets if the character is done with a turn. This is used by the AI handler
+    -- to determine if the character is viable for another update.
+    -- @param tile (Tile) The tile to set the character to.
+    --
+    function self:setFinishedTurn( nfinished )
+        finishedTurn = nfinished;
     end
 
     ---
