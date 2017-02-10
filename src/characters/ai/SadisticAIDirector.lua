@@ -24,8 +24,10 @@ function SadisticAIDirector.new( factions, states )
         end
 
         local character = factions:getFaction():getCurrentCharacter();
-
-        if not tickBehaviorTree( character ) then
+        local success = tickBehaviorTree( character );
+        if success then
+            states:push( 'execution', factions, character );
+        else
             local nextCharacter = factions:getFaction():nextCharacter();
             if nextCharacter == startCharacter then
                 factions:nextFaction();

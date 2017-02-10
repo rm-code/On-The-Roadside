@@ -14,9 +14,7 @@ function BTThrowingAttack.new()
         if success then
             -- Store weapon id for the rearm action.
             blackboard.weaponID = character:getWeapon():getID();
-
             Log.debug( 'Character attacks target', 'BTThrowingAttack' );
-            states:push( 'execution', factions, character );
             return true;
         end
 

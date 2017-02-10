@@ -13,7 +13,6 @@ function BTMeleeAttack.new()
         local success = character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
         if success then
             Log.debug( 'Character attacks target', 'BTMeleeAttack' );
-            states:push( 'execution', factions, character );
             return true;
         end
 

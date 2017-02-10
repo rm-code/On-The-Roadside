@@ -13,7 +13,6 @@ function BTAttackTarget.new()
         local success = character:enqueueAction( Attack.new( character, blackboard.target ));
         if success then
             Log.debug( 'Character attacks target', 'BTAttackTarget' );
-            states:push( 'execution', factions, character );
             return true;
         end
 

@@ -13,7 +13,6 @@ function BTRearm.new()
         local success = character:enqueueAction( Rearm.new( character, blackboard.weaponID ));
         if success then
             Log.debug( 'Equipping throwing weapon ' .. blackboard.weaponID, 'BTRearm' );
-            states:push( 'execution', factions, character );
             return true;
         end
 

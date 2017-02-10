@@ -13,8 +13,6 @@ function BTReload.new()
         -- TODO check for success
         character:enqueueAction( Reload.new( character ));
         Log.debug( 'Reloading weapon', 'BTReload' );
-        states:push( 'execution', factions, character );
-
         return true;
     end
 

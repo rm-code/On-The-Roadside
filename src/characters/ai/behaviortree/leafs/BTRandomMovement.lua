@@ -33,7 +33,6 @@ function BTRandomMovement.new()
                 local success = path:generateActions( character );
                 if success then
                     Log.debug( 'Character moves to target.', 'BTRandomMovement' );
-                    states:push( 'execution', factions, character );
                     return true;
                 end
             end

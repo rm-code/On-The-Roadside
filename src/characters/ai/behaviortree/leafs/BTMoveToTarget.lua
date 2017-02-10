@@ -47,7 +47,6 @@ function BTMoveToTarget.new()
                 local success = path:generateActions( character );
                 if success then
                     Log.debug( 'Character moves to target.', 'BTMoveToTarget' );
-                    states:push( 'execution', factions, character );
                     return true;
                 end
             end
