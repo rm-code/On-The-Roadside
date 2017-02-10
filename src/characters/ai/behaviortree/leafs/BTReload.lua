@@ -10,10 +10,14 @@ function BTReload.new()
     function self:traverse( ... )
         local _, character = ...;
 
-        -- TODO check for success
-        character:enqueueAction( Reload.new( character ));
-        Log.debug( 'Reloading weapon', 'BTReload' );
-        return true;
+        local success = character:enqueueAction( Reload.new( character ));
+        if success then
+            Log.debug( 'Reloading weapon', 'BTReload' );
+            return true;
+        end
+
+        Log.debug( 'Can not reload weapon', 'BTReload' );
+        return false;
     end
 
     return self;
