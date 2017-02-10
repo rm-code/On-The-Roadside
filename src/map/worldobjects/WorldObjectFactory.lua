@@ -38,7 +38,7 @@ local function load( dir )
                 local template = loaded();
                 local id = template.id;
                 worldobjects[id] = template;
-                Log.info( string.format( '  %d. %s', i, template.id ));
+                Log.debug( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -52,7 +52,7 @@ end
 -- Loads the templates.
 --
 function WorldObjectFactory.loadTemplates()
-    Log.info( "Load WorldObject Templates:" )
+    Log.debug( "Load WorldObject Templates:" )
     load( TEMPLATE_DIRECTORY );
 end
 

@@ -1,4 +1,3 @@
-local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
@@ -68,7 +67,6 @@ function ProjectileManager.update( dt )
             local tile = projectile:getTile();
             -- Exit if we reached the map border.
             if not tile then
-                Log.info( "Reached map border" );
                 queue:removeProjectile( i );
                 return;
             end
@@ -78,7 +76,6 @@ function ProjectileManager.update( dt )
             if tile:hasWorldObject() and love.math.random( 0, 100 ) < tile:getWorldObject():getSize() then
                 -- Stop the bullet if the object is indestructible.
                 if not tile:getWorldObject():isDestructible() then
-                    Log.info( "Hit indestructible object" );
                     -- HACK: Need proper handling for explosive type weapons.
                     if projectile:getEffects():isExplosive() then
                         hitTile( i, projectile:getPreviousTile(), projectile );
@@ -90,7 +87,6 @@ function ProjectileManager.update( dt )
 
                 -- HACK: Need proper handling for explosive type weapons.
                 if projectile:getEffects():isExplosive() then
-                    Log.info( "Hit object with explosive ammunition" );
                     hitTile( i, tile, projectile );
                     return;
                 end
@@ -113,13 +109,11 @@ function ProjectileManager.update( dt )
             end
 
             if projectile:hasReachedTarget() then
-                Log.info( "Reached target" );
                 hitTile( i, projectile:getTile(), projectile );
                 return;
             end
 
             if tile:isOccupied() then
-                Log.info( "Hit character" );
                 hitTile( i, tile, projectile );
                 return;
             end

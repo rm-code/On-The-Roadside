@@ -38,7 +38,7 @@ local function loadFiles( dir )
     for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
         local fn, fe = file:match( '^(.+)%.(.+)$' );
         files[i] = { name = fn, extension = fe };
-        Log.info( string.format( '%6d. %s.%s', i, fn, fe ));
+        Log.debug( string.format( '%6d. %s.%s', i, fn, fe ));
     end
     return files;
 end
@@ -147,7 +147,7 @@ end
 -- Loads the templates.
 --
 function BodyFactory.loadTemplates()
-    Log.info( "Load Creature-Templates:" )
+    Log.debug( "Load Creature-Templates:" )
     local files = loadFiles( TEMPLATE_DIRECTORY_CREATURES );
     layouts = loadLayouts( files );
     templates = loadTemplates( files );

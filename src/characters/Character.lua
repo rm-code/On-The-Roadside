@@ -93,7 +93,7 @@ function Character.new( map, tile, faction, bodyID )
             return true;
         end
 
-        Log.info( 'No AP left. Refused to add Action to Queue.', 'Character' );
+        Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' );
         return false;
     end
 

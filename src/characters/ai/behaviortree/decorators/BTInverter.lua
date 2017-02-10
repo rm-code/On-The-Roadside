@@ -13,7 +13,6 @@ function BTInverter.new()
     end
 
     function self:traverse( ... )
-        Log.info( 'BTInverter' );
         return not child:traverse( ... );
     end
 

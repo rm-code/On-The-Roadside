@@ -149,7 +149,7 @@ function Factions.new( map )
                 return current;
             end
 
-            Log.info( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' );
+            Log.debug( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' );
         end
     end
 

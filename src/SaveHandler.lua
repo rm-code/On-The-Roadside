@@ -64,7 +64,7 @@ end
 
 local function loadFile()
     local compressed, bytes = love.filesystem.read( 'compressed.data' );
-    Log.info( string.format( 'Loaded SaveHandler (Size: %d bytes)', bytes ));
+    Log.debug( string.format( 'Loaded SaveHandler (Size: %d bytes)', bytes ));
 
     local decompressed = love.math.decompress( compressed, 'lz4' );
     local rawsave = loadstring( decompressed )();

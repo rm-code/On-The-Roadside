@@ -15,12 +15,12 @@ function Reload.new( character )
         local weapon = character:getWeapon();
 
         if not weapon or not weapon:isReloadable() then
-            Log.info( 'Can not reload.' );
+            Log.debug( 'Can not reload.' );
             return false;
         end
 
         if weapon:getMagazine():isFull() then
-            Log.info( 'Weapon is fully loaded.' );
+            Log.debug( 'Weapon is fully loaded.' );
             return false;
         end
 

@@ -8,14 +8,16 @@ function BTMeleeAttack.new()
     local self = BTLeaf.new():addInstance( 'BTMeleeAttack' );
 
     function self:traverse( ... )
-        Log.info( 'BTMeleeAttack' );
         local blackboard, character, states, factions = ...;
 
         local success = character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
         if success then
+            Log.debug( 'Character attacks target', 'BTMeleeAttack' );
             states:push( 'execution', factions, character );
             return true;
         end
+
+        Log.debug( 'Character can not attack target', 'BTMeleeAttack' );
         return false;
     end
 
