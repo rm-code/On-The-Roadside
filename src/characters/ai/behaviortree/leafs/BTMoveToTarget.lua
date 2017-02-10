@@ -16,7 +16,6 @@ function BTMoveToTarget.new()
     end
 
     function self:traverse( ... )
-        Log.info( 'BTMoveToTarget' );
         local blackboard, character, states, factions = ...;
 
         local closest;
@@ -47,13 +46,15 @@ function BTMoveToTarget.new()
             if path then
                 local success = path:generateActions( character );
                 if success then
+                    Log.debug( 'Character moves to target.', 'BTMoveToTarget' );
                     states:push( 'execution', factions, character );
-                    Log.info( 'Character moves to target.', 'BTMoveToTarget' );
                     return true;
                 end
             end
+            Log.debug( 'No path found.', 'BTMoveToTarget' );
         end
 
+        Log.debug( 'No target tile found', 'BTMoveToTarget' );
         return false;
     end
 

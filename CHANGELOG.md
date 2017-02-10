@@ -1,3 +1,11 @@
+# Version 0.5.1.727 - 2017-02-10
+
+## Other Changes
+- Reduced debug output
+
+
+
+
 # Version 0.5.0.725 - 2017-02-09
 
 ## Additions

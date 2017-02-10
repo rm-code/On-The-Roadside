@@ -6,6 +6,11 @@ local Log = {};
 
 local FILE_NAME = 'latest.log';
 local MAX_SIZE = 1000000;
+local DEBUG_OUTPUT = false;
+
+local DEBUG_PREFIX   = '[DEBUG]';
+local WARNING_PREFIX = '[WARNING]';
+local ERROR_PREFIX   = '[ERROR]';
 
 -- ------------------------------------------------
 -- Local Variables
@@ -27,6 +32,8 @@ local function appendlineBreak()
 end
 
 local function write( str, caller, mtype )
+    str = tostring( str );
+
     if love.filesystem.getSize( FILE_NAME ) > MAX_SIZE then
         recreateFile();
     end
@@ -58,23 +65,21 @@ function Log.print( str, caller )
     appendlineBreak();
 end
 
-function Log.info( str, caller )
-    write( str, caller, '[INFO]' );
-    appendlineBreak();
-end
-
 function Log.warn( str, caller )
-    write( str, caller, '[WARNING]' );
+    write( str, caller, WARNING_PREFIX );
     appendlineBreak();
 end
 
 function Log.error( str, caller )
-    write( str, caller, '[ERROR]' );
+    write( str, caller, ERROR_PREFIX );
     appendlineBreak();
 end
 
 function Log.debug( str, caller )
-    write( str, caller, '[DEBUG]' );
+    if not DEBUG_OUTPUT then
+        return;
+    end
+    write( str, caller, DEBUG_PREFIX );
     appendlineBreak();
 end
 

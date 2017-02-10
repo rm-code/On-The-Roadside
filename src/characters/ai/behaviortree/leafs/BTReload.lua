@@ -8,10 +8,11 @@ function BTReload.new()
     local self = BTLeaf.new():addInstance( 'BTReload' );
 
     function self:traverse( ... )
-        Log.info( 'BTReload' );
         local _, character, states, factions = ...;
 
+        -- TODO check for success
         character:enqueueAction( Reload.new( character ));
+        Log.debug( 'Reloading weapon', 'BTReload' );
         states:push( 'execution', factions, character );
 
         return true;

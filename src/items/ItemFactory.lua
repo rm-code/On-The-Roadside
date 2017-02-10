@@ -93,7 +93,7 @@ local function load( dir )
                 items[itemType] = items[itemType] or {};
                 table.insert( items[itemType], template );
 
-                Log.info( string.format( '  %d. %s', i, template.id ));
+                Log.debug( string.format( '  %d. %s', i, template.id ));
             end
         end
     end
@@ -218,31 +218,31 @@ end
 -- Loads all templates.
 --
 function ItemFactory.loadTemplates()
-    Log.info( "Load Footwear Templates:" )
+    Log.debug( "Load Footwear Templates:" )
     load( TEMPLATES_DIRECTORY_FOOTWEAR );
 
-    Log.info( "Load Glove Templates:" )
+    Log.debug( "Load Glove Templates:" )
     load( TEMPLATES_DIRECTORY_GLOVES );
 
-    Log.info( "Load Headgear Templates:" )
+    Log.debug( "Load Headgear Templates:" )
     load( TEMPLATES_DIRECTORY_HEADGEAR );
 
-    Log.info( "Load Jacket Templates:" )
+    Log.debug( "Load Jacket Templates:" )
     load( TEMPLATES_DIRECTORY_JACKETS );
 
-    Log.info( "Load Shirt Templates:" )
+    Log.debug( "Load Shirt Templates:" )
     load( TEMPLATES_DIRECTORY_SHIRTS );
 
-    Log.info( "Load Trouser Templates:" )
+    Log.debug( "Load Trouser Templates:" )
     load( TEMPLATES_DIRECTORY_TROUSERS );
 
-    Log.info( "Load Weapon Templates:" )
+    Log.debug( "Load Weapon Templates:" )
     load( TEMPLATES_DIRECTORY_WEAPONS );
 
-    Log.info( "Load Bag Templates:" )
+    Log.debug( "Load Bag Templates:" )
     load( TEMPLATES_DIRECTORY_BAGS );
 
-    Log.info( "Load Ammunition Templates:" );
+    Log.debug( "Load Ammunition Templates:" );
     load( TEMPLATES_DIRECTORY_AMMO );
 end
 

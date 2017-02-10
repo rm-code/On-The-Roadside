@@ -25,7 +25,7 @@ function Tileset.init( imageUrl, tilesize )
             sprites[#sprites + 1] = love.graphics.newQuad(( y - 1 ) * tilesize, ( x - 1 ) * tilesize, tilesize, tilesize, tileset:getDimensions() );
         end
     end
-    Log.info( string.format( 'Loaded %d sprites!', #sprites ), 'Tileset' );
+    Log.debug( string.format( 'Loaded %d sprites!', #sprites ), 'Tileset' );
 end
 
 -- ------------------------------------------------

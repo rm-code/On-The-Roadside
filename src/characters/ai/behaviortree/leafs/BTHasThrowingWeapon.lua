@@ -9,14 +9,11 @@ function BTHasThrowingWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasThrowingWeapon' );
 
     function self:traverse( ... )
-        Log.info( 'BTHasThrowingWeapon' );
         local _, character = ...;
 
-        if character:getWeapon():getWeaponType() == WEAPON_TYPES.THROWN then
-            return true;
-        end
-
-        return false;
+        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.THROWN;
+        Log.debug( result, 'BTHasThrowingWeapon' );
+        return result;
     end
 
     return self;

@@ -7,15 +7,11 @@ function BTHasWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasWeapon' );
 
     function self:traverse( ... )
-        Log.info( 'BTHasWeapon' );
         local _, character = ...;
 
-        if character:getWeapon() then
-            Log.info( 'Character has a weapon.' );
-            return true;
-        end
-
-        return false;
+        local result = character:getWeapon() ~= nil;
+        Log.debug( result, 'BTHasWeapon' );
+        return result;
     end
 
     return self;

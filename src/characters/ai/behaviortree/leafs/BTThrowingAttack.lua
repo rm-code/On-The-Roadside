@@ -9,20 +9,22 @@ function BTThrowingAttack.new()
     local self = BTLeaf.new():addInstance( 'BTThrowingAttack' );
 
     function self:traverse( ... )
-        Log.info( 'BTThrowingAttack' );
         local blackboard, character, states, factions = ...;
 
         local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
         if success then
+            -- TODO move this to its own node
             local weapon = character:getBackpack():getInventory():getWeapon();
             if weapon then
                 character:enqueueAction( Rearm.new( character, weapon:getID() ));
             end
 
+            Log.debug( 'Character attacks target', 'BTThrowingAttack' );
             states:push( 'execution', factions, character );
             return true;
         end
 
+        Log.debug( 'Character can not attack target', 'BTThrowingAttack' );
         return false;
     end
 

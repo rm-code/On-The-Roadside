@@ -13,7 +13,7 @@ function SadisticAIDirector.new( factions, states )
     local tree = BehaviorTree.new();
 
     local function tickBehaviorTree( character )
-        Log.info( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );
+        Log.debug( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );
         return tree:traverse( {}, character, states, factions );
     end
 

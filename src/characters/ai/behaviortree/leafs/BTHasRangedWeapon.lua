@@ -9,16 +9,11 @@ function BTHasRangedWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasRangedWeapon' );
 
     function self:traverse( ... )
-        Log.info( 'BTHasRangedWeapon' );
         local _, character = ...;
 
-        local type = character:getWeapon():getWeaponType();
-        if type == WEAPON_TYPES.RANGED then
-            Log.info( 'Character has a ranged weapon.' )
-            return true;
-        end
-
-        return false;
+        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.RANGED;
+        Log.debug( result, 'BTHasRangedWeapon' );
+        return result;
     end
 
     return self;

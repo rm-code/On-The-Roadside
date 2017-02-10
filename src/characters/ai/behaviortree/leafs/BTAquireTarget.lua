@@ -7,7 +7,6 @@ function BTAquireTarget.new()
     local self = BTLeaf.new():addInstance( 'BTAquireTarget' );
 
     function self:traverse( ... )
-        Log.info( 'BTAquireTarget' );
         local blackboard, character = ...;
 
         local tiles = {};
@@ -49,10 +48,12 @@ function BTAquireTarget.new()
         end
 
         if target then
+            Log.debug( string.format( 'Target found at coordinates %d,%d', target:getPosition() ), 'BTAquireTarget' );
             blackboard.target = target;
             return true;
         end
 
+        Log.debug( 'No target found', 'BTAquireTarget' );
         return false;
     end
 

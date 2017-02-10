@@ -40,11 +40,10 @@ function Equipment.new()
         for _, slot in pairs( slots ) do
             if slot:getItemType() == item:getItemType() then
                 slot:addItem( item );
-                Log.info( string.format( 'Added item %s to slots slot %d %s', item:getID(), slot:getIndex(), slot:getID() ), 'Equipment' );
                 return true;
             end
         end
-        Log.info( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );
+        Log.warn( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );
         return false;
     end
 
