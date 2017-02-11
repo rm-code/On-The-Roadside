@@ -3,6 +3,7 @@ local BTSequence = require( 'src.characters.ai.behaviortree.composite.BTSequence
 local BTHasThrowingWeapon = require( 'src.characters.ai.behaviortree.leafs.BTHasThrowingWeapon' );
 local BTAquireTarget = require( 'src.characters.ai.behaviortree.leafs.BTAquireTarget' );
 local BTThrowingAttack = require( 'src.characters.ai.behaviortree.leafs.BTThrowingAttack' );
+local BTRearm = require( 'src.characters.ai.behaviortree.leafs.BTRearm' );
 
 local BTThrowTree = {};
 
@@ -13,6 +14,7 @@ function BTThrowTree.new()
     baseSequence:addNode( BTHasThrowingWeapon.new() );
     baseSequence:addNode( BTAquireTarget.new() );
     baseSequence:addNode( BTThrowingAttack.new() );
+    baseSequence:addNode( BTRearm.new() );
 
     self:addNode( baseSequence );
 

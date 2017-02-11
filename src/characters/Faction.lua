@@ -35,6 +35,7 @@ function Faction.new( type, controlledByAi )
         self:iterate( function( character )
             if not character:isDead() then
                 Log.debug( 'Tick character ' .. tostring( character ), 'Faction' );
+                character:setFinishedTurn( false );
                 character:tickOneTurn();
             end
         end);
@@ -130,6 +131,46 @@ function Faction.new( type, controlledByAi )
             node = node:getNext();
         end
         return false;
+    end
+
+    ---
+    -- Checks if any of this faction's characters have taken their actions.
+    -- @return (boolean) True if all characters have finished their turn.
+    --
+    function self:hasFinishedTurn()
+        local node = root;
+        while node do
+            if not node:getObject():hasFinishedTurn() then
+                return false;
+            end
+
+            if node == last then
+                break;
+            end
+
+            node = node:getNext();
+        end
+        return true;
+    end
+
+    ---
+    -- Gets the next character who hasn't finished his turn yet.
+    -- @return (Character) The character with unfinished turn.
+    --
+    function self:nextCharacterForTurn()
+        local node = root;
+        while node do
+            if not node:getObject():hasFinishedTurn() then
+                return node:getObject();
+            end
+
+            if node == last then
+                break;
+            end
+
+            node = node:getNext();
+        end
+        error( 'Could not find character with unfinished turn. Use self:hasFinishedTurn() to make sure the faction has characters with unfinshed turns.' )
     end
 
     ---

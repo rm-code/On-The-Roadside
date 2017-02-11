@@ -14,7 +14,7 @@ function BTRandomMovement.new()
     end
 
     function self:traverse( ... )
-        local _, character, states, factions = ...;
+        local _, character = ...;
 
         local tiles = {};
 
@@ -33,11 +33,11 @@ function BTRandomMovement.new()
                 local success = path:generateActions( character );
                 if success then
                     Log.debug( 'Character moves to target.', 'BTRandomMovement' );
-                    states:push( 'execution', factions, character );
                     return true;
                 end
             end
             Log.debug( 'Can not find a path to the target', 'BTRandomMovement' );
+            return false;
         end
 
         Log.debug( 'Invalid target', 'BTRandomMovement' );

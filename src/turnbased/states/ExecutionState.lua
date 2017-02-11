@@ -2,6 +2,7 @@ local State = require( 'src.turnbased.states.State' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Messenger = require( 'src.Messenger' );
+local Log = require( 'src.util.Log' );
 
 local ExecutionState = {};
 
@@ -35,8 +36,15 @@ function ExecutionState.new( stateManager )
             return;
         end
 
+        if character:isDead() then
+            Log.debug( string.format( 'Character (%s) is dead. Stopping execution', tostring( character )), 'ExecutionState' );
+            Messenger.publish( 'END_EXECUTION', restore );
+            stateManager:pop();
+            return;
+        end
+
         if actionTimer > delay then
-            if character:hasEnqueuedAction() and character:canPerformAction() then
+            if character:hasEnqueuedAction() then
                 if character:getActionQueue():peek():instanceOf( 'Walk' ) then
                     restore = false;
                 end

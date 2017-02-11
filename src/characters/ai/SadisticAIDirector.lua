@@ -7,9 +7,6 @@ local SadisticAIDirector = {};
 function SadisticAIDirector.new( factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
-    local startCharacter = factions:getFaction():getCurrentCharacter();
-    local startFaction   = factions:getFaction();
-
     local tree = BehaviorTree.new();
 
     local function tickBehaviorTree( character )
@@ -18,19 +15,25 @@ function SadisticAIDirector.new( factions, states )
     end
 
     function self:update()
-        if factions:getFaction() ~= startFaction then
-            startCharacter = factions:getFaction():getCurrentCharacter();
-            startFaction   = factions:getFaction();
+        local faction = factions:getFaction();
+        if faction:hasFinishedTurn() then
+            Log.debug( 'Select next faction', 'SadisticAIDirector' );
+            factions:nextFaction();
+            return;
         end
 
-        local character = factions:getFaction():getCurrentCharacter();
+        -- Select the next character who hasn't finished his turn yet.
+        Log.debug( 'Select next character for this turn', 'SadisticAIDirector' );
+        local character = faction:nextCharacterForTurn();
 
-        if not tickBehaviorTree( character ) then
-            local nextCharacter = factions:getFaction():nextCharacter();
-            if nextCharacter == startCharacter then
-                factions:nextFaction();
-            end
+        local success = tickBehaviorTree( character );
+        if success then
+            states:push( 'execution', factions, character );
+            return;
         end
+
+        -- Mark the character as done for this turn.
+        character:setFinishedTurn( true );
     end
 
     return self;
