@@ -1,3 +1,13 @@
+# Version 0.5.2.741 - 2017-02-11
+
+## Fixes
+- Fixed issue where the AI would start the execution state twice
+- Fixed actions being executed for dead characters (This finally fixes: [#107](https://github.com/rm-code/On-The-Roadside/issues/107))
+- Fixed AI handler failing to end its turn ([#112](https://github.com/rm-code/On-The-Roadside/issues/112))
+
+
+
+
 # Version 0.5.1.727 - 2017-02-10
 
 ## Other Changes
