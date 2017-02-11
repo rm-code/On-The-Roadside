@@ -1,5 +1,6 @@
 local Bresenham = require( 'lib.Bresenham' );
 local Messenger = require( 'src.Messenger' );
+local Util = require( 'src.util.Util' );
 
 -- ------------------------------------------------
 -- Module
@@ -20,35 +21,6 @@ local delay = 0.02;
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
-
----
--- Gets all tiles within a certain radius around the center tile.
--- @param centerTile (Tile)   The center of the explosion.
--- @param radius     (number) The radius in which to get the tiles.
--- @return           (table)  A sequence containing all tiles in the circle.
---
-local function getTilesInCircle( centerTile, radius )
-    local list = {};
-
-    -- Get all tiles in the rectangle around the centerTile.
-    for x = centerTile:getX() - radius, centerTile:getX() + radius do
-        for y = centerTile:getY() - radius, centerTile:getY() + radius do
-            local tile = map:getTileAt( x, y );
-            if tile then
-                local tx, ty = tile:getPosition();
-                tx = centerTile:getX() - tx;
-                ty = centerTile:getY() - ty;
-
-                -- Ignore tiles which lie outside of the radius.
-                if tx * tx + ty * ty <= radius * radius then
-                    list[#list + 1] = tile;
-                end
-            end
-        end
-    end
-
-    return list;
-end
 
 ---
 -- Determines all tiles which are hit by the explosion.
@@ -169,7 +141,7 @@ end
 -- @param radius (number) The explosion's radius.
 --
 function ExplosionManager.register( source, radius )
-    local list = getTilesInCircle( source, radius );
+    local list = Util.getTilesInCircle( map, source, radius );
     local queues = generateExplosionMap( source, list, radius );
     explosionLayout = generateExplosionSteps( queues, radius );
     explosionIndex = 1;
