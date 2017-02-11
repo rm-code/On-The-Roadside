@@ -5,24 +5,21 @@
 [![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.org/rm-code/On-The-Roadside.svg?branch=develop)](https://travis-ci.org/rm-code/On-The-Roadside)
 
-On the Roadside is a turnbased strategy game. It is developed by [@rm-code](https://twitter.com/rm_code) using [Lua](http://www.lua.org/) and the [LÖVE](https://love2d.org/) framework.
+_On the Roadside_ is a turn-based strategy game in which you take control of a squad of mercenaries fighting for survival in a world shaped by unknown forces. It currently is in the very _early stages_ of development.
 
-![img](res/misc/screenshot.png)
+![ai](https://cloud.githubusercontent.com/assets/11627131/22786211/def39e3a-eed7-11e6-84e3-bd0c80b173f3.gif)
 
-## Controls
+### Key Features:
 
-| Key       | Action                     |
-|-----------|----------------------------|
-| Left      | Select previous fire mode  |
-| Right     | Select next fire mode      |
-| s         | Stand                      |
-| c         | Crouch                     |
-| p         | Prone                      |
-| r         | Reload Weapon              |
-| a         | Switch to Attack Mode      |
-| m         | Switch to Movement Mode    |
-| e         | Switch to Interaction Mode |
-| i         | Open Inventory             |
-| Backspace | Select previous Character  |
-| Space     | Select next Character      |
-| Return    | End Turn                   |
+- __Turn-Based Combat__: Combat in _On The Roadside_ is taken in turns.
+- __Deep Combat Mechanics__: Accuracy is simulated for each projectile and doesn't rely on simple "chance-to-hit calculations". Projectiles can penetrate and perforate objects based on their energy levels.
+- __Destructible Maps__: Currently the map features destructible objects like windows, fences, and doors. Over time more tiles and objects will be implemented.
+- __ASCII-Graphics__: Abstract representation through ASCII tiles combined with smooth animations and particles.
+
+### Planned Features:
+- __Base Building__: Improve your home base as you continue to explore the zone and try to find out what happened.
+- __Persistent Soldiers__: Your team will gain experience, suffer from injuries and follow you from mission to mission. You will learn to love your veterans and try to save the rookies who are eager to prove themselves in combat.
+- __More more more ...__: The game is far from a full release and a lot of things will change during the development - so stay tuned!
+
+### Please note
+This game is still in early stages of development by a one-man team ([@rm-code](https://twitter.com/rm_code)). I'm developing this game on my own in my free time and while I'm determined to make it as good and complete as possible there is no guarantee that it will ever be completed. That's why currently I am using the "pay what you want option" - If you decide that my work is worth your hard earned cash, you are a lovely person and I like you <3
