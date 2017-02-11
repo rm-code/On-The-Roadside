@@ -37,6 +37,7 @@ function BTRandomMovement.new()
                 end
             end
             Log.debug( 'Can not find a path to the target', 'BTRandomMovement' );
+            return false;
         end
 
         Log.debug( 'Invalid target', 'BTRandomMovement' );
