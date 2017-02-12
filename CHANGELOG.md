@@ -1,3 +1,20 @@
+# Version 0.6.0 WIP
+
+## Additions
+- Added random spawning of items when a world object is destroyed
+- Added interaction with inventory of adjacent tiles
+- Added automatic opening of container objects if they are the target of a movement path
+
+## Fixes
+- Fixed color code for impassable world objects when aiming
+
+## Other Changes
+- Use an improved algorithm for FOV calculations
+- Apply bleeding effects directly on a hit instead of waiting till the next round
+
+
+
+
 # Version 0.5.2.741 - 2017-02-11
 
 ## Fixes
@@ -164,12 +181,9 @@
 - Fixed serialization and loading of openable world objects
 - Fixed unequippable items vanishing when trying to equip them
 - Fixed crash when trying to switch firing modes without a weapon equipped
-([#55](https://github.com/rm-code/On-The-Roadside/issues/55))
 - Fixed grenades being removed upon explosion instead of being thrown
 - Fixed crash when a character tries to attack its own tile
-([#68](https://github.com/rm-code/On-The-Roadside/issues/68))
 - Fixed crash with dropping a character's inventory on death
-([#70](https://github.com/rm-code/On-The-Roadside/issues/70))
 
 ## Other Changes
 - The game starts in fullscreen now by default
