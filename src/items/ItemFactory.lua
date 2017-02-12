@@ -47,34 +47,6 @@ local items = {};
 -- ------------------------------------------------
 
 ---
--- Checks if the item type is valid.
--- @param type (string)  The type to check.
--- @return     (boolean) True if the item type is valid.
---
-local function checkItemType( type )
-    if type == ITEM_TYPES.WEAPON then
-        return true;
-    elseif type == ITEM_TYPES.HEADGEAR then
-        return true;
-    elseif type == ITEM_TYPES.GLOVES then
-        return true;
-    elseif type == ITEM_TYPES.JACKET then
-        return true;
-    elseif type == ITEM_TYPES.SHIRT then
-        return true;
-    elseif type == ITEM_TYPES.TROUSERS then
-        return true;
-    elseif type == ITEM_TYPES.FOOTWEAR then
-        return true;
-    elseif type == ITEM_TYPES.BAG then
-        return true;
-    elseif type == ITEM_TYPES.AMMO then
-        return true;
-    end
-    return false
-end
-
----
 -- Loads item templates from the specified directory and stores them in the
 -- items table.
 -- @param src (string) The module to load the templates from.
@@ -83,7 +55,6 @@ local function load( src )
     local module = require( src );
     for _, template in ipairs( module ) do
         local itemType = template.itemType;
-        assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
         items[itemType] = items[itemType] or {};
         table.insert( items[itemType], template );
         Log.debug( string.format( '  %s', template.id ));
