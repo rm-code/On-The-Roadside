@@ -89,7 +89,7 @@ function OverlayPainter.new( game, particleLayer )
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
                 -- 4 means the projectile can't reach this tile.
-                if tile:isOccupied() or ( tile:hasWorldObject() and tile:getWorldObject():isDestructible() ) then
+                if tile:isOccupied() or ( tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getSize() < 100 )) then
                     status = 2;
                 elseif tile:hasWorldObject() and not tile:getWorldObject():isDestructible() then
                     status = 3;
