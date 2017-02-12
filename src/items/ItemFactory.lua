@@ -24,15 +24,17 @@ local ItemFactory = {};
 local ITEM_TYPES = require('src.constants.ItemTypes');
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
-local TEMPLATES_DIRECTORY_FOOTWEAR = 'res/data/items/clothing/footwear/';
-local TEMPLATES_DIRECTORY_GLOVES   = 'res/data/items/clothing/gloves/';
-local TEMPLATES_DIRECTORY_HEADGEAR = 'res/data/items/clothing/headgear/';
-local TEMPLATES_DIRECTORY_JACKETS  = 'res/data/items/clothing/jackets/';
-local TEMPLATES_DIRECTORY_SHIRTS   = 'res/data/items/clothing/shirts/';
-local TEMPLATES_DIRECTORY_TROUSERS = 'res/data/items/clothing/trousers/';
-local TEMPLATES_DIRECTORY_WEAPONS  = 'res/data/items/weapons/';
-local TEMPLATES_DIRECTORY_BAGS     = 'res/data/items/bags/';
-local TEMPLATES_DIRECTORY_AMMO     = 'res/data/items/ammunition/';
+local TEMPLATES_FOOTWEAR   = 'res.data.items.clothing.Footwear';
+local TEMPLATES_GLOVES     = 'res.data.items.clothing.Gloves';
+local TEMPLATES_HEADGEAR   = 'res.data.items.clothing.Headgear';
+local TEMPLATES_JACKETS    = 'res.data.items.clothing.Jackets';
+local TEMPLATES_SHIRTS     = 'res.data.items.clothing.Shirts';
+local TEMPLATES_TROUSERS   = 'res.data.items.clothing.Trousers';
+local TEMPLATES_MELEE      = 'res.data.items.weapons.Melee';
+local TEMPLATES_RANGED     = 'res.data.items.weapons.Ranged';
+local TEMPLATES_THROWN     = 'res.data.items.weapons.Thrown';
+local TEMPLATES_CONTAINERS = 'res.data.items.Containers';
+local TEMPLATES_AMMO       = 'res.data.items.Ammunition';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -75,27 +77,16 @@ end
 ---
 -- Loads item templates from the specified directory and stores them in the
 -- items table.
--- @param dir (string) The directory url to load the templates from.
+-- @param src (string) The module to load the templates from.
 --
-local function load( dir )
-    local files = love.filesystem.getDirectoryItems( dir );
-    for i, file in ipairs( files ) do
-        if love.filesystem.isFile( dir .. file ) then
-            local status, loaded = pcall( love.filesystem.load, dir .. file );
-            if not status then
-                Log.warn( 'Can not load ' .. dir .. file );
-            else
-                local template = loaded();
-                local itemType = template.itemType;
-
-                assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
-
-                items[itemType] = items[itemType] or {};
-                table.insert( items[itemType], template );
-
-                Log.debug( string.format( '  %d. %s', i, template.id ));
-            end
-        end
+local function load( src )
+    local module = require( src );
+    for _, template in ipairs( module ) do
+        local itemType = template.itemType;
+        assert( checkItemType( itemType ), string.format( 'Invalid item type %s!', itemType ));
+        items[itemType] = items[itemType] or {};
+        table.insert( items[itemType], template );
+        Log.debug( string.format( '  %s', template.id ));
     end
 end
 
@@ -219,31 +210,37 @@ end
 --
 function ItemFactory.loadTemplates()
     Log.debug( "Load Footwear Templates:" )
-    load( TEMPLATES_DIRECTORY_FOOTWEAR );
+    load( TEMPLATES_FOOTWEAR );
 
     Log.debug( "Load Glove Templates:" )
-    load( TEMPLATES_DIRECTORY_GLOVES );
+    load( TEMPLATES_GLOVES );
 
     Log.debug( "Load Headgear Templates:" )
-    load( TEMPLATES_DIRECTORY_HEADGEAR );
+    load( TEMPLATES_HEADGEAR );
 
     Log.debug( "Load Jacket Templates:" )
-    load( TEMPLATES_DIRECTORY_JACKETS );
+    load( TEMPLATES_JACKETS );
 
     Log.debug( "Load Shirt Templates:" )
-    load( TEMPLATES_DIRECTORY_SHIRTS );
+    load( TEMPLATES_SHIRTS );
 
     Log.debug( "Load Trouser Templates:" )
-    load( TEMPLATES_DIRECTORY_TROUSERS );
+    load( TEMPLATES_TROUSERS );
 
-    Log.debug( "Load Weapon Templates:" )
-    load( TEMPLATES_DIRECTORY_WEAPONS );
+    Log.debug( "Load Melee Weapon Templates:" )
+    load( TEMPLATES_MELEE );
 
-    Log.debug( "Load Bag Templates:" )
-    load( TEMPLATES_DIRECTORY_BAGS );
+    Log.debug( "Load Ranged Weapon Templates:" )
+    load( TEMPLATES_RANGED );
+
+    Log.debug( "Load Thrown Weapon Templates:" )
+    load( TEMPLATES_THROWN );
+
+    Log.debug( "Load Container Templates:" )
+    load( TEMPLATES_CONTAINERS );
 
     Log.debug( "Load Ammunition Templates:" );
-    load( TEMPLATES_DIRECTORY_AMMO );
+    load( TEMPLATES_AMMO );
 end
 
 ---
