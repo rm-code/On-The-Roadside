@@ -16,6 +16,8 @@ local BodyFactory = {};
 -- ------------------------------------------------
 
 local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/';
+local TEMPLATE_EXTENSION = 'lua';
+local LAYOUT_EXTENSION = 'tgf';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -37,8 +39,12 @@ local function loadFiles( dir )
     local files = {};
     for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
         local fn, fe = file:match( '^(.+)%.(.+)$' );
-        files[i] = { name = fn, extension = fe };
-        Log.debug( string.format( '%6d. %s.%s', i, fn, fe ));
+        if fe == TEMPLATE_EXTENSION or fe == LAYOUT_EXTENSION then
+            files[#files + 1] = { name = fn, extension = fe };
+            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ));
+        else
+            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ));
+        end
     end
     return files;
 end
@@ -51,7 +57,7 @@ end
 local function loadTemplates( files )
     local tmp = {};
     for _, file in ipairs( files ) do
-        if file.extension == 'lua' then
+        if file.extension == TEMPLATE_EXTENSION then
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, loaded = pcall( love.filesystem.load, path );
             if not status then
@@ -79,7 +85,7 @@ end
 local function loadLayouts( files )
     local tmp = {};
     for _, file in ipairs( files ) do
-        if file.extension == 'tgf' then
+        if file.extension == LAYOUT_EXTENSION then
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, template = pcall( TGFParser.parse, path );
             if not status then
