@@ -1,17 +1,17 @@
 return {
     {
-        id       = "weapon_m67_grenade",
-        idDesc = "weapon_m67_grenade_desc",
-        itemType = "Weapon",
-        weight   = 0.2,
-        volume = 0.1,
-        weaponType = "Thrown",
-        damage   = 120,
+        id         = "weapon_m67_grenade",
+        idDesc     = "weapon_m67_grenade_desc",
+        itemType   = "Weapon",
+        weight     = 0.2,
+        volume     = 0.1,
         equippable = true,
+        stackable  = true,
+        weaponType = "Thrown",
+        damage     = 120,
         reloadable = false,
-        stackable = true,
-        range = 10,
-        sound = 'MELEE',
+        range      = 10,
+        sound      = 'MELEE',
         mode = {
             {
                 name = "Throw",
@@ -19,27 +19,27 @@ return {
             }
         },
         effects = {
-            explosive = { blastRadius = 2 },
+            explosive    = { blastRadius = 2 },
             customSprite = { sprite = 8 }
         }
     },
     {
-        id       = "weapon_shuriken",
-        idDesc = "weapon_shuriken_desc",
-        itemType = "Weapon",
-        weight   = 0.2,
-        volume = 0.0,
-        weaponType = "Thrown",
-        damage   = 40,
+        id         = "weapon_shuriken",
+        idDesc     = "weapon_shuriken_desc",
+        itemType   = "Weapon",
+        weight     = 0.2,
+        volume     = 0.0,
         equippable = true,
+        stackable  = true,
+        weaponType = "Thrown",
+        damage     = 40,
         reloadable = false,
-        stackable = true,
-        range = 10,
-        sound = 'MELEE',
+        range      = 10,
+        sound      = 'MELEE',
         mode = {
             {
-                name = "Throw",
-                cost = 3,
+                name       = "Throw",
+                cost       = 3,
                 damageType = 'piercing'
             }
         },

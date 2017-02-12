@@ -1,14 +1,15 @@
 return {
     {
-        id = "headgear_pasgt_helmet",
-        idDesc = "headgear_pasgt_helmet_desc",
-        itemType = "Headgear",
+        id         = "headgear_pasgt_helmet",
+        idDesc     = "headgear_pasgt_helmet_desc",
+        itemType   = "Headgear",
+        weight     = 1.3,
+        volume     = 3.1,
         equippable = true,
-        weight = 1.3,
-        volume = 3.1,
+        stackable  = false,
         armor = {
             protection = 30,
-            coverage = 45
+            coverage   = 45
         }
     }
 }
