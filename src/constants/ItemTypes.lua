@@ -9,6 +9,7 @@ ITEM_TYPES.JACKET    = 'Jacket';
 ITEM_TYPES.SHIRT     = 'Shirt';
 ITEM_TYPES.TROUSERS  = 'Trousers';
 ITEM_TYPES.FOOTWEAR  = 'Footwear';
+ITEM_TYPES.MISC      = 'Miscellaneous';
 
 -- Make table read-only.
 return setmetatable( ITEM_TYPES, {

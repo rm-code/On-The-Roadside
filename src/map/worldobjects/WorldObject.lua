@@ -39,6 +39,7 @@ function WorldObject.new( template )
     local openSprite = template.openSprite;
     local color = template.color;
     local container = template.container;
+    local drops = template.drops;
     local inventory = container and Inventory.new() or nil;
 
     -- ------------------------------------------------
@@ -216,6 +217,10 @@ function WorldObject.new( template )
     --
     function self:isPassable()
         return passable;
+    end
+
+    function self:getDrops()
+        return drops;
     end
 
     -- ------------------------------------------------

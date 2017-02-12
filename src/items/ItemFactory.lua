@@ -10,6 +10,7 @@ local Jacket = require( 'src.items.clothes.Jacket' );
 local Shirt = require( 'src.items.clothes.Shirt' );
 local Trousers = require( 'src.items.clothes.Trousers' );
 local Bag = require( 'src.items.Bag' );
+local Item = require( 'src.items.Item' );
 
 -- ------------------------------------------------
 -- Module
@@ -35,6 +36,7 @@ local TEMPLATES_RANGED     = 'res.data.items.weapons.Ranged';
 local TEMPLATES_THROWN     = 'res.data.items.weapons.Thrown';
 local TEMPLATES_CONTAINERS = 'res.data.items.Containers';
 local TEMPLATES_AMMO       = 'res.data.items.Ammunition';
+local TEMPLATES_MISC       = 'res.data.items.Miscellaneous';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -172,6 +174,16 @@ local function createBag( id )
     return Bag.new( template );
 end
 
+---
+-- Creates a miscellaneous item.
+-- @param id (string) The id of the item to create.
+-- @return   (Item)   The new miscellaneous item instance.
+--
+local function createMiscellaneous( id )
+    local template = searchTemplate( id, items.Miscellaneous );
+    return Item.new( template );
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -212,6 +224,9 @@ function ItemFactory.loadTemplates()
 
     Log.debug( "Load Ammunition Templates:" );
     load( TEMPLATES_AMMO );
+
+    Log.debug( "Load Miscellaneous Templates:" );
+    load( TEMPLATES_MISC );
 end
 
 ---
@@ -239,6 +254,8 @@ function ItemFactory.createItem( type, id )
         return createTrousers( id );
     elseif type == ITEM_TYPES.FOOTWEAR then
         return createFootwear( id );
+    elseif type == ITEM_TYPES.MISC then
+        return createMiscellaneous( id );
     end
 end
 
@@ -284,6 +301,10 @@ function ItemFactory.createRandomItem( type )
         local rnd = love.math.random( 1, #items.Footwear );
         local template = items.Footwear[rnd];
         return createFootwear( template.id );
+    elseif type == ITEM_TYPES.MISC then
+        local rnd = love.math.random( 1, #items.Miscellaneous );
+        local template = items.Miscellaneous[rnd];
+        return createMiscellaneous( template.id );
     end
 end
 

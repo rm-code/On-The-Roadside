@@ -33,6 +33,12 @@ locale.strings = {
     ['12 gauge_desc'] = "Standard 12 gauge shotgun ammunition.",
     ['OG-7V'] = "OG-7V",
     ['OG-7V_desc'] = "The OG-7V is a 40 mm Fragmentation warhead for anti-personnel warfare used as ammunition for the RPG-7.",
+    ['misc_nail'] = "Nail",
+    ['misc_nail_desc'] = "An ordinary nail. It doesn't look useful.",
+    ['misc_splintered_wood'] = "Splintered wood",
+    ['misc_splintered_wood_desc'] = "A bunch of splintered wood. It doesn't look useful.",
+    ['misc_glass_shard'] = "Shard of glass",
+    ['misc_glass_shard_desc'] = "A shard of broken glass. It doesn't look useful.",
 }
 
 return locale;
