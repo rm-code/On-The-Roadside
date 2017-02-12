@@ -47,8 +47,6 @@ local function createEquipment( character )
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
     equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
