@@ -6,7 +6,7 @@ local Log = {};
 
 local FILE_NAME = 'latest.log';
 local MAX_SIZE = 1000000;
-local DEBUG_OUTPUT = true;
+local DEBUG_OUTPUT = false;
 
 local DEBUG_PREFIX   = '[DEBUG]';
 local WARNING_PREFIX = '[WARNING]';
