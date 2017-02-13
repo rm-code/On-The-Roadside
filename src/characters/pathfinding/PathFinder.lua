@@ -112,17 +112,31 @@ end
 -- Checks if a tile is valid for pathfinding.
 -- @param tile       (Tile)    The tile to check list.
 -- @param closedList (table)   The closed list.
--- @param target     (Tile)    The target tile.
 -- @return           (boolean) True if the tile can be used for pathfinding.
 --
-local function isValidTile( tile, closedList, target )
-    if not isInList( closedList, tile ) and not tile:isOccupied() then
-        if tile:hasWorldObject() and not tile:getWorldObject():blocksPathfinding() then
+local function isValidTile( tile, closedList )
+    -- Ignore tiles that are already used in the path.
+    if isInList( closedList, tile ) then
+        return false;
+    end
+
+    -- We don't allow movement to tiles occupied by other characters.
+    if tile:isOccupied() then
+        return false;
+    end
+
+    if tile:hasWorldObject() then
+        local worldObject = tile:getWorldObject();
+
+        -- Openable world objects never block pathfinding.
+        if worldObject:isOpenable() then
             return true;
         end
-        return tile:isPassable();
+
+        -- Non-blocking world objects are valid too.
+        return not worldObject:blocksPathfinding();
     end
-    return tile == target;
+    return tile:isPassable();
 end
 
 ---
@@ -197,9 +211,8 @@ function PathFinder.generatePath( character, target )
 
         -- Look for the next tile.
         for direction, tile in pairs( current.tile:getNeighbours() ) do
-            -- Check if the tile is passable and not in the closed list or if the
-            -- tile is the target we are looking for.
-            if isValidTile( tile, closedList, target ) then
+            -- Check if the tile is valid to use in our path.
+            if isValidTile( tile, closedList ) then
                 local cost = calculateCost( tile, target, character );
                 local g = current.g + cost * getDirectionModifier( direction );
                 local f = g + calculateHeuristic( tile, target );
