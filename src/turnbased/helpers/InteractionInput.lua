@@ -70,7 +70,8 @@ function InteractionInput.new()
             return true;
         end
 
-        return false;
+        character:enqueueAction( OpenInventory.new( character, target ))
+        return true;
     end
 
     ---

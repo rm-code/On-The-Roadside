@@ -258,6 +258,7 @@ function InventoryScreen.new()
     -- Updates the inventory lists.
     --
     function self:update( dt )
+        target:setDirty( true );
         for _, list in pairs( lists ) do
             list:update( dt );
         end
