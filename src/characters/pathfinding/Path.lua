@@ -1,6 +1,7 @@
 local Object = require('src.Object');
 local Walk = require( 'src.characters.actions.Walk' );
 local Open = require( 'src.characters.actions.Open' );
+local OpenInventory = require( 'src.characters.actions.OpenInventory' );
 local ClimbOver = require( 'src.characters.actions.ClimbOver' );
 
 -- ------------------------------------------------
@@ -90,6 +91,10 @@ function Path.new()
 
                 if worldObject:isClimbable() then
                     success = character:enqueueAction( ClimbOver.new( character, tile ));
+                end
+
+                if worldObject:isContainer() then
+                    character:enqueueAction( OpenInventory.new( character, tile ));
                 end
             else
                 success = character:enqueueAction( Walk.new( character, tile ));
