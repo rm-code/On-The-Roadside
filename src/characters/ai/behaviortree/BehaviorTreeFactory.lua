@@ -39,9 +39,9 @@ local function loadFiles( dir )
         local fn, fe = file:match( '^(.+)%.(.+)$' );
         if fe == TEMPLATE_EXTENSION then
             files[#files + 1] = { name = fn, extension = fe };
-            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ));
+            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ), 'BehaviorTreeFactory' );
         else
-            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ));
+            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ), 'BehaviorTreeFactory' );
         end
     end
     return files;
@@ -58,7 +58,7 @@ local function parseFiles( files )
         local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY, file.name, file.extension );
         local status, template = pcall( TGFParser.parse, path );
         if not status then
-            Log.warn( 'Can not load ' .. path );
+            Log.warn( 'Can not load ' .. path, 'BehaviorTreeFactory' );
         else
             tmp[file.name] = template;
         end
@@ -71,13 +71,11 @@ local function createTree( layout )
 
     for index, id in ipairs( layout.nodes ) do
         nodes[index] = BLUEPRINTS[id].new();
-        Log.debug( string.format( 'Created behavior tree node: %d, %s', index, id ));
     end
 
     for _, edge in ipairs( layout.edges ) do
         local from, to = nodes[edge.from], nodes[edge.to];
         from:addNode( to, tonumber( edge.name ));
-        Log.debug( string.format( 'Added node %s to %s as %d', edge.from, edge.to, tonumber( edge.name )));
     end
 
     return nodes[1];
@@ -87,7 +85,7 @@ end
 -- Loads the templates.
 --
 function BehaviorTreeFactory.loadTemplates()
-    Log.debug( "Load Creature-Templates:" )
+    Log.debug( "Load Behavior Trees:" )
     local files = loadFiles( TEMPLATE_DIRECTORY );
     treeLayouts = parseFiles( files );
 end

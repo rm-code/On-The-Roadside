@@ -39,7 +39,7 @@ function Body.new( bloodVolume )
         if node:isBleeding() then
             bloodVolume = bloodVolume - node:getBloodLoss();
             if bloodVolume <= 0 then
-                Log.warn( 'Character bled to death \\o/' );
+                Log.debug( 'Character bleeds to death!', 'Body' );
                 statusEffects:add({ STATUS_EFFECTS.DEATH });
             end
         end
@@ -90,7 +90,7 @@ function Body.new( bloodVolume )
         for _, edge in ipairs( edges ) do
             local slots = equipment:getSlots();
             if slots[edge.from] and edge.to == node:getIndex() then
-                Log.debug( '    Equipment slot > ' .. slots[edge.from]:getID() )
+                Log.debug( '    Equipment slot > ' .. slots[edge.from]:getID(), 'Body' )
                 -- TODO damage reduction based on armor items
             end
         end
@@ -126,7 +126,7 @@ function Body.new( bloodVolume )
 
     function self:hit( damage, damageType )
         local entryNode = selectEntryNode();
-        Log.debug( "Attack enters body at " .. entryNode:getID() );
+        Log.debug( "Attack enters body at " .. entryNode:getID(), 'Body' );
 
         propagateDamage( entryNode, damage, damageType );
     end

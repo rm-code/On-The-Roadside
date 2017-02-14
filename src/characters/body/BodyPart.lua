@@ -18,7 +18,7 @@ function BodyPart.new( index, template )
 
     function self:hit( damage, damageType )
         health = health - damage;
-        Log.debug( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ));
+        Log.debug( string.format( 'Hit %s with %d points of %s damage. New hp: %d', template.id, damage, damageType, health ), 'BodyPart' );
 
         if self:isEntryNode() then
             -- TODO base bleeding on damage type.
