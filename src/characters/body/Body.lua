@@ -49,6 +49,38 @@ function Body.new( template )
     end
 
     ---
+    -- Checks if the body part's node is connected to an equipment slot and if
+    -- that equipment slot contains an item of the type clothing. If that's the
+    -- case it reduces the damage based on the type of damage and the type of
+    -- armor stats the item in the equipment slot has.
+    -- @param node       (BodyPart) The body part to damage.
+    -- @param damage     (number)   The amount of damage.
+    -- @param damageType (string)   The type of damage.
+    -- @return           (number)   The modified damage value.
+    --
+    local function checkArmorProtection( node, damage, _ )
+        local slots = equipment:getSlots();
+        for _, edge in ipairs( edges ) do
+            local slot = slots[edge.from];
+            -- If edge.from points to an equipment slot and the edge connects it
+            -- to the body part currently receiving damage we check for armor.
+            if slot and edge.to == node:getIndex() then
+                -- Get the slot contains an item and the item is of type clothing we check
+                -- if the attack actually hits a part that is covered by the armor.
+                local item = slot:getItem();
+                if item and item:instanceOf( 'Armor' ) then
+                    Log.debug( 'Body part is protected by armor ' .. item:getID(), 'Body' );
+                    if love.math.random( 0, 100 ) < item:getArmorCoverage() then
+                        Log.debug( string.format( 'The armor absorbs %d points of damage.', item:getArmorProtection() ), 'Body' );
+                        damage = damage - item:getArmorProtection();
+                    end
+                end
+            end
+        end
+        return damage;
+    end
+
+    ---
     -- Picks a random entry node and returns it.
     -- @return (BodyPart) The bodypart used as an entry point for the graph.
     --
@@ -89,14 +121,7 @@ function Body.new( template )
     -- @param damageType (string)   The type of damage.
     --
     local function propagateDamage( node, damage, damageType )
-        -- Check if an equipment slot is connected to this body part.
-        for _, edge in ipairs( edges ) do
-            local slots = equipment:getSlots();
-            if slots[edge.from] and edge.to == node:getIndex() then
-                Log.debug( '    Equipment slot > ' .. slots[edge.from]:getID(), 'Body' )
-                -- TODO damage reduction based on armor items
-            end
-        end
+        damage = checkArmorProtection( node, damage, damageType );
 
         node:hit( damage, damageType );
         handleBleeding( node );
