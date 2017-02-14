@@ -12,6 +12,7 @@ local BLUEPRINTS = {
     ['BTAttackTarget']       = require( 'src.characters.ai.behaviortree.leafs.BTAttackTarget' ),
     ['BTCanAttack']          = require( 'src.characters.ai.behaviortree.leafs.BTCanAttack' ),
     ['BTCanReload']          = require( 'src.characters.ai.behaviortree.leafs.BTCanReload' ),
+    ['BTCanSeeItem']         = require( 'src.characters.ai.behaviortree.leafs.BTCanSeeItem' ),
     ['BTHasMeleeWeapon']     = require( 'src.characters.ai.behaviortree.leafs.BTHasMeleeWeapon' ),
     ['BTHasRangedWeapon']    = require( 'src.characters.ai.behaviortree.leafs.BTHasRangedWeapon' ),
     ['BTHasThrowingWeapon']  = require( 'src.characters.ai.behaviortree.leafs.BTHasThrowingWeapon' ),
@@ -23,6 +24,7 @@ local BLUEPRINTS = {
     ['BTRandomMovement']     = require( 'src.characters.ai.behaviortree.leafs.BTRandomMovement' ),
     ['BTRearm']              = require( 'src.characters.ai.behaviortree.leafs.BTRearm' ),
     ['BTReload']             = require( 'src.characters.ai.behaviortree.leafs.BTReload' ),
+    ['BTTakeItem']           = require( 'src.characters.ai.behaviortree.leafs.BTTakeItem' ),
     ['BTThrowingAttack']     = require( 'src.characters.ai.behaviortree.leafs.BTThrowingAttack' )
 }
 
@@ -70,6 +72,7 @@ local function createTree( layout )
     local nodes = {};
 
     for index, id in ipairs( layout.nodes ) do
+        assert( BLUEPRINTS[id], string.format( 'Behavior blueprint %s does not exist!', id ));
         nodes[index] = BLUEPRINTS[id].new();
     end
 
