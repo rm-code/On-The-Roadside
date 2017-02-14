@@ -31,6 +31,21 @@ function Body.new( bloodVolume )
     -- ------------------------------------------------
 
     ---
+    -- Ticks the bleeding effects on a node and applies the dead effect to the
+    -- character if the blood volume is below zero.
+    -- @param node (BodyPart) The bodypart to tick.
+    --
+    local function handleBleeding( node )
+        if node:isBleeding() then
+            bloodVolume = bloodVolume - node:getBloodLoss();
+            if bloodVolume <= 0 then
+                Log.warn( 'Character bled to death \\o/' );
+                statusEffects:add({ STATUS_EFFECTS.DEATH });
+            end
+        end
+    end
+
+    ---
     -- Picks a random entry node and returns it.
     -- @return (BodyPart) The bodypart used as an entry point for the graph.
     --
@@ -81,6 +96,7 @@ function Body.new( bloodVolume )
         end
 
         node:hit( damage, damageType );
+        handleBleeding( node );
 
         -- Manually destroy child nodes if parent node is destroyed.
         if node:isDestroyed() then
@@ -103,12 +119,7 @@ function Body.new( bloodVolume )
     function self:tickOneTurn()
         for _, node in pairs( nodes ) do
             if node:isBleeding() then
-                bloodVolume = bloodVolume - node:getBloodLoss();
-                Log.debug( string.format( '%s is bleeding. Blood volume lowered to %d', node:getID(), bloodVolume ));
-                if bloodVolume <= 0 then
-                    statusEffects:add({ STATUS_EFFECTS.DEATH });
-                    break;
-                end
+                handleBleeding( node );
             end
         end
     end
