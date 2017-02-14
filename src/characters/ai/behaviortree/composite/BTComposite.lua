@@ -7,8 +7,8 @@ function BTComposite.new()
 
     local children = {};
 
-    function self:addNode( nnode )
-        children[#children + 1] = nnode;
+    function self:addNode( nnode, pos )
+        children[pos] = nnode;
     end
 
     function self:traverse( ... )

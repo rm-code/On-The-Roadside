@@ -1,13 +1,13 @@
 local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
-local BehaviorTree = require( 'src.characters.ai.behaviortree.BehaviorTree' );
+local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 
 local SadisticAIDirector = {};
 
 function SadisticAIDirector.new( factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
-    local tree = BehaviorTree.new();
+    local tree = BehaviorTreeFactory.create();
 
     local function tickBehaviorTree( character )
         Log.debug( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );

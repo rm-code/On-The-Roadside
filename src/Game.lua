@@ -11,6 +11,7 @@ local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local SaveHandler = require( 'src.SaveHandler' );
+local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -64,6 +65,7 @@ function Game.new()
         TileFactory.loadTemplates();
         BodyFactory.loadTemplates();
         WorldObjectFactory.loadTemplates();
+        BehaviorTreeFactory.loadTemplates();
         SoundManager.loadResources();
 
         map = Map.new();
