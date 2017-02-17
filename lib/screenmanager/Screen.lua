@@ -1,6 +1,6 @@
 --===============================================================================--
 --                                                                               --
--- Copyright (c) 2014 - 2016 Robert Machmer                                      --
+-- Copyright (c) 2014 - 2017 Robert Machmer                                      --
 --                                                                               --
 -- This software is provided 'as-is', without any express or implied             --
 -- warranty. In no event will the authors be held liable for any damages         --
@@ -20,107 +20,86 @@
 --                                                                               --
 --===============================================================================--
 
-local Screen = {};
+local Screen = {}
+
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
+
+---
+-- Function stub.
+--
+local function null()
+    return
+end
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 function Screen.new()
-    local self = {};
+    local self = {}
 
-    local active = true;
+    local active = true
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init() end
-
-    function self:close() end
-
     function self:isActive()
-        return active;
+        return active
     end
 
-    function self:setActive( dactiv )
-        active = dactiv;
+    function self:setActive( nactiv )
+        active = nactiv
     end
 
     -- ------------------------------------------------
     -- Callback-stubs
     -- ------------------------------------------------
 
-    function self:directorydropped() end
+    self.init = null
+    self.close = null
+    self.directorydropped = null
+    self.draw = null
+    self.filedropped = null
+    self.focus = null
+    self.keypressed = null
+    self.keyreleased = null
+    self.lowmemory = null
+    self.mousefocus = null
+    self.mousemoved = null
+    self.mousepressed = null
+    self.mousereleased = null
+    self.quit = null
+    self.resize = null
+    self.textedited = null
+    self.textinput = null
+    self.threaderror = null
+    self.touchmoved = null
+    self.touchpressed = null
+    self.touchreleased = null
+    self.update = null
+    self.visible = null
+    self.wheelmoved = null
+    self.gamepadaxis = null
+    self.gamepadpressed = null
+    self.gamepadreleased = null
+    self.joystickadded = null
+    self.joystickaxis = null
+    self.joystickhat = null
+    self.joystickpressed = null
+    self.joystickreleased = null
+    self.joystickremoved = null
 
-    function self:draw() end
-
-    function self:filedropped() end
-
-    function self:focus() end
-
-    function self:keypressed() end
-
-    function self:keyreleased() end
-
-    function self:lowmemory() end
-
-    function self:mousefocus() end
-
-    function self:mousemoved() end
-
-    function self:mousepressed() end
-
-    function self:mousereleased() end
-
-    function self:quit() end
-
-    function self:resize() end
-
-    function self:textedited() end
-
-    function self:textinput() end
-
-    function self:threaderror() end
-
-    function self:touchmoved() end
-
-    function self:touchpressed() end
-
-    function self:touchreleased() end
-
-    function self:update() end
-
-    function self:visible() end
-
-    function self:wheelmoved() end
-
-    function self:gamepadaxis() end
-
-    function self:gamepadpressed() end
-
-    function self:gamepadreleased() end
-
-    function self:joystickadded() end
-
-    function self:joystickaxis() end
-
-    function self:joystickhat() end
-
-    function self:joystickpressed() end
-
-    function self:joystickreleased() end
-
-    function self:joystickremoved() end
-
-    return self;
+    return self
 end
 
 -- ------------------------------------------------
 -- Return Module
 -- ------------------------------------------------
 
-return Screen;
+return Screen
 
 --==================================================================================================
 -- Created 02.06.14 - 20:25                                                                        =

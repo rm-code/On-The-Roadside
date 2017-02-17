@@ -1,6 +1,6 @@
 --===============================================================================--
 --                                                                               --
--- Copyright (c) 2014 - 2016 Robert Machmer                                      --
+-- Copyright (c) 2014 - 2017 Robert Machmer                                      --
 --                                                                               --
 -- This software is provided 'as-is', without any express or implied             --
 -- warranty. In no event will the authors be held liable for any damages         --
@@ -21,17 +21,20 @@
 --===============================================================================--
 
 local ScreenManager = {
-    _VERSION     = '1.8.0',
+    _VERSION     = '2.0.0',
     _DESCRIPTION = 'Screen/State Management for the LÖVE framework',
     _URL         = 'https://github.com/rm-code/screenmanager/',
-};
+}
 
 -- ------------------------------------------------
 -- Local Variables
 -- ------------------------------------------------
 
-local stack;
-local screens;
+local stack
+local screens
+
+local changes = {}
+local height = 0 --Stack height
 
 -- ------------------------------------------------
 -- Private Functions
@@ -41,15 +44,86 @@ local screens;
 -- Close and remove all screens from the stack.
 --
 local function clear()
-    for i = 1, #stack do
-        stack[i]:close();
-        stack[i] = nil;
+    for i = #stack, 1, -1 do
+        stack[i]:close()
+        stack[i] = nil
+    end
+end
+
+---
+-- Close and pop the current active state and activate the one beneath it
+--
+local function pop()
+    -- Close the currently active screen.
+    local tmp = ScreenManager.peek()
+
+    -- Remove the now inactive screen from the stack.
+    stack[#stack] = nil
+
+    -- Close the previous screen.
+    tmp:close()
+
+    -- Activate next screen on the stack.
+    ScreenManager.peek():setActive( true )
+end
+
+---
+-- Deactivate the current state, push a new state and initialize it
+--
+local function push( screen, args )
+  if ScreenManager.peek() then
+      ScreenManager.peek():setActive( false )
+  end
+
+  -- Push the new screen onto the stack.
+  stack[#stack + 1] = screens[screen].new()
+
+  -- Create the new screen and initialise it.
+  stack[#stack]:init( unpack( args ) )
+end
+
+---
+-- Check if the screen is valid or error if not
+--
+local function validateScreen( screen )
+    if not screens[screen] then
+        local str = "{"
+
+        for i, _ in pairs( screens ) do
+            str = str .. i .. ', '
+        end
+
+        str = str:sub( 1, -3 ) .. "}"
+
+        error('"' .. tostring( screen ) .. '" is not a valid screen. You will have to add a new one to your screen list or use one of the existing screens: ' .. str, 3)
     end
 end
 
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
+
+---
+-- If there was a change of screen, change it immediatly
+--
+function ScreenManager.performChanges()
+    if #changes == 0 then
+        return
+    end
+
+    for _, change in ipairs( changes ) do
+      if change.action == 'pop' then
+          pop()
+      elseif change.action == 'switch' then
+          clear()
+          push( change.screen, change.args )
+      elseif change.action == 'push' then
+          push( change.screen, change.args )
+      end
+    end
+
+    changes = {}
+end
 
 ---
 -- Initialise the ScreenManager.
@@ -63,9 +137,13 @@ end
 -- @param ...      (vararg) One or multiple arguments passed to the new screen.
 --
 function ScreenManager.init( nscreens, screen, ... )
-    stack = {};
-    screens = nscreens;
-    ScreenManager.push( screen, ... );
+    stack = {}
+    screens = nscreens
+
+    validateScreen( screen )
+
+    ScreenManager.push( screen, ... )
+    ScreenManager.performChanges()
 end
 
 ---
@@ -76,8 +154,9 @@ end
 -- @param ...    (vararg) One or multiple arguments passed to the new screen.
 --
 function ScreenManager.switch( screen, ... )
-    clear();
-    ScreenManager.push( screen, ... );
+    validateScreen( screen )
+    height = 1
+    changes[#changes + 1] = { action = 'switch', screen = screen, args = { ... } }
 end
 
 ---
@@ -89,25 +168,9 @@ end
 -- @param ...    (vararg) One or multiple arguments passed to the new screen.
 --
 function ScreenManager.push( screen, ... )
-    -- Deactivate the previous screen if there is one.
-    if ScreenManager.peek() then
-        ScreenManager.peek():setActive( false );
-    end
-
-    -- Push the new screen onto the stack.
-    if screens[screen] then
-        stack[#stack + 1] = screens[screen].new();
-    else
-        local str = "{";
-        for i, _ in pairs( screens ) do
-            str = str .. i .. ', ';
-        end
-        str = str .. "}";
-        error('"' .. screen .. '" is not a valid screen. You will have to add a new one to your screen list or use one of the existing screens: ' .. str);
-    end
-
-    -- Create the new screen and initialise it.
-    stack[#stack]:init( ... );
+    validateScreen( screen )
+    height = height + 1
+    changes[#changes + 1] = { action = 'push', screen = screen, args = { ... } }
 end
 
 ---
@@ -115,28 +178,18 @@ end
 -- @return (table) The screen on top of the stack.
 --
 function ScreenManager.peek()
-    return stack[#stack];
+    return stack[#stack]
 end
 
 ---
--- Removes and returns the topmost screen of the stack.
--- @return (table) The screen on top of the stack.
+-- Removes the topmost screen of the stack.
 --
 function ScreenManager.pop()
-    if #stack > 1 then
-        -- Close the currently active screen.
-        local tmp = ScreenManager.peek();
-
-        -- Remove the now inactive screen from the stack.
-        stack[#stack] = nil;
-
-        -- Close the previous screen.
-        tmp:close();
-
-        -- Activate next screen on the stack.
-        ScreenManager.peek():setActive( true );
+    if height > 1 then
+        height = height - 1
+        changes[#changes + 1] = { action = 'pop' }
     else
-        error("Can't close the last screen. Use switch() to clear the screen manager and add a new screen.");
+        error("Can't close the last screen. Use switch() to clear the screen manager and add a new screen.", 2)
     end
 end
 
@@ -152,7 +205,7 @@ end
 --                       love.filesystem.
 --
 function ScreenManager.directorydropped( path )
-    ScreenManager.peek():directorydropped( path );
+    ScreenManager.peek():directorydropped( path )
 end
 
 ---
@@ -162,8 +215,10 @@ end
 --
 function ScreenManager.draw()
     for i = 1, #stack do
-        stack[i]:draw();
+        stack[i]:draw()
     end
+
+    ScreenManager.performChanges()
 end
 
 ---
@@ -172,7 +227,7 @@ end
 --                     dropped.
 --
 function ScreenManager.filedropped( file )
-    ScreenManager.peek():filedropped( file );
+    ScreenManager.peek():filedropped( file )
 end
 
 ---
@@ -181,7 +236,7 @@ end
 --
 function ScreenManager.focus( focus )
     for i = 1, #stack do
-        stack[i]:focus( focus );
+        stack[i]:focus( focus )
     end
 end
 
@@ -193,8 +248,8 @@ end
 --                                delay between key repeats depends on the
 --                                user's system settings.
 --
-function ScreenManager.keypressed(  key, scancode, isrepeat )
-    ScreenManager.peek():keypressed( key, scancode, isrepeat );
+function ScreenManager.keypressed( key, scancode, isrepeat )
+    ScreenManager.peek():keypressed( key, scancode, isrepeat )
 end
 
 ---
@@ -203,7 +258,7 @@ end
 -- @param scancode (Scancode)    The scancode representing the released key.
 --
 function ScreenManager.keyreleased( key, scancode )
-    ScreenManager.peek():keyreleased( key, scancode );
+    ScreenManager.peek():keyreleased( key, scancode )
 end
 
 ---
@@ -211,7 +266,7 @@ end
 -- mobile devices.
 --
 function ScreenManager.lowmemory()
-    ScreenManager.peek():lowmemory();
+    ScreenManager.peek():lowmemory()
 end
 
 ---
@@ -219,7 +274,7 @@ end
 -- @param focus (boolean) Wether the window has mouse focus or not.
 --
 function ScreenManager.mousefocus( focus )
-    ScreenManager.peek():mousefocus( focus );
+    ScreenManager.peek():mousefocus( focus )
 end
 
 ---
@@ -232,7 +287,7 @@ end
 --                     love.mousemoved was called.
 --
 function ScreenManager.mousemoved( x, y, dx, dy )
-    ScreenManager.peek():mousemoved( x, y, dx, dy );
+    ScreenManager.peek():mousemoved( x, y, dx, dy )
 end
 
 ---
@@ -247,7 +302,7 @@ end
 --                           touchscreen touch-press.
 --
 function ScreenManager.mousepressed( x, y, button, istouch )
-    ScreenManager.peek():mousepressed( x, y, button, istouch );
+    ScreenManager.peek():mousepressed( x, y, button, istouch )
 end
 
 ---
@@ -262,7 +317,7 @@ end
 --                           touchscreen touch-release.
 --
 function ScreenManager.mousereleased( x, y, button, istouch )
-    ScreenManager.peek():mousereleased( x, y, button, istouch );
+    ScreenManager.peek():mousereleased( x, y, button, istouch )
 end
 
 ---
@@ -270,7 +325,7 @@ end
 -- @return quit (boolean) Abort quitting. If true, do not close the game.
 --
 function ScreenManager.quit()
-    ScreenManager.peek():quit();
+    ScreenManager.peek():quit()
 end
 
 ---
@@ -280,7 +335,7 @@ end
 --
 function ScreenManager.resize( w, h )
     for i = 1, #stack do
-        stack[i]:resize( w, h );
+        stack[i]:resize( w, h )
     end
 end
 
@@ -291,7 +346,7 @@ end
 -- @param length (number) The length of the selected candidate text. May be 0.
 --
 function ScreenManager.textedited( text, start, length )
-    ScreenManager.peek():textedited( text, start, length );
+    ScreenManager.peek():textedited( text, start, length )
 end
 
 ---
@@ -299,7 +354,7 @@ end
 -- @param input (string) The UTF-8 encoded unicode text.
 --
 function ScreenManager.textinput( input )
-    ScreenManager.peek():textinput( input );
+    ScreenManager.peek():textinput( input )
 end
 
 ---
@@ -309,7 +364,7 @@ end
 --
 function ScreenManager.threaderror( thread, errorstr )
     for i = 1, #stack do
-        stack[i]:threaderror( thread, errorstr );
+        stack[i]:threaderror( thread, errorstr )
     end
 end
 
@@ -330,7 +385,7 @@ end
 --                                   in which case the pressure will be 1.
 --
 function ScreenManager.touchmoved( id, x, y, dx, dy, pressure )
-    ScreenManager.peek():touchmoved( id, x, y, dx, dy, pressure );
+    ScreenManager.peek():touchmoved( id, x, y, dx, dy, pressure )
 end
 
 ---
@@ -349,7 +404,7 @@ end
 --                                   in which case the pressure will be 1.
 --
 function ScreenManager.touchpressed( id, x, y, dx, dy, pressure )
-    ScreenManager.peek():touchpressed( id, x, y, dx, dy, pressure );
+    ScreenManager.peek():touchpressed( id, x, y, dx, dy, pressure )
 end
 
 ---
@@ -368,7 +423,7 @@ end
 --                                   in which case the pressure will be 1.
 --
 function ScreenManager.touchreleased( id, x, y, dx, dy, pressure )
-    ScreenManager.peek():touchreleased( id, x, y, dx, dy, pressure );
+    ScreenManager.peek():touchreleased( id, x, y, dx, dy, pressure )
 end
 
 ---
@@ -377,7 +432,7 @@ end
 --
 function ScreenManager.update( dt )
     for i = 1, #stack do
-        stack[i]:update( dt );
+        stack[i]:update( dt )
     end
 end
 
@@ -387,7 +442,7 @@ end
 --
 function ScreenManager.visible( visible )
     for i = 1, #stack do
-        stack[i]:visible( visible );
+        stack[i]:visible( visible )
     end
 end
 
@@ -399,7 +454,7 @@ end
 --                    indicate upward movement.
 --
 function ScreenManager.wheelmoved( x, y )
-    ScreenManager.peek():wheelmoved( x, y );
+    ScreenManager.peek():wheelmoved( x, y )
 end
 
 ---
@@ -409,7 +464,7 @@ end
 -- @param value    (number)      The new axis value.
 --
 function ScreenManager.gamepadaxis( joystick, axis, value )
-    ScreenManager.peek():gamepadaxis( joystick, axis, value );
+    ScreenManager.peek():gamepadaxis( joystick, axis, value )
 end
 
 ---
@@ -418,7 +473,7 @@ end
 -- @param button   (GamepadButton) The virtual gamepad button.
 --
 function ScreenManager.gamepadpressed( joystick, button )
-    ScreenManager.peek():gamepadpressed( joystick, button );
+    ScreenManager.peek():gamepadpressed( joystick, button )
 end
 
 ---
@@ -427,7 +482,7 @@ end
 -- @param button   (GamepadButton) The virtual gamepad button.
 --
 function ScreenManager.gamepadreleased( joystick, button )
-    ScreenManager.peek():gamepadreleased( joystick, button );
+    ScreenManager.peek():gamepadreleased( joystick, button )
 end
 
 ---
@@ -435,7 +490,7 @@ end
 -- @param joystick (Joystick) The newly connected Joystick object.
 --
 function ScreenManager.joystickadded( joystick )
-    ScreenManager.peek():joystickadded( joystick );
+    ScreenManager.peek():joystickadded( joystick )
 end
 
 ---
@@ -445,7 +500,7 @@ end
 -- @param direction (JoystickHat) The new hat direction.
 --
 function ScreenManager.joystickhat( joystick, hat, direction )
-    ScreenManager.peek():joystickhat( joystick, hat, direction );
+    ScreenManager.peek():joystickhat( joystick, hat, direction )
 end
 
 ---
@@ -454,7 +509,7 @@ end
 -- @param button   (number)   The button number.
 --
 function ScreenManager.joystickpressed( joystick, button )
-    ScreenManager.peek():joystickpressed( joystick, button );
+    ScreenManager.peek():joystickpressed( joystick, button )
 end
 
 ---
@@ -463,7 +518,7 @@ end
 -- @param button   (number)   The button number.
 --
 function ScreenManager.joystickreleased( joystick, button )
-    ScreenManager.peek():joystickreleased( joystick, button );
+    ScreenManager.peek():joystickreleased( joystick, button )
 end
 
 ---
@@ -471,14 +526,40 @@ end
 -- @param joystick (Joystick) The now-disconnected Joystick object.
 --
 function ScreenManager.joystickremoved( joystick )
-    ScreenManager.peek():joystickremoved( joystick );
+    ScreenManager.peek():joystickremoved( joystick )
+end
+
+---
+-- Register to multiple LÖVE callbacks, defaults to all.
+-- @param callbacks (table) Table with the names of the callbacks to register to.
+--
+function ScreenManager.registerCallbacks( callbacks )
+    local registry = {}
+    local function null() end
+
+    if type( callbacks ) ~= "table" then
+        callbacks = {}
+
+        for name in pairs( love.handlers ) do
+            callbacks[#callbacks + 1] = name
+        end
+    end
+
+    for _, f in ipairs( callbacks ) do
+        registry[f] = love[f] or null
+
+        love[f] = function( ... )
+            registry[f]( ... )
+            return ScreenManager[f]( ... )
+        end
+    end
 end
 
 -- ------------------------------------------------
 -- Return Module
 -- ------------------------------------------------
 
-return ScreenManager;
+return ScreenManager
 
 --==================================================================================================
 -- Created 02.06.14 - 17:30                                                                        =
