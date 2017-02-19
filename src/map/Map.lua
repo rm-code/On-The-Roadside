@@ -243,10 +243,10 @@ function Map.new()
                 if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
                     -- Create items from the destroyed object.
                     for _, drop in ipairs( tile:getWorldObject():getDrops() ) do
-                        local type, id, tries, chance = drop.type, drop.id, drop.tries, drop.chance;
+                        local id, tries, chance = drop.id, drop.tries, drop.chance;
                         for _ = 1, tries do
                             if love.math.random( 100 ) < chance then
-                                local item = ItemFactory.createItem( type, id );
+                                local item = ItemFactory.createItem( id );
                                 tile:getInventory():addItem( item );
                             end
                         end

@@ -1,16 +1,4 @@
 local Log = require( 'src.util.Log' );
-local RangedWeapon = require( 'src.items.weapons.RangedWeapon' );
-local MeleeWeapon = require( 'src.items.weapons.MeleeWeapon' );
-local ThrownWeapon = require( 'src.items.weapons.ThrownWeapon' );
-local Ammunition = require( 'src.items.weapons.Ammunition' );
-local Footwear = require( 'src.items.clothes.Footwear' );
-local Gloves = require( 'src.items.clothes.Gloves' );
-local Headgear = require( 'src.items.clothes.Headgear' );
-local Jacket = require( 'src.items.clothes.Jacket' );
-local Shirt = require( 'src.items.clothes.Shirt' );
-local Trousers = require( 'src.items.clothes.Trousers' );
-local Bag = require( 'src.items.Bag' );
-local Item = require( 'src.items.Item' );
 
 -- ------------------------------------------------
 -- Module
@@ -37,6 +25,21 @@ local TEMPLATES_THROWN     = 'res.data.items.weapons.Thrown';
 local TEMPLATES_CONTAINERS = 'res.data.items.Containers';
 local TEMPLATES_AMMO       = 'res.data.items.Ammunition';
 local TEMPLATES_MISC       = 'res.data.items.Miscellaneous';
+
+local ITEM_CLASSES = {
+    [ITEM_TYPES.HEADGEAR] = require( 'src.items.clothes.Headgear' ),
+    [ITEM_TYPES.GLOVES]   = require( 'src.items.clothes.Gloves' ),
+    [ITEM_TYPES.JACKET]   = require( 'src.items.clothes.Jacket' ),
+    [ITEM_TYPES.SHIRT]    = require( 'src.items.clothes.Shirt' ),
+    [ITEM_TYPES.TROUSERS] = require( 'src.items.clothes.Trousers' ),
+    [ITEM_TYPES.FOOTWEAR] = require( 'src.items.clothes.Footwear' ),
+    [ITEM_TYPES.BAG]      = require( 'src.items.Bag' ),
+    [ITEM_TYPES.MISC]     = require( 'src.items.Item' ),
+    [ITEM_TYPES.AMMO]     = require( 'src.items.weapons.Ammunition' ),
+    [WEAPON_TYPES.MELEE]  = require( 'src.items.weapons.MeleeWeapon' ),
+    [WEAPON_TYPES.RANGED] = require( 'src.items.weapons.RangedWeapon' ),
+    [WEAPON_TYPES.THROWN] = require( 'src.items.weapons.ThrownWeapon' )
+}
 
 -- ------------------------------------------------
 -- Private Variables
@@ -88,39 +91,15 @@ end
 
 ---
 -- Creates a specific item specified by type and id.
--- @param type (string) The type of the item to create.
 -- @param id   (string) The id of the item to create.
 -- @return     (Item)   The new item.
 --
-function ItemFactory.createItem( type, id )
+function ItemFactory.createItem( id )
     local template = items[id];
-    if type == ITEM_TYPES.WEAPON then
-        if template.weaponType == WEAPON_TYPES.MELEE then
-            return MeleeWeapon.new( template );
-        elseif template.weaponType == WEAPON_TYPES.THROWN then
-            return ThrownWeapon.new( template );
-        elseif template.weaponType == WEAPON_TYPES.RANGED then
-            return RangedWeapon.new( template );
-        end
-    elseif type == ITEM_TYPES.BAG then
-        return Bag.new( template );
-    elseif type == ITEM_TYPES.AMMO then
-        return Ammunition.new( template );
-    elseif type == ITEM_TYPES.HEADGEAR then
-        return Headgear.new( template );
-    elseif type == ITEM_TYPES.GLOVES then
-        return Gloves.new( template );
-    elseif type == ITEM_TYPES.JACKET then
-        return Jacket.new( template );
-    elseif type == ITEM_TYPES.SHIRT then
-        return Shirt.new( template );
-    elseif type == ITEM_TYPES.TROUSERS then
-        return Trousers.new( template );
-    elseif type == ITEM_TYPES.FOOTWEAR then
-        return Footwear.new( template );
-    elseif type == ITEM_TYPES.MISC then
-        return Item.new( template );
+    if template.itemType == ITEM_TYPES.WEAPON then
+        return ITEM_CLASSES[template.weaponType].new( template );
     end
+    return ITEM_CLASSES[template.itemType].new( template );
 end
 
 ---
@@ -139,7 +118,7 @@ function ItemFactory.createRandomItem( type )
 
     -- Select a random item from the list.
     local id = list[love.math.random( 1, #list )];
-    return ItemFactory.createItem( type, id );
+    return ItemFactory.createItem( id );
 end
 
 return ItemFactory;

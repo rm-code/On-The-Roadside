@@ -10,6 +10,6 @@ return {
     blocksVision = false,
     blocksPathfinding = true,
     drops = {
-        { type = 'Miscellaneous', id = 'misc_glass_shard', tries = 6, chance = 20 }
+        { id = 'misc_glass_shard', tries = 6, chance = 20 }
     }
 }

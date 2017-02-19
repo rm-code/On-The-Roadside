@@ -27,13 +27,13 @@ local function createAmmunition( weapon, backpack )
     -- Load the weapon.
     local amount = weapon:getMagazine():getCapacity();
     for _ = 1, amount do
-        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
         weapon:getMagazine():addRound( round );
     end
 
     -- Add twice the amount of ammunition to the inventory.
     for _ = 1, amount * 2 do
-        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
         backpack:getInventory():addItem( round );
     end
 end
@@ -56,9 +56,9 @@ local function createEquipment( character )
     if weapon:isReloadable() then
         createAmmunition( weapon, backpack );
     elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
+        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
+        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
     end
 end
 
