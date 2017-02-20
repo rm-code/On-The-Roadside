@@ -16,6 +16,10 @@ function Clothing.new( template )
         return armorCoverage;
     end
 
+    function self:getClothingType()
+        return template.clothingType;
+    end
+
     return self;
 end
 

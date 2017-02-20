@@ -39,8 +39,15 @@ function Equipment.new()
     function self:addItem( item )
         for _, slot in pairs( slots ) do
             if slot:getItemType() == item:getItemType() then
-                slot:addItem( item );
-                return true;
+                if item:instanceOf( 'Clothing' ) then
+                    if item:getClothingType() == slot:getSubType() then
+                        slot:addItem( item );
+                        return true;
+                    end
+                else
+                    slot:addItem( item );
+                    return true;
+                end
             end
         end
         Log.warn( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );

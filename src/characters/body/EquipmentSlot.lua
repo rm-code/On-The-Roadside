@@ -40,6 +40,10 @@ function EquipmentSlot.new( index, template )
         return template.itemType;
     end
 
+    function self:getSubType()
+        return template.subType;
+    end
+
     function self:containsItem()
         return item ~= nil;
     end

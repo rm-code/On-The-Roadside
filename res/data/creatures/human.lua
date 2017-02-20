@@ -134,7 +134,8 @@ return {
     {
         id = 'equip_head',
         type = 'equipment',
-        itemType = 'Headgear',
+        itemType = 'Clothing',
+        subType = 'Headgear',
         sort = 1
     },
     {
@@ -146,7 +147,8 @@ return {
     {
         id = 'equip_torso',
         type = 'equipment',
-        itemType = 'Jacket',
+        itemType = 'Clothing',
+        subType = 'Jacket',
         sort = 3
     },
     {
@@ -158,13 +160,15 @@ return {
     {
         id = 'equip_legs',
         type = 'equipment',
-        itemType = 'Trousers',
+        itemType = 'Clothing',
+        subType = 'Trousers',
         sort = 5
     },
     {
         id = 'equip_feet',
         type = 'equipment',
-        itemType = 'Footwear',
+        itemType = 'Clothing',
+        subType = 'Footwear',
         sort = 6
     }
 }

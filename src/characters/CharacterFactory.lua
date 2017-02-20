@@ -44,12 +44,12 @@ end
 --
 local function createEquipment( character )
     local equipment = character:getEquipment();
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
+    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON ));
+    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG    ));
+    equipment:addItem( ItemFactory.createItem( 'headgear_pasgt_helmet' ));
+    equipment:addItem( ItemFactory.createItem( 'jacket_pasgt_vest'     ));
+    equipment:addItem( ItemFactory.createItem( 'trousers_jeans'        ));
+    equipment:addItem( ItemFactory.createItem( 'footwear_combat_boots' ));
 
     local weapon = character:getWeapon();
     local backpack = character:getBackpack();
