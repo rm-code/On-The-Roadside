@@ -13,10 +13,7 @@ function ItemStats.new( x, y, w, h )
     local item;
 
     local function drawBagStats()
-        local weightLimit = item:getInventory():getWeightLimit();
-        local volumeLimit = item:getInventory():getVolumeLimit();
-
-        love.graphics.print( 'Weight Limit: ' .. weightLimit, x * TILE_SIZE, (y + 3) * TILE_SIZE );
+        local volumeLimit = item:getCarryCapacity();
         love.graphics.print( 'Volume Limit: ' .. volumeLimit, x * TILE_SIZE, (y + 4) * TILE_SIZE );
     end
 
