@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local ItemStack = require( 'src.inventory.ItemStack' );
 
@@ -163,9 +164,31 @@ function Inventory.new( weightLimit, volumeLimit )
         return true;
     end
 
+    local function updateVolume( dvol )
+        volumeLimit = volumeLimit + dvol;
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
+
+    ---
+    -- Drops items until the volume of the carried items is smaller than the
+    -- maximum volume.
+    -- @param tile (Tile) The tile to drop the items on.
+    --
+    function self:dropItems( tile )
+        for i = #items, 1, -1 do
+            if calculateVolume() > volumeLimit then
+                local success = tile:getInventory():addItem( items[i] );
+                if success then
+                    self:removeItem( items[i] );
+                else
+                    break;
+                end
+            end
+        end
+    end
 
     ---
     -- Checks if the item fits in the current inventory by checking the weight
@@ -188,6 +211,7 @@ function Inventory.new( weightLimit, volumeLimit )
         index = index or ( #items + 1 );
 
         if not self:doesFit( item:getWeight(), item:getVolume() ) then
+            Log.warn( 'Item doesn\'t fit into the inventory.', 'Inventory' );
             return false;
         end
 
@@ -281,6 +305,12 @@ function Inventory.new( weightLimit, volumeLimit )
                     return item;
                 end
             end
+        end
+    end
+
+    function self:receive( event, ... )
+        if event == 'CHANGE_VOLUME' then
+            updateVolume( ... );
         end
     end
 

@@ -30,12 +30,6 @@ function EquipmentSlot.new( index, template )
         item = nil;
     end
 
-    function self:getAndRemoveItem()
-        local tmp = item;
-        item = nil;
-        return tmp;
-    end
-
     function self:getItemType()
         return template.itemType;
     end

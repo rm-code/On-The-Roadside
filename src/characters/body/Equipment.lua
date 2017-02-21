@@ -1,5 +1,5 @@
 local Log = require( 'src.util.Log' );
-local Object = require( 'src.Object' );
+local Observable = require( 'src.util.Observable' );
 
 -- ------------------------------------------------
 -- Module
@@ -8,7 +8,7 @@ local Object = require( 'src.Object' );
 local Equipment = {};
 
 function Equipment.new()
-    local self = Object.new():addInstance( 'Equipment' );
+    local self = Observable.new():addInstance( 'Equipment' );
 
     local slots = {};
 
@@ -21,27 +21,32 @@ function Equipment.new()
     function self:dropAllItems( tile )
         for _, slot in pairs( slots ) do
             if slot:containsItem() then
-                tile:getInventory():addItem( slot:getAndRemoveItem() );
+                local item = slot:getItem();
+                tile:getInventory():addItem( item );
+                slot:removeItem();
             end
         end
     end
 
-    function self:removeItem( item )
-        for _, slot in pairs( slots ) do
-            if slot:getItem() == item then
-                slot:removeItem();
-                return true;
-            end
+    function self:removeItem( slot )
+        local item = slot:getItem();
+
+        if item:instanceOf( 'Bag' ) then
+            self:publish( 'CHANGE_VOLUME', -item:getCarryCapacity() );
         end
-        return false;
+
+        slot:removeItem();
+        return item;
     end
 
     function self:addItem( slot, item )
         if slot:getItemType() == item:getItemType() then
-            if not slot:getSubType() then
-                slot:addItem( item );
-                return true;
-            elseif slot:getSubType() == item:getSubType() then
+            if not slot:getSubType() or slot:getSubType() == item:getSubType() then
+                -- Notify observers of a volume change.
+                if item:instanceOf( 'Bag' ) then
+                    self:publish( 'CHANGE_VOLUME', item:getCarryCapacity() );
+                end
+
                 slot:addItem( item );
                 return true;
             end

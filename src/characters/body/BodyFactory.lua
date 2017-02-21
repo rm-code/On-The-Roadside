@@ -2,6 +2,7 @@ local Log = require( 'src.util.Log' );
 local Body = require( 'src.characters.body.Body' );
 local BodyPart = require( 'src.characters.body.BodyPart' );
 local Equipment = require( 'src.characters.body.Equipment' );
+local Inventory = require( 'src.inventory.Inventory' );
 local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' );
 local TGFParser = require( 'lib.TGFParser' );
 
@@ -125,8 +126,11 @@ end
 -- @return       (Body)   A shiny new Body.
 --
 local function assembleBody( cid, layout )
-    local body = Body.new( templates[cid].bloodVolume, templates[cid].defaultCarryWeight, templates[cid].defaultCarryVolume );
+    local body = Body.new( templates[cid].bloodVolume );
     local equipment = Equipment.new();
+    local inventory = Inventory.new( templates[cid].defaultCarryWeight, templates[cid].defaultCarryVolume );
+
+    equipment:observe( inventory );
 
     -- The index is the number used inside of the graph whereas the id determines
     -- which type of object to create for this node.
@@ -141,6 +145,7 @@ local function assembleBody( cid, layout )
 
     -- Set the equipment to be used for this body.
     body:setEquipment( equipment );
+    body:setInventory( inventory );
 
     return body;
 end

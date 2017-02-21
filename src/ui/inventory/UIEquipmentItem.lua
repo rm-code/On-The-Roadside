@@ -59,10 +59,6 @@ function UIEquipmentItem.new( id, x, y, width, height, slot )
         highlight = false;
     end
 
-    function self:drag()
-        return slot:getAndRemoveItem();
-    end
-
     function self:getSlot()
         return slot;
     end
