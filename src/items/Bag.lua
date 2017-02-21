@@ -1,5 +1,4 @@
 local Item = require( 'src.items.Item' );
-local Inventory = require( 'src.inventory.Inventory' );
 
 local Bag = {};
 
@@ -10,17 +9,14 @@ local Bag = {};
 function Bag.new( template )
     local self = Item.new( template ):addInstance( 'Bag' );
 
-    local inventory = Inventory.new( template.weightLimit, template.volumeLimit );
-
-    function self:getInventory()
-        return inventory;
+    function self:getCarryCapacity()
+        return template.carryCapacity;
     end
 
     function self:serialize()
         local t = {
             ['id'] = template.id,
-            ['itemType'] = template.itemType,
-            ['inventory'] = inventory:serialize()
+            ['itemType'] = template.itemType
         };
         return t;
     end

@@ -289,14 +289,6 @@ function Inventory.new( weightLimit, volumeLimit )
     -- ------------------------------------------------
 
     ---
-    -- Gets an item of type bag.
-    -- @return (Bag) The bag item.
-    --
-    function self:getBackpack()
-        return self:getItem( ITEM_TYPES.BAG );
-    end
-
-    ---
     -- Gets an item of type weapon.
     -- @return (Weapon) The weapon item.
     --

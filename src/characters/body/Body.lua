@@ -1,6 +1,7 @@
 local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local StatusEffects = require( 'src.characters.StatusEffects' );
+local Inventory = require( 'src.inventory.Inventory' );
 
 -- ------------------------------------------------
 -- Module
@@ -18,9 +19,10 @@ local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
 -- Constructor
 -- ------------------------------------------------
 
-function Body.new( bloodVolume )
+function Body.new( bloodVolume, maxWeight, maxVolume )
     local self = Object.new():addInstance( 'Body' );
 
+    local inventory = Inventory.new( maxWeight, maxVolume )
     local equipment;
     local nodes = {};
     local edges = {};
@@ -151,6 +153,10 @@ function Body.new( bloodVolume )
 
     function self:getEquipment()
         return equipment;
+    end
+
+    function self:getInventory()
+        return inventory;
     end
 
     function self:setEquipment( nequipment )

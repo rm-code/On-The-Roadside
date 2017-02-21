@@ -59,7 +59,7 @@ function InventoryScreen.new()
         return ( 2 + 2 * sx ) * TILE_SIZE;
     end
 
-    local function getBackpackColumnOffset()
+    local function getInventoryColumnOffset()
         return ( 2 + sx ) * TILE_SIZE;
     end
 
@@ -72,18 +72,14 @@ function InventoryScreen.new()
         return false;
     end
 
-    local function createCharacterInventory()
+    local function createEquipment()
         lists.equipment = UIEquipmentList.new( getEquipmentColumnOffset(), VERTICAL_COLUMN_OFFSET, sx * TILE_SIZE, 'inventory_equipment', character );
         lists.equipment:init();
     end
 
-    local function createBackpackInventory()
-        if character:getBackpack() then
-            lists.backpack = UIInventoryList.new( getBackpackColumnOffset(), VERTICAL_COLUMN_OFFSET, getColumnWidth(), 'inventory_backpack', character:getBackpack():getInventory() );
-            lists.backpack:init();
-            return;
-        end
-        lists.backpack = nil;
+    local function createInventory()
+        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), VERTICAL_COLUMN_OFFSET, getColumnWidth(), 'inventory_inventory', character:getInventory() );
+        lists.inventory:init();
     end
 
     local function createOtherInventory()
@@ -98,7 +94,7 @@ function InventoryScreen.new()
 
         -- Create inventory for other characters of the same faction.
         if target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-            lists.other = UIInventoryList.new( x, y, cw, 'inventory_backpack', target:getCharacter():getBackpack():getInventory() );
+            lists.other = UIInventoryList.new( x, y, cw, 'inventory_inventory', target:getCharacter():getInventory() );
             lists.other:init();
             return;
         end
@@ -127,7 +123,7 @@ function InventoryScreen.new()
             -- which the item is returned in case it can't be dropped anywhere.
             dragboard = { item = item, origin = slot or list };
             if item:instanceOf( 'Bag' ) then
-                createBackpackInventory();
+                createInventory();
             end
         end
     end
@@ -141,17 +137,17 @@ function InventoryScreen.new()
                 returnItemToOrigin( dragboard.item, dragboard.origin );
             end
         end
-        createBackpackInventory();
+        createInventory();
         dragboard = nil;
     end
 
     local function drawHeaders()
         love.graphics.print( lists.equipment:getLabel(), getEquipmentColumnOffset(), TILE_SIZE );
 
-        if lists.backpack then
-            love.graphics.print( lists.backpack:getLabel(), getBackpackColumnOffset(), TILE_SIZE );
+        if lists.inventory then
+            love.graphics.print( lists.inventory:getLabel(), getInventoryColumnOffset(), TILE_SIZE );
         else
-            love.graphics.print( 'No backpack equipped', getBackpackColumnOffset(), TILE_SIZE );
+            love.graphics.print( 'No inventory equipped', getInventoryColumnOffset(), TILE_SIZE );
         end
 
         love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), TILE_SIZE );
@@ -173,7 +169,7 @@ function InventoryScreen.new()
     -- ------------------------------------------------
 
     ---
-    -- Creates the three inventory lists for the player's equipment, his Backpack
+    -- Creates the three inventory lists for the player's equipment, his inventory
     -- and the tile he is standing on.
     -- @param ncharacter (Character) The character to open the inventory for.
     -- @param ntarget    (Tile)      The target tile to open the inventory for.
@@ -193,8 +189,8 @@ function InventoryScreen.new()
 
         lists = {};
 
-        createCharacterInventory();
-        createBackpackInventory();
+        createEquipment();
+        createInventory();
         createOtherInventory();
     end
 

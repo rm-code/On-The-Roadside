@@ -308,6 +308,14 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     ---
+    -- Returns the character's inventory.
+    -- @return (Equipment) The character's inventory.
+    --
+    function self:getInventory()
+        return body:getInventory();
+    end
+
+    ---
     -- Returns the character's fov.
     -- @return (table) A table containing the tiles this character sees.
     --
@@ -377,14 +385,6 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:isDead()
         return body:getStatusEffects():isDead();
-    end
-
-    ---
-    -- Gets an item of type bag.
-    -- @return (Bag) The bag item.
-    --
-    function self:getBackpack()
-        return self:getEquipment():getItem( ITEM_TYPES.BAG );
     end
 
     ---

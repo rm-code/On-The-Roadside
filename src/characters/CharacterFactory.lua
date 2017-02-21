@@ -19,10 +19,10 @@ local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 ---
 -- Loads the character's weapon and adds ammunition to his inventory.
--- @param weapon   (Weapon) The weapon to load.
--- @param backpack (Bag)    The equipment to create ammunition for.
+-- @param weapon    (Weapon) The weapon to load.
+-- @param inventory (Bag)    The inventory to create ammunition for.
 --
-local function createAmmunition( weapon, backpack )
+local function createAmmunition( weapon, inventory )
     -- Load the weapon.
     local amount = weapon:getMagazine():getCapacity();
     for _ = 1, amount do
@@ -33,7 +33,7 @@ local function createAmmunition( weapon, backpack )
     -- Add twice the amount of ammunition to the inventory.
     for _ = 1, amount * 2 do
         local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
-        backpack:getInventory():addItem( round );
+        inventory:addItem( round );
     end
 end
 
@@ -49,13 +49,13 @@ local function createEquipment( character )
         slot:addItem( ItemFactory.createRandomItem( slot:getItemType(), slot:getSubType() ));
     end
 
-    local weapon, backpack = character:getWeapon(), character:getBackpack();
+    local weapon, inventory = character:getWeapon(), character:getInventory();
     if weapon:isReloadable() then
-        createAmmunition( weapon, backpack );
+        createAmmunition( weapon, inventory );
     elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
-        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
     end
 end
 
