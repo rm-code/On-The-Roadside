@@ -11,7 +11,6 @@ local CharacterFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 -- ------------------------------------------------
