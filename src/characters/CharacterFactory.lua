@@ -43,16 +43,14 @@ end
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    local equipment = character:getEquipment();
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG    ));
-    equipment:addItem( ItemFactory.createItem( 'headgear_pasgt_helmet' ));
-    equipment:addItem( ItemFactory.createItem( 'jacket_pasgt_vest'     ));
-    equipment:addItem( ItemFactory.createItem( 'trousers_jeans'        ));
-    equipment:addItem( ItemFactory.createItem( 'footwear_combat_boots' ));
+    local body = character:getBody();
+    local equipment = body:getEquipment();
 
-    local weapon = character:getWeapon();
-    local backpack = character:getBackpack();
+    for _, slot in pairs( equipment:getSlots() ) do
+        slot:addItem( ItemFactory.createRandomItem( slot:getItemType(), slot:getSubType() ));
+    end
+
+    local weapon, backpack = character:getWeapon(), character:getBackpack();
     if weapon:isReloadable() then
         createAmmunition( weapon, backpack );
     elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then

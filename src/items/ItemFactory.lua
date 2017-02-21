@@ -89,15 +89,22 @@ end
 
 ---
 -- Creates a random item of a certain type.
--- @param type (string) The type of the item to create.
--- @return     (Item)   The new item.
+-- @param type    (string) The type of the item to create.
+-- @param subType (string) The sub type of the item to create.
+-- @return        (Item)   The new item.
 --
-function ItemFactory.createRandomItem( type )
+function ItemFactory.createRandomItem( type, subType )
     -- Compile a list of items from this type.
     local list = {};
     for id, template in pairs( items ) do
         if template.itemType == type then
-            list[#list + 1] = id;
+            if type == ITEM_TYPES.CLOTHING and template.clothingType == subType then
+                list[#list + 1] = id;
+            elseif type == ITEM_TYPES.WEAPON and template.weaponType == subType then
+                list[#list + 1] = id;
+            else
+                list[#list + 1] = id;
+            end
         end
     end
 
