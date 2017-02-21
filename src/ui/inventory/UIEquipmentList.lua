@@ -83,10 +83,10 @@ function UIEquipmentList.new( x, y, width, id, character )
             if uiItem:isMouseOver() and uiItem:getSlot():getItemType() == item:getItemType() then
                 if uiItem:getSlot():containsItem() then
                     local tmp = uiItem:getSlot():getAndRemoveItem();
-                    success = uiItem:getSlot():addItem( item );
+                    success = equipment:addItem( uiItem:getSlot(), item );
                     origin:drop( tmp );
                 else
-                    success = uiItem:getSlot():addItem( item );
+                    success = equipment:addItem( uiItem:getSlot(), item );
                 end
             end
         end

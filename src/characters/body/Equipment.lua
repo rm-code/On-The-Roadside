@@ -36,19 +36,17 @@ function Equipment.new()
         return false;
     end
 
-    function self:addItem( item )
-        for _, slot in pairs( slots ) do
-            if slot:getItemType() == item:getItemType() then
-                if item:instanceOf( 'Clothing' ) then
-                    if item:getClothingType() == slot:getSubType() then
-                        slot:addItem( item );
-                        return true;
-                    end
-                else
+    function self:addItem( slot, item )
+        if slot:getItemType() == item:getItemType() then
+            if item:instanceOf( 'Clothing' ) then
+                if item:getClothingType() == slot:getSubType() then
                     slot:addItem( item );
                     return true;
                 end
             end
+
+            slot:addItem( item );
+            return true;
         end
         Log.warn( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );
         return false;

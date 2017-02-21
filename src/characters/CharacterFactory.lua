@@ -46,7 +46,7 @@ local function createEquipment( character )
     local equipment = body:getEquipment();
 
     for _, slot in pairs( equipment:getSlots() ) do
-        slot:addItem( ItemFactory.createRandomItem( slot:getItemType(), slot:getSubType() ));
+        equipment:addItem( slot, ItemFactory.createRandomItem( slot:getItemType(), slot:getSubType() ));
     end
 
     local weapon, inventory = character:getWeapon(), character:getInventory();
