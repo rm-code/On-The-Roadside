@@ -29,7 +29,12 @@ function Rearm.new( character, weaponID )
 
         -- Remove item from backpack and add it to the equipment slot.
         inventory:removeItem( weapon );
-        character:getEquipment():addItem( weapon );
+        local equipment = character:getEquipment();
+        for _, slot in pairs( equipment:getSlots() ) do
+            if slot:getItemType() == weapon:getItemType() and slot:getSubType() == weapon:getSubType() then
+                equipment:addItem( slot, weapon );
+            end
+        end
 
         return true;
     end
