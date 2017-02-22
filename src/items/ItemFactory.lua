@@ -95,7 +95,6 @@ end
 -- @return        (Item)   The new item.
 --
 function ItemFactory.createRandomItem( type, subType )
-    print( type, subType )
     -- Compile a list of items from this type.
     local list = {};
     for id, template in pairs( items ) do
