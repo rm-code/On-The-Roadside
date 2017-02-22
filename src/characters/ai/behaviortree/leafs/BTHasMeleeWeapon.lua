@@ -11,7 +11,7 @@ function BTHasMeleeWeapon.new()
     function self:traverse( ... )
         local _, character = ...;
 
-        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.MELEE;
+        local result = character:getWeapon():getSubType() == WEAPON_TYPES.MELEE;
         Log.debug( result, 'BTHasMeleeWeapon' );
         return result;
     end

@@ -52,7 +52,7 @@ local function createEquipment( character )
     local weapon, inventory = character:getWeapon(), character:getInventory();
     if weapon:isReloadable() then
         createAmmunition( weapon, inventory );
-    elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
+    elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
         inventory:addItem( ItemFactory.createItem( weapon:getID() ));
         inventory:addItem( ItemFactory.createItem( weapon:getID() ));
         inventory:addItem( ItemFactory.createItem( weapon:getID() ));

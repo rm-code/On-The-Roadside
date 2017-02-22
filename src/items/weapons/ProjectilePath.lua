@@ -166,12 +166,12 @@ end
 -- @return          (number)    The maximum range for the derivation.
 --
 function ProjectilePath.getMaximumDerivation( character, weapon, count )
-    if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
+    if weapon:getSubType() == WEAPON_TYPES.RANGED then
         return calculateRangedMaximumDerivation( character, weapon, count );
-    elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
+    elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
         return calculateThrownMaximumDerivation( character );
     else
-        error( string.format( 'Can\'t calculate a derivation for selected weapon type %s!', weapon:getWeaponType() ));
+        error( string.format( 'Can\'t calculate a derivation for selected weapon type %s!', weapon:getSubType() ));
     end
 end
 

@@ -11,7 +11,7 @@ function BTHasThrowingWeapon.new()
     function self:traverse( ... )
         local _, character = ...;
 
-        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.THROWN;
+        local result = character:getWeapon():getSubType() == WEAPON_TYPES.THROWN;
         Log.debug( result, 'BTHasThrowingWeapon' );
         return result;
     end

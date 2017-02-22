@@ -17,6 +17,10 @@ function Item.new( template )
         return template.itemType;
     end
 
+    function self:getSubType()
+        return template.subType;
+    end
+
     function self:getWeight()
         return template.weight;
     end

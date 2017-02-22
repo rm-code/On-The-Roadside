@@ -18,7 +18,7 @@ function ItemStats.new( x, y, w, h )
     end
 
     local function drawWeaponStats()
-        local weaponType = item:getWeaponType();
+        local weaponType = item:getSubType();
         love.graphics.print( 'Weapon Type: ' .. weaponType, x * TILE_SIZE, (y + 2) * TILE_SIZE );
         if weaponType == WEAPON_TYPES.RANGED then
             love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (x + w * 0.5) * TILE_SIZE, (y + 2) * TILE_SIZE );

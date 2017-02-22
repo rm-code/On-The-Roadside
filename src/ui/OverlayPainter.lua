@@ -58,7 +58,7 @@ function OverlayPainter.new( game, particleLayer )
         -- Fake the last bullet in the magazine so the maximum derivation
         -- represents that of a full weapon burst.
         local count;
-        if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
+        if weapon:getSubType() == WEAPON_TYPES.RANGED then
             count = weapon:getAttacks()
         end
 
@@ -127,7 +127,7 @@ function OverlayPainter.new( game, particleLayer )
         end
 
         local weapon = character:getWeapon();
-        if not weapon or weapon:getWeaponType() == WEAPON_TYPES.MELEE then
+        if not weapon or weapon:getSubType() == WEAPON_TYPES.MELEE then
             return;
         end
 

@@ -81,8 +81,9 @@ end
 --
 function ItemFactory.createItem( id )
     local template = items[id];
+    Log.debug( template.itemType .. ', ' .. tostring(template.subType), 'ItemFactory' );
     if template.itemType == ITEM_TYPES.WEAPON then
-        return ITEM_CLASSES[template.weaponType].new( template );
+        return ITEM_CLASSES[template.subType].new( template );
     end
     return ITEM_CLASSES[template.itemType].new( template );
 end
@@ -94,15 +95,14 @@ end
 -- @return        (Item)   The new item.
 --
 function ItemFactory.createRandomItem( type, subType )
+    print( type, subType )
     -- Compile a list of items from this type.
     local list = {};
     for id, template in pairs( items ) do
         if template.itemType == type then
-            if type == ITEM_TYPES.CLOTHING and template.clothingType == subType then
+            if not subType then
                 list[#list + 1] = id;
-            elseif type == ITEM_TYPES.WEAPON and template.weaponType == subType then
-                list[#list + 1] = id;
-            else
+            elseif template.subType == subType then
                 list[#list + 1] = id;
             end
         end
