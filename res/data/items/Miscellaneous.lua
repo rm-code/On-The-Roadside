@@ -6,7 +6,10 @@ return {
         weight     = 0.1,
         volume     = 0.1,
         equippable = false,
-        stackable  = true
+        stackable  = true,
+        tags = {
+            'misc'
+        }
     },
     {
         id         = "misc_splintered_wood",
@@ -15,7 +18,10 @@ return {
         weight     = 3.0,
         volume     = 2.0,
         equippable = false,
-        stackable  = true
+        stackable  = true,
+        tags = {
+            'misc'
+        }
     },
     {
         id         = "misc_glass_shard",
@@ -24,6 +30,9 @@ return {
         weight     = 0.6,
         volume     = 0.5,
         equippable = false,
-        stackable  = true
+        stackable  = true,
+        tags = {
+            'misc'
+        }
     }
 }

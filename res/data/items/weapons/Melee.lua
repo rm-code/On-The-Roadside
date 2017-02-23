@@ -26,6 +26,9 @@ return {
                 attacks    = 1,
                 damageType = 'piercing'
             }
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -48,6 +51,9 @@ return {
                 attacks    = 1,
                 damageType = 'bludgeoning'
             }
+        },
+        tags = {
+            'humanoid'
         }
     }
 }

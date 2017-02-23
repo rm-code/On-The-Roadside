@@ -11,6 +11,9 @@ return {
         armor = {
             protection = 12,
             coverage   = 100
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -25,6 +28,9 @@ return {
         armor = {
             protection = 30,
             coverage   = 45
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -39,6 +45,9 @@ return {
         armor = {
             protection = 12,
             coverage   = 80
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -53,6 +62,9 @@ return {
         armor = {
             protection = 4,
             coverage   = 100
+        },
+        tags = {
+            'humanoid'
         }
     }
 }

@@ -28,6 +28,9 @@ return {
                 accuracy = 50,
                 attacks  = 11,
             }
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -52,6 +55,9 @@ return {
                 accuracy = 65,
                 attacks = 1,
             }
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -76,6 +82,9 @@ return {
                 accuracy = 25,
                 attacks = 1,
             }
+        },
+        tags = {
+            'humanoid'
         }
     }
 }

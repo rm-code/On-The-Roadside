@@ -18,8 +18,10 @@ local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
 -- Constructor
 -- ------------------------------------------------
 
-function Body.new( bloodVolume )
+function Body.new( template )
     local self = Object.new():addInstance( 'Body' );
+
+    local bloodVolume = template.bloodVolume
 
     local inventory;
     local equipment;
@@ -172,6 +174,10 @@ function Body.new( bloodVolume )
 
     function self:getBloodVolume()
         return bloodVolume;
+    end
+
+    function self:getTags()
+        return template.tags;
     end
 
     return self;

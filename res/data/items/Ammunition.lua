@@ -10,6 +10,9 @@ return {
         damageType = 'piercing',
         effects = {
             customSpeed = { speed = 35 }
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -23,6 +26,9 @@ return {
         damageType = 'piercing',
         effects = {
             spreadsOnShot = { pellets = 12 }
+        },
+        tags = {
+            'humanoid'
         }
     },
     {
@@ -36,6 +42,9 @@ return {
         effects = {
             explosive = { blastRadius = 5 },
             customSpeed = { speed = 12, increase = 1, final = 35 }
+        },
+        tags = {
+            'humanoid'
         }
     }
 }

@@ -47,7 +47,7 @@ function Game.new()
                 local tries = love.math.random( 1, 5 );
                 for _ = 1, tries do
                     if love.math.random( 100 ) < 25 then
-                        local item = ItemFactory.createRandomItem( ITEM_TYPES.AMMO );
+                        local item = ItemFactory.createRandomItem( 'all', ITEM_TYPES.AMMO );
                         tile:getWorldObject():getInventory():addItem( item );
                         Log.debug( string.format( 'Spawned %s in container at %d, %d', item:getID(), x, y ), 'Game' );
                     end

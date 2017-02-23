@@ -8,6 +8,9 @@ return {
         equippable    = true,
         stackable     = false,
         carryCapacity = 15,
-        slots = 8
+        slots         = 8,
+        tags = {
+            'humanoid'
+        }
     }
 }

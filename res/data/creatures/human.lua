@@ -3,6 +3,12 @@ return {
     bloodVolume = 5,
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
+    tags = {
+        whitelist = {
+            'humanoid'
+        },
+        blacklist = {}
+    },
     -- ################################## Head
     {
         id = 'head',

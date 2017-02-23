@@ -94,15 +94,39 @@ end
 -- @param subType (string) The sub type of the item to create.
 -- @return        (Item)   The new item.
 --
-function ItemFactory.createRandomItem( type, subType )
+function ItemFactory.createRandomItem( tags, type, subType )
     -- Compile a list of items from this type.
     local list = {};
     for id, template in pairs( items ) do
         if template.itemType == type then
-            if not subType then
-                list[#list + 1] = id;
-            elseif template.subType == subType then
-                list[#list + 1] = id;
+            if not subType or template.subType == subType then
+
+                if tags == 'all' then
+                    list[#list + 1] = id;
+                else
+                    -- Check if the creature's tags allow items of this type.
+                    local whitelisted, blacklisted;
+                    for _, itemTag in ipairs( template.tags ) do
+                        whitelisted, blacklisted = false, false;
+                        for _, creatureTag in ipairs( tags.whitelist ) do
+                            if itemTag == creatureTag then
+                                whitelisted = true;
+                            end
+                        end
+                        for _, creatureTag in ipairs( tags.blacklist ) do
+                            if itemTag == creatureTag then
+                                blacklisted = true;
+                            end
+                        end
+                        if not whitelisted or blacklisted then
+                            break;
+                        end
+                    end
+
+                    if whitelisted and not blacklisted then
+                        list[#list + 1] = id;
+                    end
+                end
             end
         end
     end

@@ -44,9 +44,10 @@ end
 local function createEquipment( character )
     local body = character:getBody();
     local equipment = body:getEquipment();
+    local tags = body:getTags();
 
     for _, slot in pairs( equipment:getSlots() ) do
-        equipment:addItem( slot, ItemFactory.createRandomItem( slot:getItemType(), slot:getSubType() ));
+        equipment:addItem( slot, ItemFactory.createRandomItem( tags, slot:getItemType(), slot:getSubType() ));
     end
 
     local weapon, inventory = character:getWeapon(), character:getInventory();
