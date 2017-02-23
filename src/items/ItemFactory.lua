@@ -16,13 +16,13 @@ local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 local TEMPLATES_MELEE      = 'res.data.items.weapons.Melee';
 local TEMPLATES_RANGED     = 'res.data.items.weapons.Ranged';
 local TEMPLATES_THROWN     = 'res.data.items.weapons.Thrown';
-local TEMPLATES_CLOTHING   = 'res.data.items.Clothing';
+local TEMPLATES_ARMOR      = 'res.data.items.Armor';
 local TEMPLATES_CONTAINERS = 'res.data.items.Containers';
 local TEMPLATES_AMMO       = 'res.data.items.Ammunition';
 local TEMPLATES_MISC       = 'res.data.items.Miscellaneous';
 
 local ITEM_CLASSES = {
-    [ITEM_TYPES.CLOTHING] = require( 'src.items.Clothing' ),
+    [ITEM_TYPES.ARMOR]    = require( 'src.items.Armor' ),
     [ITEM_TYPES.BAG]      = require( 'src.items.Bag' ),
     [ITEM_TYPES.MISC]     = require( 'src.items.Item' ),
     [ITEM_TYPES.AMMO]     = require( 'src.items.weapons.Ammunition' ),
@@ -65,7 +65,7 @@ end
 --
 function ItemFactory.loadTemplates()
     Log.debug( "Load Item Templates:" );
-    load( TEMPLATES_CLOTHING );
+    load( TEMPLATES_ARMOR );
     load( TEMPLATES_MELEE );
     load( TEMPLATES_RANGED );
     load( TEMPLATES_THROWN );

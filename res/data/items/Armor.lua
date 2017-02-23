@@ -2,7 +2,7 @@ return {
     {
         id         = "footwear_combat_boots",
         idDesc     = "footwear_combat_boots_desc",
-        itemType   = "Clothing",
+        itemType   = "Armor",
         weight     = 3,
         volume     = 2.3,
         equippable = true,
@@ -19,7 +19,7 @@ return {
     {
         id         = "headgear_pasgt_helmet",
         idDesc     = "headgear_pasgt_helmet_desc",
-        itemType   = "Clothing",
+        itemType   = "Armor",
         weight     = 1.3,
         volume     = 3.1,
         equippable = true,
@@ -36,7 +36,7 @@ return {
     {
         id         = "jacket_pasgt_vest",
         idDesc     = "jacket_pasgt_vest_desc",
-        itemType   = "Clothing",
+        itemType   = "Armor",
         weight     = 4,
         volume     = 4.3,
         equippable = true,
@@ -53,7 +53,7 @@ return {
     {
         id         = "trousers_jeans",
         idDesc     = "trousers_jeans_desc",
-        itemType   = "Clothing",
+        itemType   = "Armor",
         weight     = 1.0,
         volume     = 0.5,
         equippable = true,

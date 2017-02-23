@@ -1,9 +1,9 @@
 local Item = require( 'src.items.Item' );
 
-local Clothing = {};
+local Armor = {};
 
-function Clothing.new( template )
-    local self = Item.new( template ):addInstance( 'Clothing' );
+function Armor.new( template )
+    local self = Item.new( template ):addInstance( 'Armor' );
 
     local armorProtection = template.armor.protection;
     local armorCoverage = template.armor.coverage;
@@ -19,4 +19,4 @@ function Clothing.new( template )
     return self;
 end
 
-return Clothing;
+return Armor;

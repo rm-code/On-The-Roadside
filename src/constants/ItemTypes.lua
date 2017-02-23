@@ -1,10 +1,10 @@
 local ITEM_TYPES = {};
 
-ITEM_TYPES.WEAPON   = 'Weapon';
-ITEM_TYPES.BAG      = 'Bag';
-ITEM_TYPES.AMMO     = 'Ammunition';
-ITEM_TYPES.CLOTHING = 'Clothing';
-ITEM_TYPES.MISC     = 'Miscellaneous';
+ITEM_TYPES.WEAPON = 'Weapon';
+ITEM_TYPES.BAG    = 'Bag';
+ITEM_TYPES.AMMO   = 'Ammunition';
+ITEM_TYPES.ARMOR  = 'Armor';
+ITEM_TYPES.MISC   = 'Miscellaneous';
 
 -- Make table read-only.
 return setmetatable( ITEM_TYPES, {

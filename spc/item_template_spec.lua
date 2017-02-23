@@ -3,7 +3,7 @@ describe( 'Item template spec', function()
 
     setup( function()
         modules = {
-            require( 'res.data.items.Clothing' ),
+            require( 'res.data.items.Armor' ),
             require( 'res.data.items.weapons.Melee' ),
             require( 'res.data.items.weapons.Ranged' ),
             require( 'res.data.items.weapons.Thrown' ),
