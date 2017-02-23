@@ -21,6 +21,15 @@ function Item.new( template )
         return template.subType;
     end
 
+    function self:isSameType( itemType, subType )
+        if template.itemType == itemType then
+            if not subType or subType == template.subType then
+                return true;
+            end
+        end
+        return false;
+    end
+
     function self:getWeight()
         return template.weight;
     end
