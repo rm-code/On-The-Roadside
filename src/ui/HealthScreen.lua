@@ -172,7 +172,7 @@ function HealthScreen.new()
         end
 
         local counter = 3;
-        for _, bodyPart in ipairs( character:getBody():getBodyParts() ) do
+        for _, bodyPart in pairs( character:getBody():getBodyParts() ) do
             if bodyPart:isEntryNode() then
                 counter = counter + 1;
                 local status;
