@@ -30,13 +30,21 @@ function Equipment.new()
 
     function self:removeItem( slot )
         local item = slot:getItem();
-
+        -- TODO search through item table.
         if item:instanceOf( 'Container' ) then
             self:publish( 'CHANGE_VOLUME', -item:getCarryCapacity() );
         end
 
         slot:removeItem();
         return item;
+    end
+
+    function self:searchAndRemoveItem( item )
+        for _, slot in pairs( slots ) do
+            if item == slot:getItem() then
+                return self:removeItem( slot );
+            end
+        end
     end
 
     function self:addItem( slot, item )

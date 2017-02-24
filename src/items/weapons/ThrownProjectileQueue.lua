@@ -45,7 +45,7 @@ function ThrownProjectileQueue.new( character, target )
         assert( weapon:getSubType() == WEAPON_TYPES.THROWN, 'Expected a weapon of type Thrown.' );
 
         -- Thrown weapon is removed from the inventory.
-        local success = character:getEquipment():removeItem( weapon );
+        local success = character:getEquipment():searchAndRemoveItem( weapon );
         assert( success, "Couldn't remove the item from the character's equipment." );
 
         local tiles = ProjectilePath.calculate( character, target, weapon );
