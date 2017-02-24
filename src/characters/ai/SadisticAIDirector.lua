@@ -7,7 +7,7 @@ local SadisticAIDirector = {};
 function SadisticAIDirector.new( factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
-    local tree = BehaviorTreeFactory.create();
+    local tree = BehaviorTreeFactory.getTree( 'enemy' );
 
     local function tickBehaviorTree( character )
         Log.debug( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );

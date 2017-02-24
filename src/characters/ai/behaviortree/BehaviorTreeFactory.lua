@@ -26,7 +26,7 @@ local BLUEPRINTS = {
     ['BTThrowingAttack']     = require( 'src.characters.ai.behaviortree.leafs.BTThrowingAttack' )
 }
 
-local treeLayouts;
+local trees;
 
 ---
 -- Returns a list of all files inside the specified directory.
@@ -81,17 +81,28 @@ local function createTree( layout )
     return nodes[1];
 end
 
+local function createTrees( layouts )
+    for i, layout in pairs( layouts ) do
+        Log.debug( string.format( 'Creating %s behavior tree...', i ), 'BehaviorTreeFactory' );
+        trees[i] = createTree( layout );
+    end
+end
+
 ---
 -- Loads the templates.
 --
 function BehaviorTreeFactory.loadTemplates()
     Log.debug( "Load Behavior Trees:" )
     local files = loadFiles( TEMPLATE_DIRECTORY );
-    treeLayouts = parseFiles( files );
+    local treeLayouts = parseFiles( files );
+
+    trees = {};
+    createTrees( treeLayouts );
 end
 
-function BehaviorTreeFactory.create()
-    return createTree( treeLayouts['enemy'] );
+function BehaviorTreeFactory.getTree( type )
+    assert( trees[type], 'No behavior tree found for ' .. tostring( type ));
+    return trees[type];
 end
 
 return BehaviorTreeFactory;
