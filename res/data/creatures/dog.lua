@@ -109,13 +109,6 @@ return {
         sort = 1
     },
     {
-        id = 'equip_head',
-        type = 'equipment',
-        itemType = 'Armor',
-        subType = 'Fur',
-        sort = 2
-    },
-    {
         id = 'equip_torso',
         type = 'equipment',
         itemType = 'Armor',
