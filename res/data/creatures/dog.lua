@@ -113,13 +113,13 @@ return {
         type = 'equipment',
         itemType = 'Armor',
         subType = 'Fur',
-        sort = 3
+        sort = 2
     },
     {
         id = 'equip_legs',
         type = 'equipment',
         itemType = 'Armor',
         subType = 'Fur',
-        sort = 4
+        sort = 3
     }
 }
