@@ -151,7 +151,7 @@ return {
     {
         id = 'equip_backpack',
         type = 'equipment',
-        itemType = 'Bag',
+        itemType = 'Container',
         sort = 2
     },
     {

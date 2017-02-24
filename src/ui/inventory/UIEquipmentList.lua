@@ -107,7 +107,7 @@ function UIEquipmentList.new( x, y, width, id, character )
                 local item = equipment:removeItem( uiItem:getSlot() );
 
                 -- TODO warn player
-                if item:instanceOf( 'Bag' ) then
+                if item:instanceOf( 'Container' ) then
                     character:getInventory():dropItems( character:getTile() );
                 end
 

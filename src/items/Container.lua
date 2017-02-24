@@ -1,13 +1,13 @@
 local Item = require( 'src.items.Item' );
 
-local Bag = {};
+local Container = {};
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Bag.new( template )
-    local self = Item.new( template ):addInstance( 'Bag' );
+function Container.new( template )
+    local self = Item.new( template ):addInstance( 'Container' );
 
     function self:getCarryCapacity()
         return template.carryCapacity;
@@ -24,4 +24,4 @@ function Bag.new( template )
     return self;
 end
 
-return Bag;
+return Container;

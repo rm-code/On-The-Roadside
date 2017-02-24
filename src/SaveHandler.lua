@@ -125,7 +125,7 @@ function SaveHandler.load()
             elseif item.itemType == ITEM_TYPES.WEAPON then
                 local weapon = createWeapon( item );
                 target:addItem( weapon );
-            elseif item.itemType == ITEM_TYPES.BAG then
+            elseif item.itemType == ITEM_TYPES.CONTAINER then
                 local bag = ItemFactory.createItem( item.itemType, item.id );
                 fillInventory( item.inventory, bag:getInventory() );
                 target:addItem( bag )

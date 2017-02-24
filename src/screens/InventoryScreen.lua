@@ -122,7 +122,7 @@ function InventoryScreen.new()
             -- If we have an actual item slot we use it as the origin to
             -- which the item is returned in case it can't be dropped anywhere.
             dragboard = { item = item, origin = slot or list };
-            if item:instanceOf( 'Bag' ) then
+            if item:instanceOf( 'Container' ) then
                 createInventory();
             end
         end

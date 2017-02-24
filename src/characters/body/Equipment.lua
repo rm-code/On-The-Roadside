@@ -31,7 +31,7 @@ function Equipment.new()
     function self:removeItem( slot )
         local item = slot:getItem();
 
-        if item:instanceOf( 'Bag' ) then
+        if item:instanceOf( 'Container' ) then
             self:publish( 'CHANGE_VOLUME', -item:getCarryCapacity() );
         end
 
@@ -43,7 +43,7 @@ function Equipment.new()
         if slot:getItemType() == item:getItemType() then
             if not slot:getSubType() or slot:getSubType() == item:getSubType() then
                 -- Notify observers of a volume change.
-                if item:instanceOf( 'Bag' ) then
+                if item:instanceOf( 'Container' ) then
                     self:publish( 'CHANGE_VOLUME', item:getCarryCapacity() );
                 end
 

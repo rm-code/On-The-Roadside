@@ -23,7 +23,7 @@ local TEMPLATES_MISC       = 'res.data.items.Miscellaneous';
 
 local ITEM_CLASSES = {
     [ITEM_TYPES.ARMOR]    = require( 'src.items.Armor' ),
-    [ITEM_TYPES.BAG]      = require( 'src.items.Bag' ),
+    [ITEM_TYPES.CONTAINER]      = require( 'src.items.Container' ),
     [ITEM_TYPES.MISC]     = require( 'src.items.Item' ),
     [ITEM_TYPES.AMMO]     = require( 'src.items.weapons.Ammunition' ),
     [WEAPON_TYPES.MELEE]  = require( 'src.items.weapons.MeleeWeapon' ),

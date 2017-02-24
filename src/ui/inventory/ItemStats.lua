@@ -12,7 +12,7 @@ function ItemStats.new( x, y, w, h )
 
     local item;
 
-    local function drawBagStats()
+    local function drawContainerStats()
         local volumeLimit = item:getCarryCapacity();
         love.graphics.print( 'Volume Limit: ' .. volumeLimit, x * TILE_SIZE, (y + 4) * TILE_SIZE );
     end
@@ -44,8 +44,8 @@ function ItemStats.new( x, y, w, h )
             love.graphics.print( 'WGT: ' .. string.format( '%.1f', item:getWeight() ), (x + w * 0.5) * TILE_SIZE, (y + 1) * TILE_SIZE );
             love.graphics.print( 'VOL: ' .. string.format( '%.1f', item:getVolume() ), (x + 5 + w * 0.5) * TILE_SIZE, (y + 1) * TILE_SIZE );
 
-            if item:getItemType() == ITEM_TYPES.BAG then
-                drawBagStats();
+            if item:getItemType() == ITEM_TYPES.CONTAINER then
+                drawContainerStats();
             elseif item:getItemType() == ITEM_TYPES.WEAPON then
                 drawWeaponStats();
             end

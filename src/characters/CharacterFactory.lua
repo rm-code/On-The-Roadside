@@ -20,7 +20,7 @@ local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 ---
 -- Loads the character's weapon and adds ammunition to his inventory.
 -- @param weapon    (Weapon) The weapon to load.
--- @param inventory (Bag)    The inventory to create ammunition for.
+-- @param inventory (Container)    The inventory to create ammunition for.
 --
 local function createAmmunition( weapon, inventory )
     -- Load the weapon.
