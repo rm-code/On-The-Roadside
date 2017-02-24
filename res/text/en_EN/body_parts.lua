@@ -28,6 +28,7 @@ locale.strings = {
     ['ribcage'] = "Ribcage",
 
     ['equip_head'] = "Head",
+    ['equip_mouth'] = "Mouth",
     ['equip_backpack'] = "Backpack",
     ['equip_torso'] = "Torso",
     ['equip_hands'] = "Hands",
