@@ -7,6 +7,7 @@ return {
         volume     = 2.3,
         equippable = true,
         stackable  = false,
+        permanent  = false,
         subType    = "Footwear",
         armor = {
             protection = 12,
@@ -24,6 +25,7 @@ return {
         volume     = 3.1,
         equippable = true,
         stackable  = false,
+        permanent  = false,
         subType    = "Headgear",
         armor = {
             protection = 30,
@@ -41,6 +43,7 @@ return {
         volume     = 4.3,
         equippable = true,
         stackable  = false,
+        permanent  = false,
         subType    = "Jacket",
         armor = {
             protection = 12,
@@ -58,6 +61,7 @@ return {
         volume     = 0.5,
         equippable = true,
         stackable  = false,
+        permanent  = false,
         subType    = "Trousers",
         armor = {
             protection = 4,
@@ -75,6 +79,7 @@ return {
         volume     = 0.5,
         equippable = true,
         stackable  = false,
+        permanent  = true,
         subType    = "Fur",
         armor = {
             protection = 4,

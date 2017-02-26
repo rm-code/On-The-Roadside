@@ -7,6 +7,7 @@ return {
         volume        = 1.0,
         equippable    = true,
         stackable     = false,
+        permanent     = false,
         carryCapacity = 15,
         tags = {
             'humanoid'

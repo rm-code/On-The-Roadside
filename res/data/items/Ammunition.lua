@@ -7,6 +7,7 @@ return {
         volume     = 0,
         equippable = false,
         stackable  = true,
+        permanent  = false,
         damageType = 'piercing',
         effects = {
             customSpeed = { speed = 35 }
@@ -23,6 +24,7 @@ return {
         volume     = 0,
         equippable = false,
         stackable  = true,
+        permanent  = false,
         damageType = 'piercing',
         effects = {
             spreadsOnShot = { pellets = 12 }
@@ -39,6 +41,7 @@ return {
         volume     = 2.0,
         equippable = false,
         stackable  = true,
+        permanent  = false,
         effects = {
             explosive = { blastRadius = 5 },
             customSpeed = { speed = 12, increase = 1, final = 35 }
