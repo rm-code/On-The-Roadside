@@ -39,7 +39,7 @@ function BTAquireTarget.new()
             local tile = tiles[i];
             if tile:isOccupied()
             and not tile:getCharacter():isDead()
-            and not tile:getCharacter():getFaction():getType() == FACTIONS.NEURAL
+            and not tile:getCharacter():getFaction():getType() == FACTIONS.NEUTRAL
             and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
                 enemies[#enemies + 1] = tile;
             end
