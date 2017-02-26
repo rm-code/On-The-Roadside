@@ -47,9 +47,9 @@ describe( 'Text file spec', function()
         it( 'makes sure all text lines have a unique key', function()
             local keys = {};
             for _, file in ipairs( files ) do
-                for key, line in pairs( file.strings ) do
-                    assert.is_not_true( keys[key] );
-                    keys[key] = line;
+                for key, _ in pairs( file.strings ) do
+                    assert.is_not_true( keys[key], key );
+                    keys[key] = true;
                 end
             end
         end)
