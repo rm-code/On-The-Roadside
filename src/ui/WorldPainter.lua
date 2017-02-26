@@ -22,7 +22,7 @@ local CHARACTER_COLORS = {
     },
     INACTIVE = {
         [FACTIONS.ALLIED]  = COLORS.DB15,
-        [FACTIONS.NEUTRAL] = COLORS.DB12,
+        [FACTIONS.NEUTRAL] = COLORS.DB10,
         [FACTIONS.ENEMY]   = COLORS.DB27
     }
 }
