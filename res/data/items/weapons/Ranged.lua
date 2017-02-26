@@ -11,7 +11,7 @@ return {
         caliber    = "5.45x39mm",
         sound      = 'ASSAULT_RIFLE',
         subType    = "Ranged",
-        damage     = 40,
+        damage     = 26,
         rpm        = 650,
         magSize    = 30,
         reloadable = true,
@@ -19,15 +19,15 @@ return {
         mode = {
             {
                 name     = "Single",
-                cost     = 3,
+                cost     = 12,
                 accuracy = 80,
                 attacks  = 1,
             },
             {
                 name     = "Full-Auto",
-                cost     = 10,
-                accuracy = 50,
-                attacks  = 11,
+                cost     = 25,
+                accuracy = 40,
+                attacks  = 5,
             }
         },
         tags = {
@@ -53,7 +53,7 @@ return {
         mode = {
             {
                 name = "Single",
-                cost = 10,
+                cost = 30,
                 accuracy = 65,
                 attacks = 1,
             }
@@ -74,14 +74,14 @@ return {
         subType    = "Ranged",
         caliber    = "12 gauge",
         sound      = 'SHOTGUN',
-        damage     = 20,
+        damage     = 15,
         magSize    = 8,
         reloadable = true,
         range      = 15,
         mode = {
             {
                 name = "Single",
-                cost = 3,
+                cost = 14,
                 accuracy = 25,
                 attacks = 1,
             }

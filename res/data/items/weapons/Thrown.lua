@@ -15,8 +15,9 @@ return {
         sound      = 'MELEE',
         mode = {
             {
-                name = "Throw",
-                cost = 3,
+                name       = "Throw",
+                cost       = 3,
+                damageType = 'explosive'
             }
         },
         effects = {
@@ -37,14 +38,14 @@ return {
         stackable  = true,
         permanent  = false,
         subType    = "Thrown",
-        damage     = 40,
+        damage     = 24,
         reloadable = false,
         range      = 10,
         sound      = 'MELEE',
         mode = {
             {
                 name       = "Throw",
-                cost       = 3,
+                cost       = 6,
                 damageType = 'piercing'
             }
         },

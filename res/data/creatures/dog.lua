@@ -15,7 +15,7 @@ return {
     {
         id = 'head',
         type = 'entry',
-        health = 60
+        health = 30
     },
     {
         id = 'brain',
@@ -28,12 +28,12 @@ return {
     {
         id = 'ears',
         type = 'node',
-        health = 30
+        health = 20
     },
     {
         id = 'eyes',
         type = 'node',
-        health = 30,
+        health = 20,
         effects = {
             'blindness'
         }
@@ -46,7 +46,7 @@ return {
     {
         id = 'skull',
         type = 'container',
-        health = 60
+        health = 40
     },
     {
         id = 'throat',
@@ -60,18 +60,18 @@ return {
     {
         id = 'legs',
         type = 'entry',
-        health = 90
+        health = 40
     },
     -- ################################## Torso
     {
         id = 'torso',
         type = 'entry',
-        health = 200
+        health = 60
     },
     {
         id = 'heart',
         type = 'node',
-        health = 50,
+        health = 20,
         effects = {
             'death'
         }
@@ -79,7 +79,7 @@ return {
     {
         id = 'kidneys',
         type = 'node',
-        health = 60,
+        health = 40,
         effects = {
             'death'
         }
@@ -87,7 +87,7 @@ return {
     {
         id = 'liver',
         type = 'node',
-        health = 50,
+        health = 30,
         effects = {
             'death'
         }
@@ -95,7 +95,7 @@ return {
     {
         id = 'lungs',
         type = 'node',
-        health = 80,
+        health = 40,
         effects = {
             'death'
         }

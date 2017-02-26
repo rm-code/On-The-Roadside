@@ -9,20 +9,20 @@ return {
         stackable  = false,
         permanent  = false,
         subType    = "Melee",
-        damage     = 30,
+        damage     = 18,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
             {
                 name       = "Slash",
-                cost       = 3,
+                cost       = 8,
                 accuracy   = 85,
                 attacks    = 1,
                 damageType = 'slashing'
             },
             {
                 name       = "Stab",
-                cost       = 3,
+                cost       = 8,
                 accuracy   = 85,
                 attacks    = 1,
                 damageType = 'piercing'
@@ -42,13 +42,13 @@ return {
         stackable  = false,
         permanent  = false,
         subType    = "Melee",
-        damage     = 30,
+        damage     = 24,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
             {
                 name       = "Single",
-                cost       = 3,
+                cost       = 7,
                 accuracy   = 85,
                 attacks    = 1,
                 damageType = 'bludgeoning'
@@ -68,13 +68,13 @@ return {
         stackable  = false,
         permanent  = true,
         subType    = "Melee",
-        damage     = 30,
+        damage     = 14,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
             {
                 name = "Bite",
-                cost = 3,
+                cost = 8,
                 accuracy = 90,
                 attacks = 1,
                 damageType = 'piercing'
