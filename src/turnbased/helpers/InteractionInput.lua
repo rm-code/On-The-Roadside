@@ -2,6 +2,7 @@ local State = require( 'src.turnbased.states.State' );
 local Open = require( 'src.characters.actions.Open' );
 local Close = require( 'src.characters.actions.Close' );
 local OpenInventory = require( 'src.characters.actions.OpenInventory' );
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -47,6 +48,10 @@ function InteractionInput.new()
     function self:request( target, character )
         -- Characters can only interact with adjacent tiles.
         if not target:isAdjacent( character:getTile() ) then
+            if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
+                ScreenManager.push( 'health', target:getCharacter() );
+                return true;
+            end
             return false;
         end
 
