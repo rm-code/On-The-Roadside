@@ -191,6 +191,18 @@ function Inventory.new( weightLimit, volumeLimit )
     end
 
     ---
+    -- Drops all items in the inventory with no regards of successfully adding
+    -- them to the target tile.
+    -- @param tile (Tile) The tile to drop the items on.
+    --
+    function self:dropAllItems( tile )
+        for i = #items, 1, -1 do
+            tile:getInventory():addItem( items[i] );
+            self:removeItem( items[i] );
+        end
+    end
+
+    ---
     -- Checks if the item fits in the current inventory by checking the weight
     -- and volume parameters.
     -- @param weight (number) The weight of the item to check.
