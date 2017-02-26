@@ -4,6 +4,11 @@
 - Added random spawning of items when a world object is destroyed
 - Added interaction with inventory of adjacent tiles
 - Added automatic opening of container objects if they are the target of a movement path
+- Added dogs as the first non-human creatures
+- Added a passive AI for the neutral faction
+    - The neutral faction now only consists of dogs
+- Added AI actions for picking up items
+- Added inspection of other characters (clicking on them in interact mode opens their health panel) 
 
 ## Fixes
 - Fixed color code for impassable world objects when aiming
@@ -11,8 +16,11 @@
 ## Other Changes
 - Use an improved algorithm for FOV calculations
 - Apply bleeding effects directly on a hit instead of waiting till the next round
-
-
+- Updated the inventory system
+    - Container items such as backpacks now increase a character's carry capacity
+    - When the item is unequipped all items that don't fit the inventory will be dropped
+- Increased inventory size for tiles
+- Updated colors for neutral characters
 
 
 # Version 0.5.2.741 - 2017-02-11
