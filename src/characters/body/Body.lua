@@ -180,6 +180,10 @@ function Body.new( template )
         return template.tags;
     end
 
+    function self:getID()
+        return template.id;
+    end
+
     return self;
 end
 
