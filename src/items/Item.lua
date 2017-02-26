@@ -46,6 +46,10 @@ function Item.new( template )
         return template.stackable;
     end
 
+    function self:isPermanent()
+        return template.permanent;
+    end
+
     function self:serialize()
         local t = {
             ['id'] = template.id,

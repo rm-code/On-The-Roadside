@@ -103,7 +103,7 @@ function UIEquipmentList.new( x, y, width, id, character )
     --
     function self:drag()
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() then
+            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
                 local item = equipment:removeItem( uiItem:getSlot() );
 
                 -- TODO warn player

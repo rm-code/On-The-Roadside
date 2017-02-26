@@ -22,7 +22,9 @@ function Equipment.new()
         for _, slot in pairs( slots ) do
             if slot:containsItem() then
                 local item = slot:getItem();
-                tile:getInventory():addItem( item );
+                if not item:isPermanent() then
+                    tile:getInventory():addItem( item );
+                end
                 slot:removeItem();
             end
         end
