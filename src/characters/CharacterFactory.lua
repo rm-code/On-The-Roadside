@@ -70,8 +70,7 @@ function CharacterFactory.loadCharacter( map, tile, faction )
     return character;
 end
 
-function CharacterFactory.newCharacter( map, tile, faction )
-    local type = love.math.random( 100 ) < 90 and 'human' or 'dog';
+function CharacterFactory.newCharacter( map, tile, faction, type )
     local character = Character.new( map, tile, faction, type );
     createEquipment( character );
     character:generateFOV();

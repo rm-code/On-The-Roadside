@@ -67,7 +67,12 @@ function Factions.new( map )
     local function spawnCharacters( amount, faction )
         for _ = 1, amount do
             local spawn = map:findSpawnPoint( faction );
-            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction )));
+            -- TODO Character spawn based on templates.
+            local type = 'human';
+            if faction == FACTIONS.NEUTRAL then
+                type = 'dog';
+            end
+            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction ), type ));
         end
     end
 
