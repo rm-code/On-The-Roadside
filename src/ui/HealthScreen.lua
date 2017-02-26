@@ -3,6 +3,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Tileset = require( 'src.ui.Tileset' );
 local Translator = require( 'src.util.Translator' );
+local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
@@ -27,6 +28,7 @@ function HealthScreen.new()
     local self = Screen.new();
 
     local character;
+    local characterType;
 
     local grid;
     local px, py;
@@ -148,6 +150,7 @@ function HealthScreen.new()
 
     function self:init( ncharacter )
         character = ncharacter;
+        characterType = character:getBody():getID();
 
         px = math.floor( love.graphics.getWidth() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 );
         py = math.floor( love.graphics.getHeight() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
@@ -209,20 +212,25 @@ function HealthScreen.new()
             end
         end
 
-        local status = '^.^'
-        love.graphics.setColor( COLORS.DB10 );
+        local status = 'Status: ';
         if character:getBody():getBloodVolume() / 5 < 0.2 then
             love.graphics.setColor( COLORS.DB27 );
-            status = 'x.x';
+            status = status .. 'x.x ';
         elseif character:getBody():getBloodVolume() / 5 < 0.4 then
             love.graphics.setColor( COLORS.DB05 );
-            status = '>.<';
+            status = status .. '>.< ';
         elseif character:getBody():getBloodVolume() / 5 < 0.7 then
             love.graphics.setColor( COLORS.DB08 );
-            status = 'q.q';
+            status = status .. 'o.o ';
+        else
+            love.graphics.setColor( COLORS.DB10 );
+            status = status .. '^.^ ';
         end
 
-        love.graphics.print( 'Status: ' .. status, px + TILE_SIZE, py + TILE_SIZE );
+        love.graphics.print( status, px + TILE_SIZE, py + TILE_SIZE );
+
+        local w = ImageFont:getFont():getWidth( status );
+        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + w + TILE_SIZE, py + TILE_SIZE );
         love.graphics.setColor( 255, 255, 255 );
     end
 
