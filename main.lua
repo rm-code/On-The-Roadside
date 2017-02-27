@@ -82,6 +82,8 @@ function love.keypressed( key, scancode, isrepeat )
 
     if scancode == '0' then
         profile = 1;
+    elseif scancode == 'f2' then
+        Log.setDebugActive( not Log.getDebugActive() );
     end
 end
 
