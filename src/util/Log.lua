@@ -5,7 +5,6 @@ local Log = {};
 -- ------------------------------------------------
 
 local FILE_NAME = 'latest.log';
-local MAX_SIZE = 1000000;
 
 local DEBUG_PREFIX   = '[DEBUG]';
 local WARNING_PREFIX = '[WARNING]';
@@ -33,10 +32,6 @@ end
 
 local function write( str, caller, mtype )
     str = tostring( str );
-
-    if love.filesystem.getSize( FILE_NAME ) > MAX_SIZE then
-        recreateFile();
-    end
 
     local c, t = caller and string.format( '[%s]', caller ) or '', mtype or '';
     file:write( t );
