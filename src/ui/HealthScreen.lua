@@ -3,7 +3,6 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Tileset = require( 'src.ui.Tileset' );
 local Translator = require( 'src.util.Translator' );
-local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
@@ -198,39 +197,24 @@ function HealthScreen.new()
                 love.graphics.print( Translator.getText( bodyPart:getID() ), px + TILE_SIZE, py + TILE_SIZE * counter );
                 love.graphics.printf( status, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'right' );
 
-                local bleeding = bodyPart:isBleeding() and 'BLEEDING' or '';
-                if bodyPart:getBloodLoss() / 1.0 < 0.2 then
-                    love.graphics.setColor( COLORS.DB10 );
-                elseif bodyPart:getBloodLoss() / 1.0 < 0.4 then
-                    love.graphics.setColor( COLORS.DB08 );
-                elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
-                    love.graphics.setColor( COLORS.DB05 );
-                elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
-                    love.graphics.setColor( COLORS.DB27 );
+                if bodyPart:isBleeding() then
+                    local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
+                    if bodyPart:getBloodLoss() / 1.0 < 0.2 then
+                        love.graphics.setColor( COLORS.DB10 );
+                    elseif bodyPart:getBloodLoss() / 1.0 < 0.4 then
+                        love.graphics.setColor( COLORS.DB08 );
+                    elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
+                        love.graphics.setColor( COLORS.DB05 );
+                    elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
+                        love.graphics.setColor( COLORS.DB27 );
+                    end
+                    love.graphics.printf( str, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'center' );
                 end
-                love.graphics.printf( bleeding, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'center' );
             end
         end
 
-        local status = 'Status: ';
-        if character:getBody():getBloodVolume() / 5 < 0.2 then
-            love.graphics.setColor( COLORS.DB27 );
-            status = status .. 'x.x ';
-        elseif character:getBody():getBloodVolume() / 5 < 0.4 then
-            love.graphics.setColor( COLORS.DB05 );
-            status = status .. '>.< ';
-        elseif character:getBody():getBloodVolume() / 5 < 0.7 then
-            love.graphics.setColor( COLORS.DB08 );
-            status = status .. 'o.o ';
-        else
-            love.graphics.setColor( COLORS.DB10 );
-            status = status .. '^.^ ';
-        end
-
-        love.graphics.print( status, px + TILE_SIZE, py + TILE_SIZE );
-
-        local w = ImageFont:getFont():getWidth( status );
-        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + w + TILE_SIZE, py + TILE_SIZE );
+        love.graphics.setColor( COLORS.DB20 );
+        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + TILE_SIZE, py + TILE_SIZE );
         love.graphics.setColor( 255, 255, 255 );
     end
 
