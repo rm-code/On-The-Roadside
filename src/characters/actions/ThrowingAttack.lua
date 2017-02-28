@@ -1,7 +1,6 @@
 local Action = require('src.characters.actions.Action');
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' );
-local Messenger = require( 'src.Messenger' );
 local Bresenham = require( 'lib.Bresenham' );
 
 local ThrowingAttack = {};
