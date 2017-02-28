@@ -23,7 +23,6 @@ function ThrowingAttack.new( character, target )
             return true;
         end);
 
-        Messenger.publish( 'START_ATTACK', character, actualTarget );
         local package = ThrownProjectileQueue.new( character, actualTarget );
         ProjectileManager.register( package );
         return true;

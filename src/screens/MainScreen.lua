@@ -131,18 +131,6 @@ function MainScreen.new()
         end
     end
 
-    Messenger.observe( 'START_EXECUTION', function()
-        camera:lock();
-        camera:storePosition();
-    end)
-
-    Messenger.observe( 'END_EXECUTION', function( restore )
-        camera:unlock();
-        if restore then
-            camera:restorePosition();
-        end
-    end)
-
     Messenger.observe( 'SWITCH_CHARACTERS', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
@@ -155,13 +143,6 @@ function MainScreen.new()
             return;
         end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
-    end)
-
-    Messenger.observe( 'START_ATTACK', function( character, target )
-        if not game:getFactions():getPlayerFaction():canSee( target ) or character:getFaction():isAIControlled() then
-            return;
-        end
-        camera:setTargetPosition( target:getX() * TILE_SIZE, target:getY() * TILE_SIZE );
     end)
 
     return self;
