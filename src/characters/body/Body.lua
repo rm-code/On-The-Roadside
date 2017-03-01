@@ -123,6 +123,11 @@ function Body.new( template )
     local function propagateDamage( node, damage, damageType )
         damage = checkArmorProtection( node, damage, damageType );
 
+        -- Stop damage propagation if the armor has stopped all of the incoming damage.
+        if damage <= 0 then
+            return;
+        end
+
         node:hit( damage, damageType );
         handleBleeding( node );
 
