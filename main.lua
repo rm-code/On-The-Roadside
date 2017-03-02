@@ -40,6 +40,7 @@ function love.load()
         inventory = require('src.screens.InventoryScreen');
         help = require('src.screens.HelpScreen');
         health = require('src.ui.HealthScreen');
+        gameover = require('src.ui.GameOverScreen');
     };
 
     ScreenManager.init(screens, 'main');

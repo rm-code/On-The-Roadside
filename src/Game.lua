@@ -12,6 +12,7 @@ local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local SaveHandler = require( 'src.SaveHandler' );
 local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -23,6 +24,7 @@ local Game = {};
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.Factions' );
 local ITEM_TYPES = require('src.constants.ItemTypes');
 
 -- ------------------------------------------------
@@ -106,6 +108,13 @@ function Game.new()
     function self:update( dt )
         map:update();
         turnManager:update( dt )
+
+        if not factions:findFaction( FACTIONS.ALLIED ):hasLivingCharacters() then
+            ScreenManager.push( 'gameover', false );
+        end
+        if not factions:findFaction( FACTIONS.ENEMY ):hasLivingCharacters() then
+            ScreenManager.push( 'gameover', true );
+        end
     end
 
     function self:getMap()

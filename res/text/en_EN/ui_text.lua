@@ -7,6 +7,8 @@ locale.strings = {
     ['ui_health'] = "Health: ",
     ['ui_weapon'] = "Weapon: ",
     ['ui_mode'] = "Mode: ",
+    ['ui_win'] = "All enemies are dead. You won!\n\nPress any key to continue...",
+    ['ui_lose'] = "Your team is dead. You lose!\n\nPress any key to continue...",
 }
 
 return locale;
