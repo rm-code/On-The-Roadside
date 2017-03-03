@@ -39,6 +39,11 @@ function Projectile.new( character, tiles, damage, damageType, effects )
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Advances the projectile to the next tile in its queue if the timer is
+    -- reached. Different types of projectiles can have different speeds.
+    -- @param dt (number) The time since the last frame update.
+    --
     function self:update( dt )
         timer = timer + dt * speed;
         if timer > 1 and index < #tiles then
@@ -51,6 +56,10 @@ function Projectile.new( character, tiles, damage, damageType, effects )
         end
     end
 
+    ---
+    -- Moves the projectile to the next tile.
+    -- @param map (Map) The game's map.
+    --
     function self:updateTile( map )
         previousTile = tile;
         tile = map:getTileAt( tiles[index].x, tiles[index].y );
