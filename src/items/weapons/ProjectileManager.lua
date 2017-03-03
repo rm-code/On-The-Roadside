@@ -121,14 +121,6 @@ function ProjectileManager.update( dt )
     end
 end
 
-function ProjectileManager.iterate( callback )
-    if queue then
-        for _, projectile in pairs( queue:getProjectiles() ) do
-            callback( projectile:getTile():getPosition() );
-        end
-    end
-end
-
 function ProjectileManager.register( nqueue )
     queue = nqueue;
     queue:init();
