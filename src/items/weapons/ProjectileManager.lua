@@ -96,7 +96,7 @@ local function hitWorldObject( index, projectile, tile, worldObject )
     end
 
     -- Projectiles passing through world objects lose some of their energy.
-    local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject():getEnergyReduction() );
+    local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
     projectile:setEnergy( energy );
 
     -- Apply the damage to the tile and only remove it if the energy is 0.
