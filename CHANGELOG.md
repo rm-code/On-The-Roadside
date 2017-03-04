@@ -7,20 +7,34 @@
 - Added dogs as the first non-human creatures
 - Added a passive AI for the neutral faction
     - The neutral faction now only consists of dogs
+    - The neutral faction is ignored by the other factions
 - Added AI actions for picking up items
-- Added inspection of other characters (clicking on them in interact mode opens their health panel) 
+- Added inspection of other characters (clicking on them in interact mode opens their health panel)
+- Added damage reduction based on worn armor items
+
+## Removals
+- Removed automatic camera movement during attacks
 
 ## Fixes
 - Fixed color code for impassable world objects when aiming
+- Fixed potential error where projectiles weren't updated if one of them hit the map borders
+- Fixed error where tiles were hit twice if the projectile lost all energy
 
 ## Other Changes
 - Use an improved algorithm for FOV calculations
-- Apply bleeding effects directly on a hit instead of waiting till the next round
+- Improve bleeding mechanics
+    - Apply bleeding effects directly on a hit instead of waiting till the next round
+    - Amount of blood loss is now based on the damage type of the attack
+    - Weak body parts will receive higher bleeding damage
 - Updated the inventory system
     - Container items such as backpacks now increase a character's carry capacity
     - When the item is unequipped all items that don't fit the inventory will be dropped
 - Increased inventory size for tiles
 - Updated colors for neutral characters
+- Improved the health screen
+    - Added better bleeding indicators
+    - The character type is now also displayed
+- General balancing trying to slowly move towards a good "feel" for the combat
 
 
 # Version 0.5.2.741 - 2017-02-11
