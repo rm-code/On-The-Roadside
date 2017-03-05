@@ -3,7 +3,7 @@ return {
     sprite = 44,
     openSprite = 96,
     color = { 102, 57, 49 },
-    size = 95,
+    size = 100,
     hp = 110,
     interactionCost = {
         stand  = 3,
