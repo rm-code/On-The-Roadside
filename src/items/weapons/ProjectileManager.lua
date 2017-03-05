@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 
@@ -74,8 +75,18 @@ end
 -- @param projectile  (Projectile)  The projectile to handle.
 -- @param tile        (Tile)        The tile to check.
 -- @param worldObject (WorldObject) The world object to check.
+-- @param character   (Character)   The character who fired this projectile.
 --
-local function hitWorldObject( index, projectile, tile, worldObject )
+local function hitWorldObject( index, projectile, tile, worldObject, character )
+    -- World objects which are on a tile directly adjacent to the attacking
+    -- character will be ignored if they either are destructible or don't fill
+    -- the whole tile. Indestructible objects which cover the whole tile will
+    -- still block the shot.
+    if tile:isAdjacent( character:getTile() ) and ( worldObject:isDestructible() or worldObject:getSize() < 100 ) then
+        Log.debug( 'World object is adjacent to character and will be ignored', 'ProjectileManager' );
+        return;
+    end
+
     -- Roll a random number. This is the chance to hit a world object based on
     -- its size. So larger world objects have a higher chance to block shots.
     if love.math.random( 100 ) > worldObject:getSize() then
@@ -109,8 +120,9 @@ end
 -- @param index      (number)     The id of the projectile which will be used for removing it.
 -- @param projectile (Projectile) The projectile to handle.
 -- @param tile       (Tile)       The tile to check.
+-- @param character  (Character)  The character who fired this projectile.
 --
-local function checkForHits( index, projectile, tile )
+local function checkForHits( index, projectile, tile, character )
     -- Stop movement and remove the projectile if it has reached the map border.
     if not tile then
         queue:removeProjectile( index );
@@ -125,7 +137,7 @@ local function checkForHits( index, projectile, tile )
 
     -- Handle world objects.
     if tile:hasWorldObject() then
-        hitWorldObject( index, projectile, tile, tile:getWorldObject() );
+        hitWorldObject( index, projectile, tile, tile:getWorldObject(), character );
         return;
     end
 end
@@ -166,7 +178,7 @@ function ProjectileManager.update( dt )
             projectile:updateTile( map );
             Messenger.publish( 'PROJECTILE_MOVED', projectile );
 
-            checkForHits( i, projectile, projectile:getTile() );
+            checkForHits( i, projectile, projectile:getTile(), queue:getCharacter() );
         end
     end
 end
