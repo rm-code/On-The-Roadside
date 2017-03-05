@@ -78,6 +78,14 @@ function ThrownProjectileQueue.new( character, target )
     -- ------------------------------------------------
 
     ---
+    -- Gets the character this attack was performed by.
+    -- @return (Character) The character.
+    --
+    function self:getCharacter()
+        return character;
+    end
+
+    ---
     -- Gets the table of projectiles which are active on the map.
     -- @return (table) A table containing the projectiles.
     function self:getProjectiles()
