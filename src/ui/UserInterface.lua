@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Translator = require( 'src.util.Translator' );
 local ImageFont = require( 'src.ui.ImageFont' );
@@ -77,6 +78,7 @@ function UserInterface.new( game )
             love.graphics.print( love.timer.getFPS() .. ' FPS', TILE_SIZE, TILE_SIZE );
             love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', TILE_SIZE, TILE_SIZE * 2 );
             love.graphics.print( 'Mouse: ' .. mouseX .. ', ' .. mouseY, TILE_SIZE, TILE_SIZE * 3 );
+            love.graphics.print( 'Debug Logging: ' .. tostring( Log.getDebugActive() ), TILE_SIZE, TILE_SIZE * 4 );
         end
     end
 
