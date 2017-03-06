@@ -2,21 +2,18 @@ local Object = {};
 
 function Object.new()
     local self = {
-        __instances = { 'Object' };
+        __instances = {
+            Object = true
+        };
     };
 
-    function self:addInstance( str )
-        self.__instances[#self.__instances + 1] = str;
+    function self:addInstance( class )
+        self.__instances[class] = true;
         return self;
     end
 
     function self:instanceOf( class )
-        for i = 1, #self.__instances do
-            if self.__instances[i] == class then
-                return true;
-            end
-        end
-        return false;
+        return self.__instances[class];
     end
 
     return self;
