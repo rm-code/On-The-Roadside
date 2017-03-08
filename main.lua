@@ -36,11 +36,11 @@ function love.load()
     end
 
     local screens = {
-        main = require('src.screens.MainScreen');
-        inventory = require('src.screens.InventoryScreen');
-        help = require('src.screens.HelpScreen');
-        health = require('src.ui.HealthScreen');
-        gameover = require('src.ui.GameOverScreen');
+        main      = require( 'src.ui.screens.MainScreen'      ),
+        inventory = require( 'src.ui.screens.InventoryScreen' ),
+        help      = require( 'src.ui.screens.HelpScreen'      ),
+        health    = require( 'src.ui.screens.HealthScreen'    ),
+        gameover  = require( 'src.ui.screens.GameOverScreen'  )
     };
 
     ScreenManager.init(screens, 'main');
