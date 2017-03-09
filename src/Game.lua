@@ -11,6 +11,8 @@ local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local SaveHandler = require( 'src.SaveHandler' );
+local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
 -- Module
@@ -22,6 +24,7 @@ local Game = {};
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.Factions' );
 local ITEM_TYPES = require('src.constants.ItemTypes');
 
 -- ------------------------------------------------
@@ -46,7 +49,7 @@ function Game.new()
                 local tries = love.math.random( 1, 5 );
                 for _ = 1, tries do
                     if love.math.random( 100 ) < 25 then
-                        local item = ItemFactory.createRandomItem( ITEM_TYPES.AMMO );
+                        local item = ItemFactory.createRandomItem( 'all', ITEM_TYPES.AMMO );
                         tile:getWorldObject():getInventory():addItem( item );
                         Log.debug( string.format( 'Spawned %s in container at %d, %d', item:getID(), x, y ), 'Game' );
                     end
@@ -64,6 +67,7 @@ function Game.new()
         TileFactory.loadTemplates();
         BodyFactory.loadTemplates();
         WorldObjectFactory.loadTemplates();
+        BehaviorTreeFactory.loadTemplates();
         SoundManager.loadResources();
 
         map = Map.new();
@@ -104,6 +108,13 @@ function Game.new()
     function self:update( dt )
         map:update();
         turnManager:update( dt )
+
+        if not factions:findFaction( FACTIONS.ALLIED ):hasLivingCharacters() then
+            ScreenManager.push( 'gameover', false );
+        end
+        if not factions:findFaction( FACTIONS.ENEMY ):hasLivingCharacters() then
+            ScreenManager.push( 'gameover', true );
+        end
     end
 
     function self:getMap()

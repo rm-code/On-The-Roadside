@@ -1,7 +1,6 @@
 local State = require( 'src.turnbased.states.State' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
-local Messenger = require( 'src.Messenger' );
 local Log = require( 'src.util.Log' );
 
 local ExecutionState = {};
@@ -15,14 +14,12 @@ function ExecutionState.new( stateManager )
     local character;
     local actionTimer = 0;
     local delay;
-    local restore = true;
     local factions;
 
     function self:enter( nfactions, ncharacter )
         factions = nfactions;
         character = ncharacter;
         delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY;
-        Messenger.publish( 'START_EXECUTION' );
     end
 
     function self:update( dt )
@@ -38,17 +35,12 @@ function ExecutionState.new( stateManager )
 
         if character:isDead() then
             Log.debug( string.format( 'Character (%s) is dead. Stopping execution', tostring( character )), 'ExecutionState' );
-            Messenger.publish( 'END_EXECUTION', restore );
             stateManager:pop();
             return;
         end
 
         if actionTimer > delay then
             if character:hasEnqueuedAction() then
-                if character:getActionQueue():peek():instanceOf( 'Walk' ) then
-                    restore = false;
-                end
-
                 character:performAction();
 
                 if factions:getPlayerFaction():canSee( character:getTile() ) then
@@ -59,7 +51,6 @@ function ExecutionState.new( stateManager )
 
                 actionTimer = 0;
             else
-                Messenger.publish( 'END_EXECUTION', restore );
                 stateManager:pop();
             end
         end

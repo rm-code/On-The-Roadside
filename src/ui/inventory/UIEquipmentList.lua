@@ -80,13 +80,14 @@ function UIEquipmentList.new( x, y, width, id, character )
         end
 
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() and uiItem:getSlot():getItemType() == item:getItemType() then
-                if uiItem:getSlot():containsItem() then
-                    local tmp = uiItem:getSlot():getAndRemoveItem();
-                    success = uiItem:getSlot():addItem( item );
+            local slot = uiItem:getSlot();
+            if uiItem:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
+                if slot:containsItem() then
+                    local tmp = equipment:removeItem( slot );
+                    success = equipment:addItem( slot, item );
                     origin:drop( tmp );
                 else
-                    success = uiItem:getSlot():addItem( item );
+                    success = equipment:addItem( slot, item );
                 end
             end
         end
@@ -102,8 +103,14 @@ function UIEquipmentList.new( x, y, width, id, character )
     --
     function self:drag()
         for _, uiItem in ipairs( list ) do
-            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() then
-                local item = uiItem:drag();
+            if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
+                local item = equipment:removeItem( uiItem:getSlot() );
+
+                -- TODO warn player
+                if item:instanceOf( 'Container' ) then
+                    character:getInventory():dropItems( character:getTile() );
+                end
+
                 regenerate();
                 return item, uiItem:getSlot();
             end

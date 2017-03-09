@@ -1,5 +1,5 @@
 local Log = require( 'src.util.Log' );
-local Object = require( 'src.Object' );
+local Observable = require( 'src.util.Observable' );
 
 -- ------------------------------------------------
 -- Module
@@ -8,7 +8,7 @@ local Object = require( 'src.Object' );
 local Equipment = {};
 
 function Equipment.new()
-    local self = Object.new():addInstance( 'Equipment' );
+    local self = Observable.new():addInstance( 'Equipment' );
 
     local slots = {};
 
@@ -21,24 +21,42 @@ function Equipment.new()
     function self:dropAllItems( tile )
         for _, slot in pairs( slots ) do
             if slot:containsItem() then
-                tile:getInventory():addItem( slot:getAndRemoveItem() );
-            end
-        end
-    end
-
-    function self:removeItem( item )
-        for _, slot in pairs( slots ) do
-            if slot:getItem() == item then
+                local item = slot:getItem();
+                if not item:isPermanent() then
+                    tile:getInventory():addItem( item );
+                end
                 slot:removeItem();
-                return true;
             end
         end
-        return false;
     end
 
-    function self:addItem( item )
+    function self:removeItem( slot )
+        local item = slot:getItem();
+        -- TODO search through item table.
+        if item:instanceOf( 'Container' ) then
+            self:publish( 'CHANGE_VOLUME', -item:getCarryCapacity() );
+        end
+
+        slot:removeItem();
+        return item;
+    end
+
+    function self:searchAndRemoveItem( item )
         for _, slot in pairs( slots ) do
-            if slot:getItemType() == item:getItemType() then
+            if item == slot:getItem() then
+                return self:removeItem( slot );
+            end
+        end
+    end
+
+    function self:addItem( slot, item )
+        if slot:getItemType() == item:getItemType() then
+            if not slot:getSubType() or slot:getSubType() == item:getSubType() then
+                -- Notify observers of a volume change.
+                if item:instanceOf( 'Container' ) then
+                    self:publish( 'CHANGE_VOLUME', item:getCarryCapacity() );
+                end
+
                 slot:addItem( item );
                 return true;
             end

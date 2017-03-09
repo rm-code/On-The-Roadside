@@ -43,18 +43,18 @@ function AttackInput.new()
         end
 
         -- Handle Melee weapons.
-        if weapon:getWeaponType() == WEAPON_TYPES.MELEE then
+        if weapon:getSubType() == WEAPON_TYPES.MELEE then
             character:enqueueAction( MeleeAttack.new( character, target ));
         end
 
         -- Handle Thrown weapons.
-        if weapon:getWeaponType() == WEAPON_TYPES.THROWN then
+        if weapon:getSubType() == WEAPON_TYPES.THROWN then
             character:enqueueAction( ThrowingAttack.new( character, target ));
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
         end
 
         -- Handle Ranged weapons.
-        if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
+        if weapon:getSubType() == WEAPON_TYPES.RANGED then
             character:enqueueAction( Attack.new( character, target ));
         end
 

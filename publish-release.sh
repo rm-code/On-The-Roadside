@@ -20,7 +20,7 @@ formatted="$major$minor$patch-$build"
 
 # Zip files. Exclude git folder and DS_Store files.
 echo "Packing .love file for $major.$minor.$patch.$build"
-zip -r -q OTR_$formatted.love ./ -x *.git* -x *.DS_Store* -x *.sh*
+zip -r -q OTR_$formatted.love ./ -x *.git* -x *.DS_Store* -x *.sh* -x *.idea* -x .travis.yml -x .luacheckrc -x README.md
 
 # Move to releases folder and cd to releases.
 mkdir ../releases/OTR_$formatted

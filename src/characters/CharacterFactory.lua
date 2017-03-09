@@ -11,7 +11,6 @@ local CharacterFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require( 'src.constants.ItemTypes' );
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 -- ------------------------------------------------
@@ -20,21 +19,21 @@ local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 ---
 -- Loads the character's weapon and adds ammunition to his inventory.
--- @param weapon   (Weapon) The weapon to load.
--- @param backpack (Bag)    The equipment to create ammunition for.
+-- @param weapon    (Weapon) The weapon to load.
+-- @param inventory (Container)    The inventory to create ammunition for.
 --
-local function createAmmunition( weapon, backpack )
+local function createAmmunition( weapon, inventory )
     -- Load the weapon.
     local amount = weapon:getMagazine():getCapacity();
     for _ = 1, amount do
-        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
         weapon:getMagazine():addRound( round );
     end
 
     -- Add twice the amount of ammunition to the inventory.
     for _ = 1, amount * 2 do
-        local round = ItemFactory.createItem( ITEM_TYPES.AMMO, weapon:getMagazine():getCaliber() );
-        backpack:getInventory():addItem( round );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
+        inventory:addItem( round );
     end
 end
 
@@ -43,24 +42,21 @@ end
 -- @param character (Character) The character to equip with new items.
 --
 local function createEquipment( character )
-    local equipment = character:getEquipment();
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.WEAPON   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.BAG      ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.HEADGEAR ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.GLOVES   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.SHIRT    ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.JACKET   ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.TROUSERS ));
-    equipment:addItem( ItemFactory.createRandomItem( ITEM_TYPES.FOOTWEAR ));
+    local body = character:getBody();
+    local equipment = body:getEquipment();
+    local tags = body:getTags();
 
-    local weapon = character:getWeapon();
-    local backpack = character:getBackpack();
+    for _, slot in pairs( equipment:getSlots() ) do
+        equipment:addItem( slot, ItemFactory.createRandomItem( tags, slot:getItemType(), slot:getSubType() ));
+    end
+
+    local weapon, inventory = character:getWeapon(), character:getInventory();
     if weapon:isReloadable() then
-        createAmmunition( weapon, backpack );
-    elseif weapon:getWeaponType() == WEAPON_TYPES.THROWN then
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
-        backpack:getInventory():addItem( ItemFactory.createItem( ITEM_TYPES.WEAPON, weapon:getID() ));
+        createAmmunition( weapon, inventory );
+    elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
     end
 end
 
@@ -74,8 +70,8 @@ function CharacterFactory.loadCharacter( map, tile, faction )
     return character;
 end
 
-function CharacterFactory.newCharacter( map, tile, faction )
-    local character = Character.new( map, tile, faction, 'human' );
+function CharacterFactory.newCharacter( map, tile, faction, type )
+    local character = Character.new( map, tile, faction, type );
     createEquipment( character );
     character:generateFOV();
     return character;

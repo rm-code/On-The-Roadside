@@ -8,5 +8,8 @@ return {
     destructible = true,
     debrisID = 'worldobject_lowwall',
     blocksVision = false,
-    blocksPathfinding = true
+    blocksPathfinding = true,
+    drops = {
+        { id = 'misc_glass_shard', tries = 6, chance = 20 }
+    }
 }

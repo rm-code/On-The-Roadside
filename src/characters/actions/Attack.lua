@@ -1,7 +1,6 @@
 local Action = require('src.characters.actions.Action');
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ProjectileQueue = require( 'src.items.weapons.ProjectileQueue' );
-local Messenger = require( 'src.Messenger' );
 local Bresenham = require( 'lib.Bresenham' );
 
 local Attack = {};
@@ -27,7 +26,6 @@ function Attack.new( character, target )
             return true;
         end);
 
-        Messenger.publish( 'START_ATTACK', character, actualTarget );
         local package = ProjectileQueue.new( character, actualTarget );
         ProjectileManager.register( package );
         return true;

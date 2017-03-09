@@ -2,6 +2,8 @@ local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
+local Bresenham = require( 'lib.Bresenham' );
+local Util = require( 'src.util.Util' );
 
 -- ------------------------------------------------
 -- Module
@@ -13,7 +15,7 @@ local Character = {};
 -- Constants
 -- ------------------------------------------------
 
-local DEFAULT_ACTION_POINTS = 20;
+local DEFAULT_ACTION_POINTS = 40;
 
 local STANCES = require('src.constants.Stances');
 local ITEM_TYPES = require('src.constants.ItemTypes');
@@ -51,6 +53,38 @@ function Character.new( map, tile, faction, bodyID )
     local body = BodyFactory.create( bodyID );
 
     local finishedTurn = false;
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Marks a tile as seen by this character if it fullfills the necessary
+    -- requirements. Used as a callback for Bresenham's line algorithm.
+    -- @param cx (number)  The tiles coordinate along the x-axis.
+    -- @param cy (number)  The tiles coordinate along the y-axis.
+    -- @return   (boolean) False if the algorithm should be stopped.
+    --
+    local function markSeenTiles( cx, cy )
+        local target = map:getTileAt( cx, cy );
+        if not target then
+            return false;
+        end
+
+        -- Add tile to this character's FOV.
+        self:addSeenTile( cx, cy, target );
+
+        -- Mark tile as explored for this character's faction.
+        target:setExplored( faction:getType(), true );
+
+        -- Mark tile for drawing update.
+        target:setDirty( true );
+
+        if target:hasWorldObject() and target:getWorldObject():blocksVision() then
+            return false;
+        end
+        return true;
+    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -139,37 +173,12 @@ function Character.new( map, tile, faction, bodyID )
         self:resetFOV();
 
         local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
-        local x, y = tile:getX() + 0.5, tile:getY() + 0.5;
+        local list = Util.getTilesInCircle( map, tile, range );
+        local sx, sy = tile:getPosition();
 
-        -- Calculate the new FOV information.
-        for i = 1, 360 do
-            local ox, oy = x, y;
-            local rad    = math.rad( i );
-            local rx, ry = math.cos( rad ), math.sin( rad );
-
-            for _ = 1, range do
-                local tx, ty = math.floor( ox ), math.floor( oy );
-                local target = map:getTileAt( tx, ty );
-                if not target then
-                    break;
-                end
-
-                -- Add tile to this character's FOV.
-                self:addSeenTile( tx, ty, target );
-
-                -- Mark tile as explored for this character's faction.
-                target:setExplored( faction:getType(), true );
-
-                -- Mark tile for drawing update.
-                target:setDirty( true );
-
-                if target:hasWorldObject() and target:getWorldObject():blocksVision() then
-                    break;
-                end
-
-                ox = ox + rx;
-                oy = oy + ry;
-            end
+        for _, ttile in ipairs( list ) do
+            local tx, ty = ttile:getPosition();
+            Bresenham.calculateLine( sx, sy, tx, ty, markSeenTiles );
         end
     end
 
@@ -192,6 +201,7 @@ function Character.new( map, tile, faction, bodyID )
 
         if self:isDead() then
             self:getEquipment():dropAllItems( tile );
+            self:getInventory():dropAllItems( tile );
             tile:removeCharacter();
             self:resetFOV();
         end
@@ -299,6 +309,14 @@ function Character.new( map, tile, faction, bodyID )
     end
 
     ---
+    -- Returns the character's inventory.
+    -- @return (Equipment) The character's inventory.
+    --
+    function self:getInventory()
+        return body:getInventory();
+    end
+
+    ---
     -- Returns the character's fov.
     -- @return (table) A table containing the tiles this character sees.
     --
@@ -368,14 +386,6 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:isDead()
         return body:getStatusEffects():isDead();
-    end
-
-    ---
-    -- Gets an item of type bag.
-    -- @return (Bag) The bag item.
-    --
-    function self:getBackpack()
-        return self:getEquipment():getItem( ITEM_TYPES.BAG );
     end
 
     ---

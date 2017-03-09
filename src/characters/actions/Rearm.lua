@@ -6,7 +6,7 @@ function Rearm.new( character, weaponID )
     local self = Action.new( 0, character:getTile() ):addInstance( 'Rearm' );
 
     function self:perform()
-        local inventory = character:getBackpack():getInventory();
+        local inventory = character:getInventory();
         local weapon;
 
         for _, item in pairs( inventory:getItems() ) do
@@ -28,10 +28,16 @@ function Rearm.new( character, weaponID )
         end
 
         -- Remove item from backpack and add it to the equipment slot.
-        inventory:removeItem( weapon );
-        character:getEquipment():addItem( weapon );
+        local equipment = character:getEquipment();
+        for _, slot in pairs( equipment:getSlots() ) do
+            if weapon:isSameType( slot:getItemType(), slot:getSubType() ) then
+                equipment:addItem( slot, weapon );
+                inventory:removeItem( weapon );
+                return true;
+            end
+        end
 
-        return true;
+        return false;
     end
 
     return self;

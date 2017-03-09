@@ -12,16 +12,13 @@ function ItemStats.new( x, y, w, h )
 
     local item;
 
-    local function drawBagStats()
-        local weightLimit = item:getInventory():getWeightLimit();
-        local volumeLimit = item:getInventory():getVolumeLimit();
-
-        love.graphics.print( 'Weight Limit: ' .. weightLimit, x * TILE_SIZE, (y + 3) * TILE_SIZE );
+    local function drawContainerStats()
+        local volumeLimit = item:getCarryCapacity();
         love.graphics.print( 'Volume Limit: ' .. volumeLimit, x * TILE_SIZE, (y + 4) * TILE_SIZE );
     end
 
     local function drawWeaponStats()
-        local weaponType = item:getWeaponType();
+        local weaponType = item:getSubType();
         love.graphics.print( 'Weapon Type: ' .. weaponType, x * TILE_SIZE, (y + 2) * TILE_SIZE );
         if weaponType == WEAPON_TYPES.RANGED then
             love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (x + w * 0.5) * TILE_SIZE, (y + 2) * TILE_SIZE );
@@ -47,8 +44,8 @@ function ItemStats.new( x, y, w, h )
             love.graphics.print( 'WGT: ' .. string.format( '%.1f', item:getWeight() ), (x + w * 0.5) * TILE_SIZE, (y + 1) * TILE_SIZE );
             love.graphics.print( 'VOL: ' .. string.format( '%.1f', item:getVolume() ), (x + 5 + w * 0.5) * TILE_SIZE, (y + 1) * TILE_SIZE );
 
-            if item:getItemType() == ITEM_TYPES.BAG then
-                drawBagStats();
+            if item:getItemType() == ITEM_TYPES.CONTAINER then
+                drawContainerStats();
             elseif item:getItemType() == ITEM_TYPES.WEAPON then
                 drawWeaponStats();
             end

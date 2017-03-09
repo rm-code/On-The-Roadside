@@ -1,21 +1,20 @@
 local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
-local BehaviorTree = require( 'src.characters.ai.behaviortree.BehaviorTree' );
+local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 
 local SadisticAIDirector = {};
 
 function SadisticAIDirector.new( factions, states )
     local self = Object.new():addInstance( 'SadisticAIDirector' );
 
-    local tree = BehaviorTree.new();
-
-    local function tickBehaviorTree( character )
+    local function tickBehaviorTree( tree, character )
         Log.debug( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' );
         return tree:traverse( {}, character, states, factions );
     end
 
     function self:update()
         local faction = factions:getFaction();
+        local tree = BehaviorTreeFactory.getTree( faction:getType() );
         if faction:hasFinishedTurn() then
             Log.debug( 'Select next faction', 'SadisticAIDirector' );
             factions:nextFaction();
@@ -26,7 +25,7 @@ function SadisticAIDirector.new( factions, states )
         Log.debug( 'Select next character for this turn', 'SadisticAIDirector' );
         local character = faction:nextCharacterForTurn();
 
-        local success = tickBehaviorTree( character );
+        local success = tickBehaviorTree( tree, character );
         if success then
             states:push( 'execution', factions, character );
             return;

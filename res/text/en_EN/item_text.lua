@@ -17,6 +17,10 @@ locale.strings = {
     ['weapon_benelli_m4_desc'] = "The Benelli M4 Super 90 is an Italian semi-automatic shotgun and a perfect fit for the zone.",
     ['weapon_shuriken'] = "Shuriken",
     ['weapon_shuriken_desc'] = "Nothing makes you feel more like a Ninja than these Shuriken.",
+    ['weapon_bite'] = "Sharp Teeth",
+    ['weapon_bite_desc'] = "Things that bite don't bark ... or something like that.",
+    ['thick_fur'] = "Thick fur",
+    ['thick_fur_desc'] = "Doesn't offer much protection against attacks, but would make a great winter coat.",
     ['bag_small_backpack'] = "Small Backpack",
     ['bag_small_backpack_desc'] = "A small backpack which offers a decent amount of space for carrying around stuff.",
     ['footwear_combat_boots'] = "Combat Boots",
@@ -33,6 +37,12 @@ locale.strings = {
     ['12 gauge_desc'] = "Standard 12 gauge shotgun ammunition.",
     ['OG-7V'] = "OG-7V",
     ['OG-7V_desc'] = "The OG-7V is a 40 mm Fragmentation warhead for anti-personnel warfare used as ammunition for the RPG-7.",
+    ['misc_nail'] = "Nail",
+    ['misc_nail_desc'] = "An ordinary nail. It doesn't look useful.",
+    ['misc_splintered_wood'] = "Splintered wood",
+    ['misc_splintered_wood_desc'] = "A bunch of splintered wood. It doesn't look useful.",
+    ['misc_glass_shard'] = "Shard of glass",
+    ['misc_glass_shard_desc'] = "A shard of broken glass. It doesn't look useful.",
 }
 
 return locale;

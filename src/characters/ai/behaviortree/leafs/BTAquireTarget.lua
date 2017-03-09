@@ -1,7 +1,21 @@
 local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
 local BTAquireTarget = {};
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.Factions' );
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
 
 function BTAquireTarget.new()
     local self = BTLeaf.new():addInstance( 'BTAquireTarget' );
@@ -23,7 +37,10 @@ function BTAquireTarget.new()
         local enemies = {};
         for i = 1, #tiles do
             local tile = tiles[i];
-            if tile:isOccupied() and not tile:getCharacter():isDead() and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
+            if tile:isOccupied()
+            and not tile:getCharacter():isDead()
+            and tile:getCharacter():getFaction():getType() ~= FACTIONS.NEUTRAL
+            and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
                 enemies[#enemies + 1] = tile;
             end
         end

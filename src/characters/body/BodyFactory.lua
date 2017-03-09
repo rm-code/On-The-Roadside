@@ -2,6 +2,7 @@ local Log = require( 'src.util.Log' );
 local Body = require( 'src.characters.body.Body' );
 local BodyPart = require( 'src.characters.body.BodyPart' );
 local Equipment = require( 'src.characters.body.Equipment' );
+local Inventory = require( 'src.inventory.Inventory' );
 local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' );
 local TGFParser = require( 'lib.TGFParser' );
 
@@ -16,6 +17,8 @@ local BodyFactory = {};
 -- ------------------------------------------------
 
 local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/';
+local TEMPLATE_EXTENSION = 'lua';
+local LAYOUT_EXTENSION = 'tgf';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -37,8 +40,12 @@ local function loadFiles( dir )
     local files = {};
     for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
         local fn, fe = file:match( '^(.+)%.(.+)$' );
-        files[i] = { name = fn, extension = fe };
-        Log.debug( string.format( '%6d. %s.%s', i, fn, fe ));
+        if fe == TEMPLATE_EXTENSION or fe == LAYOUT_EXTENSION then
+            files[#files + 1] = { name = fn, extension = fe };
+            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ));
+        else
+            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ));
+        end
     end
     return files;
 end
@@ -51,7 +58,7 @@ end
 local function loadTemplates( files )
     local tmp = {};
     for _, file in ipairs( files ) do
-        if file.extension == 'lua' then
+        if file.extension == TEMPLATE_EXTENSION then
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, loaded = pcall( love.filesystem.load, path );
             if not status then
@@ -79,7 +86,7 @@ end
 local function loadLayouts( files )
     local tmp = {};
     for _, file in ipairs( files ) do
-        if file.extension == 'tgf' then
+        if file.extension == LAYOUT_EXTENSION then
             local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
             local status, template = pcall( TGFParser.parse, path );
             if not status then
@@ -119,8 +126,11 @@ end
 -- @return       (Body)   A shiny new Body.
 --
 local function assembleBody( cid, layout )
-    local body = Body.new( templates[cid].bloodVolume );
+    local body = Body.new( templates[cid] );
     local equipment = Equipment.new();
+    local inventory = Inventory.new( templates[cid].defaultCarryWeight, templates[cid].defaultCarryVolume );
+
+    equipment:observe( inventory );
 
     -- The index is the number used inside of the graph whereas the id determines
     -- which type of object to create for this node.
@@ -135,6 +145,7 @@ local function assembleBody( cid, layout )
 
     -- Set the equipment to be used for this body.
     body:setEquipment( equipment );
+    body:setInventory( inventory );
 
     return body;
 end

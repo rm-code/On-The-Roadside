@@ -22,7 +22,7 @@ local CHARACTER_COLORS = {
     },
     INACTIVE = {
         [FACTIONS.ALLIED]  = COLORS.DB15,
-        [FACTIONS.NEUTRAL] = COLORS.DB12,
+        [FACTIONS.NEUTRAL] = COLORS.DB10,
         [FACTIONS.ENEMY]   = COLORS.DB27
     }
 }
@@ -96,6 +96,24 @@ function WorldPainter.new( game )
         return tile:getColor();
     end
 
+    local function selectCharacterTile( tile )
+        local character = tile:getCharacter();
+        if character:getBody():getID() == 'dog' then
+            return Tileset.getSprite( 101 );
+        end
+        if character:getStance() == STANCES.STAND then
+            if character:getFaction():getType() == FACTIONS.ENEMY then
+                return Tileset.getSprite( 3 );
+            else
+                return Tileset.getSprite( 2 );
+            end
+        elseif character:getStance() == STANCES.CROUCH then
+            return Tileset.getSprite( 32 );
+        elseif character:getStance() == STANCES.PRONE then
+            return Tileset.getSprite( 23 );
+        end
+    end
+
     ---
     -- Selects a sprite from the tileset based on the tile and its contents.
     -- @param tile    (Tile)    The tile to choose a sprite for.
@@ -104,17 +122,7 @@ function WorldPainter.new( game )
     --
     local function selectTileSprite( tile, faction )
         if tile:isOccupied() and faction:canSee( tile ) then
-            if tile:getCharacter():getStance() == STANCES.STAND then
-                if tile:getCharacter():getFaction():getType() == FACTIONS.ENEMY then
-                    return Tileset.getSprite( 3 );
-                else
-                    return Tileset.getSprite( 2 );
-                end
-            elseif tile:getCharacter():getStance() == STANCES.CROUCH then
-                return Tileset.getSprite( 32 );
-            elseif tile:getCharacter():getStance() == STANCES.PRONE then
-                return Tileset.getSprite( 23 );
-            end
+            return selectCharacterTile( tile );
         end
 
         if not tile:getInventory():isEmpty() then

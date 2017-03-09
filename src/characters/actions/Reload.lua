@@ -24,7 +24,7 @@ function Reload.new( character )
             return false;
         end
 
-        local inventory = character:getBackpack():getInventory();
+        local inventory = character:getInventory();
         for _, item in pairs( inventory:getItems() ) do
             if item:instanceOf( 'Ammunition' ) and item:getCaliber() == weapon:getMagazine():getCaliber() then
                 reload( weapon, inventory, item );

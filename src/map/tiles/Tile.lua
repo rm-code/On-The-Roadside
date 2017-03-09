@@ -8,6 +8,13 @@ local Inventory = require( 'src.inventory.Inventory' );
 local Tile = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local WEIGHT_LIMIT = 1000;
+local VOLUME_LIMIT = 1000;
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -32,7 +39,7 @@ function Tile.new( x, y, template )
     local neighbours;
     local character;
     local worldObject;
-    local inventory = Inventory.new();
+    local inventory = Inventory.new( WEIGHT_LIMIT, VOLUME_LIMIT );
 
     local explored;
 

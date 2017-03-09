@@ -3,7 +3,7 @@ return {
     sprite = 44,
     openSprite = 96,
     color = { 102, 57, 49 },
-    size = 95,
+    size = 100,
     hp = 110,
     interactionCost = {
         stand  = 3,
@@ -14,5 +14,9 @@ return {
     destructible = true,
     openable = true,
     blocksVision = true,
-    blocksPathfinding = false
+    blocksPathfinding = false,
+    drops = {
+        { id = 'misc_nail', tries = 10, chance = 20 },
+        { id = 'misc_splintered_wood', tries = 3, chance = 40 }
+    }
 }

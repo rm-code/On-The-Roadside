@@ -11,7 +11,7 @@ function BTHasRangedWeapon.new()
     function self:traverse( ... )
         local _, character = ...;
 
-        local result = character:getWeapon():getWeaponType() == WEAPON_TYPES.RANGED;
+        local result = character:getWeapon():getSubType() == WEAPON_TYPES.RANGED;
         Log.debug( result, 'BTHasRangedWeapon' );
         return result;
     end

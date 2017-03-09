@@ -58,7 +58,7 @@ function OverlayPainter.new( game, particleLayer )
         -- Fake the last bullet in the magazine so the maximum derivation
         -- represents that of a full weapon burst.
         local count;
-        if weapon:getWeaponType() == WEAPON_TYPES.RANGED then
+        if weapon:getSubType() == WEAPON_TYPES.RANGED then
             count = weapon:getAttacks()
         end
 
@@ -89,8 +89,18 @@ function OverlayPainter.new( game, particleLayer )
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
                 -- 4 means the projectile can't reach this tile.
-                if tile:isOccupied() or ( tile:hasWorldObject() and tile:getWorldObject():isDestructible() ) then
+                if tile:isOccupied() then
                     status = 2;
+                elseif tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getSize() < 100 ) then
+                    status = 2;
+
+                    -- World objects which are on a tile directly adjacent to the attacking
+                    -- character will be ignored if they either are destructible or don't fill
+                    -- the whole tile. Indestructible objects which cover the whole tile will
+                    -- still block the shot.
+                    if tile:isAdjacent( origin ) then
+                        status = 1;
+                    end
                 elseif tile:hasWorldObject() and not tile:getWorldObject():isDestructible() then
                     status = 3;
                 elseif counter > weapon:getRange() then
@@ -127,7 +137,7 @@ function OverlayPainter.new( game, particleLayer )
         end
 
         local weapon = character:getWeapon();
-        if not weapon or weapon:getWeaponType() == WEAPON_TYPES.MELEE then
+        if not weapon or weapon:getSubType() == WEAPON_TYPES.MELEE then
             return;
         end
 

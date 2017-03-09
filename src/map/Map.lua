@@ -1,6 +1,7 @@
 local Observable = require( 'src.util.Observable' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
+local ItemFactory = require( 'src.items.ItemFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -240,12 +241,26 @@ function Map.new()
             for y = 1, #tiles[x] do
                 local tile = tiles[x][y];
                 if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
+                    -- Create items from the destroyed object.
+                    for _, drop in ipairs( tile:getWorldObject():getDrops() ) do
+                        local id, tries, chance = drop.id, drop.tries, drop.chance;
+                        for _ = 1, tries do
+                            if love.math.random( 100 ) < chance then
+                                local item = ItemFactory.createItem( id );
+                                tile:getInventory():addItem( item );
+                            end
+                        end
+                    end
+
+                    -- If the world object was a container drop the items in it.
                     if tile:getWorldObject():isContainer() and not tile:getWorldObject():getInventory():isEmpty() then
                         local items = tile:getWorldObject():getInventory():getItems();
                         for _, item in pairs( items ) do
                             tile:getInventory():addItem( item );
                         end
                     end
+
+                    -- If the world object has a debris object, place that on the tile.
                     if tile:getWorldObject():getDebrisID() then
                         local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisID() );
                         tile:removeWorldObject();
