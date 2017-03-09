@@ -9,6 +9,12 @@ local Util = require( 'src.util.Util' );
 local ExplosionManager = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' );
+
+-- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
 
@@ -44,6 +50,8 @@ local function generateExplosionMap( source, list, radius )
 
         if tile ~= source then
             local tx, ty = tile:getPosition();
+
+            -- Cast a ray from the source of the explosion to the target tile.
             Bresenham.calculateLine( sx, sy, tx, ty, function( cx, cy, count )
                 local target = map:getTileAt( cx, cy );
 
@@ -75,21 +83,20 @@ end
 ---
 -- Determines the different steps for the spreading of the explosion. Imagine
 -- this as onion layers starting at the center of the explosion and advancing
--- tile by tile until the maximum radius is reached. A counter keeps track of
--- how often a tile has been touched by a ray. This will happen more often to
--- tiles close to the center of the explosion.
+-- tile by tile until the maximum radius is reached.
 -- @param queues (table)  The table layout containing all hit tiles.
+-- @param damage (number) The explosion's base damage.
 -- @param radius (number) The radius of the explosion.
 -- @return       (table)  A table containing subtables for each step of the explosion.
 --
-local function generateExplosionSteps( queues, radius )
+local function generateExplosionSteps( queues, damage, radius )
     local layout = {};
     for i = 1, radius do
         local steps = {}
         for _, queue in ipairs( queues ) do
             local tile = queue[i];
             if tile then
-                steps[tile] = steps[tile] and steps[tile] + 1 or 1;
+                steps[tile] = damage;
             end
         end
         layout[i] = steps;
@@ -121,10 +128,11 @@ function ExplosionManager.update( dt )
     if explosionLayout and timer <= 0 then
         -- Notify anyone who cares.
         Messenger.publish( 'EXPLOSION', explosionLayout[explosionIndex] );
-        -- Damage the hit tiles.
-        for tile, life in pairs( explosionLayout[explosionIndex] ) do
-            -- TODO: Better handling of explosive damage.
-            tile:hit( love.math.random( 50, 50 * life ), 'explosive' );
+        -- Damage the hit tiles. The damage is the base damage minus a random
+        -- value in the range of [1, 10% of damage] multiplied by the distance
+        -- to the source of the explosion.
+        for tile, damage in pairs( explosionLayout[explosionIndex] ) do
+            tile:hit( damage - love.math.random( damage * 0.1 ) * explosionIndex, DAMAGE_TYPES.EXPLOSIVE );
         end
         -- Advance the step index.
         explosionIndex = explosionIndex + 1;
@@ -143,12 +151,13 @@ end
 ---
 -- Registers and creates a new explosion.
 -- @param source (Tile)   The explosion's source.
+-- @param damage (number) The explosion's base damage.
 -- @param radius (number) The explosion's radius.
 --
-function ExplosionManager.register( source, radius )
+function ExplosionManager.register( source, damage, radius )
     local list = Util.getTilesInCircle( map, source, radius );
     local queues = generateExplosionMap( source, list, radius );
-    explosionLayout = generateExplosionSteps( queues, radius );
+    explosionLayout = generateExplosionSteps( queues, damage, radius );
     explosionIndex = 1;
 end
 

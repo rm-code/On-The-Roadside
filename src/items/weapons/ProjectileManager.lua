@@ -39,7 +39,7 @@ local function hitTile( index, remove, tile, projectile )
     end
 
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-        ExplosionManager.register( tile, projectile:getEffects():getBlastRadius() );
+        ExplosionManager.register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() );
         return;
     end
 

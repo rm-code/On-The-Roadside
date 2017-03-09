@@ -9,7 +9,7 @@ return {
         stackable  = true,
         permanent  = false,
         subType    = "Thrown",
-        damage     = 120,
+        damage     = 80,
         reloadable = false,
         range      = 10,
         sound      = 'MELEE',

@@ -46,7 +46,7 @@ return {
         subType    = "Ranged",
         caliber    = "OG-7V",
         sound      = 'ROCKET_LAUNCHER',
-        damage     = 0,
+        damage     = 120,
         magSize    = 1,
         reloadable = true,
         range      = 30,
