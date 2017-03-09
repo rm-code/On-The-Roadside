@@ -47,10 +47,15 @@ local function generateExplosionMap( source, list, radius )
             Bresenham.calculateLine( sx, sy, tx, ty, function( cx, cy, count )
                 local target = map:getTileAt( cx, cy );
 
-                -- Stop at impassable world objects or the specified length.
-                if target:hasWorldObject() and not target:getWorldObject():isDestructible() then
+                -- Stop at impassable world objects that cover the whole tile.
+                if target:hasWorldObject()
+                and not target:getWorldObject():isDestructible()
+                and target:getWorldObject():getSize() == 100 then
                     return false;
-                elseif length == count then
+                end
+
+                -- Stop at the maximum range of the explosion.
+                if length == count then
                     return false;
                 end
 
