@@ -1,4 +1,4 @@
-# Version 0.6.0 WIP
+# Version 0.6.0.841 - 2017-03-09
 
 ## Additions
 - Added random spawning of items when a world object is destroyed
@@ -11,6 +11,7 @@
 - Added AI actions for picking up items
 - Added inspection of other characters (clicking on them in interact mode opens their health panel)
 - Added damage reduction based on worn armor items
+- Added simple gameover screen
 
 ## Removals
 - Removed automatic camera movement during attacks
@@ -35,6 +36,11 @@
     - Added better bleeding indicators
     - The character type is now also displayed
 - General balancing trying to slowly move towards a good "feel" for the combat
+- Changed world objects to not block shots when the character is adjacent to them
+    - This only applies to world objects that are small enough
+- Changed size of door objects
+- Improved balancing for damage values of explosive weapons
+
 
 
 # Version 0.5.2.741 - 2017-02-11
