@@ -9,8 +9,6 @@ local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
-local Translator = require( 'src.util.Translator' );
-local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
@@ -23,7 +21,6 @@ local MainScreen = {};
 -- ------------------------------------------------
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local DEFAULT_LOCALE = 'en_EN';
 
 -- ------------------------------------------------
 -- Constructor
@@ -44,13 +41,10 @@ function MainScreen.new()
     function self:init()
         exitTimer = 0;
 
-        Translator.init( DEFAULT_LOCALE );
-
         game = Game.new();
         game:init();
 
         Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
-        ImageFont.set();
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
@@ -97,7 +91,7 @@ function MainScreen.new()
         if love.keyboard.isScancodeDown( 'escape' ) then
             exitTimer = exitTimer + dt * 2;
             if exitTimer >= 1.0 then
-                love.event.quit();
+                ScreenManager.switch( 'mainmenu' );
             end
         else
             exitTimer = 0;

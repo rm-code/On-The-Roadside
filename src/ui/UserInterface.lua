@@ -13,7 +13,6 @@ local UserInterface = {};
 -- Constants
 -- ------------------------------------------------
 
-local VERSION_STRING = "WIP - Version: " .. getVersion();
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local COLORS = require( 'src.constants.Colors' );
 
@@ -83,7 +82,6 @@ function UserInterface.new( game )
 
     local function drawHelpInfo()
         love.graphics.setColor( 255, 255, 255, 100 );
-        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE );
         love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE * 2 );
         love.graphics.setColor( 255, 255, 255, 255 );
     end
