@@ -170,7 +170,7 @@ function GameOverScreen.new()
     end
 
     function self:keypressed()
-        ScreenManager.switch( 'main' );
+        ScreenManager.switch( 'mainmenu' );
     end
 
     return self;
