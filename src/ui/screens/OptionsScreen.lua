@@ -18,6 +18,8 @@ local OptionsScreen = {};
 
 local FIELD_WIDTH = 300;
 local COLORS = require( 'src.constants.Colors' );
+
+local TITLE_POSITION = 2;
 local TITLE_STRING = {
     "  @@@@    @@@@@@@   @@@@@@@  @@@    @@@@    @@   @@    @@@@@  ",
     "@@@@@@@@  @@@@@@@@  @@@@@@@  @@@  @@@@@@@@  @@@  @@@  @@@@@@@ ",
@@ -122,7 +124,7 @@ function OptionsScreen.new()
     end
 
     function self:draw()
-        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, 2 * ImageFont.getGlyphHeight() );
+        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * ImageFont.getGlyphHeight() );
         verticalList:draw();
     end
 

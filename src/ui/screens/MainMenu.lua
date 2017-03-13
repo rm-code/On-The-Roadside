@@ -19,6 +19,8 @@ local VERSION_STRING = string.format( 'WIP - Version: %s ', getVersion() );
 local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2017. All rights reserved.';
 local DEFAULT_LOCALE = 'en_EN';
 local COLORS = require( 'src.constants.Colors' );
+
+local TITLE_POSITION = 2;
 local TITLE_STRING = {
     "             @@@@    @@   @@       @@@@@@@  @@@  @@@  @@@@@@@            ",
     "           @@@@@@@@  @@@  @@@      @@@@@@@  @@@  @@@  @@@@@@@@           ",
@@ -136,7 +138,7 @@ function SplashScreen.new()
     end
 
     function self:draw()
-        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, 100 );
+        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * ImageFont.getGlyphHeight() );
 
         buttonList:draw();
 
