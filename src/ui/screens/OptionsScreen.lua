@@ -4,6 +4,7 @@ local Translator = require( 'src.util.Translator' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local ImageFont = require( 'src.ui.ImageFont' );
 local VerticalList = require( 'src.ui.elements.VerticalList' );
+local Button = require( 'src.ui.elements.Button' );
 
 -- ------------------------------------------------
 -- Module
@@ -94,6 +95,13 @@ function OptionsScreen.new()
         return SelectField.new( Translator.getText( 'ui_fullscreen' ), listOfValues, callback );
     end
 
+    local function createBackButton()
+        local function callback()
+            ScreenManager.switch( 'mainmenu' );
+        end
+        return Button.new( 'ui_back', callback );
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -106,6 +114,7 @@ function OptionsScreen.new()
         verticalList = VerticalList.new( x, y, FIELD_WIDTH, ImageFont.getGlyphHeight() );
         verticalList:addElement(   createLanguageOption() );
         verticalList:addElement( createFullscreenOption() );
+        verticalList:addElement(       createBackButton() );
     end
 
     function self:update()

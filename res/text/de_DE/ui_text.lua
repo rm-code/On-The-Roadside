@@ -26,6 +26,9 @@ locale.strings = {
 
     -- Other options
     ['ui_fullscreen'] = "Vollbild:",
+
+    -- Navigation
+    ['ui_back'] = "Zurück",
 }
 
 return locale;
