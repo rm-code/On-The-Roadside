@@ -1,5 +1,5 @@
 local locale = {};
-locale.identifier = 'en_EN';
+locale.identifier = 'de_DE';
 
 locale.strings = {
     ['worldobject_chair'] = 'Stuhl';
