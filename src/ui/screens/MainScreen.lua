@@ -50,7 +50,7 @@ function MainScreen.new()
         game:init();
 
         Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
-        ImageFont.setFont();
+        ImageFont.set();
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();

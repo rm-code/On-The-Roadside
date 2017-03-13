@@ -16,7 +16,7 @@ function ScrollArea.new( x, y, w, h )
 
     function self:setText( ntext )
         text = ntext;
-        _, lines = ImageFont.getFont():getWrap( text, w * TILE_SIZE - TILE_SIZE );
+        _, lines = ImageFont.get():getWrap( text, w * TILE_SIZE - TILE_SIZE );
     end
 
     local function drawScrollBar()
@@ -63,7 +63,7 @@ function ScrollArea.new( x, y, w, h )
 
     function self:setDimensions( nx, ny, nw, nh )
         x, y, w, h = nx, ny, nw, nh;
-        _, lines = ImageFont.getFont():getWrap( text, w * TILE_SIZE - TILE_SIZE );
+        _, lines = ImageFont.get():getWrap( text, w * TILE_SIZE - TILE_SIZE );
     end
 
     return self;
