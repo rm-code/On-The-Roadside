@@ -61,7 +61,7 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     local function createTitle()
-        title = love.graphics.newText( ImageFont.getFont() );
+        title = love.graphics.newText( ImageFont.get() );
         for i, line in ipairs( TITLE_STRING ) do
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
@@ -75,7 +75,7 @@ function SplashScreen.new()
                     coloredtext[#coloredtext + 1] = COLORS.DB17;
                     coloredtext[#coloredtext + 1] = w;
                 end
-                title:add( coloredtext, 0, i * ImageFont:getFont():getHeight() );
+                title:add( coloredtext, 0, i * ImageFont:get():getHeight() );
             end
         end
     end
