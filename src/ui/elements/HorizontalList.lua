@@ -4,20 +4,14 @@ local UIList = require( 'src.ui.elements.UIList' );
 -- Module
 -- ------------------------------------------------
 
-local VerticalList = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
+local HorizontalList = {};
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function VerticalList.new( x, y, itemW, itemH )
-    local self = UIList.new():addInstance( 'VerticalList' );
+function HorizontalList.new( x, y, itemW, itemH )
+    local self = UIList.new():addInstance( 'HorizontalList' );
 
     -- ------------------------------------------------
     -- Public Methods
@@ -29,8 +23,12 @@ function VerticalList.new( x, y, itemW, itemH )
         end
 
         local elements = self:getElements();
+        local w = #elements * itemW;
+        local ox = x - w * 0.5;
+
         for i = 1, #elements do
-            elements[i]:update( x, y + (i-1) * itemH, itemW, itemH );
+            elements[i]:update( ox + (i-1) * itemW, y, itemW, itemH );
+
             if elements[i]:hasFocus() then
                 self:setCursor( i );
             end
@@ -39,22 +37,23 @@ function VerticalList.new( x, y, itemW, itemH )
 
     function self:draw()
         local elements = self:getElements();
+        local w = #elements * itemW;
+        local ox = x - w * 0.5;
+
         for i = 1, #elements do
-            love.graphics.setColor( elements[i]:hasFocus() and COLORS.DB18 or COLORS.DB16 );
-            elements[i]:draw( x, y + (i-1) * itemH, itemW, itemH );
-            love.graphics.setColor( 255, 255, 255 );
+            elements[i]:draw( ox + (i-1) * itemW, y, itemW, itemH );
         end
     end
 
-    function self:keypressed( _, scancode )
-        if scancode == 'up' then
-            self:deactivateMouse();
-            self:prev();
-        elseif scancode == 'down' then
+    function self:keypressed( key, scancode )
+        if scancode == 'right' then
             self:deactivateMouse();
             self:next();
+        elseif scancode == 'left' then
+            self:deactivateMouse();
+            self:prev();
         else
-            self:getActiveElement():keypressed( _, scancode );
+            self:getActiveElement():keypressed( key, scancode );
         end
     end
 
@@ -90,4 +89,4 @@ function VerticalList.new( x, y, itemW, itemH )
     return self;
 end
 
-return VerticalList;
+return HorizontalList;

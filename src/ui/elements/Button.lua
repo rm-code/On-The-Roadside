@@ -25,28 +25,35 @@ function Button.new( textID, callback )
     -- ------------------------------------------------
 
     local translatedText = Translator.getText( textID );
-    local x, y, w, h;
     local focus;
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:update( nx, ny, nw, nh )
-        x, y, w, h = nx, ny, nw, nh;
-
+    function self:update( x, y, w, h )
         local mx, my = love.mouse.getPosition();
         focus = ( mx > x and mx < x + w and my > y and my < y + h );
     end
 
-    function self:draw()
+    function self:draw( x, y, w, _ )
         love.graphics.setColor( focus and COLORS.DB18 or COLORS.DB16 );
-        love.graphics.print( translatedText, x, y );
+        love.graphics.printf( translatedText, x, y, w, 'center' );
         love.graphics.setColor( 255, 255, 255 );
     end
 
     function self:activate()
         callback();
+    end
+
+    function self:keypressed( _, scancode )
+        if scancode == 'return' then
+            self:activate();
+        end
+    end
+
+    function self:mousereleased()
+        self:activate();
     end
 
     -- ------------------------------------------------

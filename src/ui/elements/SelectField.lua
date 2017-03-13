@@ -29,6 +29,18 @@ function SelectField.new( label, listOfValues, callback )
         callback( listOfValues[current].value );
     end
 
+    function self:keypressed( _, scancode )
+        if scancode == 'left' then
+            self:prev();
+        elseif scancode == 'right' then
+            self:next();
+        end
+    end
+
+    function self:mousereleased()
+        self:next();
+    end
+
     function self:hasFocus()
         return focus;
     end

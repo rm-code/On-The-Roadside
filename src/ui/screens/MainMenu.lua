@@ -1,7 +1,9 @@
 local Screen = require( 'lib.screenmanager.Screen' );
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local ImageFont = require( 'src.ui.ImageFont' );
-local MainButtonList = require( 'src.ui.screens.mainmenu.MainButtonList' );
 local Translator = require( 'src.util.Translator' );
+local Button = require( 'src.ui.elements.Button' );
+local HorizontalList = require( 'src.ui.elements.HorizontalList' );
 
 -- ------------------------------------------------
 -- Module
@@ -97,6 +99,25 @@ function SplashScreen.new()
         end
     end
 
+    local function startNewGame()
+        ScreenManager.switch( 'main' );
+    end
+
+    local function openOptions()
+        ScreenManager.switch( 'options' );
+    end
+
+    local function exitGame()
+        love.event.quit();
+    end
+
+    local function createButtons()
+        buttonList = HorizontalList.new( love.graphics.getWidth() * 0.5, 30 * 16, 12 * 8, 16 );
+        buttonList:addElement( Button.new( 'ui_main_menu_new_game', startNewGame ));
+        buttonList:addElement( Button.new( 'ui_main_menu_options', openOptions ));
+        buttonList:addElement( Button.new( 'ui_main_menu_exit', exitGame ));
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -109,9 +130,7 @@ function SplashScreen.new()
         ImageFont.set();
 
         createTitle();
-
-        buttonList = MainButtonList.new();
-        buttonList:init();
+        createButtons();
 
         collectgarbage( 'collect' );
     end
