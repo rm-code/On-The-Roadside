@@ -12,7 +12,20 @@ locale.strings = {
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New Game",
-    ['ui_main_menu_exit'] = "Exit"
+    ['ui_main_menu_options'] = "Options",
+    ['ui_main_menu_exit'] = "Exit",
+
+    -- Options
+    ['ui_on']  = "<On>",
+    ['ui_off'] = "<Off>",
+
+    -- Language selector
+    ['ui_lang'] = "Language:",
+    ['ui_lang_eng'] = "<English>",
+    ['ui_lang_ger'] = "<Deutsch>",
+
+    -- Other options
+    ['ui_fullscreen'] = "Fullscreen:",
 }
 
 return locale;

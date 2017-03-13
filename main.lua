@@ -37,6 +37,7 @@ function love.load()
 
     local screens = {
         mainmenu  = require( 'src.ui.screens.mainmenu.MainMenu' ),
+        options   = require( 'src.ui.screens.OptionsScreen'     ),
         main      = require( 'src.ui.screens.MainScreen'        ),
         inventory = require( 'src.ui.screens.InventoryScreen'   ),
         help      = require( 'src.ui.screens.HelpScreen'        ),

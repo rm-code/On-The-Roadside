@@ -30,6 +30,10 @@ function MainButtonList.new()
         ScreenManager.switch( 'main' );
     end
 
+    local function openOptions()
+        ScreenManager.switch( 'options' );
+    end
+
     local function exitGame()
         love.event.quit();
     end
@@ -37,6 +41,7 @@ function MainButtonList.new()
     local function createButtons()
         buttonList = ButtonList.new();
         buttonList:addButton( Button.new( 'ui_main_menu_new_game', startNewGame ));
+        buttonList:addButton( Button.new( 'ui_main_menu_options', openOptions ));
         buttonList:addButton( Button.new( 'ui_main_menu_exit', exitGame ));
 
         local x = love.graphics.getWidth() * 0.5 - buttonList:getWidth() * 0.5;

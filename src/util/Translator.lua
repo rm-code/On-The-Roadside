@@ -12,6 +12,7 @@ local Translator = {};
 
 local LOCALES = {};
 local ERROR = 'TEXT_ERROR <%s>';
+local LOCALE_ERROR = 'INVALID_LOCALE <%s>';
 local TEMPLATE_DIRECTORY  = 'res/text/';
 
 -- ------------------------------------------------
@@ -68,11 +69,18 @@ function Translator.init( nlocale )
     load( TEMPLATE_DIRECTORY );
 end
 
-function Translator.changeLocale( nlocale )
+function Translator.setLocale( nlocale )
     locale = nlocale;
 end
 
+function Translator.getLocale()
+    return locale;
+end
+
 function Translator.getText( id )
+    if not LOCALES[locale] then
+        return string.format( LOCALE_ERROR, locale )
+    end
     return LOCALES[locale][id] or string.format( ERROR, id );
 end
 

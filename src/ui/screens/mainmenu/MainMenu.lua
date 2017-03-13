@@ -102,7 +102,9 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     function self:init()
-        Translator.init( DEFAULT_LOCALE );
+        if not Translator.getLocale() then
+            Translator.init( DEFAULT_LOCALE );
+        end
 
         ImageFont.set();
 
