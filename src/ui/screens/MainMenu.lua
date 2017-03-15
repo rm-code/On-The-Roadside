@@ -1,7 +1,6 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local ImageFont = require( 'src.ui.ImageFont' );
-local Translator = require( 'src.util.Translator' );
 local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
 
@@ -17,7 +16,6 @@ local SplashScreen = {};
 
 local VERSION_STRING = string.format( 'WIP - Version: %s ', getVersion() );
 local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2017. All rights reserved.';
-local DEFAULT_LOCALE = 'en_EN';
 local COLORS = require( 'src.constants.Colors' );
 
 local TITLE_POSITION = 2;
@@ -125,12 +123,6 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     function self:init()
-        if not Translator.getLocale() then
-            Translator.init( DEFAULT_LOCALE );
-        end
-
-        ImageFont.set();
-
         createTitle();
         createButtons();
 

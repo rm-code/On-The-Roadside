@@ -4,14 +4,9 @@ local Map = require( 'src.map.Map' );
 local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ItemFactory = require( 'src.items.ItemFactory' );
-local TileFactory = require( 'src.map.tiles.TileFactory' );
-local BodyFactory = require( 'src.characters.body.BodyFactory' );
-local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
-local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local SaveHandler = require( 'src.SaveHandler' );
-local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
@@ -63,13 +58,6 @@ function Game.new()
     -- ------------------------------------------------
 
     function self:init()
-        ItemFactory.loadTemplates();
-        TileFactory.loadTemplates();
-        BodyFactory.loadTemplates();
-        WorldObjectFactory.loadTemplates();
-        BehaviorTreeFactory.loadTemplates();
-        SoundManager.loadResources();
-
         map = Map.new();
         factions = Factions.new( map );
         factions:init();

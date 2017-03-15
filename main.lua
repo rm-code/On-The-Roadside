@@ -49,16 +49,17 @@ function love.load()
     end
 
     local screens = {
-        mainmenu  = require( 'src.ui.screens.MainMenu'        ),
-        options   = require( 'src.ui.screens.OptionsScreen'   ),
-        main      = require( 'src.ui.screens.MainScreen'      ),
-        inventory = require( 'src.ui.screens.InventoryScreen' ),
-        help      = require( 'src.ui.screens.HelpScreen'      ),
-        health    = require( 'src.ui.screens.HealthScreen'    ),
-        gameover  = require( 'src.ui.screens.GameOverScreen'  )
+        bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
+        mainmenu    = require( 'src.ui.screens.MainMenu'          ),
+        options     = require( 'src.ui.screens.OptionsScreen'     ),
+        main        = require( 'src.ui.screens.MainScreen'        ),
+        inventory   = require( 'src.ui.screens.InventoryScreen'   ),
+        help        = require( 'src.ui.screens.HelpScreen'        ),
+        health      = require( 'src.ui.screens.HealthScreen'      ),
+        gameover    = require( 'src.ui.screens.GameOverScreen'    )
     };
 
-    ScreenManager.init(screens, 'mainmenu');
+    ScreenManager.init( screens, 'bootloading' );
 end
 
 function love.draw()
