@@ -1,3 +1,16 @@
+---
+-- Turn off LuaJIT to prevent a severe issue with memory leaks caused by using
+-- the closure based approach to OOP. Apparently there is a bug in LuaJIT that
+-- caused allocated memory to not be freed if functions access upvalues in the
+-- same closures:
+-- @see https://github.com/LuaJIT/LuaJIT/issues/303 for more information.
+--
+jit.off()
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
 local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
