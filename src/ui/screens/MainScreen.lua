@@ -35,6 +35,7 @@ function MainScreen.new()
     local particleLayer;
     local overlayPainter;
     local camera;
+    local observations = {};
 
     local exitTimer;
 
@@ -125,14 +126,20 @@ function MainScreen.new()
         end
     end
 
-    Messenger.observe( 'SWITCH_CHARACTERS', function( character )
+    function self:close()
+        for i = 1, #observations do
+            Messenger.remove( observations[i] );
+        end
+    end
+
+    observations[#observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
-    Messenger.observe( 'CHARACTER_MOVED', function( character )
+    observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
