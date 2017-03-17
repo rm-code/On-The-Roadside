@@ -105,6 +105,11 @@ function Game.new()
         end
     end
 
+    function self:close()
+        ProjectileManager.clear();
+        ExplosionManager.clear();
+    end
+
     function self:getMap()
         return map;
     end

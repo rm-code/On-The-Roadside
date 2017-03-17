@@ -24,6 +24,10 @@ function MousePointer.update()
     gx, gy = math.floor( mx / TILE_SIZE ), math.floor( my / TILE_SIZE );
 end
 
+function MousePointer.clear()
+    camera = nil;
+end
+
 function MousePointer.getWorldPosition()
     return wx, wy;
 end

@@ -130,6 +130,10 @@ function GameScreen.new()
         for i = 1, #observations do
             Messenger.remove( observations[i] );
         end
+
+        MousePointer.clear();
+
+        game:close();
     end
 
     observations[#observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
