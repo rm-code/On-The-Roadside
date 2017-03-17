@@ -100,7 +100,7 @@ function SplashScreen.new()
     end
 
     local function startNewGame()
-        ScreenManager.switch( 'main' );
+        ScreenManager.switch( 'gamescreen' );
     end
 
     local function openOptions()

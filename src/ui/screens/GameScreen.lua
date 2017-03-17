@@ -14,7 +14,7 @@ local Tileset = require( 'src.ui.Tileset' );
 -- Module
 -- ------------------------------------------------
 
-local MainScreen = {};
+local GameScreen = {};
 
 -- ------------------------------------------------
 -- Constants
@@ -26,7 +26,7 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 -- Constructor
 -- ------------------------------------------------
 
-function MainScreen.new()
+function GameScreen.new()
     local self = Screen.new();
 
     local game;
@@ -149,4 +149,4 @@ function MainScreen.new()
     return self;
 end
 
-return MainScreen;
+return GameScreen;
