@@ -39,11 +39,11 @@ function GameScreen.new()
 
     local exitTimer;
 
-    function self:init()
+    function self:init( savegame )
         exitTimer = 0;
 
         game = Game.new();
-        game:init();
+        game:init( savegame );
 
         Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
 

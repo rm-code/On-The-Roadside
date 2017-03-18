@@ -241,11 +241,14 @@ function Character.new( map, tile, faction )
 
     function self:serialize()
         local t = {
-            ['ap'] = actionPoints,
+            ['actionPoints'] = actionPoints,
             ['accuracy'] = accuracy,
+            ['throwingSkill'] = throwingSkill,
             ['stance'] = stance,
-            ['faction'] = faction:getType()
-            -- TODO: Body serialization
+            ['finishedTurn'] = finishedTurn,
+            ['body'] = body:serialize(),
+            ['x'] = tile:getX(),
+            ['y'] = tile:getY()
         }
         return t;
     end
@@ -436,6 +439,10 @@ function Character.new( map, tile, faction )
     --
     function self:setTile( ntile )
         tile = ntile;
+    end
+
+    function self:setThrowingSkill( nthrowingSkill )
+        throwingSkill = nthrowingSkill;
     end
 
     ---

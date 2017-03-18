@@ -89,6 +89,26 @@ function ItemFactory.createItem( id )
 end
 
 ---
+--
+--
+function ItemFactory.loadItem( savedItem )
+    local item = ItemFactory.createItem( savedItem.id );
+
+    -- Special case for weapons that sets the weapon's attack mode and fills
+    -- its magazine with ammunition if it is reloadable.
+    if item:getItemType() == ITEM_TYPES.WEAPON then
+        item:setAttackMode( savedItem.modeIndex );
+        if item:isReloadable() then
+            for _, round in ipairs( savedItem.magazine.rounds ) do
+                item:getMagazine():addRound( ItemFactory.createItem( round.id ));
+            end
+        end
+    end
+
+    return item;
+end
+
+---
 -- Creates a random item of a certain type.
 -- @param type    (string) The type of the item to create.
 -- @param subType (string) The sub type of the item to create.

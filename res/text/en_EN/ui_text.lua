@@ -12,6 +12,7 @@ locale.strings = {
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New Game",
+    ['ui_main_menu_load_game'] = "Load Game",
     ['ui_main_menu_options'] = "Options",
     ['ui_main_menu_exit'] = "Exit",
 

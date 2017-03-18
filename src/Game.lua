@@ -35,20 +35,12 @@ function Game.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init()
+    function self:init( savegame )
         map = Map.new();
-        factions = Factions.new( map );
-        factions:init();
+        map:init( savegame );
 
-        -- Load previously saved state or create new state.
-        if SaveHandler.hasSaveFile() then
-            local savegame = SaveHandler.load();
-            savegame:loadMap( map );
-            savegame:loadCharacters( map, factions );
-        else
-            map:init();
-            factions:spawnCharacters();
-        end
+        factions = Factions.new( map );
+        factions:init( savegame );
 
         turnManager = TurnManager.new( map, factions );
 
@@ -82,6 +74,15 @@ function Game.new()
         end
     end
 
+    function self:serialize()
+        local t = {
+            ['gameversion'] = getVersion(),
+            ['map'] = map:serialize(),
+            ['factions'] = factions:serialize()
+        };
+        return t;
+    end
+
     function self:close()
         ProjectileManager.clear();
         ExplosionManager.clear();
@@ -97,6 +98,10 @@ function Game.new()
 
     function self:keypressed( key, scancode, isrepeat )
         turnManager:keypressed( key, scancode, isrepeat );
+
+        if scancode == '.' then
+            SaveHandler.save( self:serialize() );
+        end
     end
 
     function self:mousepressed( mx, my, button )

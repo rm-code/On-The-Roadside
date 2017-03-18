@@ -88,6 +88,24 @@ function BodyPart.new( index, template )
         health = 0;
     end
 
+    function self:serialize()
+        local t = {
+            ['id'] = template.id,
+            ['health'] = health,
+            ['maxHealth'] = maxHealth,
+            ['bleeding'] = bleeding,
+            ['bloodLoss'] = bloodLoss
+        };
+        return t;
+    end
+
+    function self:load( savedBodyPart )
+        health = savedBodyPart.health;
+        maxHealth = savedBodyPart.maxHealth;
+        bleeding = savedBodyPart.bleeding;
+        bloodLoss = savedBodyPart.bloodLoss;
+    end
+
     function self:getIndex()
         return index;
     end

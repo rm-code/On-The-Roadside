@@ -33,6 +33,14 @@ function StatusEffects.new()
         end
     end
 
+    function self:serialize()
+        local t = {};
+        for effect, bool in pairs( active ) do
+            t[effect] = bool;
+        end
+        return t;
+    end
+
     -- Getters
     function self:isDead()
         return active[STATUS_EFFECTS.DEATH];

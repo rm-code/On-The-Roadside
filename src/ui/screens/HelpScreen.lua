@@ -40,8 +40,7 @@ function HelpScreen.new()
         '',
         'MISC',
         '  f - Switch between windowed and fullscreen modes',
-        '  . - Save current game   (Currently Deactivated)',
-        '  - - Delete current game (Currently Deactivated)'
+        '  . - Save current game',
     }
 
     function self:draw()

@@ -174,6 +174,33 @@ function Body.new( template )
         edges[#edges + 1] = connection;
     end
 
+    function self:serialize()
+        local t = {
+            ['id'] = template.id,
+            ['inventory'] = inventory:serialize(),
+            ['equipment'] = equipment:serialize(),
+            ['statusEffects'] = statusEffects:serialize()
+        };
+
+        -- Serialize body graph's edges.
+        t['edges'] = {};
+        for i, edge in ipairs( edges ) do
+            t['edges'][i] = {
+                ['name'] = edge.name,
+                ['from'] = edge.from,
+                ['to'] = edge.to
+            }
+        end
+
+        -- Serialize body graph's nodes.
+        t['nodes'] = {};
+        for i, node in ipairs( nodes ) do
+            t['nodes'][i] = node:serialize();
+        end
+
+        return t;
+    end
+
     function self:getBodyParts()
         return nodes;
     end

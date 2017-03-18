@@ -111,17 +111,19 @@ function Tile.new( x, y, template )
             ['y'] = y
         };
 
+        if self:hasWorldObject() then
+            t.worldObject = worldObject:serialize();
+        end
+
         if not inventory:isEmpty() then
-            t['inventory'] = inventory:serialize()
+            t['inventory'] = inventory:serialize();
         end
-        if character then
-            t['character'] = character:serialize();
-        end
-        if worldObject then
-            t['worldObject'] = worldObject:serialize();
-        end
+
         if explored then
-            t['explored'] = explored
+            t['explored'] = {};
+            for faction, bool in pairs( explored ) do
+                t['explored'][faction] = bool;
+            end
         end
 
         return t;
