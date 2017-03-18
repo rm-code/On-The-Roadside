@@ -1,7 +1,7 @@
 local ImageFont = {};
 
 local IMAGE_SOURCE = 'res/img/imagefont8x16.png';
-local GLYPH_DEFINITION = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?-+/()[]%&"\'*=_<>ß^';
+local GLYPH_DEFINITION = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÖÜäöü0123456789.,:;!?-+/()[]%&"\'*=_<>ß^©';
 local GLYPH_WIDTH = 8;
 local GLYPH_HEIGHT = 16;
 
