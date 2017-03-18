@@ -1,6 +1,6 @@
 local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
-local StatusEffects = require( 'src.characters.StatusEffects' );
+local StatusEffects = require( 'src.characters.body.StatusEffects' );
 
 -- ------------------------------------------------
 -- Module
