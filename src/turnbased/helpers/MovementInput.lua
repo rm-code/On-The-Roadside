@@ -16,7 +16,10 @@ function MovementInput.new()
 
     function self:request( ... )
         local target, character = ...;
-        if not path or target ~= path:getTarget() then
+
+        if target == character:getTile() then
+            return false;
+        elseif not path or target ~= path:getTarget() then
             generatePath( target, character );
             return false;
         else
