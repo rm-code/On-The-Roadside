@@ -12,7 +12,7 @@ local Body = {};
 -- Constants
 -- ------------------------------------------------
 
-local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
+local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' );
 
 -- ------------------------------------------------
 -- Constructor
