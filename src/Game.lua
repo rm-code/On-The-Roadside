@@ -1,9 +1,7 @@
-local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local Map = require( 'src.map.Map' );
 local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
-local ItemFactory = require( 'src.items.ItemFactory' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local SaveHandler = require( 'src.SaveHandler' );
@@ -20,7 +18,6 @@ local Game = {};
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.FACTIONS' );
-local ITEM_TYPES = require('src.constants.ItemTypes');
 
 -- ------------------------------------------------
 -- Constructor
@@ -33,25 +30,6 @@ function Game.new()
     local factions;
     local turnManager;
     local observations = {};
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    local function spawnAmmo()
-        map:iterate( function( tile, x, y )
-            if tile:hasWorldObject() and tile:getWorldObject():isContainer() then
-                local tries = love.math.random( 1, 5 );
-                for _ = 1, tries do
-                    if love.math.random( 100 ) < 25 then
-                        local item = ItemFactory.createRandomItem( 'all', ITEM_TYPES.AMMO );
-                        tile:getWorldObject():getInventory():addItem( item );
-                        Log.debug( string.format( 'Spawned %s in container at %d, %d', item:getID(), x, y ), 'Game' );
-                    end
-                end
-            end
-        end);
-    end
 
     -- ------------------------------------------------
     -- Public Methods
@@ -69,7 +47,6 @@ function Game.new()
             savegame:loadCharacters( map, factions );
         else
             map:init();
-            spawnAmmo();
             factions:spawnCharacters();
         end
 
