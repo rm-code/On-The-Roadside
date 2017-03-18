@@ -19,7 +19,7 @@ local Game = {};
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.Factions' );
+local FACTIONS = require( 'src.constants.FACTIONS' );
 local ITEM_TYPES = require('src.constants.ItemTypes');
 
 -- ------------------------------------------------

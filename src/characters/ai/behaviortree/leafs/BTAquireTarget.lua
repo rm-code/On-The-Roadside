@@ -11,7 +11,7 @@ local BTAquireTarget = {};
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.Factions' );
+local FACTIONS = require( 'src.constants.FACTIONS' );
 
 -- ------------------------------------------------
 -- Constructor
