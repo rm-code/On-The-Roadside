@@ -1,7 +1,6 @@
 local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Queue = require('src.util.Queue');
-local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local Bresenham = require( 'lib.Bresenham' );
 local Util = require( 'src.util.Util' );
 
@@ -29,10 +28,9 @@ local ITEM_TYPES = require('src.constants.ItemTypes');
 -- @param map     (Map)       A reference to the map object.
 -- @param tile    (Tile)      The tile to spawn the character on.
 -- @param faction (Faction)   The Faction object determining the character's faction.
--- @param bodyID  (string)    The body id to use for this character.
 -- @return        (Character) A new instance of the Character class.
 --
-function Character.new( map, tile, faction, bodyID )
+function Character.new( map, tile, faction )
     local self = Object.new():addInstance( 'Character' );
 
     -- Add character to the tile.
@@ -50,7 +48,7 @@ function Character.new( map, tile, faction, bodyID )
     local throwingSkill = love.math.random( 60, 90 );
 
     local stance = STANCES.STAND;
-    local body = BodyFactory.create( bodyID );
+    local body;
 
     local finishedTurn = false;
 
@@ -422,6 +420,14 @@ function Character.new( map, tile, faction, bodyID )
     --
     function self:setActionPoints( nap )
         actionPoints = nap;
+    end
+
+    ---
+    -- Sets the character's new body.
+    -- @param nbody (Body) The body object to use.
+    --
+    function self:setBody( nbody )
+        body = nbody;
     end
 
     ---

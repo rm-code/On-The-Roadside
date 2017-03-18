@@ -1,4 +1,5 @@
 local Character = require( 'src.characters.Character' );
+local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
 
 -- ------------------------------------------------
@@ -71,7 +72,8 @@ function CharacterFactory.loadCharacter( map, tile, faction )
 end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
-    local character = Character.new( map, tile, faction, type );
+    local character = Character.new( map, tile, faction );
+    character:setBody( BodyFactory.create( type ));
     createEquipment( character );
     character:generateFOV();
     return character;
