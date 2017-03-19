@@ -1,3 +1,27 @@
+# Version 0.7.0.880 - 2017-03-19
+
+## Additions
+- Added main menu
+    - Can be navigated via mouse or keyboard
+- Added options menu
+    - Allows the user to change the language (currently only german and english available)
+    - Allows to toggle fullscreen mode
+- Added ingame menu
+    - Allows user to save the game or to exit back to main menu
+- Added german translation
+- Added savegames
+
+## Removals
+- Removed spawning of ammo in crates at the start of the game
+
+## Fixes
+- Fixed memory leak caused by upvalues and closures not being collected with LuaJIT enabled
+- Fixed crash with pathfinding in cases where the target was the same as the origin
+- Fixed removal of previous movement paths when character was selected via mouse click
+
+
+
+
 # Version 0.6.0.841 - 2017-03-09
 
 ## Additions
@@ -40,6 +64,7 @@
     - This only applies to world objects that are small enough
 - Changed size of door objects
 - Improved balancing for damage values of explosive weapons
+
 
 
 
