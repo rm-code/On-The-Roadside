@@ -4,7 +4,6 @@ local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
-local SaveHandler = require( 'src.SaveHandler' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
