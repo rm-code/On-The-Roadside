@@ -3,10 +3,10 @@ local ImageFont = require( 'src.ui.ImageFont' );
 
 local SelectField = {};
 
-function SelectField.new( label, listOfValues, callback )
+function SelectField.new( label, listOfValues, callback, default )
     local self = Object.new():addInstance( 'SelectField' );
 
-    local current = 1;
+    local current = default or 1;
     local focus = false;
 
     function self:draw( x, y, w, _ )

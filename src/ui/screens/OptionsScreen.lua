@@ -81,7 +81,14 @@ function OptionsScreen.new()
             Translator.setLocale( val );
         end
 
-        return SelectField.new( Translator.getText( 'ui_lang' ), listOfValues, callback )
+        local default = 1;
+        for i, option in ipairs( listOfValues ) do
+            if option.value == Translator.getLocale() then
+                default = i;
+            end
+        end
+
+        return SelectField.new( Translator.getText( 'ui_lang' ), listOfValues, callback, default )
     end
 
     local function createFullscreenOption()
@@ -94,7 +101,14 @@ function OptionsScreen.new()
             love.window.setFullscreen( val );
         end
 
-        return SelectField.new( Translator.getText( 'ui_fullscreen' ), listOfValues, callback );
+        local default = 1;
+        for i, option in ipairs( listOfValues ) do
+            if option.value == love.window.getFullscreen() then
+                default = i;
+            end
+        end
+
+        return SelectField.new( Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default );
     end
 
     local function createBackButton()
