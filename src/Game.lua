@@ -98,10 +98,6 @@ function Game.new()
 
     function self:keypressed( key, scancode, isrepeat )
         turnManager:keypressed( key, scancode, isrepeat );
-
-        if scancode == '.' then
-            SaveHandler.save( self:serialize() );
-        end
     end
 
     function self:mousepressed( mx, my, button )

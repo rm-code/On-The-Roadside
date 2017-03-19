@@ -30,6 +30,11 @@ locale.strings = {
 
     -- Navigation
     ['ui_back'] = "Zurück",
+    ['ui_exit'] = "Beenden",
+
+    -- Ingame menu
+    ['ui_ingame_paused'] = "Pausiert",
+    ['ui_ingame_save_game'] = "Speichern",
 }
 
 return locale;

@@ -37,11 +37,7 @@ function GameScreen.new()
     local camera;
     local observations = {};
 
-    local exitTimer;
-
     function self:init( savegame )
-        exitTimer = 0;
-
         game = Game.new();
         game:init( savegame );
 
@@ -67,12 +63,6 @@ function GameScreen.new()
         overlayPainter:draw();
         camera:detach();
         userInterface:draw();
-
-        if exitTimer ~= 0 then
-            love.graphics.setColor( 0, 0, 0, 255 * exitTimer );
-            love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
-            love.graphics.setColor( 255, 255, 255, 255 );
-        end
     end
 
     function self:update( dt )
@@ -88,15 +78,6 @@ function GameScreen.new()
         if self:isActive() then
             MousePointer.update();
         end
-
-        if love.keyboard.isScancodeDown( 'escape' ) then
-            exitTimer = exitTimer + dt * 2;
-            if exitTimer >= 1.0 then
-                ScreenManager.switch( 'mainmenu' );
-            end
-        else
-            exitTimer = 0;
-        end
     end
 
     function self:keypressed( key, scancode, isrepeat )
@@ -108,6 +89,9 @@ function GameScreen.new()
         end
         if scancode == 'f1' then
             userInterface:toggleDebugInfo();
+        end
+        if scancode == 'escape' then
+            ScreenManager.push( 'ingamemenu', game );
         end
 
         game:keypressed( key, scancode, isrepeat );
