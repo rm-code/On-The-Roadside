@@ -25,21 +25,22 @@ function WorldObject.new( template )
 
     local id = template.id;
     local size = template.size;
-    local hp = template.hp;
     local interactionCost = template.interactionCost;
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
     local debrisID = template.debrisID;
     local openable = template.openable or false;
     local climbable = template.climbable or false;
-    local passable = template.passable or false;
-    local blocksVision = template.blocksVision;
     local blocksPathfinding = template.blocksPathfinding;
     local sprite = template.sprite;
     local openSprite = template.openSprite;
     local color = template.color;
     local container = template.container;
     local drops = template.drops;
+
+    local hp = template.hp;
+    local passable = template.passable or false;
+    local blocksVision = template.blocksVision;
     local inventory = container and Inventory.new() or nil;
 
     -- ------------------------------------------------
@@ -54,13 +55,12 @@ function WorldObject.new( template )
         hp = hp - dmg;
     end
 
-
     function self:serialize()
         local t = {
             ['id'] = id,
+            ['hp'] = hp,
             ['passable'] = passable,
-            ['blocksVision'] = blocksVision,
-            ['hp'] = hp
+            ['blocksVision'] = blocksVision
         }
         if container and not inventory:isEmpty() then
             t['inventory'] = inventory:serialize();

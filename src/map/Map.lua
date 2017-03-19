@@ -176,6 +176,48 @@ function Map.new()
         end
     end
 
+    local function loadSavedTiles( savedmap )
+        local loadedTiles = {};
+        for _, tile in ipairs( savedmap ) do
+            local x, y = tile.x, tile.y;
+            loadedTiles[x] = loadedTiles[x] or {};
+            loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
+            local newTile = loadedTiles[x][y];
+
+            if tile.worldObject then
+                local worldObject = WorldObjectFactory.create( tile.worldObject.id );
+                worldObject:setHitPoints( tile.worldObject.hp );
+                worldObject:setPassable( tile.worldObject.passable );
+                worldObject:setBlocksVision( tile.worldObject.blocksVision );
+                if worldObject:isContainer() and tile.worldObject.inventory then
+                    worldObject:getInventory():loadItems( tile.worldObject.inventory );
+                end
+                newTile:addWorldObject( worldObject );
+            end
+            if tile.inventory then
+                newTile:getInventory():loadItems( tile.inventory );
+            end
+            if tile.explored then
+                for i, v in pairs( tile.explored ) do
+                    newTile:setExplored( i, v );
+                end
+            end
+        end
+        return loadedTiles;
+    end
+
+    local function recreateMap( savedmap )
+        tiles = loadSavedTiles( savedmap );
+        addNeighbours();
+    end
+
+    local function createMap()
+        tiles = createTiles();
+        createWorldObjects();
+        createSpawnPoints();
+        addNeighbours();
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -203,20 +245,13 @@ function Map.new()
     -- Initialises the map by creating the Tiles, creating references to the
     -- neighbouring tiles and adding WorldObjects.
     --
-    function self:init()
-        tiles = createTiles();
-        createWorldObjects();
-        createSpawnPoints();
-        addNeighbours();
-    end
+    function self:init( savegame )
+        if savegame then
+            recreateMap( savegame.map );
+            return;
+        end
 
-    ---
-    -- Recreates the map from a saved state.
-    -- @param ntiles (table) A 2d array containing all loaded tiles.
-    --
-    function self:recreate( ntiles )
-        tiles = ntiles;
-        addNeighbours();
+        createMap();
     end
 
     ---

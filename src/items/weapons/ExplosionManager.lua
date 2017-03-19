@@ -162,6 +162,17 @@ function ExplosionManager.register( source, damage, radius )
 end
 
 ---
+-- Remove any saved state.
+--
+function ExplosionManager.clear()
+    map = nil;
+    explosionLayout = nil;
+    explosionIndex = 1;
+    timer = 0;
+    delay = 0.02;
+end
+
+---
 -- Returns true if all explosions have been handled.
 -- @return (boolean) False if an explosion is active.
 --

@@ -1,4 +1,5 @@
 local Character = require( 'src.characters.Character' );
+local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
 
 -- ------------------------------------------------
@@ -64,14 +65,23 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
-function CharacterFactory.loadCharacter( map, tile, faction )
+function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
     local character = Character.new( map, tile, faction );
+    character:setActionPoints( savedCharacter.actionPoints );
+    character:setAccuracy( savedCharacter.accuracy );
+    character:setThrowingSkill( savedCharacter.throwingSkill );
+    character:setStance( savedCharacter.stance );
+    character:setFinishedTurn( savedCharacter.finishedTurn );
+
+    local body = BodyFactory.load( savedCharacter.body );
+    character:setBody( body );
     character:generateFOV();
     return character;
 end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
-    local character = Character.new( map, tile, faction, type );
+    local character = Character.new( map, tile, faction );
+    character:setBody( BodyFactory.create( type ));
     createEquipment( character );
     character:generateFOV();
     return character;

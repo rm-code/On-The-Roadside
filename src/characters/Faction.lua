@@ -237,6 +237,16 @@ function Faction.new( type, controlledByAi )
         end
     end
 
+    function self:serialize()
+        local t = {};
+        local node = root;
+        while node do
+            t[#t+1] = node:getObject():serialize();
+            node = node:getNext();
+        end
+        return t;
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------

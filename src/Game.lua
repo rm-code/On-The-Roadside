@@ -1,17 +1,9 @@
-local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local Map = require( 'src.map.Map' );
 local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
-local ItemFactory = require( 'src.items.ItemFactory' );
-local TileFactory = require( 'src.map.tiles.TileFactory' );
-local BodyFactory = require( 'src.characters.body.BodyFactory' );
-local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
-local SoundManager = require( 'src.SoundManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
-local SaveHandler = require( 'src.SaveHandler' );
-local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 
 -- ------------------------------------------------
@@ -24,8 +16,7 @@ local Game = {};
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.Factions' );
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local FACTIONS = require( 'src.constants.FACTIONS' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -40,50 +31,15 @@ function Game.new()
     local observations = {};
 
     -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    local function spawnAmmo()
-        map:iterate( function( tile, x, y )
-            if tile:hasWorldObject() and tile:getWorldObject():isContainer() then
-                local tries = love.math.random( 1, 5 );
-                for _ = 1, tries do
-                    if love.math.random( 100 ) < 25 then
-                        local item = ItemFactory.createRandomItem( 'all', ITEM_TYPES.AMMO );
-                        tile:getWorldObject():getInventory():addItem( item );
-                        Log.debug( string.format( 'Spawned %s in container at %d, %d', item:getID(), x, y ), 'Game' );
-                    end
-                end
-            end
-        end);
-    end
-
-    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init()
-        ItemFactory.loadTemplates();
-        TileFactory.loadTemplates();
-        BodyFactory.loadTemplates();
-        WorldObjectFactory.loadTemplates();
-        BehaviorTreeFactory.loadTemplates();
-        SoundManager.loadResources();
-
+    function self:init( savegame )
         map = Map.new();
-        factions = Factions.new( map );
-        factions:init();
+        map:init( savegame );
 
-        -- Load previously saved state or create new state.
-        if SaveHandler.hasSaveFile() then
-            local savegame = SaveHandler.load();
-            savegame:loadMap( map );
-            savegame:loadCharacters( map, factions );
-        else
-            map:init();
-            spawnAmmo();
-            factions:spawnCharacters();
-        end
+        factions = Factions.new( map );
+        factions:init( savegame );
 
         turnManager = TurnManager.new( map, factions );
 
@@ -115,6 +71,20 @@ function Game.new()
         if not factions:findFaction( FACTIONS.ENEMY ):hasLivingCharacters() then
             ScreenManager.push( 'gameover', true );
         end
+    end
+
+    function self:serialize()
+        local t = {
+            ['gameversion'] = getVersion(),
+            ['map'] = map:serialize(),
+            ['factions'] = factions:serialize()
+        };
+        return t;
+    end
+
+    function self:close()
+        ProjectileManager.clear();
+        ExplosionManager.clear();
     end
 
     function self:getMap()

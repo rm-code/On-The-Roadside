@@ -1,5 +1,8 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
+local Button = require( 'src.ui.elements.Button' );
+local VerticalList = require( 'src.ui.elements.VerticalList' );
+local SaveHandler = require( 'src.SaveHandler' );
 local Tileset = require( 'src.ui.Tileset' );
 local Translator = require( 'src.util.Translator' );
 
@@ -7,7 +10,7 @@ local Translator = require( 'src.util.Translator' );
 -- Module
 -- ------------------------------------------------
 
-local GameOverScreen = {};
+local IngameMenu = {};
 
 -- ------------------------------------------------
 -- Constants
@@ -15,19 +18,29 @@ local GameOverScreen = {};
 
 local COLORS = require( 'src.constants.Colors' );
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local SCREEN_WIDTH  = 30;
-local SCREEN_HEIGHT = 16;
+local SCREEN_WIDTH  = 8;
+local SCREEN_HEIGHT = 7;
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function GameOverScreen.new()
+function IngameMenu.new()
     local self = Screen.new();
 
-    local text;
+    -- ------------------------------------------------
+    -- Private Variables
+    -- ------------------------------------------------
+
+    local game;
+    local buttonList;
+
     local grid;
     local px, py;
+
+    -- ------------------------------------------------
+    -- Private Functions
+    -- ------------------------------------------------
 
     ---
     -- Returns the value of the grid for this position or 0 for coordinates
@@ -53,6 +66,9 @@ function GameOverScreen.new()
 
                 -- Draw screen borders.
                 if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
+                    grid[x][y] = 1;
+                end
+                if y == 2 then
                     grid[x][y] = 1;
                 end
             end
@@ -137,11 +153,34 @@ function GameOverScreen.new()
         return 1;
     end
 
+    local function close()
+        ScreenManager.pop();
+    end
+
+    local function saveGame()
+        SaveHandler.save( game:serialize() );
+        ScreenManager.pop();
+    end
+
+    local function exitToMainMenu()
+        ScreenManager.switch( 'mainmenu' );
+    end
+
+    local function createButtons()
+        local x, y = px, py;
+        buttonList = VerticalList.new( x, y + 3 * TILE_SIZE, SCREEN_WIDTH * TILE_SIZE, TILE_SIZE );
+        buttonList:addElement( Button.new( 'ui_ingame_save_game', saveGame ));
+        buttonList:addElement( Button.new( 'ui_main_menu_exit', exitToMainMenu ));
+        buttonList:addElement( Button.new( 'ui_back', close ));
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init( win )
+    function self:init( ngame )
+        game = ngame;
+
         px = math.floor( love.graphics.getWidth() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 );
         py = math.floor( love.graphics.getHeight() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
         px, py = px * TILE_SIZE, py * TILE_SIZE;
@@ -149,7 +188,7 @@ function GameOverScreen.new()
         grid = {};
         fillGrid( SCREEN_WIDTH, SCREEN_HEIGHT );
 
-        text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' );
+        createButtons();
     end
 
     function self:draw()
@@ -166,14 +205,37 @@ function GameOverScreen.new()
             end
         end
 
-        love.graphics.printf( text, px, py + 3 * TILE_SIZE, SCREEN_WIDTH * TILE_SIZE, 'center' );
+        buttonList:draw();
+        love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), px + TILE_SIZE, py + TILE_SIZE, (SCREEN_WIDTH - 2) * TILE_SIZE, 'center' );
     end
 
-    function self:keypressed()
-        ScreenManager.switch( 'mainmenu' );
+    function self:update()
+        buttonList:update();
+    end
+
+    function self:keypressed( _, scancode )
+        buttonList:keypressed( _, scancode );
+
+        if scancode == 'escape' then
+            ScreenManager.pop();
+        end
+    end
+
+    function self:mousemoved()
+        buttonList:mousemoved();
+    end
+
+    function self:mousereleased()
+        buttonList:mousereleased();
+    end
+
+    function self:resize( sx, sy )
+        px = math.floor( sx / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 );
+        py = math.floor( sy / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
+        px, py = px * TILE_SIZE, py * TILE_SIZE;
     end
 
     return self;
 end
 
-return GameOverScreen;
+return IngameMenu;

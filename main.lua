@@ -36,14 +36,18 @@ function love.load()
     end
 
     local screens = {
-        main      = require( 'src.ui.screens.MainScreen'      ),
-        inventory = require( 'src.ui.screens.InventoryScreen' ),
-        help      = require( 'src.ui.screens.HelpScreen'      ),
-        health    = require( 'src.ui.screens.HealthScreen'    ),
-        gameover  = require( 'src.ui.screens.GameOverScreen'  )
+        bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
+        mainmenu    = require( 'src.ui.screens.MainMenu'          ),
+        ingamemenu  = require( 'src.ui.screens.IngameMenu'        ),
+        options     = require( 'src.ui.screens.OptionsScreen'     ),
+        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
+        inventory   = require( 'src.ui.screens.InventoryScreen'   ),
+        help        = require( 'src.ui.screens.HelpScreen'        ),
+        health      = require( 'src.ui.screens.HealthScreen'      ),
+        gameover    = require( 'src.ui.screens.GameOverScreen'    )
     };
 
-    ScreenManager.init(screens, 'main');
+    ScreenManager.init( screens, 'bootloading' );
 end
 
 function love.draw()
@@ -102,6 +106,10 @@ end
 
 function love.mousefocus( f )
     ScreenManager.mousefocus( f );
+end
+
+function love.mousemoved( x, y, dx, dy, isTouch )
+    ScreenManager.mousemoved( x, y, dx, dy, isTouch );
 end
 
 function love.errhand( msg )

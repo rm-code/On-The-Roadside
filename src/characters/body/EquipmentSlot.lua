@@ -46,6 +46,14 @@ function EquipmentSlot.new( index, template )
         return template.sort;
     end
 
+    function self:serialize()
+        local t = {};
+        if item then
+            t['item'] = item:serialize()
+        end
+        return t;
+    end
+
     return self;
 end
 

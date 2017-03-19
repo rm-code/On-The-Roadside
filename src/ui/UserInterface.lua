@@ -13,7 +13,6 @@ local UserInterface = {};
 -- Constants
 -- ------------------------------------------------
 
-local VERSION_STRING = "WIP - Version: " .. getVersion();
 local TILE_SIZE = require( 'src.constants.TileSize' );
 local COLORS = require( 'src.constants.Colors' );
 
@@ -32,7 +31,6 @@ function UserInterface.new( game )
     local map = game:getMap();
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
-    local font = ImageFont.getFont();
     local debug = false;
 
     ---
@@ -48,7 +46,7 @@ function UserInterface.new( game )
 
         love.graphics.print( Translator.getText( 'ui_tile' ), x, y );
 
-        local sw = font:getWidth( Translator.getText( 'ui_tile' ));
+        local sw = ImageFont.measureWidth( Translator.getText( 'ui_tile' ));
         if not tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( Translator.getText( 'ui_tile_unexplored' ), x + sw, y );
         elseif tile:hasWorldObject() then
@@ -65,10 +63,10 @@ function UserInterface.new( game )
                 text = text .. string.format( ' (%d/%d)', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() )
             end
             love.graphics.print( Translator.getText( 'ui_weapon' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 3 );
-            love.graphics.print( text, TILE_SIZE + font:getWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - TILE_SIZE * 3 );
+            love.graphics.print( text, TILE_SIZE + ImageFont.measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - TILE_SIZE * 3 );
 
             love.graphics.print( Translator.getText( 'ui_mode' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 2 );
-            love.graphics.print( weapon:getAttackMode().name, TILE_SIZE + font:getWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - TILE_SIZE * 2 );
+            love.graphics.print( weapon:getAttackMode().name, TILE_SIZE + ImageFont.measureWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - TILE_SIZE * 2 );
 
         end
     end
@@ -84,7 +82,6 @@ function UserInterface.new( game )
 
     local function drawHelpInfo()
         love.graphics.setColor( 255, 255, 255, 100 );
-        love.graphics.print( VERSION_STRING,        love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE );
         love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE * 2 );
         love.graphics.setColor( 255, 255, 255, 255 );
     end
@@ -114,11 +111,11 @@ function UserInterface.new( game )
 
 
         if cost then
-            local costString, costOffset = ' - ' .. cost, ImageFont:getFont():getWidth( apString );
+            local costString, costOffset = ' - ' .. cost, ImageFont.measureWidth( apString );
             love.graphics.setColor( COLORS.DB27 );
             love.graphics.print( costString, TILE_SIZE + costOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
 
-            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, ImageFont:getFont():getWidth( apString .. costString );
+            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, ImageFont.measureWidth( apString .. costString );
             love.graphics.setColor( COLORS.DB10 );
             love.graphics.print( resultString, TILE_SIZE + resultOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
         end
@@ -126,7 +123,6 @@ function UserInterface.new( game )
     end
 
     function self:draw()
-        love.graphics.setFont( font );
         drawHelpInfo();
         drawDebugInfo();
 

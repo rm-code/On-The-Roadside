@@ -1,6 +1,7 @@
 local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 local ItemStack = require( 'src.inventory.ItemStack' );
+local ItemFactory = require( 'src.items.ItemFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -284,6 +285,21 @@ function Inventory.new( weightLimit, volumeLimit )
             table.insert( t, items[i]:serialize() );
         end
         return t;
+    end
+
+    ---
+    -- Loads items.
+    --
+    function self:loadItems( loadedItems )
+        for _, item in pairs( loadedItems ) do
+            if item.ItemStack then
+                for _, sitem in ipairs( item.items ) do
+                    self:addItem( ItemFactory.loadItem( sitem ));
+                end
+            else
+                self:addItem( ItemFactory.loadItem( item ));
+            end
+        end
     end
 
     ---

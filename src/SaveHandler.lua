@@ -1,9 +1,4 @@
 local Log = require( 'src.util.Log' );
-local TileFactory = require( 'src.map.tiles.TileFactory' );
-local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
-local ItemFactory = require( 'src.items.ItemFactory' );
-local ItemStack = require( 'src.inventory.ItemStack' );
-local CharacterFactory = require( 'src.characters.CharacterFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -12,21 +7,23 @@ local CharacterFactory = require( 'src.characters.CharacterFactory' );
 local SaveHandler = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local ITEM_TYPES = require('src.constants.ItemTypes');
-local loadstring = loadstring and loadstring or load; -- Lua 5.1+ compatibility.
-
--- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
+---
+-- Takes a table and recursively turns it into a human-readable and nicely
+-- formatted string stored as a sequence.
+-- @param value  (mixed)  The value to serialize.
+-- @param output (table)  The table used for storing the lines of the final file.
+-- @param depth  (number) An indicator for the depth of the recursion.
+--
 local function serialize( value, output, depth )
+    -- Append whitespace for each depth layer.
     local ws = '    ';
     for _ = 1, depth do
         ws = ws .. '    ';
     end
+
     if type( value ) == 'table' then
         for k, v in pairs(value) do
             if type( v ) == 'table' then
@@ -44,31 +41,35 @@ local function serialize( value, output, depth )
     end
 end
 
-local function cleanup( value )
+---
+-- Takes care of transforming strings to numbers if possible.
+-- @param value (mixed) The value to check.
+-- @return      (mixed) The converted value.
+--
+local function convertStrings( value )
+    local keysToReplace = {};
+
     for k, v in pairs( value ) do
-        -- If the key can be transformed into a number delete the original
-        -- key-value pair and store the value with the numerical key.
         if tonumber( k ) then
-            value[k] = nil;
-            value[tonumber(k)] = v;
+            keysToReplace[#keysToReplace + 1] = k;
         end
 
         if type( v ) == 'table' then
-            cleanup( v );
+            convertStrings( v );
         elseif tonumber( v ) then
             value[k] = tonumber( v );
         end
     end
+
+    -- If the key can be transformed into a number delete the original
+    -- key-value pair and store the value with the numerical key.
+    for _, k in ipairs( keysToReplace ) do
+        local v = value[k];
+        value[k] = nil;
+        value[tonumber(k)] = v;
+    end
+
     return value;
-end
-
-local function loadFile()
-    local compressed, bytes = love.filesystem.read( 'compressed.data' );
-    Log.debug( string.format( 'Loaded SaveHandler (Size: %d bytes)', bytes ));
-
-    local decompressed = love.math.decompress( compressed, 'lz4' );
-    local rawsave = loadstring( decompressed )();
-    return cleanup( rawsave );
 end
 
 -- ------------------------------------------------
@@ -82,142 +83,23 @@ function SaveHandler.save( t )
     table.insert( output, '}' );
 
     local str = table.concat( output, '\n' );
+    -- love.filesystem.write( 'uncompressed.lua', str );
+
     local compress = love.math.compress( str, 'lz4', 9 );
     love.filesystem.write( 'compressed.data', compress );
 end
 
 function SaveHandler.load()
-    local self = {};
+    local compressed, bytes = love.filesystem.read( 'compressed.data' );
+    Log.print( string.format( 'Loaded savegame (Size: %d bytes)', bytes ), 'SaveHandler' );
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
-
-    local save = loadFile();
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    local function createRound( item )
-        return ItemFactory.createItem( item.itemType, item.id );
-    end
-
-    local function createWeapon( item )
-        local weapon = ItemFactory.createItem( item.itemType, item.id );
-        weapon:setAttackMode( item.modeIndex );
-
-        if weapon:isReloadable() then
-            for _, round in ipairs( item.magazine.rounds ) do
-                weapon:getMagazine():addRound( createRound( round ));
-            end
-        end
-
-        return weapon;
-    end
-
-    local function fillInventory( source, target )
-        for _, item in pairs( source ) do
-            if item.ItemStack then
-                local itemStack = ItemStack.new( item.id );
-                fillInventory( item.items, itemStack );
-                target:addItem( itemStack );
-            elseif item.itemType == ITEM_TYPES.WEAPON then
-                local weapon = createWeapon( item );
-                target:addItem( weapon );
-            elseif item.itemType == ITEM_TYPES.CONTAINER then
-                local bag = ItemFactory.createItem( item.itemType, item.id );
-                fillInventory( item.inventory, bag:getInventory() );
-                target:addItem( bag )
-            elseif item.itemType == ITEM_TYPES.AMMO then
-                local ammo = createRound( item );
-                target:addItem( ammo );
-            elseif item.itemType == ITEM_TYPES.HEADGEAR then
-                local headgear = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( headgear );
-            elseif item.itemType == ITEM_TYPES.GLOVES then
-                local gloves = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( gloves );
-            elseif item.itemType == ITEM_TYPES.JACKET then
-                local jacket = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( jacket );
-            elseif item.itemType == ITEM_TYPES.SHIRT then
-                local shirt = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( shirt );
-            elseif item.itemType == ITEM_TYPES.TROUSERS then
-                local trousers = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( trousers );
-            elseif item.itemType == ITEM_TYPES.FOOTWEAR then
-                local footwear = ItemFactory.createItem( item.itemType, item.id );
-                target:addItem( footwear );
-            end
-        end
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:loadMap( map )
-        local loadedTiles = {};
-        for _, tile in ipairs( save ) do
-            local x, y = tile.x, tile.y;
-            loadedTiles[x] = loadedTiles[x] or {};
-            loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
-            local newTile = loadedTiles[x][y];
-
-            if tile.worldObject then
-                local worldObject = WorldObjectFactory.create( tile.worldObject.id );
-                worldObject:setHitPoints( tile.worldObject.hp );
-                worldObject:setPassable( tile.worldObject.passable );
-                worldObject:setBlocksVision( tile.worldObject.blocksVision );
-                if worldObject:isContainer() and tile.worldObject.inventory then
-                    fillInventory( tile.worldObject.inventory, worldObject:getInventory() );
-                end
-                newTile:addWorldObject( worldObject );
-            end
-            if tile.inventory then
-                fillInventory( tile.inventory, newTile:getInventory() );
-            end
-            if tile.explored then
-                for i, v in pairs( tile.explored ) do
-                    newTile:setExplored( i, v );
-                end
-            end
-        end
-        map:recreate( loadedTiles );
-    end
-
-    function self:loadCharacters( map, factions )
-        for _, tile in ipairs( save ) do
-            if tile.character then
-                local faction = factions:findFaction( tile.character.faction );
-                local character = CharacterFactory.loadCharacter( map, map:getTileAt( tile.x, tile.y ), faction );
-                character:setActionPoints( tile.character.ap );
-                character:setHealth( tile.character.health );
-                character:setAccuracy( tile.character.accuracy );
-                character:setStance( tile.character.stance );
-
-                if tile.character.inventory then
-                    fillInventory( tile.character.inventory, character:getInventory() );
-                end
-
-                factions:addCharacter( character );
-            end
-        end
-    end
-
-    return self;
+    local decompressed = love.math.decompress( compressed, 'lz4' );
+    local rawsave = loadstring( decompressed )();
+    return convertStrings( rawsave );
 end
 
-function SaveHandler.hasSaveFile()
+function SaveHandler.exists()
     return love.filesystem.exists( 'compressed.data' );
-end
-
-function SaveHandler.deleteSaveFile()
-    if SaveHandler.hasSaveFile() then
-        love.filesystem.remove( 'compressed.data' );
-    end
 end
 
 return SaveHandler;

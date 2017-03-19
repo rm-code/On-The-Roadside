@@ -15,7 +15,7 @@ local Factions = {};
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.Factions' );
+local FACTIONS = require( 'src.constants.FACTIONS' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -76,6 +76,18 @@ function Factions.new( map )
         end
     end
 
+    local function loadCharacters( savedFactions )
+        for type, sfaction in pairs( savedFactions ) do
+            local faction = self:findFaction( type );
+            for _, savedCharacter in ipairs( sfaction ) do
+                if not savedCharacter.body.statusEffects.death then
+                    local tile = map:getTileAt( savedCharacter.x, savedCharacter.y );
+                    faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ));
+                end
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Functions
     -- ------------------------------------------------
@@ -114,10 +126,17 @@ function Factions.new( map )
     -- Initialises the Factions object by creating a linked list of factions and
     -- spawning the characters for each faction at random locations on the map.
     --
-    function self:init()
+    function self:init( savegame )
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
         player = addFaction( Faction.new( FACTIONS.ALLIED,  false ));
+
+        if savegame then
+            loadCharacters( savegame.factions );
+            return;
+        end
+
+        self:spawnCharacters();
     end
 
     ---
@@ -156,6 +175,14 @@ function Factions.new( map )
 
             Log.debug( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' );
         end
+    end
+
+    function self:serialize()
+        local t = {}
+        t[FACTIONS.ALLIED]  = self:findFaction( FACTIONS.ALLIED  ):serialize();
+        t[FACTIONS.NEUTRAL] = self:findFaction( FACTIONS.NEUTRAL ):serialize();
+        t[FACTIONS.ENEMY]   = self:findFaction( FACTIONS.ENEMY   ):serialize();
+        return t;
     end
 
     -- ------------------------------------------------

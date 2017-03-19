@@ -193,6 +193,14 @@ function ProjectileManager.register( nqueue )
 end
 
 ---
+-- Remove any saved state.
+--
+function ProjectileManager.clear()
+    queue = nil;
+    map = nil;
+end
+
+---
 -- Returns true if there isn't a queue or if the current queue has been processed.
 -- @return (boolean) True if the projectile manager has processed the queue.
 --

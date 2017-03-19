@@ -1,5 +1,6 @@
 local Log = require( 'src.util.Log' );
 local Observable = require( 'src.util.Observable' );
+local ItemFactory = require( 'src.items.ItemFactory' );
 
 -- ------------------------------------------------
 -- Module
@@ -63,6 +64,22 @@ function Equipment.new()
         end
         Log.warn( string.format( 'No applicable slot found for item %s', item:getID() ), 'Equipment' );
         return false;
+    end
+
+    function self:serialize()
+        local t = {};
+        for _, slot in pairs( slots ) do
+            t[slot:getIndex()] = slot:serialize();
+        end
+        return t;
+    end
+
+    function self:load( savedEquipment )
+        for index, slot in pairs( savedEquipment ) do
+            if slot.item then
+                slots[index]:addItem( ItemFactory.loadItem( slot.item ));
+            end
+        end
     end
 
     ---

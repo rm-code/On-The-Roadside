@@ -1,7 +1,7 @@
 local Log = require( 'src.util.Log' );
 local Object = require( 'src.Object' );
 
-local STATUS_EFFECTS = require( 'src.constants.StatusEffects' );
+local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' );
 
 local StatusEffects = {};
 
@@ -31,6 +31,14 @@ function StatusEffects.new()
             Log.debug( 'Apply status effect ' .. effect );
             active[effect] = true;
         end
+    end
+
+    function self:serialize()
+        local t = {};
+        for effect, bool in pairs( active ) do
+            t[effect] = bool;
+        end
+        return t;
     end
 
     -- Getters

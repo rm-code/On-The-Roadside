@@ -12,7 +12,7 @@ local WorldPainter = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local FACTIONS = require( 'src.constants.Factions' );
+local FACTIONS = require( 'src.constants.FACTIONS' );
 
 local CHARACTER_COLORS = {
     ACTIVE = {

@@ -175,4 +175,21 @@ function BodyFactory.create( id )
     return assembleBody( id, template );
 end
 
+function BodyFactory.load( savedbody )
+    local body = BodyFactory.create( savedbody.id );
+
+    for id, savedBodyPart in pairs( savedbody.nodes ) do
+        body:getBodyPart( id ):load( savedBodyPart );
+    end
+
+    body:getInventory():loadItems( savedbody.inventory );
+    body:getEquipment():load( savedbody.equipment );
+
+    for effect, _ in pairs( savedbody.statusEffects ) do
+        body:getStatusEffects():add({ effect });
+    end
+
+    return body;
+end
+
 return BodyFactory;

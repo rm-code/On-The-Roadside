@@ -9,27 +9,24 @@ local ParticleLayer = require( 'src.ui.ParticleLayer' );
 local OverlayPainter = require( 'src.ui.OverlayPainter' );
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
-local Translator = require( 'src.util.Translator' );
-local ImageFont = require( 'src.ui.ImageFont' );
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local MainScreen = {};
+local GameScreen = {};
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
 local TILE_SIZE = require( 'src.constants.TileSize' );
-local DEFAULT_LOCALE = 'en_EN';
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function MainScreen.new()
+function GameScreen.new()
     local self = Screen.new();
 
     local game;
@@ -38,19 +35,13 @@ function MainScreen.new()
     local particleLayer;
     local overlayPainter;
     local camera;
+    local observations = {};
 
-    local exitTimer;
-
-    function self:init()
-        exitTimer = 0;
-
-        Translator.init( DEFAULT_LOCALE );
-
+    function self:init( savegame )
         game = Game.new();
-        game:init();
+        game:init( savegame );
 
         Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
-        ImageFont.setFont();
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
@@ -72,12 +63,6 @@ function MainScreen.new()
         overlayPainter:draw();
         camera:detach();
         userInterface:draw();
-
-        if exitTimer ~= 0 then
-            love.graphics.setColor( 0, 0, 0, 255 * exitTimer );
-            love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
-            love.graphics.setColor( 255, 255, 255, 255 );
-        end
     end
 
     function self:update( dt )
@@ -93,15 +78,6 @@ function MainScreen.new()
         if self:isActive() then
             MousePointer.update();
         end
-
-        if love.keyboard.isScancodeDown( 'escape' ) then
-            exitTimer = exitTimer + dt * 2;
-            if exitTimer >= 1.0 then
-                love.event.quit();
-            end
-        else
-            exitTimer = 0;
-        end
     end
 
     function self:keypressed( key, scancode, isrepeat )
@@ -113,6 +89,9 @@ function MainScreen.new()
         end
         if scancode == 'f1' then
             userInterface:toggleDebugInfo();
+        end
+        if scancode == 'escape' then
+            ScreenManager.push( 'ingamemenu', game );
         end
 
         game:keypressed( key, scancode, isrepeat );
@@ -131,14 +110,24 @@ function MainScreen.new()
         end
     end
 
-    Messenger.observe( 'SWITCH_CHARACTERS', function( character )
+    function self:close()
+        for i = 1, #observations do
+            Messenger.remove( observations[i] );
+        end
+
+        MousePointer.clear();
+
+        game:close();
+    end
+
+    observations[#observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
         camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
     end)
 
-    Messenger.observe( 'CHARACTER_MOVED', function( character )
+    observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
@@ -148,4 +137,4 @@ function MainScreen.new()
     return self;
 end
 
-return MainScreen;
+return GameScreen;
