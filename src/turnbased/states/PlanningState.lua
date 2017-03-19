@@ -100,6 +100,7 @@ function PlanningState.new( stateManager )
         end
 
         if button == 2 and tile:isOccupied() then
+            inputStateHandler:switch( 'movement' );
             factions:getFaction():selectCharacter( tile:getCharacter() );
             return;
         end
