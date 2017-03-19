@@ -42,7 +42,6 @@ function BootLoadingScreen.new()
     function self:init()
         local startTime = love.timer.getTime();
 
-        Log.init();
         Translator.init( DEFAULT_LOCALE );
 
         ImageFont.set();
