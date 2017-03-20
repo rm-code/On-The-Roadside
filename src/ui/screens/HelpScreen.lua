@@ -8,6 +8,12 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local HelpScreen = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local COLORS = require( 'src.constants.Colors' );
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -44,11 +50,11 @@ function HelpScreen.new()
     }
 
     function self:draw()
-        love.graphics.setColor( 0, 0, 0, 220 );
+        love.graphics.setColor( COLORS.DB00 );
         love.graphics.rectangle( 'fill', 5, 5, love.graphics.getWidth() - 5, love.graphics.getHeight() - 5 );
-        love.graphics.setColor( 200, 200, 200, 200 );
+        love.graphics.setColor( COLORS.DB20 );
         love.graphics.rectangle( 'line', 5, 5, love.graphics.getWidth() - 5, love.graphics.getHeight() - 5 );
-        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
 
         for i, line in ipairs( t ) do
             love.graphics.print( line, 20, 20 * i );

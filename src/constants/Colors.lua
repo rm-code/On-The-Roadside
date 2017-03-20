@@ -34,6 +34,7 @@ COLORS.DB28 = { 217,  87,  99 };
 COLORS.DB29 = { 215, 123, 186 };
 COLORS.DB30 = { 143, 151,  74 };
 COLORS.DB31 = { 138, 111,  48 };
+COLORS.RESET = { 255, 255, 255, 255 };
 
 -- Make table read-only.
 return setmetatable( COLORS, {

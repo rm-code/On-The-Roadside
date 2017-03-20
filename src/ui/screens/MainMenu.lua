@@ -88,7 +88,7 @@ function SplashScreen.new()
         love.graphics.setColor( COLORS.DB01 );
         love.graphics.print( VERSION_STRING, sw - ImageFont.measureWidth( VERSION_STRING ), sh - ImageFont.getGlyphHeight() );
         love.graphics.print( COPYRIGHT_STRING, 0, sh - ImageFont.getGlyphHeight() );
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     local function drawDebugInfo()
@@ -96,7 +96,7 @@ function SplashScreen.new()
             love.graphics.setColor( COLORS.DB01 );
             love.graphics.print( love.timer.getFPS() .. ' FPS', ImageFont.getGlyphWidth(), ImageFont.getGlyphWidth() );
             love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', ImageFont.getGlyphWidth(), ImageFont.getGlyphWidth() + ImageFont.getGlyphHeight() );
-            love.graphics.setColor( 255, 255, 255 );
+            love.graphics.setColor( COLORS.RESET );
         end
     end
 

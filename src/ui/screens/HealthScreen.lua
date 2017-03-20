@@ -215,7 +215,7 @@ function HealthScreen.new()
 
         love.graphics.setColor( COLORS.DB20 );
         love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + TILE_SIZE, py + TILE_SIZE );
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     function self:keypressed( key )

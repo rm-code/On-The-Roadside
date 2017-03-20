@@ -81,9 +81,9 @@ function UserInterface.new( game )
     end
 
     local function drawHelpInfo()
-        love.graphics.setColor( 255, 255, 255, 100 );
+        love.graphics.setColor( COLORS.DB25 );
         love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE * 2 );
-        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     local function drawActionPoints( character )
@@ -119,7 +119,7 @@ function UserInterface.new( game )
             love.graphics.setColor( COLORS.DB10 );
             love.graphics.print( resultString, TILE_SIZE + resultOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
         end
-        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     function self:draw()

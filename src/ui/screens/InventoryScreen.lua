@@ -199,9 +199,9 @@ function InventoryScreen.new()
     --
     function self:draw()
         -- Draw a transparent overlay.
-        love.graphics.setColor( 0, 0, 0, 220 );
+        love.graphics.setColor( COLORS.DB00 );
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
-        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
 
         outlines:draw( love.graphics.getDimensions() );
         drawHeaders( love.graphics.getWidth() );

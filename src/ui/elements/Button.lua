@@ -39,7 +39,7 @@ function Button.new( textID, callback )
     function self:draw( x, y, w, _ )
         love.graphics.setColor( focus and COLORS.DB18 or COLORS.DB16 );
         love.graphics.printf( translatedText, x, y, w, 'center' );
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     function self:activate()

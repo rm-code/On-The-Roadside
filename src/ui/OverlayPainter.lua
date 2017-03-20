@@ -200,7 +200,7 @@ function OverlayPainter.new( game, particleLayer )
                 local color = selectPathNodeColor( ap, total );
                 love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() );
                 love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-                love.graphics.setColor( 255, 255, 255, 255 );
+                love.graphics.setColor( COLORS.RESET );
                 love.graphics.setBlendMode( 'alpha' );
             end);
         end
@@ -217,7 +217,7 @@ function OverlayPainter.new( game, particleLayer )
         local gx, gy = MousePointer.getGridPosition();
         local cx, cy = gx * TILE_SIZE, gy * TILE_SIZE;
 
-        love.graphics.setColor( 0, 0, 0 );
+        love.graphics.setColor( COLORS.DB00 );
         love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
 
         if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
@@ -230,7 +230,7 @@ function OverlayPainter.new( game, particleLayer )
             love.graphics.setColor( COLORS.DB10 );
             love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 30 ), cx, cy );
         end
-        love.graphics.setColor( 255, 255, 255, 255 );
+        love.graphics.setColor( COLORS.RESET );
     end
 
     local function drawParticles()
@@ -245,7 +245,7 @@ function OverlayPainter.new( game, particleLayer )
                     else
                         love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
                     end
-                    love.graphics.setColor( 255, 255, 255, 255 );
+                    love.graphics.setColor( COLORS.RESET );
                 end
             end
         end

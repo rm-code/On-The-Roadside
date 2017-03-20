@@ -42,7 +42,7 @@ function VerticalList.new( x, y, itemW, itemH )
         for i = 1, #elements do
             love.graphics.setColor( elements[i]:hasFocus() and COLORS.DB18 or COLORS.DB16 );
             elements[i]:draw( x, y + (i-1) * itemH, itemW, itemH );
-            love.graphics.setColor( 255, 255, 255 );
+            love.graphics.setColor( COLORS.RESET );
         end
     end
 
