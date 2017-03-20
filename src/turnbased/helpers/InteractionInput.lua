@@ -46,12 +46,14 @@ function InteractionInput.new()
     -- @return          (boolean)   True if an action was created, false otherwise.
     --
     function self:request( target, character )
+        -- Check health of enemy characters.
+        if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
+            ScreenManager.push( 'health', target:getCharacter() );
+            return true;
+        end
+
         -- Characters can only interact with adjacent tiles.
         if not target:isAdjacent( character:getTile() ) then
-            if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
-                ScreenManager.push( 'health', target:getCharacter() );
-                return true;
-            end
             return false;
         end
 
