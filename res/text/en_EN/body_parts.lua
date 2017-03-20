@@ -20,6 +20,8 @@ locale.strings = {
     ['leg_right'] = "Leg (R)",
     ['foot_right'] = "Foot (R)",
 
+    ['legs'] = "Legs",
+
     ['torso'] = "Torso",
     ['heart'] = "Heart",
     ['kidneys'] = "Kidneys",

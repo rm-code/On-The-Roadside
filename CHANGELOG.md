@@ -1,3 +1,12 @@
+# Version 0.7.1.883 - 2017-03-20
+
+## Fixes
+- Fixed health screen not opening for adjacent chars
+- Fixed missing text for dog legs
+
+
+
+
 # Version 0.7.0.880 - 2017-03-19
 
 ## Additions
