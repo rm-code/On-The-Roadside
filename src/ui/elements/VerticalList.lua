@@ -28,6 +28,8 @@ function VerticalList.new( x, y, itemW, itemH )
             return;
         end
 
+        self:unsetCursor()
+
         local elements = self:getElements();
         for i = 1, #elements do
             elements[i]:update( x, y + (i-1) * itemH, itemW, itemH );
@@ -53,13 +55,15 @@ function VerticalList.new( x, y, itemW, itemH )
         elseif scancode == 'down' then
             self:deactivateMouse();
             self:next();
-        else
+        elseif self:getActiveElement() then
             self:getActiveElement():keypressed( _, scancode );
         end
     end
 
     function self:mousereleased()
-        self:getActiveElement():mousereleased();
+        if love.mouse.isVisible() and self:getActiveElement() then
+            self:getActiveElement():mousereleased();
+        end
     end
 
     function self:activateMouse()

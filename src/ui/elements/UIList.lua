@@ -34,14 +34,22 @@ function UIList.new()
     end
 
     function self:prev()
-        elements[cursor]:setFocus( false );
-        cursor = cursor == 1 and #elements or cursor - 1;
+        if elements[cursor] then
+            elements[cursor]:setFocus( false );
+            cursor = cursor <= 1 and #elements or cursor - 1;
+        else
+            cursor = 1;
+        end
         elements[cursor]:setFocus( true );
     end
 
     function self:next()
-        elements[cursor]:setFocus( false );
-        cursor = cursor == #elements and 1 or cursor + 1;
+        if elements[cursor] then
+            elements[cursor]:setFocus( false );
+            cursor = cursor >= #elements and 1 or cursor + 1;
+        else
+            cursor = 1;
+        end
         elements[cursor]:setFocus( true );
     end
 
@@ -67,6 +75,10 @@ function UIList.new()
 
     function self:setCursor( ncursor )
         cursor = ncursor;
+    end
+
+    function self:unsetCursor()
+        cursor = 0;
     end
 
     return self;
