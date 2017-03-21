@@ -162,6 +162,10 @@ function IngameMenu.new()
         ScreenManager.pop();
     end
 
+    local function openHelpScreen()
+        ScreenManager.push( 'help' );
+    end
+
     local function exitToMainMenu()
         ScreenManager.switch( 'mainmenu' );
     end
@@ -170,6 +174,7 @@ function IngameMenu.new()
         local x, y = px, py;
         buttonList = VerticalList.new( x, y + 3 * TILE_SIZE, SCREEN_WIDTH * TILE_SIZE, TILE_SIZE );
         buttonList:addElement( Button.new( 'ui_ingame_save_game', saveGame ));
+        buttonList:addElement( Button.new( 'ui_ingame_open_help', openHelpScreen ));
         buttonList:addElement( Button.new( 'ui_main_menu_exit', exitToMainMenu ));
         buttonList:addElement( Button.new( 'ui_back', close ));
     end

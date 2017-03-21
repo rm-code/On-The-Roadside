@@ -84,9 +84,6 @@ function GameScreen.new()
         if scancode == 'f' then
             love.window.setFullscreen( not love.window.getFullscreen() );
         end
-        if scancode == 'h' then
-            ScreenManager.push( 'help' );
-        end
         if scancode == 'f1' then
             userInterface:toggleDebugInfo();
         end

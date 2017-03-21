@@ -80,12 +80,6 @@ function UserInterface.new( game )
         end
     end
 
-    local function drawHelpInfo()
-        love.graphics.setColor( COLORS.DB25 );
-        love.graphics.print( 'Press "h" for help!', love.graphics.getWidth() - 13 * TILE_SIZE, TILE_SIZE * 2 );
-        love.graphics.setColor( COLORS.RESET );
-    end
-
     local function drawActionPoints( character )
         local apString = 'AP: ' .. character:getActionPoints();
         love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
@@ -123,7 +117,6 @@ function UserInterface.new( game )
     end
 
     function self:draw()
-        drawHelpInfo();
         drawDebugInfo();
 
         local character = factions:getFaction():getCurrentCharacter();
