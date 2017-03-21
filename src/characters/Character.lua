@@ -78,7 +78,13 @@ function Character.new( map, tile, faction )
         -- Mark tile for drawing update.
         target:setDirty( true );
 
-        if target:hasWorldObject() and target:getWorldObject():blocksVision() then
+        -- A world object blocks vision if it has the "blocksVision" flag set
+        -- to true in its template file and if the character's size is smaller
+        -- than the world object size. This simulates that a character can't
+        -- look over world objects that are larger than him.
+        if  target:hasWorldObject()
+        and target:getWorldObject():blocksVision()
+        and self:getSize() <= target:getWorldObject():getSize() then
             return false;
         end
         return true;
@@ -323,6 +329,14 @@ function Character.new( map, tile, faction )
     --
     function self:getFOV()
         return fov;
+    end
+
+    ---
+    -- Returns the character's size based on his stance.
+    -- @return (number) The character's size.
+    --
+    function self:getSize()
+        return body:getSize( stance );
     end
 
     ---

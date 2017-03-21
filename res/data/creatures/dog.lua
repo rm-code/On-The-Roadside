@@ -3,6 +3,11 @@ return {
     bloodVolume = 3,
     defaultCarryWeight = 20,
     defaultCarryVolume = 5,
+    size = {
+        stand  = 50,
+        crouch = 30,
+        prone  = 20
+    },
     tags = {
         whitelist = {
             'creature'

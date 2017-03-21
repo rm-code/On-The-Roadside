@@ -3,6 +3,11 @@ return {
     bloodVolume = 5,
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
+    size = {
+        stand  = 80,
+        crouch = 50,
+        prone  = 30
+    },
     tags = {
         whitelist = {
             'humanoid'

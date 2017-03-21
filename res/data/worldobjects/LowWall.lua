@@ -10,6 +10,6 @@ return {
     },
     destructible = false,
     climbable = true,
-    blocksVision = false,
+    blocksVision = true,
     blocksPathfinding = false
 }
