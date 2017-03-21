@@ -89,23 +89,27 @@ function OverlayPainter.new( game, particleLayer )
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
                 -- 4 means the projectile can't reach this tile.
+                local nstatus = 1;
                 if tile:isOccupied() then
-                    status = 2;
+                    nstatus = 2;
                 elseif tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getSize() < 100 ) then
-                    status = 2;
+                    nstatus = 2;
 
                     -- World objects which are on a tile directly adjacent to the attacking
                     -- character will be ignored if they either are destructible or don't fill
                     -- the whole tile. Indestructible objects which cover the whole tile will
                     -- still block the shot.
                     if tile:isAdjacent( origin ) then
-                        status = 1;
+                        nstatus = 1;
                     end
                 elseif tile:hasWorldObject() and not tile:getWorldObject():isDestructible() then
-                    status = 3;
+                    nstatus = 3;
                 elseif counter > weapon:getRange() then
-                    status = 4;
+                    nstatus = 4;
                 end
+
+                -- The new status can't be better than the previously stored status.
+                status = math.max( nstatus, status );
 
                 -- Since multiple arrays might touch the same tile we use the maximum
                 -- value stored for this tile.
