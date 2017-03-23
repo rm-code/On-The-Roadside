@@ -65,13 +65,13 @@ function Bresenham.line( ox, oy, ex, ey, callback, ... )
     while true do
         local continue = callback( ox, oy, counter, ... )
         if not continue then
-            return false
+            return false, counter
         end
 
         counter = counter + 1
 
         if ox == ex and oy == ey then
-            return true
+            return true, counter
         end
 
         local tmpErr = 2 * err
