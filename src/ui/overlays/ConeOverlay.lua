@@ -39,15 +39,38 @@ function ConeOverlay.new( game, pulser )
     local cone = {}
 
     -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Determine the height falloff for the cone overlay.
+    -- @tparam  Tile   origin The starting tile.
+    -- @tparam  Tile   target The target tile.
+    -- @tparam  number steps  The distance to the target.
+    -- @treturn number        The calculated falloff value.
+    --
+    local function calculateFalloff( origin, target, steps )
+        local oheight = origin:getHeight()
+        local theight = target:getHeight()
+
+        local delta = oheight - theight
+        return delta / steps
+    end
+
+    -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
     function self:generate()
-        local character = game:getCurrentCharacter()
-        local weapon = character:getWeapon()
+        -- Exit early if we aren't in the attack input mode.
         if not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
             return
-        elseif not weapon or weapon:getSubType() == WEAPON_TYPES.MELEE then
+        end
+
+        -- Exit early if the character doesn't have a weapon or the weapon is
+        -- of type melee.
+        local weapon = game:getCurrentCharacter():getWeapon()
+        if not weapon or weapon:getSubType() == WEAPON_TYPES.MELEE then
             return
         end
 
@@ -60,18 +83,20 @@ function ConeOverlay.new( game, pulser )
             return
         end
 
-        -- Fake the last bullet in the magazine so the maximum derivation
-        -- represents that of a full weapon burst.
-        local count
-        if weapon:getSubType() == WEAPON_TYPES.RANGED then
-            count = weapon:getAttacks()
-        end
+        -- Use the number of attacks to predict the derivation for burst attacks correctly.
+        local count = weapon:getSubType() == WEAPON_TYPES.RANGED and weapon:getAttacks() or 1;
 
         -- Calculate the derivation.
+        local character = game:getCurrentCharacter()
         local derivation = ProjectilePath.getMaximumDerivation( character, weapon, count )
         local origin = character:getTile()
         local px, py = origin:getPosition()
         local tx, ty = target:getPosition()
+
+        -- Calculate the height falloff for the cone.
+        local _, steps = Bresenham.line( px, py, tx, ty )
+        local falloff  = calculateFalloff( origin, target, steps )
+        local startHeight = origin:getHeight()
 
         do
             -- Callback function used in bresenham's algorithm.
@@ -81,13 +106,24 @@ function ConeOverlay.new( game, pulser )
             local function callback( sx, sy, counter )
                 -- Get the tile at the rounded integer coordinates.
                 local tile = map:getTileAt( math.floor( sx + 0.5 ), math.floor( sy + 0.5 ))
-                -- If it is not a valid tile or the character's faction can't see the tile stop the
-                -- ray. Always advance the ray if the tile is the character's tile.
-                if not tile or not character:getFaction():canSee(tile) then
+
+                -- Stop early if the tile is not valid.
+                if not tile then
                     return false
-                elseif tile == origin then
+                end
+
+                -- Stop early if the target is out of range.
+                if counter > weapon:getRange() then
+                    return false
+                end
+
+                -- Always advance the ray on the original tile.
+                if tile == origin then
                     return true
                 end
+
+                -- Calculate the height of the ray.
+                local height = startHeight - (counter+1) * falloff
 
                 -- Assign a status for this tile.
                 -- 1 means the projectile can pass freely.
@@ -97,20 +133,13 @@ function ConeOverlay.new( game, pulser )
                 local nstatus = 1
                 if tile:isOccupied() then
                     nstatus = 2
-                elseif tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getHeight() < 100 ) then
-                    nstatus = 2
-
-                    -- World objects which are on a tile directly adjacent to the attacking
-                    -- character will be ignored if they either are destructible or don't fill
-                    -- the whole tile. Indestructible objects which cover the whole tile will
-                    -- still block the shot.
-                    if tile:isAdjacent( origin ) then
-                        nstatus = 1
+                elseif tile:hasWorldObject() and height <= tile:getWorldObject():getHeight() then
+                    -- Indestructible worldobjects block the shot.
+                    if not tile:getWorldObject():isDestructible() then
+                        nstatus = 3
+                    else
+                        nstatus = 2
                     end
-                elseif tile:hasWorldObject() and not tile:getWorldObject():isDestructible() then
-                    nstatus = 3
-                elseif counter > weapon:getRange() then
-                    nstatus = 4
                 end
 
                 -- The new status can't be better than the previously stored status.
