@@ -149,6 +149,7 @@ function ConeOverlay.new( game, pulser )
             end
             cone[tile] = nil
         end
+        love.graphics.setColor( COLORS.RESET )
     end
 
     return self
