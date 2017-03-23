@@ -182,7 +182,7 @@ function Character.new( map, tile, faction )
 
         for _, ttile in ipairs( list ) do
             local tx, ty = ttile:getPosition();
-            Bresenham.calculateLine( sx, sy, tx, ty, markSeenTiles );
+            Bresenham.line( sx, sy, tx, ty, markSeenTiles );
         end
     end
 

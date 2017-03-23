@@ -52,7 +52,7 @@ local function generateExplosionMap( source, list, radius )
             local tx, ty = tile:getPosition();
 
             -- Cast a ray from the source of the explosion to the target tile.
-            Bresenham.calculateLine( sx, sy, tx, ty, function( cx, cy, count )
+            Bresenham.line( sx, sy, tx, ty, function( cx, cy, count )
                 local target = map:getTileAt( cx, cy );
 
                 -- Stop at impassable world objects that cover the whole tile.

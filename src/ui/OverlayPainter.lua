@@ -122,7 +122,7 @@ function OverlayPainter.new( game, particleLayer )
             for angle = -derivation, derivation, 0.2 do
                 local nx, ny = VectorMath.rotate( px, py, tx, ty, angle );
                 status = 1;
-                Bresenham.calculateLine( px, py, nx, ny, callback );
+                Bresenham.line( px, py, nx, ny, callback );
             end
         end
     end

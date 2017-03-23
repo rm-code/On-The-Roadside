@@ -198,7 +198,7 @@ function ProjectilePath.calculate( character, target, weapon, count )
 
     -- Get the coords of all tiles the projectile passes on the way to its target.
     local tiles = {};
-    Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
+    Bresenham.line( px, py, nx, ny, function( sx, sy )
         -- Ignore the origin.
         if sx ~= px or sy ~= py then
             tiles[#tiles + 1] = { x = sx, y = sy };
