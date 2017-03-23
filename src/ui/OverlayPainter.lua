@@ -132,11 +132,7 @@ function OverlayPainter.new( game, particleLayer )
     -- @param character (Character) The character to draw the LOS for.
     --
     local function drawLineOfSight( character )
-        if game:getState():instanceOf( 'ExecutionState' ) then
-            return;
-        end
-
-        if game:getState():instanceOf( 'PlanningState' ) and not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+        if not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
             return;
         end
 
@@ -188,10 +184,6 @@ function OverlayPainter.new( game, particleLayer )
     -- @param character (Character) The character to draw the path for.
     --
     local function drawPath( character )
-        if game:getState():instanceOf( 'ExecutionState' ) then
-            return;
-        end
-
         local mode = game:getState():getInputMode();
         if mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
             local total = character:getActionPoints();
@@ -214,10 +206,6 @@ function OverlayPainter.new( game, particleLayer )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
-        if game:getState():instanceOf( 'ExecutionState' ) then
-            return;
-        end
-
         local gx, gy = MousePointer.getGridPosition();
         local cx, cy = gx * TILE_SIZE, gy * TILE_SIZE;
 
@@ -261,11 +249,13 @@ function OverlayPainter.new( game, particleLayer )
 
     function self:draw()
         local character = game:getFactions():getFaction():getCurrentCharacter();
-        if not character:getFaction():isAIControlled() then
+        if  not character:getFaction():isAIControlled()
+        and not game:getState():instanceOf( 'ExecutionState' ) then
             drawLineOfSight( character );
             drawPath( character );
             drawMouseCursor();
         end
+
         drawParticles();
     end
 
