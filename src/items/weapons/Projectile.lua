@@ -105,6 +105,10 @@ function Projectile.new( character, tiles, damage, damageType, effects )
         return #tiles == index;
     end
 
+    function self:getHeight()
+        return tiles[index].z
+    end
+
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------

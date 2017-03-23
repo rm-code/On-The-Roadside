@@ -40,8 +40,8 @@ function ProjectileQueue.new( character, target )
     local function spawnProjectile()
         local round = ammoQueue:dequeue();
 
-        local tiles = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() );
-        local projectile = Projectile.new( character, tiles, weapon:getDamage(), round:getDamageType(), round:getEffects() );
+        local path = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() )
+        local projectile = Projectile.new( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
 
         -- Play sound and remove the round from the magazine.
         Messenger.publish( 'SOUND_ATTACK', weapon );
