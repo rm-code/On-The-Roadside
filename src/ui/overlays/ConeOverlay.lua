@@ -97,7 +97,7 @@ function ConeOverlay.new( game, pulser )
                 local nstatus = 1
                 if tile:isOccupied() then
                     nstatus = 2
-                elseif tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getSize() < 100 ) then
+                elseif tile:hasWorldObject() and ( tile:getWorldObject():isDestructible() or tile:getWorldObject():getHeight() < 100 ) then
                     nstatus = 2
 
                     -- World objects which are on a tile directly adjacent to the attacking

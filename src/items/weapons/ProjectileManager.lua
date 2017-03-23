@@ -82,14 +82,14 @@ local function hitWorldObject( index, projectile, tile, worldObject, character )
     -- character will be ignored if they either are destructible or don't fill
     -- the whole tile. Indestructible objects which cover the whole tile will
     -- still block the shot.
-    if tile:isAdjacent( character:getTile() ) and ( worldObject:isDestructible() or worldObject:getSize() < 100 ) then
+    if tile:isAdjacent( character:getTile() ) and ( worldObject:isDestructible() or worldObject:getHeight() < 100 ) then
         Log.debug( 'World object is adjacent to character and will be ignored', 'ProjectileManager' );
         return;
     end
 
     -- Roll a random number. This is the chance to hit a world object based on
     -- its size. So larger world objects have a higher chance to block shots.
-    if love.math.random( 100 ) > worldObject:getSize() then
+    if love.math.random( 100 ) > worldObject:getHeight() then
         return;
     end
 

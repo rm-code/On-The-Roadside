@@ -205,13 +205,13 @@ function Tile.new( x, y, template )
     -- value.
     -- @treturn number The height of this tile.
     --
-    function self:getSize()
+    function self:getHeight()
         if worldObject then
-            return worldObject:getSize();
+            return worldObject:getHeight()
         elseif character then
-            return character:getSize();
+            return character:getHeight()
         end
-        return DEFAULT_HEIGHT;
+        return DEFAULT_HEIGHT
     end
 
     ---

@@ -75,8 +75,8 @@ function Character.new( map, tile, faction )
         -- is smaller than the tile's height it is marked as visible. This
         -- simulates how small objects can be hidden behind bigger objects, but
         -- not the other way around.
-        local height = self:getSize() - (counter+1) * falloff;
-        if height <= target:getSize() then
+        local height = self:getHeight() - (counter+1) * falloff
+        if height <= target:getHeight() then
             -- Add tile to this character's FOV.
             self:addSeenTile( cx, cy, target );
 
@@ -94,7 +94,7 @@ function Character.new( map, tile, faction )
         -- in which smaller objects could be hidden.
         if  target:hasWorldObject()
         and target:getWorldObject():blocksVision()
-        and height <= target:getWorldObject():getSize() then
+        and height <= target:getWorldObject():getHeight() then
             return false;
         end
 
@@ -109,8 +109,8 @@ function Character.new( map, tile, faction )
     -- @treturn number The calculated falloff value.
     --
     local function calculateFalloff( target, steps )
-        local oheight = self:getSize();
-        local theight = target:getSize();
+        local oheight = self:getHeight()
+        local theight = target:getHeight()
 
         local delta = oheight - theight;
         return delta / steps;
@@ -363,8 +363,8 @@ function Character.new( map, tile, faction )
     -- Returns the character's size based on his stance.
     -- @return (number) The character's size.
     --
-    function self:getSize()
-        return body:getSize( stance );
+    function self:getHeight()
+        return body:getHeight( stance )
     end
 
     ---
