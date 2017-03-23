@@ -21,7 +21,7 @@
 --==================================================================================
 
 local Bresenham = {
-    _VERSION     = "2.0.0",
+    _VERSION     = "2.1.0",
     _DESCRIPTION = "Bresenham's line algorithm written in Lua." ,
     _URL         = 'https://github.com/rm-code/bresenham/',
 }
@@ -45,7 +45,7 @@ local Bresenham = {
 -- @tparam number oy The origin's y-coordinates.
 -- @tparam number ex The target's x-coordinates.
 -- @tparam number ey The target's y-coordinates.
--- @tparam function callback
+-- @tparam[opt] function callback
 --                      A callback function being called for every tile the line passes.
 --                      The line algorithm will stop if the callback returns false.
 -- @tparam[opt] vararg ...
@@ -63,9 +63,13 @@ function Bresenham.line( ox, oy, ex, ey, callback, ... )
 
     local counter = 0
     while true do
-        local continue = callback( ox, oy, counter, ... )
-        if not continue then
-            return false, counter
+        -- If a callback has been provided, it controls wether the line
+        -- algorithm should proceed or not.
+        if callback then
+            local continue = callback( ox, oy, counter, ... )
+            if not continue then
+                return false, counter
+            end
         end
 
         counter = counter + 1
