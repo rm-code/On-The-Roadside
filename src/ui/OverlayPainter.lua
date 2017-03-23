@@ -2,6 +2,7 @@ local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
 local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
+local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,53 +32,12 @@ function OverlayPainter.new( game, particleLayer )
 
     local pulser = Pulser.new( 4, 80, 80 );
     local coneOverlay = ConeOverlay.new( game, pulser )
+    local pathOverlay = PathOverlay.new( game, pulser )
     love.mouse.setVisible( false );
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
-
-    ---
-    -- Selects a color for the node in a path based on the distance to the
-    -- target and the remaining action points the character has.
-    -- @param value (number) The cost of the node.
-    -- @param total (number) The total number of nodes in the path.
-    --
-    local function selectPathNodeColor( value, total )
-        local fraction = value / total;
-        if fraction < 0 then
-            return COLORS.DB27;
-        elseif fraction <= 0.2 then
-            return COLORS.DB05;
-        elseif fraction <= 0.6 then
-            return COLORS.DB08;
-        elseif fraction <= 1.0 then
-            return COLORS.DB09;
-        end
-    end
-
-    ---
-    -- Draws a path for this character.
-    -- @param character (Character) The character to draw the path for.
-    --
-    local function drawPath( character )
-        local mode = game:getState():getInputMode();
-        if mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
-            local total = character:getActionPoints();
-            local ap = total;
-            mode:getPath():iterate( function( tile )
-                ap = ap - tile:getMovementCost( character:getStance() );
-
-                -- Draws the path overlay.
-                love.graphics.setBlendMode( 'add' );
-                local color = selectPathNodeColor( ap, total );
-                love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() );
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE );
-                love.graphics.setColor( COLORS.RESET );
-                love.graphics.setBlendMode( 'alpha' );
-            end);
-        end
-    end
 
     ---
     -- Draws a mouse cursor that snaps to the grid.
@@ -137,7 +97,7 @@ function OverlayPainter.new( game, particleLayer )
         local character = game:getCurrentCharacter()
         if  not character:getFaction():isAIControlled()
         and not game:getState():instanceOf( 'ExecutionState' ) then
-            drawPath( character )
+            pathOverlay:draw()
             drawMouseCursor()
             coneOverlay:draw()
         end
