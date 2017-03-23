@@ -59,35 +59,61 @@ function Character.new( map, tile, faction )
     ---
     -- Marks a tile as seen by this character if it fullfills the necessary
     -- requirements. Used as a callback for Bresenham's line algorithm.
-    -- @param cx (number)  The tiles coordinate along the x-axis.
-    -- @param cy (number)  The tiles coordinate along the y-axis.
-    -- @return   (boolean) False if the algorithm should be stopped.
+    -- @tparam  number  cx      The tile's coordinate along the x-axis.
+    -- @tparam  number  cy      The tile's coordinate along the y-axis.
+    -- @tparam  number  counter The number of tiles touched by the ray so far.
+    -- @tparam  number  falloff Determines how much height the ray loses each step.
+    -- @treturn boolean         Returns true if the tile can be seen by the character.
     --
-    local function markSeenTiles( cx, cy )
+    local function markSeenTiles( cx, cy, counter, falloff )
         local target = map:getTileAt( cx, cy );
         if not target then
             return false;
         end
 
-        -- Add tile to this character's FOV.
-        self:addSeenTile( cx, cy, target );
+        -- Calculate the height of the ray on the current tile. If the height
+        -- is smaller than the tile's height it is marked as visible. This
+        -- simulates how small objects can be hidden behind bigger objects, but
+        -- not the other way around.
+        local height = self:getSize() - (counter+1) * falloff;
+        if height <= target:getSize() then
+            -- Add tile to this character's FOV.
+            self:addSeenTile( cx, cy, target );
 
-        -- Mark tile as explored for this character's faction.
-        target:setExplored( faction:getType(), true );
+            -- Mark tile as explored for this character's faction.
+            target:setExplored( faction:getType(), true );
 
-        -- Mark tile for drawing update.
-        target:setDirty( true );
+            -- Mark tile for drawing update.
+            target:setDirty( true );
+        end
 
         -- A world object blocks vision if it has the "blocksVision" flag set
-        -- to true in its template file and if the character's size is smaller
-        -- than the world object size. This simulates that a character can't
-        -- look over world objects that are larger than him.
+        -- to true in its template file and if the ray is smaller than the world
+        -- object's size. This prevents characters from looking over bigger world
+        -- objects and allows smaller objects like low walls to cast a "shadow"
+        -- in which smaller objects could be hidden.
         if  target:hasWorldObject()
         and target:getWorldObject():blocksVision()
-        and self:getSize() <= target:getWorldObject():getSize() then
+        and height <= target:getWorldObject():getSize() then
             return false;
         end
+
         return true;
+    end
+
+    ---
+    -- Determine the height falloff for rays of the FOV calculation. This value
+    -- will be deducted from the ray's height for each tile the ray traverses.
+    -- @tparam  Tile   The target tile.
+    -- @tparam  number The distance to the target.
+    -- @treturn number The calculated falloff value.
+    --
+    local function calculateFalloff( target, steps )
+        local oheight = self:getSize();
+        local theight = target:getSize();
+
+        local delta = oheight - theight;
+        return delta / steps;
     end
 
     -- ------------------------------------------------
@@ -182,7 +208,9 @@ function Character.new( map, tile, faction )
 
         for _, ttile in ipairs( list ) do
             local tx, ty = ttile:getPosition();
-            Bresenham.line( sx, sy, tx, ty, markSeenTiles );
+            local _, counter = Bresenham.line( sx, sy, tx, ty );
+            local falloff = calculateFalloff( ttile, counter );
+            Bresenham.line( sx, sy, tx, ty, markSeenTiles, falloff );
         end
     end
 

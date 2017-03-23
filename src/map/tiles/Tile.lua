@@ -13,6 +13,7 @@ local Tile = {};
 
 local WEIGHT_LIMIT = 1000;
 local VOLUME_LIMIT = 1000;
+local DEFAULT_HEIGHT = 10;
 
 -- ------------------------------------------------
 -- Constructor
@@ -196,6 +197,21 @@ function Tile.new( x, y, template )
     -- @return (number) The sprite index.
     function self:getSprite()
         return sprite;
+    end
+
+    ---
+    -- Returns the height of the tile. If it contains a character or a
+    -- worldObject it returns the size of those, if not it returns a default
+    -- value.
+    -- @treturn number The height of this tile.
+    --
+    function self:getSize()
+        if worldObject then
+            return worldObject:getSize();
+        elseif character then
+            return character:getSize();
+        end
+        return DEFAULT_HEIGHT;
     end
 
     ---
