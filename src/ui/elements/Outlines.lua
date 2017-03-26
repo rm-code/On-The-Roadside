@@ -21,6 +21,7 @@ local Outlines = {}
 -- ------------------------------------------------
 
 local TILE_SIZE = require( 'src.constants.TileSize' )
+local COLORS = require( 'src.constants.Colors' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -166,11 +167,13 @@ function Outlines.new()
     -- @tparam number py The y coordinate to draw the outline grid from.
     --
     function self:draw( px, py )
+        love.graphics.setColor( COLORS.DB15 )
         for x, line in pairs( grid ) do
             for y, sprite in pairs( line ) do
                 love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( sprite ), px + x * TILE_SIZE, py + y * TILE_SIZE )
             end
         end
+        love.graphics.setColor( COLORS.RESET )
     end
 
     return self
