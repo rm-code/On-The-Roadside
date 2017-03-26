@@ -45,9 +45,9 @@ function Outlines.new()
 
     ---
     -- Returns 1 if the tile exists or 0 if it doesn't.
-    -- @tparam x number The x coordinate in the grid.
-    -- @tparam y number The y coordinate in the grid.
-    -- @treturn  number Either 1 or 0.
+    -- @tparam  number x The x coordinate in the grid.
+    -- @tparam  number y The y coordinate in the grid.
+    -- @treturn number   Either 1 or 0.
     --
     local function getGridIndex( x, y )
         if not grid[x] or not grid[x][y] then
@@ -59,9 +59,9 @@ function Outlines.new()
     ---
     -- Checks the NSEW tiles around the given coordinates in the grid and returns
     -- an index for the appropriate sprite to use.
-    -- @tparam x number The x coordinate in the grid.
-    -- @tparam y number The y coordinate in the grid.
-    -- @treturn  number The sprite index.
+    -- @tparam  number x The x coordinate in the grid.
+    -- @tparam  number y The y coordinate in the grid.
+    -- @treturn number   The sprite index.
     --
     local function determineTile( x, y )
         if -- Connected to all sides.
@@ -140,8 +140,8 @@ function Outlines.new()
 
     ---
     -- Adds a new tile to the grid.
-    -- @tparam x number The x coordinate to place the tile at.
-    -- @tparam y number The y coordinate to place the tile at.
+    -- @tparam number x The x coordinate to place the tile at.
+    -- @tparam number y The y coordinate to place the tile at.
     --
     function self:add( x, y )
         grid[x] = grid[x] or {}
@@ -162,8 +162,8 @@ function Outlines.new()
 
     ---
     -- Draws the outlines at the specified position.
-    -- @tparam px number The x coordinate to draw the outline grid from.
-    -- @tparam py number The y coordinate to draw the outline grid from.
+    -- @tparam number px The x coordinate to draw the outline grid from.
+    -- @tparam number py The y coordinate to draw the outline grid from.
     --
     function self:draw( px, py )
         for x, line in pairs( grid ) do
