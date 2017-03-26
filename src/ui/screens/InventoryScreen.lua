@@ -2,10 +2,10 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
 local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
-local InventoryOutlines = require( 'src.ui.inventory.InventoryOutlines' );
 local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
 local ItemStats = require( 'src.ui.inventory.ItemStats' );
 local Translator = require( 'src.util.Translator' );
+local Outlines = require( 'src.ui.elements.Outlines' )
 
 -- ------------------------------------------------
 -- Module
@@ -41,7 +41,7 @@ function InventoryScreen.new()
     local itemDescriptionArea;
     local itemStatsArea;
 
-    local outlines;
+    local outlines
 
     -- ------------------------------------------------
     -- Private Methods
@@ -164,6 +164,42 @@ function InventoryScreen.new()
         itemDescriptionSpacer = math.floor( w / 2 );
     end
 
+    local function createOutlines()
+        for x = 0, w - 1 do
+            for y = 0, h - 1 do
+                -- Draw borders.
+                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
+                    outlines:add( x, y )
+                end
+
+                -- Draw vertical column lines.
+                if ( x == 1 + sx or x == 1 + 2 * sx ) and ( y < 2 * sy ) then
+                    outlines:add( x, y )
+                end
+
+                -- Draw bottom line of the column headers.
+                if y == 2 then
+                    outlines:add( x, y )
+                end
+
+                -- Draw the horizontal line below the inventory columns.
+                if y == 2 * sy then
+                    outlines:add( x, y )
+                end
+
+                -- Draw item description separator.
+                if x == itemDescriptionSpacer and y > 2 * sy then
+                    outlines:add( x, y )
+                end
+
+                -- Draw horizontal line for item stats and description.
+                if y == ( 2 * sy + 2 ) then
+                    outlines:add( x, y )
+                end
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -181,8 +217,9 @@ function InventoryScreen.new()
         love.mouse.setVisible( true );
         updateScreenDimensions( love.graphics.getDimensions() );
 
-        outlines = InventoryOutlines.new();
-        outlines:init( w, h, sx, sy, itemDescriptionSpacer );
+        outlines = Outlines.new();
+        createOutlines()
+        outlines:refresh()
 
         itemDescriptionArea = ScrollArea.new( 1, 3 + 2 * sy, itemDescriptionSpacer - 1, sy - 3 );
         itemStatsArea = ItemStats.new( itemDescriptionSpacer + 1, 3 + 2 * sy, itemDescriptionSpacer - 2, sy - 3 );
@@ -203,7 +240,7 @@ function InventoryScreen.new()
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
         love.graphics.setColor( COLORS.RESET );
 
-        outlines:draw( love.graphics.getDimensions() );
+        outlines:draw( 0, 0 )
         drawHeaders( love.graphics.getWidth() );
 
         for _, list in pairs( lists ) do
