@@ -21,9 +21,6 @@ function PlanningState.new( stateManager )
     local inputStateHandler = StateManager.new( inputStates );
     inputStateHandler:switch( 'movement' );
 
-    local toggleAttack   = false
-    local toggleInteract = false
-
     function self:enter( nfactions )
         factions = nfactions;
     end
