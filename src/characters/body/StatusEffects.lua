@@ -28,8 +28,12 @@ function StatusEffects.new()
         for _, effect in pairs( effects ) do
             local valid = validate( effect );
             assert( valid, string.format( "Status effect %s is not valid.", effect ));
-            Log.debug( 'Apply status effect ' .. effect );
-            active[effect] = true;
+
+            -- Only apply status effect if it isn't active already.
+            if not active[effect] then
+                Log.debug( 'Apply status effect ' .. effect );
+                active[effect] = true;
+            end
         end
     end
 
