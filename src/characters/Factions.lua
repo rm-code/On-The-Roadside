@@ -16,6 +16,7 @@ local Factions = {};
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.FACTIONS' );
+local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -80,7 +81,7 @@ function Factions.new( map )
         for type, sfaction in pairs( savedFactions ) do
             local faction = self:findFaction( type );
             for _, savedCharacter in ipairs( sfaction ) do
-                if not savedCharacter.body.statusEffects.death then
+                if not savedCharacter.body.statusEffects[STATUS_EFFECTS.DEATH] then
                     local tile = map:getTileAt( savedCharacter.x, savedCharacter.y );
                     faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ));
                 end
