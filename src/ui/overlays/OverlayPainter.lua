@@ -1,3 +1,15 @@
+---
+-- The OverlayPainter takes care of drawing overlays such as particles or
+-- path indicators - Basically all things that are drawn on the map / a tile,
+-- but not are not a part of the map.
+--
+-- @module OverlayPainter
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
@@ -24,17 +36,20 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 
 ---
 -- Creates an new instance of the OverlayPainter class.
--- @param game          (Game)           The game object.
--- @return              (OverlayPainter) The new instance.
+-- @tparam  Game           game The game object.
+-- @treturn OverlayPainter      The new instance.
 --
 function OverlayPainter.new( game )
     local self = {};
+
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
 
     local particleLayer = ParticleLayer.new()
     local pulser = Pulser.new( 4, 80, 80 );
     local coneOverlay = ConeOverlay.new( game, pulser )
     local pathOverlay = PathOverlay.new( game, pulser )
-    love.mouse.setVisible( false );
 
     -- ------------------------------------------------
     -- Private Methods
@@ -63,6 +78,9 @@ function OverlayPainter.new( game )
         love.graphics.setColor( COLORS.RESET );
     end
 
+    ---
+    -- Draws all particles on the map that are visible to the player's faction.
+    --
     local function drawParticles()
         for x, row in pairs( particleLayer:getParticleGrid() ) do
             for y, particle in pairs( row ) do
@@ -85,6 +103,10 @@ function OverlayPainter.new( game )
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Updates the OverlayPainter.
+    -- @tparam number dt The time since the last frame.
+    --
     function self:update( dt )
         if not game:getState():instanceOf( 'ExecutionState' ) then
             coneOverlay:generate()
@@ -94,6 +116,9 @@ function OverlayPainter.new( game )
         pulser:update( dt )
     end
 
+    ---
+    -- Draws the OverlayPainter.
+    --
     function self:draw()
         local character = game:getCurrentCharacter()
         if  not character:getFaction():isAIControlled()
