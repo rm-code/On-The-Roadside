@@ -61,8 +61,6 @@ function WorldPainter.new( game )
 
     local spritebatch;
 
-    love.graphics.setPointSize( 4 );
-
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
