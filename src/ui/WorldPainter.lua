@@ -13,7 +13,7 @@
 -- ------------------------------------------------
 
 local Log = require( 'src.util.Log' );
-local Tileset = require( 'src.ui.Tileset' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -42,7 +42,6 @@ local CHARACTER_COLORS = {
 }
 
 local STANCES = require('src.constants.Stances');
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -60,6 +59,8 @@ function WorldPainter.new( game )
     -- ------------------------------------------------
 
     local spritebatch;
+    local tileset
+    local tw, th
 
     -- ------------------------------------------------
     -- Private Methods
@@ -72,7 +73,7 @@ function WorldPainter.new( game )
     --
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
-            local id = spritebatch:add( Tileset.getSprite( 1 ), x * TILE_SIZE, y * TILE_SIZE );
+            local id = spritebatch:add( tileset:getSprite( 1 ), x * tw, y * th )
             tile:setSpriteID( id );
             tile:setDirty( true );
         end)
@@ -119,23 +120,23 @@ function WorldPainter.new( game )
     ---
     -- Selects the tile for drawing a tile occupied by a character.
     -- @tparam  Tile tile The tile to pick a sprite for.
-    -- @treturn Quad      A quad pointing to the sprite on the active Tileset.
+    -- @treturn Quad      A quad pointing to the sprite on the active tileset.
     --
     local function selectCharacterTile( tile )
         local character = tile:getCharacter();
         if character:getBody():getID() == 'dog' then
-            return Tileset.getSprite( 101 );
+            return tileset:getSprite( 101 )
         end
         if character:getStance() == STANCES.STAND then
             if character:getFaction():getType() == FACTIONS.ENEMY then
-                return Tileset.getSprite( 3 );
+                return tileset:getSprite( 3 )
             else
-                return Tileset.getSprite( 2 );
+                return tileset:getSprite( 2 )
             end
         elseif character:getStance() == STANCES.CROUCH then
-            return Tileset.getSprite( 32 );
+            return tileset:getSprite( 32 )
         elseif character:getStance() == STANCES.PRONE then
-            return Tileset.getSprite( 23 );
+            return tileset:getSprite( 23 )
         end
     end
 
@@ -151,14 +152,14 @@ function WorldPainter.new( game )
         end
 
         if not tile:getInventory():isEmpty() then
-            return Tileset.getSprite( 34 );
+            return tileset:getSprite( 34 )
         end
 
         if tile:hasWorldObject() then
-            return Tileset.getSprite( tile:getWorldObject():getSprite() );
+            return tileset:getSprite( tile:getWorldObject():getSprite() )
         end
 
-        return Tileset.getSprite( tile:getSprite() );
+        return tileset:getSprite( tile:getSprite() )
     end
 
     ---
@@ -172,7 +173,7 @@ function WorldPainter.new( game )
         map:iterate( function( tile, x, y)
             if tile:isDirty() then
                 spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ));
-                spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * TILE_SIZE, y * TILE_SIZE );
+                spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * tw, y * th )
                 tile:setDirty( false );
             end
         end)
@@ -186,8 +187,10 @@ function WorldPainter.new( game )
     -- Initialises the WorldPainter.
     --
     function self:init()
+        tileset = TexturePacks.getTileset()
+        tw, th = tileset:getTileDimensions()
         love.graphics.setBackgroundColor( COLORS.DB00 );
-        spritebatch = love.graphics.newSpriteBatch( Tileset.getTileset(), 10000, 'dynamic' );
+        spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
         initSpritebatch( game:getMap() );
     end
 

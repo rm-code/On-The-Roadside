@@ -8,6 +8,7 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -19,8 +20,7 @@ local PathOverlay = {}
 -- Constants
 -- ------------------------------------------------
 
-local COLORS    = require( 'src.constants.Colors' )
-local TILE_SIZE = require( 'src.constants.TileSize' )
+local COLORS = require( 'src.constants.Colors' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -60,6 +60,7 @@ function PathOverlay.new( game, pulser )
     -- Draws a path for this character.
     --
     function self:draw()
+        local tw, th = TexturePacks.getTileDimensions()
         local character = game:getCurrentCharacter()
         local mode = game:getState():getInputMode()
         if mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
@@ -72,7 +73,7 @@ function PathOverlay.new( game, pulser )
                 love.graphics.setBlendMode( 'add' )
                 local color = selectPathNodeColor( ap, total )
                 love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE )
+                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
                 love.graphics.setColor( COLORS.RESET )
                 love.graphics.setBlendMode( 'alpha' )
             end)

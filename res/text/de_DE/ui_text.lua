@@ -20,6 +20,9 @@ locale.strings = {
     ['ui_on']  = "<An>",
     ['ui_off'] = "<Aus>",
 
+    -- Texture packs
+    ['ui_texturepack'] = "Texturenpaket:",
+
     -- Language selector
     ['ui_lang'] = "Sprache:",
     ['ui_lang_eng'] = "<English>",

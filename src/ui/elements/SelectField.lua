@@ -1,9 +1,8 @@
 local Object = require( 'src.Object' );
-local ImageFont = require( 'src.ui.ImageFont' );
 
 local SelectField = {};
 
-function SelectField.new( label, listOfValues, callback, default )
+function SelectField.new( font, label, listOfValues, callback, default )
     local self = Object.new():addInstance( 'SelectField' );
 
     local current = default or 1;
@@ -11,7 +10,7 @@ function SelectField.new( label, listOfValues, callback, default )
 
     function self:draw( x, y, w, _ )
         love.graphics.print( label, x, y );
-        love.graphics.print( listOfValues[current].displayTextID, x + w - ImageFont.measureWidth( listOfValues[current].displayTextID ), y );
+        love.graphics.print( listOfValues[current].displayTextID, x + w - font:measureWidth( listOfValues[current].displayTextID ), y )
     end
 
     function self:update( x, y, w, h )

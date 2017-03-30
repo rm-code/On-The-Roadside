@@ -1,18 +1,13 @@
 local Object = require( 'src.Object' );
 local UIInventoryItem = require( 'src.ui.inventory.UIInventoryItem' );
 local Translator = require( 'src.util.Translator' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UIInventoryList = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -26,6 +21,7 @@ function UIInventoryList.new( x, y, width, id, inventory )
     -- ------------------------------------------------
 
     local list;
+    local tw, th = TexturePacks.getTileDimensions()
 
     -- ------------------------------------------------
     -- Private Methods
@@ -34,7 +30,7 @@ function UIInventoryList.new( x, y, width, id, inventory )
     local function regenerate()
         list = {};
         for i, item in ipairs( inventory:getItems() ) do
-            list[#list + 1] = UIInventoryItem.new( x, y + i * TILE_SIZE, width, TILE_SIZE, item );
+            list[#list + 1] = UIInventoryItem.new( x, y + i * tw, width, th, item )
         end
     end
 

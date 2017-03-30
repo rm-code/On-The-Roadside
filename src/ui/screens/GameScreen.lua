@@ -7,19 +7,13 @@ local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' );
-local Tileset = require( 'src.ui.Tileset' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local GameScreen = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -34,12 +28,11 @@ function GameScreen.new()
     local overlayPainter;
     local camera;
     local observations = {};
+    local tw, th = TexturePacks.getTileDimensions()
 
     function self:init( savegame )
         game = Game.new();
         game:init( savegame );
-
-        Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
@@ -117,14 +110,14 @@ function GameScreen.new()
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
-        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
     end)
 
     observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
-        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
     end)
 
     return self;

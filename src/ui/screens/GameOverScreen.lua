@@ -2,6 +2,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Translator = require( 'src.util.Translator' );
 local Outlines = require( 'src.ui.elements.Outlines' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -14,7 +15,6 @@ local GameOverScreen = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local TILE_SIZE = require( 'src.constants.TileSize' );
 local SCREEN_WIDTH  = 30;
 local SCREEN_HEIGHT = 16;
 
@@ -28,6 +28,7 @@ function GameOverScreen.new()
     local text;
     local outlines
     local px, py;
+    local tw, th = TexturePacks.getTileDimensions()
 
     local function createOutlines( w, h )
         for x = 0, w - 1 do
@@ -44,9 +45,9 @@ function GameOverScreen.new()
     -- ------------------------------------------------
 
     function self:init( win )
-        px = math.floor( love.graphics.getWidth() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 );
-        py = math.floor( love.graphics.getHeight() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
-        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
+        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
+        px, py = px * tw, py * th
 
         outlines = Outlines.new()
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
@@ -57,12 +58,12 @@ function GameOverScreen.new()
 
     function self:draw()
         love.graphics.setColor( COLORS.DB00 );
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * TILE_SIZE, SCREEN_HEIGHT * TILE_SIZE );
+        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
         love.graphics.setColor( COLORS.DB22 );
 
         outlines:draw( px, py )
 
-        love.graphics.printf( text, px, py + 3 * TILE_SIZE, SCREEN_WIDTH * TILE_SIZE, 'center' );
+        love.graphics.printf( text, px, py + 3 * tw, SCREEN_WIDTH * th, 'center' )
     end
 
     function self:keypressed()

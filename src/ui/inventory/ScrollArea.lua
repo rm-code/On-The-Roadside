@@ -1,10 +1,7 @@
 local Object = require( 'src.Object' );
-local ImageFont = require( 'src.ui.ImageFont' );
-local Tileset = require( 'src.ui.Tileset' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local ScrollArea = {};
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 function ScrollArea.new( x, y, w, h )
     local self = Object.new():addInstance( 'ScrollArea' );
@@ -12,11 +9,13 @@ function ScrollArea.new( x, y, w, h )
     local text;
     local _, lines;
     local verticalOffset = 0;
-    local ts = Tileset.getTileset();
+    local tileset = TexturePacks.getTileset()
+    local font = TexturePacks.getFont()
+    local tw, th = tileset:getTileDimensions()
 
     function self:setText( ntext )
         text = ntext;
-        _, lines = ImageFont.get():getWrap( text, w * TILE_SIZE - TILE_SIZE );
+        _, lines = font:get():getWrap( text, w * tw - tw )
     end
 
     local function drawScrollBar()
@@ -25,19 +24,18 @@ function ScrollArea.new( x, y, w, h )
         end
 
         if verticalOffset < 0 then
-            love.graphics.draw( ts, Tileset.getSprite( 31 ), (x + w - 2) * TILE_SIZE, ( y - 2 ) * TILE_SIZE );
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 31 ), (x + w - 2) * tw, ( y - 2 ) * th )
         end
 
         if verticalOffset > h - #lines then
-            love.graphics.draw( ts, Tileset.getSprite( 32 ), (x + w - 1) * TILE_SIZE, ( y - 2 ) * TILE_SIZE );
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 32 ), (x + w - 1) * tw, ( y - 2 ) * th )
         end
     end
 
     function self:draw()
-        love.graphics.setScissor( x * TILE_SIZE, y * TILE_SIZE, w * TILE_SIZE, h * TILE_SIZE );
-        -- love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, w * TILE_SIZE, h * TILE_SIZE );
+        love.graphics.setScissor( x * tw, y * th, w * tw, h * th )
         for i = 1, #lines do
-            love.graphics.print( lines[i], x * TILE_SIZE, ( y + i - 1 + verticalOffset ) * TILE_SIZE );
+            love.graphics.print( lines[i], x * tw, ( y + i - 1 + verticalOffset ) * th )
         end
 
         love.graphics.setScissor();
@@ -63,7 +61,7 @@ function ScrollArea.new( x, y, w, h )
 
     function self:setDimensions( nx, ny, nw, nh )
         x, y, w, h = nx, ny, nw, nh;
-        _, lines = ImageFont.get():getWrap( text, w * TILE_SIZE - TILE_SIZE );
+        _, lines = font:get():getWrap( text, w * tw - tw )
     end
 
     return self;

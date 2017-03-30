@@ -12,10 +12,10 @@
 
 local Pulser = require( 'src.util.Pulser' );
 local MousePointer = require( 'src.ui.MousePointer' );
-local Tileset = require( 'src.ui.Tileset' );
 local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
 local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
 local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -28,7 +28,6 @@ local OverlayPainter = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -50,6 +49,8 @@ function OverlayPainter.new( game )
     local pulser = Pulser.new( 4, 80, 80 );
     local coneOverlay = ConeOverlay.new( game, pulser )
     local pathOverlay = PathOverlay.new( game, pulser )
+    local tileset = TexturePacks.getTileset()
+    local tw, th = TexturePacks.getTileDimensions()
 
     -- ------------------------------------------------
     -- Private Methods
@@ -60,20 +61,20 @@ function OverlayPainter.new( game )
     --
     local function drawMouseCursor()
         local gx, gy = MousePointer.getGridPosition();
-        local cx, cy = gx * TILE_SIZE, gy * TILE_SIZE;
+        local cx, cy = gx * tw, gy * th
 
         love.graphics.setColor( COLORS.DB00 );
-        love.graphics.rectangle( 'fill', cx, cy, TILE_SIZE, TILE_SIZE );
+        love.graphics.rectangle( 'fill', cx, cy, tw, th )
 
         if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
             love.graphics.setColor( COLORS.DB18 );
-            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 176 ), cx, cy );
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 176 ), cx, cy )
         elseif game:getState():getInputMode():instanceOf( 'AttackInput' ) then
             love.graphics.setColor( COLORS.DB27 );
-            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 11 ), cx, cy );
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 11 ), cx, cy )
         elseif game:getState():getInputMode():instanceOf( 'InteractionInput' ) then
             love.graphics.setColor( COLORS.DB10 );
-            love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 30 ), cx, cy );
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 30 ), cx, cy )
         end
         love.graphics.setColor( COLORS.RESET );
     end
@@ -87,11 +88,11 @@ function OverlayPainter.new( game )
                 if game:getFactions():getPlayerFaction():canSee( game:getMap():getTileAt( x, y )) then
                     love.graphics.setColor( particle:getColors() );
                     if particle:isAscii() then
-                        love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( love.math.random( 1, 256 )), x * TILE_SIZE, y * TILE_SIZE );
+                        love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( love.math.random( 1, 256 )), x * tw, y * th )
                     elseif particle:getSprite() then
-                        love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( particle:getSprite() ), x * TILE_SIZE, y * TILE_SIZE );
+                        love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( particle:getSprite() ), x * tw, y * th )
                     else
-                        love.graphics.rectangle( 'fill', x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE );
+                        love.graphics.rectangle( 'fill', x * tw, y * th, tw, th )
                     end
                     love.graphics.setColor( COLORS.RESET );
                 end

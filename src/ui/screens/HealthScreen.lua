@@ -3,6 +3,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Translator = require( 'src.util.Translator' );
 local Outlines = require( 'src.ui.elements.Outlines' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -15,7 +16,6 @@ local HealthScreen = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local TILE_SIZE = require( 'src.constants.TileSize' );
 local SCREEN_WIDTH  = 30;
 local SCREEN_HEIGHT = 16;
 
@@ -31,6 +31,7 @@ function HealthScreen.new()
 
     local outlines
     local px, py;
+    local tw, th
 
     local function createOutlines( w, h )
         for x = 0, w - 1 do
@@ -51,12 +52,14 @@ function HealthScreen.new()
     -- ------------------------------------------------
 
     function self:init( ncharacter )
+        tw, th = TexturePacks.getTileDimensions()
+
         character = ncharacter;
         characterType = character:getBody():getID();
 
-        px = math.floor( love.graphics.getWidth() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 );
-        py = math.floor( love.graphics.getHeight() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
-        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
+        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
+        px, py = px * tw, py * th
 
         outlines = Outlines.new()
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
@@ -65,7 +68,7 @@ function HealthScreen.new()
 
     function self:draw()
         love.graphics.setColor( COLORS.DB00 );
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * TILE_SIZE, SCREEN_HEIGHT * TILE_SIZE );
+        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
         love.graphics.setColor( COLORS.DB22 );
 
         outlines:draw( px, py )
@@ -91,8 +94,8 @@ function HealthScreen.new()
                     love.graphics.setColor( COLORS.DB10 );
                     status = 'FINE'
                 end
-                love.graphics.print( Translator.getText( bodyPart:getID() ), px + TILE_SIZE, py + TILE_SIZE * counter );
-                love.graphics.printf( status, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'right' );
+                love.graphics.print( Translator.getText( bodyPart:getID() ), px + tw, py + th * counter )
+                love.graphics.printf( status, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'right' )
 
                 if bodyPart:isBleeding() then
                     local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
@@ -105,13 +108,13 @@ function HealthScreen.new()
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
                         love.graphics.setColor( COLORS.DB27 );
                     end
-                    love.graphics.printf( str, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'center' );
+                    love.graphics.printf( str, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
                 end
             end
         end
 
         love.graphics.setColor( COLORS.DB20 );
-        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + TILE_SIZE, py + TILE_SIZE );
+        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + tw, py + th )
         love.graphics.setColor( COLORS.RESET );
     end
 
@@ -122,9 +125,9 @@ function HealthScreen.new()
     end
 
     function self:resize( sx, sy )
-        px = math.floor( sx / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 );
-        py = math.floor( sy / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
-        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        px = math.floor( sx / tw ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 )
+        py = math.floor( sy / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
+        px, py = px * tw, py * th
         Log.debug( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
     end
 

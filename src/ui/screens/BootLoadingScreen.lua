@@ -9,9 +9,10 @@
 
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
-local ImageFont = require( 'src.ui.ImageFont' );
 local Log = require( 'src.util.Log' );
 local Translator = require( 'src.util.Translator' );
+
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local ItemFactory = require( 'src.items.ItemFactory' );
 local TileFactory = require( 'src.map.tiles.TileFactory' );
@@ -44,7 +45,7 @@ function BootLoadingScreen.new()
 
         Translator.init( DEFAULT_LOCALE );
 
-        ImageFont.set();
+        TexturePacks.load()
 
         ItemFactory.loadTemplates();
         TileFactory.loadTemplates();

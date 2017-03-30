@@ -2,9 +2,9 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local SelectField = require( 'src.ui.elements.SelectField' );
 local Translator = require( 'src.util.Translator' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local ImageFont = require( 'src.ui.ImageFont' );
 local VerticalList = require( 'src.ui.elements.VerticalList' );
 local Button = require( 'src.ui.elements.Button' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -46,13 +46,14 @@ function OptionsScreen.new()
 
     local title;
     local verticalList;
+    local font
 
     -- ------------------------------------------------
     -- Private Functions
     -- ------------------------------------------------
 
     local function createTitle()
-        title = love.graphics.newText( ImageFont.get() );
+        title = love.graphics.newText( font:get() )
         for i, line in ipairs( TITLE_STRING ) do
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
@@ -66,7 +67,7 @@ function OptionsScreen.new()
                     coloredtext[#coloredtext + 1] = COLORS.DB17;
                     coloredtext[#coloredtext + 1] = w;
                 end
-                title:add( coloredtext, 0, i * ImageFont:get():getHeight() );
+                title:add( coloredtext, 0, i * font:get():getHeight() )
             end
         end
     end
@@ -88,7 +89,7 @@ function OptionsScreen.new()
             end
         end
 
-        return SelectField.new( Translator.getText( 'ui_lang' ), listOfValues, callback, default )
+        return SelectField.new( font, Translator.getText( 'ui_lang' ), listOfValues, callback, default )
     end
 
     local function createFullscreenOption()
@@ -108,7 +109,29 @@ function OptionsScreen.new()
             end
         end
 
-        return SelectField.new( Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default );
+        return SelectField.new( font, Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
+    end
+
+    local function createTexturePackOption()
+        local listOfValues = {}
+
+        local packs = TexturePacks.getTexturePacks()
+        for name, _ in pairs( packs ) do
+            listOfValues[#listOfValues + 1] = { displayTextID = name, value = name }
+        end
+
+        local function callback( val )
+            TexturePacks.setCurrent( val )
+        end
+
+        local default = 1
+        for i, option in ipairs( listOfValues ) do
+            if option.value == TexturePacks.getName() then
+                default = i
+            end
+        end
+
+        return SelectField.new( font, Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
     end
 
     local function createBackButton()
@@ -123,22 +146,27 @@ function OptionsScreen.new()
     -- ------------------------------------------------
 
     function self:init()
+        font = TexturePacks.getFont()
+
         createTitle();
 
         local x = love.graphics.getWidth() * 0.5 - FIELD_WIDTH * 0.5;
-        local y = 20 * ImageFont.getGlyphHeight();
-        verticalList = VerticalList.new( x, y, FIELD_WIDTH, ImageFont.getGlyphHeight() );
+        local y = 20 * font:getGlyphHeight()
+        verticalList = VerticalList.new( x, y, FIELD_WIDTH, font:getGlyphHeight() )
         verticalList:addElement(   createLanguageOption() );
         verticalList:addElement( createFullscreenOption() );
+        verticalList:addElement( createTexturePackOption() )
         verticalList:addElement(       createBackButton() );
     end
 
     function self:update()
+        font = TexturePacks.getFont()
         verticalList:update();
     end
 
     function self:draw()
-        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * ImageFont.getGlyphHeight() );
+        font:use()
+        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
         verticalList:draw();
     end
 
@@ -159,7 +187,7 @@ function OptionsScreen.new()
 
     function self:resize( nw, _ )
         local x = nw * 0.5 - FIELD_WIDTH * 0.5;
-        local y = 20 * ImageFont.getGlyphHeight();
+        local y = 20 * font:getGlyphHeight()
         verticalList:setPosition( x, y );
     end
 

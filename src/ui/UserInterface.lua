@@ -1,7 +1,7 @@
 local Log = require( 'src.util.Log' );
 local MousePointer = require( 'src.ui.MousePointer' );
 local Translator = require( 'src.util.Translator' );
-local ImageFont = require( 'src.ui.ImageFont' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -13,7 +13,6 @@ local UserInterface = {};
 -- Constants
 -- ------------------------------------------------
 
-local TILE_SIZE = require( 'src.constants.TileSize' );
 local COLORS = require( 'src.constants.Colors' );
 
 -- ------------------------------------------------
@@ -32,12 +31,14 @@ function UserInterface.new( game )
     local factions = game:getFactions();
     local mouseX, mouseY = 0, 0;
     local debug = false;
+    local font = TexturePacks.getFont()
+    local tw, th = TexturePacks.getTileDimensions()
 
     ---
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
-        local x, y = TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 5;
+        local x, y = tw, love.graphics.getHeight() - th * 5
         local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
@@ -46,7 +47,7 @@ function UserInterface.new( game )
 
         love.graphics.print( Translator.getText( 'ui_tile' ), x, y );
 
-        local sw = ImageFont.measureWidth( Translator.getText( 'ui_tile' ));
+        local sw = font:measureWidth( Translator.getText( 'ui_tile' ))
         if not tile:isExplored( factions:getFaction():getType() ) then
             love.graphics.print( Translator.getText( 'ui_tile_unexplored' ), x + sw, y );
         elseif tile:hasWorldObject() then
@@ -62,27 +63,27 @@ function UserInterface.new( game )
             if weapon:isReloadable() then
                 text = text .. string.format( ' (%d/%d)', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() )
             end
-            love.graphics.print( Translator.getText( 'ui_weapon' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 3 );
-            love.graphics.print( text, TILE_SIZE + ImageFont.measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - TILE_SIZE * 3 );
+            love.graphics.print( Translator.getText( 'ui_weapon' ), tw, love.graphics.getHeight() - th * 3 )
+            love.graphics.print( text, tw + font:measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - th * 3 )
 
-            love.graphics.print( Translator.getText( 'ui_mode' ), TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 2 );
-            love.graphics.print( weapon:getAttackMode().name, TILE_SIZE + ImageFont.measureWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - TILE_SIZE * 2 );
+            love.graphics.print( Translator.getText( 'ui_mode' ), tw, love.graphics.getHeight() - th * 2 )
+            love.graphics.print( weapon:getAttackMode().name, tw + font:measureWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - th * 2 )
 
         end
     end
 
     local function drawDebugInfo()
         if debug then
-            love.graphics.print( love.timer.getFPS() .. ' FPS', TILE_SIZE, TILE_SIZE );
-            love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', TILE_SIZE, TILE_SIZE * 2 );
-            love.graphics.print( 'Mouse: ' .. mouseX .. ', ' .. mouseY, TILE_SIZE, TILE_SIZE * 3 );
-            love.graphics.print( 'Debug Logging: ' .. tostring( Log.getDebugActive() ), TILE_SIZE, TILE_SIZE * 4 );
+            love.graphics.print( love.timer.getFPS() .. ' FPS', tw, th )
+            love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', tw, th * 2 )
+            love.graphics.print( 'Mouse: ' .. mouseX .. ', ' .. mouseY, tw, th * 3 )
+            love.graphics.print( 'Debug Logging: ' .. tostring( Log.getDebugActive() ), tw, th * 4 )
         end
     end
 
     local function drawActionPoints( character )
         local apString = 'AP: ' .. character:getActionPoints();
-        love.graphics.print( apString, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE * 4 );
+        love.graphics.print( apString, tw, love.graphics.getHeight() - th * 4 )
 
         -- Hide the cost display during the turn's execution.
         if game:getState():instanceOf( 'ExecutionState' ) then
@@ -105,13 +106,13 @@ function UserInterface.new( game )
 
 
         if cost then
-            local costString, costOffset = ' - ' .. cost, ImageFont.measureWidth( apString );
+            local costString, costOffset = ' - ' .. cost, font:measureWidth( apString )
             love.graphics.setColor( COLORS.DB27 );
-            love.graphics.print( costString, TILE_SIZE + costOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+            love.graphics.print( costString, tw + costOffset, love.graphics.getHeight() - th * 4 )
 
-            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, ImageFont.measureWidth( apString .. costString );
+            local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, font:measureWidth( apString .. costString )
             love.graphics.setColor( COLORS.DB10 );
-            love.graphics.print( resultString, TILE_SIZE + resultOffset, love.graphics.getHeight() - TILE_SIZE * 4 );
+            love.graphics.print( resultString, tw + resultOffset, love.graphics.getHeight() - th * 4 )
         end
         love.graphics.setColor( COLORS.RESET );
     end

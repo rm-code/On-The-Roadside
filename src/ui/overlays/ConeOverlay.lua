@@ -12,7 +12,7 @@ local MousePointer   = require( 'src.ui.MousePointer' )
 local Bresenham      = require( 'lib.Bresenham' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
 local VectorMath     = require( 'src.util.VectorMath' )
-local Tileset        = require( 'src.ui.Tileset' )
+local TexturePacks   = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -25,7 +25,6 @@ local ConeOverlay = {}
 -- ------------------------------------------------
 
 local COLORS       = require( 'src.constants.Colors' )
-local TILE_SIZE    = require( 'src.constants.TileSize' )
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' )
 
 -- ------------------------------------------------
@@ -37,6 +36,8 @@ function ConeOverlay.new( game, pulser )
 
     local map = game:getMap()
     local cone = {}
+    local tileset = TexturePacks.getTileset()
+    local tw, th = tileset:getTileDimensions()
 
     -- ------------------------------------------------
     -- Private Methods
@@ -165,16 +166,16 @@ function ConeOverlay.new( game, pulser )
         for tile, status in pairs( cone ) do
             if status == 1 then
                 love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE )
+                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
             elseif status == 2 then
                 love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE )
+                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
             elseif status == 3 then
                 love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE )
+                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
             elseif status == 4 then
                 love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( 89 ), tile:getX() * TILE_SIZE, tile:getY() * TILE_SIZE )
+                love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 89 ), tile:getX() * tw, tile:getY() * th )
             end
             cone[tile] = nil
         end

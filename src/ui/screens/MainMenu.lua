@@ -1,9 +1,9 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local ImageFont = require( 'src.ui.ImageFont' );
 local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
 local SaveHandler = require( 'src.SaveHandler' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -64,7 +64,8 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     local function createTitle()
-        title = love.graphics.newText( ImageFont.get() );
+        local font = TexturePacks.getFont()
+        title = love.graphics.newText( font:get() );
         for i, line in ipairs( TITLE_STRING ) do
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
@@ -78,24 +79,26 @@ function SplashScreen.new()
                     coloredtext[#coloredtext + 1] = COLORS.DB17;
                     coloredtext[#coloredtext + 1] = w;
                 end
-                title:add( coloredtext, 0, i * ImageFont:get():getHeight() );
+                title:add( coloredtext, 0, i * font:get():getHeight() )
             end
         end
     end
 
     local function drawInfo()
+        local font = TexturePacks.getFont()
         local sw, sh = love.graphics.getDimensions();
         love.graphics.setColor( COLORS.DB01 );
-        love.graphics.print( VERSION_STRING, sw - ImageFont.measureWidth( VERSION_STRING ), sh - ImageFont.getGlyphHeight() );
-        love.graphics.print( COPYRIGHT_STRING, 0, sh - ImageFont.getGlyphHeight() );
+        love.graphics.print( VERSION_STRING, sw - font:measureWidth( VERSION_STRING ), sh - font:getGlyphHeight() )
+        love.graphics.print( COPYRIGHT_STRING, 0, sh - font:getGlyphHeight() )
         love.graphics.setColor( COLORS.RESET );
     end
 
     local function drawDebugInfo()
+        local font = TexturePacks.getFont()
         if debug then
             love.graphics.setColor( COLORS.DB01 );
-            love.graphics.print( love.timer.getFPS() .. ' FPS', ImageFont.getGlyphWidth(), ImageFont.getGlyphWidth() );
-            love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', ImageFont.getGlyphWidth(), ImageFont.getGlyphWidth() + ImageFont.getGlyphHeight() );
+            love.graphics.print( love.timer.getFPS() .. ' FPS', font:getGlyphWidth(), font:getGlyphWidth() )
+            love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', font:getGlyphWidth(), font:getGlyphWidth() + font:getGlyphHeight() )
             love.graphics.setColor( COLORS.RESET );
         end
     end
@@ -147,7 +150,9 @@ function SplashScreen.new()
     end
 
     function self:draw()
-        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * ImageFont.getGlyphHeight() );
+        local font = TexturePacks.getFont()
+        font:use()
+        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
 
         buttonList:draw();
 

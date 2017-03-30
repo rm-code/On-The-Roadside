@@ -8,7 +8,7 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' )
-local Tileset = require( 'src.ui.Tileset' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -20,7 +20,6 @@ local Outlines = {}
 -- Constants
 -- ------------------------------------------------
 
-local TILE_SIZE = require( 'src.constants.TileSize' )
 local COLORS = require( 'src.constants.Colors' )
 
 -- ------------------------------------------------
@@ -39,6 +38,8 @@ function Outlines.new()
     -- ------------------------------------------------
 
     local grid = {}
+    local tileset = TexturePacks.getTileset()
+    local tw, th = tileset:getTileDimensions()
 
     -- ------------------------------------------------
     -- Private Methods
@@ -170,7 +171,7 @@ function Outlines.new()
         love.graphics.setColor( COLORS.DB15 )
         for x, line in pairs( grid ) do
             for y, sprite in pairs( line ) do
-                love.graphics.draw( Tileset.getTileset(), Tileset.getSprite( sprite ), px + x * TILE_SIZE, py + y * TILE_SIZE )
+                love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( sprite ), px + x * tw, py + y * th )
             end
         end
         love.graphics.setColor( COLORS.RESET )

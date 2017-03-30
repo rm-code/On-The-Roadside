@@ -6,6 +6,7 @@ local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
 local ItemStats = require( 'src.ui.inventory.ItemStats' );
 local Translator = require( 'src.util.Translator' );
 local Outlines = require( 'src.ui.elements.Outlines' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -18,9 +19,6 @@ local InventoryScreen = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local TILE_SIZE = require( 'src.constants.TileSize' );
-
-local VERTICAL_COLUMN_OFFSET = 3 * TILE_SIZE;
 
 -- ------------------------------------------------
 -- Constructor
@@ -37,6 +35,7 @@ function InventoryScreen.new()
     local  w,  h;
     local sx, sy; -- Spacers.
     local itemDescriptionSpacer; -- Spacers.
+    local tw, th
 
     local itemDescriptionArea;
     local itemStatsArea;
@@ -48,19 +47,19 @@ function InventoryScreen.new()
     -- ------------------------------------------------
 
     local function getColumnWidth()
-        return ( sx - 1 ) * TILE_SIZE;
+        return ( sx - 1 ) * tw
     end
 
     local function getEquipmentColumnOffset()
-        return TILE_SIZE;
+        return tw
     end
 
     local function getOtherColumnOffset()
-        return ( 2 + 2 * sx ) * TILE_SIZE;
+        return ( 2 + 2 * sx ) * tw
     end
 
     local function getInventoryColumnOffset()
-        return ( 2 + sx ) * TILE_SIZE;
+        return ( 2 + sx ) * tw
     end
 
     local function getListBelowCursor()
@@ -73,17 +72,17 @@ function InventoryScreen.new()
     end
 
     local function createEquipment()
-        lists.equipment = UIEquipmentList.new( getEquipmentColumnOffset(), VERTICAL_COLUMN_OFFSET, sx * TILE_SIZE, 'inventory_equipment', character );
+        lists.equipment = UIEquipmentList.new( getEquipmentColumnOffset(), 3 * th, sx * tw, 'inventory_equipment', character )
         lists.equipment:init();
     end
 
     local function createInventory()
-        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), VERTICAL_COLUMN_OFFSET, getColumnWidth(), 'inventory_inventory', character:getInventory() );
+        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), 3 * th, getColumnWidth(), 'inventory_inventory', character:getInventory() )
         lists.inventory:init();
     end
 
     local function createOtherInventory()
-        local x, y, cw = getOtherColumnOffset(), VERTICAL_COLUMN_OFFSET, getColumnWidth();
+        local x, y, cw = getOtherColumnOffset(), 3 * th, getColumnWidth()
 
         -- Create inventory for container world objects.
         if target:hasWorldObject() and target:getWorldObject():isContainer() then
@@ -142,23 +141,23 @@ function InventoryScreen.new()
     end
 
     local function drawHeaders()
-        love.graphics.print( lists.equipment:getLabel(), getEquipmentColumnOffset(), TILE_SIZE );
+        love.graphics.print( lists.equipment:getLabel(), getEquipmentColumnOffset(), th )
 
         if lists.inventory then
-            love.graphics.print( lists.inventory:getLabel(), getInventoryColumnOffset(), TILE_SIZE );
+            love.graphics.print( lists.inventory:getLabel(), getInventoryColumnOffset(), th )
         else
-            love.graphics.print( 'No inventory equipped', getInventoryColumnOffset(), TILE_SIZE );
+            love.graphics.print( 'No inventory equipped', getInventoryColumnOffset(), th )
         end
 
-        love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), TILE_SIZE );
+        love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), th )
 
-        love.graphics.print( 'Item Description', getEquipmentColumnOffset(), ( 1 + 2 * sy ) * TILE_SIZE );
-        love.graphics.print( 'Item Attributes',  ( itemDescriptionSpacer + 1 ) * TILE_SIZE, ( 1 + 2 * sy ) * TILE_SIZE );
+        love.graphics.print( 'Item Description', getEquipmentColumnOffset(), ( 1 + 2 * sy ) * th )
+        love.graphics.print( 'Item Attributes',  ( itemDescriptionSpacer + 1 ) * tw, ( 1 + 2 * sy ) * th )
     end
 
     local function updateScreenDimensions( nw, nh )
-        w  = math.floor( nw / TILE_SIZE );
-        h  = math.floor( nh / TILE_SIZE );
+        w  = math.floor( nw / tw )
+        h  = math.floor( nh / th )
         sx = math.floor( w / 3 );
         sy = math.floor( h / 3 );
         itemDescriptionSpacer = math.floor( w / 2 );
@@ -211,6 +210,8 @@ function InventoryScreen.new()
     -- @param ntarget    (Tile)      The target tile to open the inventory for.
     --
     function self:init( ncharacter, ntarget )
+        tw, th = TexturePacks.getTileDimensions()
+
         character = ncharacter;
         target = ntarget;
 
