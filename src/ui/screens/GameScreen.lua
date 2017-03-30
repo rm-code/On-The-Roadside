@@ -31,7 +31,6 @@ function GameScreen.new()
     local game;
     local worldPainter;
     local userInterface;
-    local particleLayer;
     local overlayPainter;
     local camera;
     local observations = {};
