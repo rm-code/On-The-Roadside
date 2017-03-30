@@ -5,7 +5,6 @@ local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
-local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' );
 local Tileset = require( 'src.ui.Tileset' );
@@ -50,9 +49,7 @@ function GameScreen.new()
 
         camera = CameraHandler.new( game:getMap() );
 
-        particleLayer = ParticleLayer.new();
-
-        overlayPainter = OverlayPainter.new( game, particleLayer );
+        overlayPainter = OverlayPainter.new( game )
 
         MousePointer.init( camera );
     end

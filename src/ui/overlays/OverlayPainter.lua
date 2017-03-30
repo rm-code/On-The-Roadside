@@ -3,6 +3,7 @@ local MousePointer = require( 'src.ui.MousePointer' );
 local Tileset = require( 'src.ui.Tileset' );
 local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
 local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
+local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
 
 -- ------------------------------------------------
 -- Module
@@ -24,12 +25,12 @@ local TILE_SIZE = require( 'src.constants.TileSize' );
 ---
 -- Creates an new instance of the OverlayPainter class.
 -- @param game          (Game)           The game object.
--- @param particleLayer (ParticleLayer)  The layer used for drawing particles.
 -- @return              (OverlayPainter) The new instance.
 --
-function OverlayPainter.new( game, particleLayer )
+function OverlayPainter.new( game )
     local self = {};
 
+    local particleLayer = ParticleLayer.new()
     local pulser = Pulser.new( 4, 80, 80 );
     local coneOverlay = ConeOverlay.new( game, pulser )
     local pathOverlay = PathOverlay.new( game, pulser )
