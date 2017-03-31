@@ -9,7 +9,6 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' )
-local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
