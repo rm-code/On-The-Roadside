@@ -10,8 +10,8 @@ local SCROLL_SPEED = 10;
 function CameraHandler.new( map )
     local self = Camera.new();
 
-    local mw, mh = map:getPixelDimensions();
-    local px, py = mw * 0.5, mh * 0.5;
+    local mw, mh = map:getDimensions()
+    local px, py = mw * TILE_SIZE * 0.5, mh * TILE_SIZE * 0.5;
     local tx, ty = px, py;
     local savedX, savedY;
     local locked;
@@ -44,8 +44,8 @@ function CameraHandler.new( map )
         end
 
         -- Clamp the camera to the map dimensions.
-        tx = math.max( 0, math.min( x, mw ));
-        ty = math.max( 0, math.min( y, mh ));
+        tx = math.max( 0, math.min( x, mw * TILE_SIZE ));
+        ty = math.max( 0, math.min( y, mh * TILE_SIZE ));
     end
 
     function self:update( dt )
