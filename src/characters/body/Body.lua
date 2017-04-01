@@ -241,6 +241,10 @@ function Body.new( template )
         return template.id;
     end
 
+    function self:getHeight( stance )
+        return template.size[stance];
+    end
+
     return self;
 end
 

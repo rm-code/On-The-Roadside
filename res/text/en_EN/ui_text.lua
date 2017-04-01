@@ -20,6 +20,9 @@ locale.strings = {
     ['ui_on']  = "<On>",
     ['ui_off'] = "<Off>",
 
+    -- Texture packs
+    ['ui_texturepack'] = "Texture Pack:",
+
     -- Language selector
     ['ui_lang'] = "Language:",
     ['ui_lang_eng'] = "<English>",
@@ -30,11 +33,12 @@ locale.strings = {
 
     -- Navigation
     ['ui_back'] = "Back",
-    ['ui_exit'] = "Exit",
 
     -- Ingame menu
     ['ui_ingame_paused'] = "Paused",
     ['ui_ingame_save_game'] = "Save game",
+    ['ui_ingame_open_help'] = "Show help",
+    ['ui_ingame_exit'] = "Main menu",
 }
 
 return locale;

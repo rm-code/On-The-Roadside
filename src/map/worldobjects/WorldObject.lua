@@ -24,7 +24,7 @@ function WorldObject.new( template )
     -- ------------------------------------------------
 
     local id = template.id;
-    local size = template.size;
+    local height = template.size
     local interactionCost = template.interactionCost;
     local energyReduction = template.energyReduction;
     local destructible = template.destructible;
@@ -145,11 +145,11 @@ function WorldObject.new( template )
     end
 
     ---
-    -- Returns the WorldObject's size attribute.
-    -- @return (number) The WorldObject's size.
+    -- Returns the WorldObject's height attribute.
+    -- @return (number) The WorldObject's height.
     --
-    function self:getSize()
-        return size;
+    function self:getHeight()
+        return height
     end
 
     ---

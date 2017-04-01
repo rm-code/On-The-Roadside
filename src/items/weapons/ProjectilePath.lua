@@ -153,6 +153,32 @@ local function calculateThrownMaximumDerivation( character )
     return derivation;
 end
 
+---
+-- Determine the height falloff for a projectile.
+-- This is achieved by taking the height at the origin of the attack and the
+-- height of the target.
+-- The height of the target is halved and a random value is either added to or
+-- subtracted from it. The random value is based on half the target's size and
+-- an additional modifier.
+-- @tparam  Tile   origin The starting tile.
+-- @tparam  Tile   target The target tile.
+-- @tparam  number steps  The distance to the target.
+-- @treturn number        The calculated falloff value.
+--
+local function calculateFalloff( origin, target, steps )
+    local oheight = origin:getHeight()
+    local theight = target:getHeight()
+
+    -- TODO base on skills?
+    -- This takes the center of the target and adds or subtracts a random value
+    -- based on the half size of the target with a constant modifier added to it.
+    local usedHeight = theight * 0.5 + randomSign() * love.math.random( theight * 0.5 + 10 )
+
+    local delta = oheight - usedHeight
+    return delta / steps
+end
+
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -196,12 +222,16 @@ function ProjectilePath.calculate( character, target, weapon, count )
     local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDerivation, love.math.random( 90, 130 ) / 100 );
     nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
 
+    -- Determine the height falloff for the projectile.
+    local _, steps = Bresenham.line( px, py, nx, ny )
+    local falloff = calculateFalloff( origin, target, steps )
+
     -- Get the coords of all tiles the projectile passes on the way to its target.
     local tiles = {};
-    Bresenham.calculateLine( px, py, nx, ny, function( sx, sy )
+    Bresenham.line( px, py, nx, ny, function( sx, sy, counter )
         -- Ignore the origin.
         if sx ~= px or sy ~= py then
-            tiles[#tiles + 1] = { x = sx, y = sy };
+            tiles[#tiles + 1] = { x = sx, y = sy, z = origin:getHeight() - (counter+1) * falloff }
         end
         return true;
     end)

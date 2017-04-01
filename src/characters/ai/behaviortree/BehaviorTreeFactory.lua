@@ -42,8 +42,6 @@ local function loadFiles( dir )
         if fe == TEMPLATE_EXTENSION then
             files[#files + 1] = { name = fn, extension = fe };
             Log.debug( string.format( '%3d. %s.%s', i, fn, fe ), 'BehaviorTreeFactory' );
-        else
-            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ), 'BehaviorTreeFactory' );
         end
     end
     return files;

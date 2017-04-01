@@ -1,18 +1,13 @@
 local Object = require( 'src.Object' );
 local UIEquipmentItem = require( 'src.ui.inventory.UIEquipmentItem' );
 local Translator = require( 'src.util.Translator' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UIEquipmentList = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -27,6 +22,7 @@ function UIEquipmentList.new( x, y, width, id, character )
 
     local equipment = character:getEquipment();
     local list;
+    local tw, th = TexturePacks.getTileDimensions()
 
     -- ------------------------------------------------
     -- Private Methods
@@ -36,7 +32,7 @@ function UIEquipmentList.new( x, y, width, id, character )
         list = {};
 
         for _, slot in pairs( equipment:getSlots() ) do
-            local uiItem = UIEquipmentItem.new( slot:getID(), x, y + slot:getSortOrder() * TILE_SIZE, width, TILE_SIZE, slot );
+            local uiItem = UIEquipmentItem.new( slot:getID(), x, y + slot:getSortOrder() * tw, width, th, slot )
             list[slot:getSortOrder()] = uiItem;
         end
     end

@@ -15,18 +15,11 @@ local Map = {};
 
 local DIRECTION = require( 'src.constants.Direction' );
 
-local INFO_FILE = love.filesystem.load( 'res/data/maps/info.lua' )();
-local GROUND_LAYER = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
-local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
-local SPAWNS_LAYER = love.image.newImageData( 'res/data/maps/Map_Spawns.png' );
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
-
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Map.new()
+function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
     local self = Observable.new():addInstance( 'Map' );
 
     local tiles;
@@ -35,6 +28,8 @@ function Map.new()
         neutral = {},
         enemy   = {}
     };
+    local width
+    local height
 
     -- ------------------------------------------------
     -- Private Methods
@@ -57,7 +52,7 @@ function Map.new()
         end
 
         local tile;
-        for _, info in ipairs( INFO_FILE.ground ) do
+        for _, info in ipairs( infoFile.ground ) do
             if info.r == r and info.g == g and info.b == b then
                 tile = info.tile;
                 break;
@@ -83,7 +78,7 @@ function Map.new()
         end
 
         local object;
-        for _, info in ipairs( INFO_FILE.objects ) do
+        for _, info in ipairs( infoFile.objects ) do
             if info.r == r and info.g == g and info.b == b then
                 object = info.object;
                 break;
@@ -106,7 +101,7 @@ function Map.new()
             table.insert( spawnpoints.neutral, tile );
         end
 
-        for _, info in ipairs( INFO_FILE.spawns ) do
+        for _, info in ipairs( infoFile.spawns ) do
             if info.r == r and info.g == g and info.b == b then
                 table.insert( spawnpoints[info.type], tile );
                 break;
@@ -117,14 +112,14 @@ function Map.new()
     ---
     -- Iterates over the ground layer's RGBA values pixel by pixel and creates
     -- tiles based on the loaded colors.
-    -- @return (table) A 2d array containing the map's tiles.
+    -- @treturn table A 2d array containing the map's tiles.
     --
     local function createTiles()
         local newTiles = {};
-        for x = 1, GROUND_LAYER:getWidth() do
-            for y = 1, GROUND_LAYER:getHeight() do
+        for x = 1, groundLayer:getWidth() do
+            for y = 1, groundLayer:getHeight() do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = createTile( x, y, GROUND_LAYER:getPixel( x - 1, y - 1 ));
+                newTiles[x][y] = createTile( x, y, groundLayer:getPixel( x - 1, y - 1 ))
             end
         end
         return newTiles;
@@ -135,9 +130,9 @@ function Map.new()
     -- WorldObjects based on the loaded colors.
     --
     local function createWorldObjects()
-        for x = 1, OBJECT_LAYER:getWidth() do
-            for y = 1, OBJECT_LAYER:getHeight() do
-                createWorldObject( tiles[x][y], OBJECT_LAYER:getPixel( x - 1, y - 1 ));
+        for x = 1, objectLayer:getWidth() do
+            for y = 1, objectLayer:getHeight() do
+                createWorldObject( tiles[x][y], objectLayer:getPixel( x - 1, y - 1 ))
             end
         end
     end
@@ -147,9 +142,9 @@ function Map.new()
     -- spawn points based on the loaded colors.
     --
     local function createSpawnPoints()
-        for x = 1, SPAWNS_LAYER:getWidth() do
-            for y = 1, SPAWNS_LAYER:getHeight() do
-                createSpawnPoint( tiles[x][y], SPAWNS_LAYER:getPixel( x - 1, y - 1 ));
+        for x = 1, spawnsLayer:getWidth() do
+            for y = 1, spawnsLayer:getHeight() do
+                createSpawnPoint( tiles[x][y], spawnsLayer:getPixel( x - 1, y - 1 ))
             end
         end
     end
@@ -176,9 +171,9 @@ function Map.new()
         end
     end
 
-    local function loadSavedTiles( savedmap )
+    local function loadSavedTiles( savedTiles )
         local loadedTiles = {};
-        for _, tile in ipairs( savedmap ) do
+        for _, tile in ipairs( savedTiles ) do
             local x, y = tile.x, tile.y;
             loadedTiles[x] = loadedTiles[x] or {};
             loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
@@ -207,11 +202,13 @@ function Map.new()
     end
 
     local function recreateMap( savedmap )
-        tiles = loadSavedTiles( savedmap );
+        width, height = savedmap.width, savedmap.height
+        tiles = loadSavedTiles( savedmap.tiles );
         addNeighbours();
     end
 
     local function createMap()
+        width, height = groundLayer:getDimensions()
         tiles = createTiles();
         createWorldObjects();
         createSpawnPoints();
@@ -229,8 +226,8 @@ function Map.new()
     --
     function self:findSpawnPoint( faction )
         while true do
-            local x = love.math.random( 1, SPAWNS_LAYER:getWidth() );
-            local y = love.math.random( 1, SPAWNS_LAYER:getHeight() );
+            local x = love.math.random( 1, spawnsLayer:getWidth() )
+            local y = love.math.random( 1, spawnsLayer:getHeight() )
 
             local tile = self:getTileAt( x, y );
             for _, spawn in ipairs( spawnpoints[faction] ) do
@@ -324,13 +321,19 @@ function Map.new()
     end
 
     function self:serialize()
-        local t = {};
+        local t = {
+            width = width,
+            height = height,
+            tiles = {}
+        }
+
         for x = 1, #tiles do
             for y = 1, #tiles[x] do
-                table.insert( t, tiles[x][y]:serialize() );
+                table.insert( t.tiles, tiles[x][y]:serialize() )
             end
         end
-        return t;
+
+        return t
     end
 
     -- ------------------------------------------------
@@ -348,12 +351,12 @@ function Map.new()
     end
 
     ---
-    -- Returns the width and height of the map in pixels.
-    -- @return (number) The width of the map.
-    -- @return (number) The height of the map.
+    -- Returns the map's dimensions.
+    -- @treturn number The map's width.
+    -- @treturn number The map's height.
     --
-    function self:getPixelDimensions()
-        return GROUND_LAYER:getWidth() * TILE_SIZE, GROUND_LAYER:getHeight() * TILE_SIZE;
+    function self:getDimensions()
+        return width, height
     end
 
     return self;

@@ -1,3 +1,32 @@
+# Version 0.8.0.933 - 2017-04-02
+
+## Additions
+- Added height mechanics for world objects and characters
+    - World objects that are bigger than a character will block the LOS
+    - Shooting over a world object is only possible if the target behind the object can be seen
+- Added texture pack support
+    - Users can add their own texture packs in the mod/texturepacks folder located in their save directory
+    - Texture packs support arbitrary tile sizes
+- Added support for loading multiple maps
+    - Added a second map
+- Added "Show Help" button to ingame menu
+
+## Removals
+- Removed hotkey for help screen (and the ingame overlay for it)
+- Removed "Close" button from ingame menu
+    - It can be closed via the escape-key now
+
+## Fixes
+- Fixed button receiving events without actually having focus
+- Fixed status effects being applied more than once
+
+## Other Changes
+- Attack and interaction modes are now toggleable
+    - Pressing their keys again will switch back to the movement mode
+
+
+
+
 # Version 0.7.1.883 - 2017-03-20
 
 ## Fixes

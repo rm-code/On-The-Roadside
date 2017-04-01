@@ -22,6 +22,8 @@ function HorizontalList.new( x, y, itemW, itemH )
             return;
         end
 
+        self:unsetCursor();
+
         local elements = self:getElements();
         local w = #elements * itemW;
         local ox = x - w * 0.5;
@@ -52,13 +54,15 @@ function HorizontalList.new( x, y, itemW, itemH )
         elseif scancode == 'left' then
             self:deactivateMouse();
             self:prev();
-        else
+        elseif self:getActiveElement() then
             self:getActiveElement():keypressed( key, scancode );
         end
     end
 
     function self:mousereleased()
-        self:getActiveElement():mousereleased();
+        if love.mouse.isVisible() and self:getActiveElement() then
+            self:getActiveElement():mousereleased();
+        end
     end
 
     function self:activateMouse()

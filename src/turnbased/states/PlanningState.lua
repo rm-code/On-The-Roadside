@@ -35,6 +35,7 @@ function PlanningState.new( stateManager )
         end
     end
 
+    -- TODO Refactor input handling.
     function self:keypressed( _, scancode, _ )
         local character = factions:getFaction():getCurrentCharacter();
         if character:isDead() then
@@ -68,11 +69,20 @@ function PlanningState.new( stateManager )
             character:enqueueAction( Reload.new( character ));
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'a' then
+            -- Make attack mode toggleable.
             character:clearActions();
-            inputStateHandler:switch( 'attack' );
+            if inputStateHandler:getState():instanceOf( 'AttackInput' ) then
+                inputStateHandler:switch( 'movement' );
+            else
+                inputStateHandler:switch( 'attack' );
+            end
         elseif scancode == 'e' then
             character:clearActions();
-            inputStateHandler:switch( 'interaction' );
+            if inputStateHandler:getState():instanceOf( 'InteractionInput' ) then
+                inputStateHandler:switch( 'movement' );
+            else
+                inputStateHandler:switch( 'interaction' );
+            end
         elseif scancode == 'm' then
             character:clearActions();
             inputStateHandler:switch( 'movement' );

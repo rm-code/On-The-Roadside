@@ -1,6 +1,6 @@
 local Object = require( 'src.Object' );
 local Messenger = require( 'src.Messenger' );
-local Particle = require( 'src.ui.Particle' );
+local Particle = require( 'src.ui.overlays.Particle' )
 local ObjectPool = require( 'src.util.ObjectPool' );
 
 local ParticleLayer = {};

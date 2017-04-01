@@ -5,22 +5,15 @@ local WorldPainter = require( 'src.ui.WorldPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
-local ParticleLayer = require( 'src.ui.ParticleLayer' );
-local OverlayPainter = require( 'src.ui.OverlayPainter' );
+local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' );
-local Tileset = require( 'src.ui.Tileset' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local GameScreen = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local TILE_SIZE = require( 'src.constants.TileSize' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -32,16 +25,14 @@ function GameScreen.new()
     local game;
     local worldPainter;
     local userInterface;
-    local particleLayer;
     local overlayPainter;
     local camera;
     local observations = {};
+    local tw, th = TexturePacks.getTileDimensions()
 
     function self:init( savegame )
         game = Game.new();
         game:init( savegame );
-
-        Tileset.init( 'res/img/16x16_sm.png', TILE_SIZE );
 
         worldPainter = WorldPainter.new( game );
         worldPainter:init();
@@ -50,9 +41,7 @@ function GameScreen.new()
 
         camera = CameraHandler.new( game:getMap() );
 
-        particleLayer = ParticleLayer.new();
-
-        overlayPainter = OverlayPainter.new( game, particleLayer );
+        overlayPainter = OverlayPainter.new( game )
 
         MousePointer.init( camera );
     end
@@ -83,9 +72,6 @@ function GameScreen.new()
     function self:keypressed( key, scancode, isrepeat )
         if scancode == 'f' then
             love.window.setFullscreen( not love.window.getFullscreen() );
-        end
-        if scancode == 'h' then
-            ScreenManager.push( 'help' );
         end
         if scancode == 'f1' then
             userInterface:toggleDebugInfo();
@@ -124,14 +110,14 @@ function GameScreen.new()
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
-        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
     end)
 
     observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
         if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return;
         end
-        camera:setTargetPosition( character:getTile():getX() * TILE_SIZE, character:getTile():getY() * TILE_SIZE );
+        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
     end)
 
     return self;

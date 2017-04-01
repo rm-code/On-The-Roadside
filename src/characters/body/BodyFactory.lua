@@ -43,8 +43,6 @@ local function loadFiles( dir )
         if fe == TEMPLATE_EXTENSION or fe == LAYOUT_EXTENSION then
             files[#files + 1] = { name = fn, extension = fe };
             Log.debug( string.format( '%3d. %s.%s', i, fn, fe ));
-        else
-            Log.warn( string.format( 'Tried to load file %s.%s', fn, fe ));
         end
     end
     return files;

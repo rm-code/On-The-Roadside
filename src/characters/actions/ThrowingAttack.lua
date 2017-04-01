@@ -14,7 +14,7 @@ function ThrowingAttack.new( character, target )
         local tx, ty = target:getPosition();
 
         local actualTarget;
-        Bresenham.calculateLine( ox, oy, tx, ty, function( cx, cy, count )
+        Bresenham.line( ox, oy, tx, ty, function( cx, cy, count )
             if count > character:getWeapon():getRange() then
                 return false;
             end

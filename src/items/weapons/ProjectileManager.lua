@@ -75,26 +75,17 @@ end
 -- @param projectile  (Projectile)  The projectile to handle.
 -- @param tile        (Tile)        The tile to check.
 -- @param worldObject (WorldObject) The world object to check.
--- @param character   (Character)   The character who fired this projectile.
 --
-local function hitWorldObject( index, projectile, tile, worldObject, character )
-    -- World objects which are on a tile directly adjacent to the attacking
-    -- character will be ignored if they either are destructible or don't fill
-    -- the whole tile. Indestructible objects which cover the whole tile will
-    -- still block the shot.
-    if tile:isAdjacent( character:getTile() ) and ( worldObject:isDestructible() or worldObject:getSize() < 100 ) then
-        Log.debug( 'World object is adjacent to character and will be ignored', 'ProjectileManager' );
-        return;
-    end
-
-    -- Roll a random number. This is the chance to hit a world object based on
-    -- its size. So larger world objects have a higher chance to block shots.
-    if love.math.random( 100 ) > worldObject:getSize() then
-        return;
+local function hitWorldObject( index, projectile, tile, worldObject )
+    if projectile:getHeight() > worldObject:getHeight() then
+        Log.debug( 'Projectile flies over world object', 'ProjectileManager' )
+        return
     end
 
     -- Remove projectiles when they hit indestructible world objects.
     if not worldObject:isDestructible() then
+        Log.debug( 'Projectile hits indestructible world object', 'ProjectileManager' )
+
         -- Explosive projectiles explode on the previous tile once they hit an
         -- indestructible world object. This needs to be done to make sure explosions
         -- occur on the right side of the world object.

@@ -21,7 +21,7 @@
 --==================================================================================
 
 local Bresenham = {
-    _VERSION     = "1.1.1",
+    _VERSION     = "2.1.0",
     _DESCRIPTION = "Bresenham's line algorithm written in Lua." ,
     _URL         = 'https://github.com/rm-code/bresenham/',
 }
@@ -34,15 +34,26 @@ local Bresenham = {
 -- way from the origin to the target tile. The line algorithm can be stopped
 -- early by making the callback return false.
 --
--- @ox       (number)   The x-coordinates of the origin.
--- @oy       (number)   The y-coordinates of the origin.
--- @ex       (number)   The x-coordinates of the target.
--- @ey       (number)   The y-coordinates of the target.
--- @callback (function) A callback function being called for every tile the line passes.
--- @...      (varargs)  Additional parameters which will be forwarded to the callback.
--- @return   (boolean)  True if the target was reached, otherwise false.
+-- The callback will receive parameters in the following order:
+--      callback( ox, oy, counter, ... )
 --
-function Bresenham.calculateLine( ox, oy, ex, ey, callback, ... )
+-- With ox and oy being the coordinates of the pixel the algorithm is currently
+-- passing through, counter being the amount of passed pixels and ...
+-- representing variable arguments passed through.
+--
+-- @tparam number ox The origin's x-coordinates.
+-- @tparam number oy The origin's y-coordinates.
+-- @tparam number ex The target's x-coordinates.
+-- @tparam number ey The target's y-coordinates.
+-- @tparam[opt] function callback
+--                      A callback function being called for every tile the line passes.
+--                      The line algorithm will stop if the callback returns false.
+-- @tparam[opt] vararg ...
+--                      Additional parameters which will be forwarded to the callback.
+-- @treturn boolean     True if the target was reached, otherwise false.
+-- @treturn number      The counter variable containing the number of passed pixels.
+--
+function Bresenham.line( ox, oy, ex, ey, callback, ... )
     local dx = math.abs( ex - ox )
     local dy = math.abs( ey - oy ) * -1
 
@@ -52,15 +63,19 @@ function Bresenham.calculateLine( ox, oy, ex, ey, callback, ... )
 
     local counter = 0
     while true do
-        local continue = callback( ox, oy, counter, ... )
-        if not continue then
-            return false
+        -- If a callback has been provided, it controls wether the line
+        -- algorithm should proceed or not.
+        if callback then
+            local continue = callback( ox, oy, counter, ... )
+            if not continue then
+                return false, counter
+            end
         end
 
         counter = counter + 1
 
         if ox == ex and oy == ey then
-            return true
+            return true, counter
         end
 
         local tmpErr = 2 * err

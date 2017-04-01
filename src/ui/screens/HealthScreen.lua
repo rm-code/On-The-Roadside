@@ -1,8 +1,9 @@
 local Log = require( 'src.util.Log' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
-local Tileset = require( 'src.ui.Tileset' );
 local Translator = require( 'src.util.Translator' );
+local Outlines = require( 'src.ui.elements.Outlines' )
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -15,7 +16,6 @@ local HealthScreen = {};
 -- ------------------------------------------------
 
 local COLORS = require( 'src.constants.Colors' );
-local TILE_SIZE = require( 'src.constants.TileSize' );
 local SCREEN_WIDTH  = 30;
 local SCREEN_HEIGHT = 16;
 
@@ -29,118 +29,22 @@ function HealthScreen.new()
     local character;
     local characterType;
 
-    local grid;
+    local outlines
     local px, py;
+    local tw, th
 
-    ---
-    -- Returns the value of the grid for this position or 0 for coordinates
-    -- outside of the grid.
-    -- @param x (number) The x coordinate in the grid.
-    -- @param y (number) The y coordinate in the grid.
-    -- @return  (number) The grid index or 0.
-    --
-    local function getGridIndex( x, y )
-        if not grid[x] then
-            return 0;
-        elseif not grid[x][y] then
-            return 0;
-        end
-        return grid[x][y];
-    end
-
-    local function fillGrid( w, h )
+    local function createOutlines( w, h )
         for x = 0, w - 1 do
             for y = 0, h - 1 do
-                grid[x] = grid[x] or {};
-                grid[x][y] = 0;
-
                 -- Draw screen borders.
                 if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    grid[x][y] = 1;
+                    outlines:add( x, y )
                 end
                 if y == 2 then
-                    grid[x][y] = 1;
+                    outlines:add( x, y )
                 end
             end
         end
-    end
-
-    ---
-    -- Checks the NSEW tiles around the given coordinates in the grid and returns
-    -- an index for the appropriate sprite to use.
-    -- @param x (number) The x coordinate in the grid.
-    -- @param y (number) The y coordinate in the grid.
-    -- @return  (number) The sprite index.
-    --
-    local function determineTile( x, y )
-        if -- Connected to all sides.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 198;
-        elseif -- Vertically connected.
-            getGridIndex( x - 1, y     ) == 0 and
-            getGridIndex( x + 1, y     ) == 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 180;
-        elseif -- Horizontally connected.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) == 0 and
-            getGridIndex( x    , y + 1 ) == 0 then
-                return 197;
-        elseif -- Bottom right corner.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) == 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) == 0 then
-                return 218;
-        elseif -- Top left corner.
-            getGridIndex( x - 1, y     ) == 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) == 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 219;
-        elseif -- Top right corner.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) == 0 and
-            getGridIndex( x    , y - 1 ) == 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 192;
-        elseif -- Bottom left corner.
-            getGridIndex( x - 1, y     ) == 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) == 0 then
-                return 193;
-        elseif -- T-intersection down.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) == 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 195;
-        elseif -- T-intersection up.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) == 0 then
-                return 194;
-        elseif -- T-intersection right.
-            getGridIndex( x - 1, y     ) == 0 and
-            getGridIndex( x + 1, y     ) ~= 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 196;
-        elseif -- T-intersection left.
-            getGridIndex( x - 1, y     ) ~= 0 and
-            getGridIndex( x + 1, y     ) == 0 and
-            getGridIndex( x    , y - 1 ) ~= 0 and
-            getGridIndex( x    , y + 1 ) ~= 0 then
-                return 181;
-        end
-        return 1;
     end
 
     -- ------------------------------------------------
@@ -148,30 +52,26 @@ function HealthScreen.new()
     -- ------------------------------------------------
 
     function self:init( ncharacter )
+        tw, th = TexturePacks.getTileDimensions()
+
         character = ncharacter;
         characterType = character:getBody():getID();
 
-        px = math.floor( love.graphics.getWidth() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 );
-        py = math.floor( love.graphics.getHeight() / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
-        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
+        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
+        px, py = px * tw, py * th
 
-        grid = {};
-        fillGrid( SCREEN_WIDTH, SCREEN_HEIGHT );
+        outlines = Outlines.new()
+        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
+        outlines:refresh()
     end
 
     function self:draw()
-        local ts = Tileset.getTileset();
         love.graphics.setColor( COLORS.DB00 );
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * TILE_SIZE, SCREEN_HEIGHT * TILE_SIZE );
+        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
         love.graphics.setColor( COLORS.DB22 );
 
-        for x = 0, SCREEN_WIDTH - 1 do
-            for y = 0, SCREEN_HEIGHT - 1 do
-                if grid[x][y] ~= 0 then
-                    love.graphics.draw( ts, Tileset.getSprite( determineTile( x, y )), px + x * TILE_SIZE, py + y * TILE_SIZE );
-                end
-            end
-        end
+        outlines:draw( px, py )
 
         local counter = 3;
         for _, bodyPart in pairs( character:getBody():getBodyParts() ) do
@@ -194,8 +94,8 @@ function HealthScreen.new()
                     love.graphics.setColor( COLORS.DB10 );
                     status = 'FINE'
                 end
-                love.graphics.print( Translator.getText( bodyPart:getID() ), px + TILE_SIZE, py + TILE_SIZE * counter );
-                love.graphics.printf( status, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'right' );
+                love.graphics.print( Translator.getText( bodyPart:getID() ), px + tw, py + th * counter )
+                love.graphics.printf( status, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'right' )
 
                 if bodyPart:isBleeding() then
                     local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
@@ -208,14 +108,14 @@ function HealthScreen.new()
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
                         love.graphics.setColor( COLORS.DB27 );
                     end
-                    love.graphics.printf( str, px + TILE_SIZE, py + TILE_SIZE * counter, ( SCREEN_WIDTH - 2 ) * TILE_SIZE, 'center' );
+                    love.graphics.printf( str, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
                 end
             end
         end
 
         love.graphics.setColor( COLORS.DB20 );
-        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + TILE_SIZE, py + TILE_SIZE );
-        love.graphics.setColor( 255, 255, 255 );
+        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + tw, py + th )
+        love.graphics.setColor( COLORS.RESET );
     end
 
     function self:keypressed( key )
@@ -225,9 +125,9 @@ function HealthScreen.new()
     end
 
     function self:resize( sx, sy )
-        px = math.floor( sx / TILE_SIZE ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 );
-        py = math.floor( sy / TILE_SIZE ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 );
-        px, py = px * TILE_SIZE, py * TILE_SIZE;
+        px = math.floor( sx / tw ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 )
+        py = math.floor( sy / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
+        px, py = px * tw, py * th
         Log.debug( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
     end
 
