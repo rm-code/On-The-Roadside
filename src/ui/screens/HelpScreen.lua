@@ -45,8 +45,7 @@ function HelpScreen.new()
         '  e - Switch to Interaction Mode (e.g. to open barrels or doors)',
         '',
         'MISC',
-        '  f - Switch between windowed and fullscreen modes',
-        '  . - Save current game',
+        '  f - Switch between windowed and fullscreen modes'
     }
 
     function self:draw()
