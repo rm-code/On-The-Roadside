@@ -15,16 +15,11 @@ local Map = {};
 
 local DIRECTION = require( 'src.constants.Direction' );
 
-local INFO_FILE = love.filesystem.load( 'res/data/maps/info.lua' )();
-local GROUND_LAYER = love.image.newImageData( 'res/data/maps/Map_Ground.png' );
-local OBJECT_LAYER = love.image.newImageData( 'res/data/maps/Map_Objects.png' );
-local SPAWNS_LAYER = love.image.newImageData( 'res/data/maps/Map_Spawns.png' );
-
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Map.new()
+function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
     local self = Observable.new():addInstance( 'Map' );
 
     local tiles;
@@ -55,7 +50,7 @@ function Map.new()
         end
 
         local tile;
-        for _, info in ipairs( INFO_FILE.ground ) do
+        for _, info in ipairs( infoFile.ground ) do
             if info.r == r and info.g == g and info.b == b then
                 tile = info.tile;
                 break;
@@ -81,7 +76,7 @@ function Map.new()
         end
 
         local object;
-        for _, info in ipairs( INFO_FILE.objects ) do
+        for _, info in ipairs( infoFile.objects ) do
             if info.r == r and info.g == g and info.b == b then
                 object = info.object;
                 break;
@@ -104,7 +99,7 @@ function Map.new()
             table.insert( spawnpoints.neutral, tile );
         end
 
-        for _, info in ipairs( INFO_FILE.spawns ) do
+        for _, info in ipairs( infoFile.spawns ) do
             if info.r == r and info.g == g and info.b == b then
                 table.insert( spawnpoints[info.type], tile );
                 break;
@@ -115,14 +110,14 @@ function Map.new()
     ---
     -- Iterates over the ground layer's RGBA values pixel by pixel and creates
     -- tiles based on the loaded colors.
-    -- @return (table) A 2d array containing the map's tiles.
+    -- @treturn table A 2d array containing the map's tiles.
     --
     local function createTiles()
         local newTiles = {};
-        for x = 1, GROUND_LAYER:getWidth() do
-            for y = 1, GROUND_LAYER:getHeight() do
+        for x = 1, groundLayer:getWidth() do
+            for y = 1, groundLayer:getHeight() do
                 newTiles[x] = newTiles[x] or {};
-                newTiles[x][y] = createTile( x, y, GROUND_LAYER:getPixel( x - 1, y - 1 ));
+                newTiles[x][y] = createTile( x, y, groundLayer:getPixel( x - 1, y - 1 ))
             end
         end
         return newTiles;
@@ -133,9 +128,9 @@ function Map.new()
     -- WorldObjects based on the loaded colors.
     --
     local function createWorldObjects()
-        for x = 1, OBJECT_LAYER:getWidth() do
-            for y = 1, OBJECT_LAYER:getHeight() do
-                createWorldObject( tiles[x][y], OBJECT_LAYER:getPixel( x - 1, y - 1 ));
+        for x = 1, objectLayer:getWidth() do
+            for y = 1, objectLayer:getHeight() do
+                createWorldObject( tiles[x][y], objectLayer:getPixel( x - 1, y - 1 ))
             end
         end
     end
@@ -145,9 +140,9 @@ function Map.new()
     -- spawn points based on the loaded colors.
     --
     local function createSpawnPoints()
-        for x = 1, SPAWNS_LAYER:getWidth() do
-            for y = 1, SPAWNS_LAYER:getHeight() do
-                createSpawnPoint( tiles[x][y], SPAWNS_LAYER:getPixel( x - 1, y - 1 ));
+        for x = 1, spawnsLayer:getWidth() do
+            for y = 1, spawnsLayer:getHeight() do
+                createSpawnPoint( tiles[x][y], spawnsLayer:getPixel( x - 1, y - 1 ))
             end
         end
     end
@@ -227,8 +222,8 @@ function Map.new()
     --
     function self:findSpawnPoint( faction )
         while true do
-            local x = love.math.random( 1, SPAWNS_LAYER:getWidth() );
-            local y = love.math.random( 1, SPAWNS_LAYER:getHeight() );
+            local x = love.math.random( 1, spawnsLayer:getWidth() )
+            local y = love.math.random( 1, spawnsLayer:getHeight() )
 
             local tile = self:getTileAt( x, y );
             for _, spawn in ipairs( spawnpoints[faction] ) do
@@ -351,7 +346,7 @@ function Map.new()
     -- @treturn number The map's height.
     --
     function self:getDimensions()
-        return GROUND_LAYER:getDimensions()
+        return groundLayer:getDimensions()
     end
 
     return self;

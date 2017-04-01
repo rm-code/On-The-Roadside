@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local Map = require( 'src.map.Map' );
+local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' );
 local TurnManager = require( 'src.turnbased.TurnManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
@@ -35,7 +35,7 @@ function Game.new()
     -- ------------------------------------------------
 
     function self:init( savegame )
-        map = Map.new();
+        map = MapLoader.createRandom()
         map:init( savegame );
 
         factions = Factions.new( map );

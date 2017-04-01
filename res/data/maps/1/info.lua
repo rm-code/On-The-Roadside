@@ -1,4 +1,5 @@
 return {
+    name = 'test',
     ground = {
         { r =  68, g = 137, b =  26, tile = 'tile_grass'       },
         { r =   0, g =  87, b = 132, tile = 'tile_water'       },
