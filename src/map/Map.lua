@@ -28,6 +28,8 @@ function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
         neutral = {},
         enemy   = {}
     };
+    local width
+    local height
 
     -- ------------------------------------------------
     -- Private Methods
@@ -169,9 +171,9 @@ function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
         end
     end
 
-    local function loadSavedTiles( savedmap )
+    local function loadSavedTiles( savedTiles )
         local loadedTiles = {};
-        for _, tile in ipairs( savedmap ) do
+        for _, tile in ipairs( savedTiles ) do
             local x, y = tile.x, tile.y;
             loadedTiles[x] = loadedTiles[x] or {};
             loadedTiles[x][y] = TileFactory.create( x, y, tile.id );
@@ -200,11 +202,13 @@ function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
     end
 
     local function recreateMap( savedmap )
-        tiles = loadSavedTiles( savedmap );
+        width, height = savedmap.width, savedmap.height
+        tiles = loadSavedTiles( savedmap.tiles );
         addNeighbours();
     end
 
     local function createMap()
+        width, height = groundLayer:getDimensions()
         tiles = createTiles();
         createWorldObjects();
         createSpawnPoints();
@@ -317,13 +321,19 @@ function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
     end
 
     function self:serialize()
-        local t = {};
+        local t = {
+            width = width,
+            height = height,
+            tiles = {}
+        }
+
         for x = 1, #tiles do
             for y = 1, #tiles[x] do
-                table.insert( t, tiles[x][y]:serialize() );
+                table.insert( t.tiles, tiles[x][y]:serialize() )
             end
         end
-        return t;
+
+        return t
     end
 
     -- ------------------------------------------------
@@ -346,7 +356,7 @@ function Map.new( infoFile, groundLayer, objectLayer, spawnsLayer )
     -- @treturn number The map's height.
     --
     function self:getDimensions()
-        return groundLayer:getDimensions()
+        return width, height
     end
 
     return self;
