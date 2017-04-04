@@ -1,3 +1,7 @@
+---
+-- @module CombatScreen
+--
+
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Screen = require( 'lib.screenmanager.Screen' )
 local Game = require( 'src.Game' )
