@@ -40,7 +40,7 @@ function love.load()
         mainmenu    = require( 'src.ui.screens.MainMenu'          ),
         ingamemenu  = require( 'src.ui.screens.IngameMenu'        ),
         options     = require( 'src.ui.screens.OptionsScreen'     ),
-        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
+        combat      = require( 'src.ui.screens.CombatScreen'      ),
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
         health      = require( 'src.ui.screens.HealthScreen'      ),

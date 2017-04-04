@@ -13,13 +13,13 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local GameScreen = {};
+local CombatScreen = {};
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function GameScreen.new()
+function CombatScreen.new()
     local self = Screen.new();
 
     local game;
@@ -123,4 +123,4 @@ function GameScreen.new()
     return self;
 end
 
-return GameScreen;
+return CombatScreen;

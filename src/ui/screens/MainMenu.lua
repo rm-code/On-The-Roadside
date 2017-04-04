@@ -104,7 +104,7 @@ function SplashScreen.new()
     end
 
     local function startNewGame()
-        ScreenManager.switch( 'gamescreen' );
+        ScreenManager.switch( 'combat' );
     end
 
     local function loadPreviousGame()
@@ -112,7 +112,7 @@ function SplashScreen.new()
             local save = SaveHandler.load();
 
             if save.gameversion == getVersion() then
-                ScreenManager.switch( 'gamescreen', save );
+                ScreenManager.switch( 'combat', save );
             end
         end
     end
