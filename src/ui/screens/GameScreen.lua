@@ -1,7 +1,7 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Game = require( 'src.Game' );
-local WorldPainter = require( 'src.ui.WorldPainter' );
+local MapPainter = require( 'src.ui.MapPainter' );
 local CameraHandler = require('src.ui.CameraHandler');
 local MousePointer = require( 'src.ui.MousePointer' );
 local UserInterface = require( 'src.ui.UserInterface' );
@@ -23,7 +23,7 @@ function GameScreen.new()
     local self = Screen.new();
 
     local game;
-    local worldPainter;
+    local mapPainter;
     local userInterface;
     local overlayPainter;
     local camera;
@@ -34,8 +34,8 @@ function GameScreen.new()
         game = Game.new();
         game:init( savegame );
 
-        worldPainter = WorldPainter.new( game );
-        worldPainter:init();
+        mapPainter = MapPainter.new( game );
+        mapPainter:init();
 
         userInterface = UserInterface.new( game );
 
@@ -48,7 +48,7 @@ function GameScreen.new()
 
     function self:draw()
         camera:attach();
-        worldPainter:draw();
+        mapPainter:draw();
         overlayPainter:draw();
         camera:detach();
         userInterface:draw();
@@ -60,7 +60,7 @@ function GameScreen.new()
         end
 
         game:update( dt );
-        worldPainter:update( dt );
+        mapPainter:update( dt );
         overlayPainter:update( dt );
         userInterface:update( dt );
 

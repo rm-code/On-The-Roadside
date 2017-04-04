@@ -3,9 +3,9 @@
 -- It uses a spritebatch to optimise the drawing operation since the map
 -- remains static and only needs to be updated when the state of the world
 -- changes.
--- Only tiles which are marked as dirty will be updated by the WorldPainter.
+-- Only tiles which are marked as dirty will be updated by the MapPainter.
 --
--- @module WorldPainter
+-- @module MapPainter
 --
 
 -- ------------------------------------------------
@@ -19,7 +19,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local WorldPainter = {};
+local MapPainter = {};
 
 -- ------------------------------------------------
 -- Constants
@@ -48,10 +48,10 @@ local STANCES = require('src.constants.Stances');
 -- ------------------------------------------------
 
 ---
--- Generates a new instance of the WorldPainter class.
+-- Generates a new instance of the MapPainter class.
 -- @tparam Game game An instance of the game object.
 --
-function WorldPainter.new( game )
+function MapPainter.new( game )
     local self = {};
 
     -- ------------------------------------------------
@@ -77,7 +77,7 @@ function WorldPainter.new( game )
             tile:setSpriteID( id );
             tile:setDirty( true );
         end)
-        Log.debug( string.format('Initialised %d tiles.', spritebatch:getCount()), 'WorldPainter' );
+        Log.debug( string.format('Initialised %d tiles.', spritebatch:getCount()), 'MapPainter' );
     end
 
     ---
@@ -184,7 +184,7 @@ function WorldPainter.new( game )
     -- ------------------------------------------------
 
     ---
-    -- Initialises the WorldPainter.
+    -- Initialises the MapPainter.
     --
     function self:init()
         tileset = TexturePacks.getTileset()
@@ -211,4 +211,4 @@ function WorldPainter.new( game )
     return self;
 end
 
-return WorldPainter;
+return MapPainter;
