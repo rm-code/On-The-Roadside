@@ -12,21 +12,21 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Log = require( 'src.util.Log' );
+local Log = require( 'src.util.Log' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local MapPainter = {};
+local MapPainter = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local COLORS = require( 'src.constants.Colors' );
-local FACTIONS = require( 'src.constants.FACTIONS' );
+local COLORS = require( 'src.constants.Colors' )
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 local CHARACTER_COLORS = {
     ACTIVE = {
@@ -41,7 +41,7 @@ local CHARACTER_COLORS = {
     }
 }
 
-local STANCES = require('src.constants.Stances');
+local STANCES = require('src.constants.Stances')
 
 -- ------------------------------------------------
 -- Constructor
@@ -52,13 +52,13 @@ local STANCES = require('src.constants.Stances');
 -- @tparam Game game An instance of the game object.
 --
 function MapPainter.new( game )
-    local self = {};
+    local self = {}
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
-    local spritebatch;
+    local spritebatch
     local tileset
     local tw, th
 
@@ -74,10 +74,10 @@ function MapPainter.new( game )
     local function initSpritebatch( map )
         map:iterate( function( tile, x, y )
             local id = spritebatch:add( tileset:getSprite( 1 ), x * tw, y * th )
-            tile:setSpriteID( id );
-            tile:setDirty( true );
+            tile:setSpriteID( id )
+            tile:setDirty( true )
         end)
-        Log.debug( string.format('Initialised %d tiles.', spritebatch:getCount()), 'MapPainter' );
+        Log.debug( string.format('Initialised %d tiles.', spritebatch:getCount()), 'MapPainter' )
     end
 
     ---
@@ -90,31 +90,31 @@ function MapPainter.new( game )
     local function selectTileColor( tile, faction, character )
         -- Hide unexplored tiles.
         if not tile:isExplored( faction:getType() ) then
-            return COLORS.DB00;
+            return COLORS.DB00
         end
 
         -- Dim tiles hidden from the player.
         if not faction:canSee( tile ) then
-            return COLORS.DB01;
+            return COLORS.DB01
         end
 
         if tile:isOccupied() then
             if tile:getCharacter() == character then
-                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()];
+                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()]
             else
-                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()];
+                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()]
             end
         end
 
         if not tile:getInventory():isEmpty() then
-            return COLORS.DB16;
+            return COLORS.DB16
         end
 
         if tile:hasWorldObject() then
-            return tile:getWorldObject():getColor();
+            return tile:getWorldObject():getColor()
         end
 
-        return tile:getColor();
+        return tile:getColor()
     end
 
     ---
@@ -123,7 +123,7 @@ function MapPainter.new( game )
     -- @treturn Quad      A quad pointing to the sprite on the active tileset.
     --
     local function selectCharacterTile( tile )
-        local character = tile:getCharacter();
+        local character = tile:getCharacter()
         if character:getBody():getID() == 'dog' then
             return tileset:getSprite( 101 )
         end
@@ -148,7 +148,7 @@ function MapPainter.new( game )
     --
     local function selectTileSprite( tile, faction )
         if tile:isOccupied() and faction:canSee( tile ) then
-            return selectCharacterTile( tile );
+            return selectCharacterTile( tile )
         end
 
         if not tile:getInventory():isEmpty() then
@@ -169,12 +169,12 @@ function MapPainter.new( game )
     -- @tparam Factions factions The faction handler.
     --
     local function updateSpritebatch( map, factions )
-        local faction = factions:getPlayerFaction();
-        map:iterate( function( tile, x, y)
+        local faction = factions:getPlayerFaction()
+        map:iterate( function( tile, x, y )
             if tile:isDirty() then
-                spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ));
+                spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ))
                 spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * tw, y * th )
-                tile:setDirty( false );
+                tile:setDirty( false )
             end
         end)
     end
@@ -189,26 +189,26 @@ function MapPainter.new( game )
     function self:init()
         tileset = TexturePacks.getTileset()
         tw, th = tileset:getTileDimensions()
-        love.graphics.setBackgroundColor( COLORS.DB00 );
+        love.graphics.setBackgroundColor( COLORS.DB00 )
         spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
-        initSpritebatch( game:getMap() );
+        initSpritebatch( game:getMap() )
     end
 
     ---
     -- Draws the game's world.
     --
     function self:draw()
-        love.graphics.draw( spritebatch, 0, 0 );
+        love.graphics.draw( spritebatch, 0, 0 )
     end
 
     ---
     -- Updates the spritebatch for the game's world.
     --
     function self:update()
-        updateSpritebatch( game:getMap(), game:getFactions() );
+        updateSpritebatch( game:getMap(), game:getFactions() )
     end
 
-    return self;
+    return self
 end
 
-return MapPainter;
+return MapPainter
