@@ -38,8 +38,8 @@ function CombatScreen.new()
         game = Game.new()
         game:init( savegame )
 
-        mapPainter = MapPainter.new( game )
-        mapPainter:init()
+        mapPainter = MapPainter.new()
+        mapPainter:init( game:getMap(), game:getFactions() )
 
         userInterface = UserInterface.new( game )
 

@@ -49,9 +49,8 @@ local STANCES = require('src.constants.Stances')
 
 ---
 -- Generates a new instance of the MapPainter class.
--- @tparam Game game An instance of the game object.
 --
-function MapPainter.new( game )
+function MapPainter.new()
     local self = {}
 
     -- ------------------------------------------------
@@ -62,6 +61,8 @@ function MapPainter.new( game )
     local tileset
     local tw, th
 
+    local map, factions
+
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
@@ -69,9 +70,8 @@ function MapPainter.new( game )
     ---
     -- Adds an empty sprite for each tile in the map to the spritebatch, gives
     -- each tile a unique identifier and sets it to dirty for the first update.
-    -- @tparam Map map The game's world map.
     --
-    local function initSpritebatch( map )
+    local function initSpritebatch()
         map:iterate( function( tile, x, y )
             local id = spritebatch:add( tileset:getSprite( 1 ), x * tw, y * th )
             tile:setSpriteID( id )
@@ -165,10 +165,8 @@ function MapPainter.new( game )
     ---
     -- Updates the spritebatch by going through every tile in the map. Only
     -- tiles which have been marked as dirty will be sent to the spritebatch.
-    -- @tparam Map      map      The game's world map.
-    -- @tparam Factions factions The faction handler.
     --
-    local function updateSpritebatch( map, factions )
+    local function updateSpritebatch()
         local faction = factions:getPlayerFaction()
         map:iterate( function( tile, x, y )
             if tile:isDirty() then
@@ -185,13 +183,17 @@ function MapPainter.new( game )
 
     ---
     -- Initialises the MapPainter.
+    -- @tparam Map      nmap      The map to draw.
+    -- @tparam Factions nfactions The factions handler.
     --
-    function self:init()
+    function self:init( nmap, nfactions )
+        map, factions = nmap, nfactions
+
         tileset = TexturePacks.getTileset()
         tw, th = tileset:getTileDimensions()
         love.graphics.setBackgroundColor( COLORS.DB00 )
         spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
-        initSpritebatch( game:getMap() )
+        initSpritebatch()
     end
 
     ---
@@ -205,7 +207,7 @@ function MapPainter.new( game )
     -- Updates the spritebatch for the game's world.
     --
     function self:update()
-        updateSpritebatch( game:getMap(), game:getFactions() )
+        updateSpritebatch()
     end
 
     return self
