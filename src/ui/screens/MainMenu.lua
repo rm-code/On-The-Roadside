@@ -104,7 +104,7 @@ function SplashScreen.new()
     end
 
     local function startNewGame()
-        ScreenManager.switch( 'combat' );
+        ScreenManager.switch( 'gamescreen' );
     end
 
     local function loadPreviousGame()

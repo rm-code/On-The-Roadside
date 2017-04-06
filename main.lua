@@ -44,6 +44,7 @@ function love.load()
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
         health      = require( 'src.ui.screens.HealthScreen'      ),
+        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    )
     };
 
