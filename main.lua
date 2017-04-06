@@ -169,6 +169,10 @@ function love.errhand( msg )
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
 
+    -- Open save directory where the error log is saved.
+    Log.error( 'You can find the error in the latest.log file in your save directory. Opening save directory now ...' );
+    love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
+
     local function draw()
         local pos = love.window.toPixels(70)
         love.graphics.clear(love.graphics.getBackgroundColor())
