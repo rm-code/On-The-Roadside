@@ -1,3 +1,11 @@
+---
+-- @module CombatState
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
 local Object = require( 'src.Object' );
 local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' );
@@ -10,7 +18,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 -- Module
 -- ------------------------------------------------
 
-local Game = {};
+local CombatState = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -22,8 +30,8 @@ local FACTIONS = require( 'src.constants.FACTIONS' );
 -- Constructor
 -- ------------------------------------------------
 
-function Game.new()
-    local self = Object.new():addInstance( 'Game' );
+function CombatState.new()
+    local self = Object.new():addInstance( 'CombatState' )
 
     local map;
     local factions;
@@ -114,4 +122,4 @@ function Game.new()
     return self;
 end
 
-return Game;
+return CombatState

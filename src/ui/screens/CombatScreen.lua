@@ -4,7 +4,7 @@
 
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Screen = require( 'lib.screenmanager.Screen' )
-local Game = require( 'src.Game' )
+local CombatState = require( 'src.CombatState' )
 local MapPainter = require( 'src.ui.MapPainter' )
 local CameraHandler = require('src.ui.CameraHandler')
 local MousePointer = require( 'src.ui.MousePointer' )
@@ -26,7 +26,7 @@ local CombatScreen = {}
 function CombatScreen.new()
     local self = Screen.new()
 
-    local game
+    local combatState
     local mapPainter
     local userInterface
     local overlayPainter
@@ -35,17 +35,17 @@ function CombatScreen.new()
     local tw, th = TexturePacks.getTileDimensions()
 
     function self:init( savegame )
-        game = Game.new()
-        game:init( savegame )
+        combatState = CombatState.new()
+        combatState:init( savegame )
 
         mapPainter = MapPainter.new()
-        mapPainter:init( game:getMap(), game:getFactions() )
+        mapPainter:init( combatState:getMap(), combatState:getFactions() )
 
-        userInterface = UserInterface.new( game )
+        userInterface = UserInterface.new( combatState )
 
-        camera = CameraHandler.new( game:getMap() )
+        camera = CameraHandler.new( combatState:getMap() )
 
-        overlayPainter = OverlayPainter.new( game )
+        overlayPainter = OverlayPainter.new( combatState )
 
         MousePointer.init( camera )
     end
@@ -63,7 +63,7 @@ function CombatScreen.new()
             camera:update( dt )
         end
 
-        game:update( dt )
+        combatState:update( dt )
         mapPainter:update( dt )
         overlayPainter:update( dt )
         userInterface:update( dt )
@@ -81,15 +81,15 @@ function CombatScreen.new()
             userInterface:toggleDebugInfo()
         end
         if scancode == 'escape' then
-            ScreenManager.push( 'ingamemenu', game )
+            ScreenManager.push( 'ingamemenu', combatState )
         end
 
-        game:keypressed( key, scancode, isrepeat )
+        combatState:keypressed( key, scancode, isrepeat )
     end
 
     function self:mousepressed( _, _, button )
         local mx, my = MousePointer.getGridPosition()
-        game:mousepressed( mx, my, button )
+        combatState:mousepressed( mx, my, button )
     end
 
     function self:mousefocus( f )
@@ -107,18 +107,18 @@ function CombatScreen.new()
 
         MousePointer.clear()
 
-        game:close()
+        combatState:close()
     end
 
     observations[#observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
+        if not combatState:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return
         end
         camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
     end)
 
     observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
+        if not combatState:getFactions():getPlayerFaction():canSee( character:getTile() ) then
             return
         end
         camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
