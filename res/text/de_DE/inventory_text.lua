@@ -3,6 +3,7 @@ locale.identifier = 'de_DE';
 
 locale.strings = {
     ['inventory_inventory'] = "Inventar",
+    ['inventory_base'] = "Basis Inventar",
     ['inventory_equipment'] = "Ausrüstung",
     ['inventory_tile_inventory'] = "Feld Inventar",
     ['inventory_container_inventory'] = "Container Inventar",

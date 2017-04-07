@@ -69,6 +69,10 @@ function UIList.new()
         return cursor;
     end
 
+    function self:getElementCount()
+        return #elements
+    end
+
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------

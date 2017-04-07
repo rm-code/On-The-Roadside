@@ -9,6 +9,9 @@ locale.strings = {
     ['ui_win'] = "Alle Gegner sind tot. Du hast gewonnen!\n\nDrücke eine Taste um fortzufahren...",
     ['ui_lose'] = "Dein Team ist tot. Du hast verloren!\n\nDrücke eine Taste um fortzufahren...",
 
+    -- Base Screen
+    ['ui_stalkers'] = "STALKER",
+
     -- Health screen
     ['ui_character_type'] = "Typ: ",
     ['ui_character_name'] = "Name: ",

@@ -78,6 +78,12 @@ function InventoryScreen.new()
     local function createOtherInventory()
         local x, y, cw = getOtherColumnOffset(), 3 * th, getColumnWidth()
 
+        if target:instanceOf( 'Inventory' ) then
+            lists.other = UIInventoryList.new( x, y, cw, 'inventory_base', target )
+            lists.other:init()
+            return
+        end
+
         -- Create inventory for container world objects.
         if target:hasWorldObject() and target:getWorldObject():isContainer() then
             lists.other = UIInventoryList.new( x, y, cw, 'inventory_container_inventory', target:getWorldObject():getInventory() );
@@ -285,7 +291,10 @@ function InventoryScreen.new()
     -- Updates the inventory lists.
     --
     function self:update( dt )
-        target:setDirty( true );
+        if target:instanceOf( 'Tile' ) then
+            target:setDirty( true )
+        end
+
         for _, list in pairs( lists ) do
             list:update( dt );
         end

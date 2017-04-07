@@ -26,7 +26,7 @@ function GameScreen.new()
     local self = Screen.new()
 
     function self:init()
-        ScreenManager.push( 'combat' )
+        ScreenManager.push( 'base' )
     end
 
     function self:draw()
