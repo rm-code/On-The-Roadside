@@ -17,12 +17,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local PathOverlay = {}
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' )
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -42,13 +36,13 @@ function PathOverlay.new( game, pulser )
     local function selectPathNodeColor( value, total )
         local fraction = value / total
         if fraction < 0 then
-            return COLORS.DB27
+            return TexturePacks.getColor( 'ui_path_ap_low' )
         elseif fraction <= 0.2 then
-            return COLORS.DB05
+            return TexturePacks.getColor( 'ui_path_ap_med' )
         elseif fraction <= 0.6 then
-            return COLORS.DB08
+            return TexturePacks.getColor( 'ui_path_ap_high' )
         elseif fraction <= 1.0 then
-            return COLORS.DB09
+            return TexturePacks.getColor( 'ui_path_ap_full' )
         end
     end
 
@@ -74,7 +68,7 @@ function PathOverlay.new( game, pulser )
                 local color = selectPathNodeColor( ap, total )
                 love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() )
                 love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
-                love.graphics.setColor( COLORS.RESET )
+                TexturePacks.resetColor()
                 love.graphics.setBlendMode( 'alpha' )
             end)
         end

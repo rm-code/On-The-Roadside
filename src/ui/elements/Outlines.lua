@@ -17,12 +17,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Outlines = {}
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' )
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -71,67 +65,67 @@ function Outlines.new()
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 198
+                return TexturePacks.getSprite( 'ui_outlines_nsew' )
         elseif -- Vertically connected.
             getGridIndex( x - 1, y     ) == 0 and
             getGridIndex( x + 1, y     ) == 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 180
+                return TexturePacks.getSprite( 'ui_outlines_ns' )
         elseif -- Horizontally connected.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) == 0 and
             getGridIndex( x    , y + 1 ) == 0 then
-                return 197
+                return TexturePacks.getSprite( 'ui_outlines_ew' )
         elseif -- Bottom right corner.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) == 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) == 0 then
-                return 218
+                return TexturePacks.getSprite( 'ui_outlines_nw' )
         elseif -- Top left corner.
             getGridIndex( x - 1, y     ) == 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) == 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 219
+                return TexturePacks.getSprite( 'ui_outlines_se' )
         elseif -- Top right corner.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) == 0 and
             getGridIndex( x    , y - 1 ) == 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 192
+                return TexturePacks.getSprite( 'ui_outlines_sw' )
         elseif -- Bottom left corner.
             getGridIndex( x - 1, y     ) == 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) == 0 then
-                return 193
+                return TexturePacks.getSprite( 'ui_outlines_ne' )
         elseif -- T-intersection down.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) == 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 195
+                return TexturePacks.getSprite( 'ui_outlines_sew' )
         elseif -- T-intersection up.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) == 0 then
-                return 194
+                return TexturePacks.getSprite( 'ui_outlines_new' )
         elseif -- T-intersection right.
             getGridIndex( x - 1, y     ) == 0 and
             getGridIndex( x + 1, y     ) ~= 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 196
+                return TexturePacks.getSprite( 'ui_outlines_nse' )
         elseif -- T-intersection left.
             getGridIndex( x - 1, y     ) ~= 0 and
             getGridIndex( x + 1, y     ) == 0 and
             getGridIndex( x    , y - 1 ) ~= 0 and
             getGridIndex( x    , y + 1 ) ~= 0 then
-                return 181
+                return TexturePacks.getSprite( 'ui_outlines_nsw' )
         end
         return 1
     end
@@ -168,13 +162,13 @@ function Outlines.new()
     -- @tparam number py The y coordinate to draw the outline grid from.
     --
     function self:draw( px, py )
-        love.graphics.setColor( COLORS.DB15 )
+        TexturePacks.setColor( 'ui_outlines' )
         for x, line in pairs( grid ) do
             for y, sprite in pairs( line ) do
-                love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( sprite ), px + x * tw, py + y * th )
+                love.graphics.draw( tileset:getSpritesheet(), sprite, px + x * tw, py + y * th )
             end
         end
-        love.graphics.setColor( COLORS.RESET )
+        TexturePacks.resetColor()
     end
 
     return self

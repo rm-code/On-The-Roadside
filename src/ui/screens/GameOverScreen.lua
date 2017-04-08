@@ -14,7 +14,6 @@ local GameOverScreen = {};
 -- Constants
 -- ------------------------------------------------
 
-local COLORS = require( 'src.constants.Colors' );
 local SCREEN_WIDTH  = 30;
 local SCREEN_HEIGHT = 16;
 
@@ -57,9 +56,8 @@ function GameOverScreen.new()
     end
 
     function self:draw()
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-        love.graphics.setColor( COLORS.DB22 );
 
         outlines:draw( px, py )
 

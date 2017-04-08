@@ -30,12 +30,13 @@ function TexturePack.new()
     local name
     local font
     local tileset
+    local colors
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init( path, source )
+    function self:init( path, source, spriteInfos, colorInfos )
         name = source.name
 
         -- Generate font.
@@ -44,8 +45,10 @@ function TexturePack.new()
 
         -- Generate tileset.
         local t = source.tileset
-        tileset = Tileset.new( path .. t.source, t.tiles.width, t.tiles.height )
+        tileset = Tileset.new( path .. t.source, spriteInfos, t.tiles.width, t.tiles.height )
         tileset:init()
+
+        colors = colorInfos
     end
 
     -- ------------------------------------------------
@@ -62,6 +65,10 @@ function TexturePack.new()
 
     function self:getTileset()
         return tileset
+    end
+
+    function self:getColor( id )
+        return colors[id]
     end
 
     return self

@@ -22,28 +22,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local MapPainter = {}
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' )
-local FACTIONS = require( 'src.constants.FACTIONS' )
-
-local CHARACTER_COLORS = {
-    ACTIVE = {
-        [FACTIONS.ALLIED]  = COLORS.DB17,
-        [FACTIONS.NEUTRAL] = COLORS.DB09,
-        [FACTIONS.ENEMY]   = COLORS.DB05
-    },
-    INACTIVE = {
-        [FACTIONS.ALLIED]  = COLORS.DB15,
-        [FACTIONS.NEUTRAL] = COLORS.DB10,
-        [FACTIONS.ENEMY]   = COLORS.DB27
-    }
-}
-
-local STANCES = require( 'src.constants.STANCES' )
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -73,7 +51,7 @@ function MapPainter.new()
     --
     local function initSpritebatch()
         map:iterate( function( tile, x, y )
-            local id = spritebatch:add( tileset:getSprite( 1 ), x * tw, y * th )
+            local id = spritebatch:add( tileset:getSprite( 'tile_empty' ), x * tw, y * th )
             tile:setSpriteID( id )
             tile:setDirty( true )
         end)
@@ -90,31 +68,31 @@ function MapPainter.new()
     local function selectTileColor( tile, faction, character )
         -- Hide unexplored tiles.
         if not tile:isExplored( faction:getType() ) then
-            return COLORS.DB00
+            return TexturePacks.getColor( 'tile_unexplored' )
         end
 
         -- Dim tiles hidden from the player.
         if not faction:canSee( tile ) then
-            return COLORS.DB01
+            return TexturePacks.getColor( 'tile_unseen' )
         end
 
         if tile:isOccupied() then
-            if tile:getCharacter() == character then
-                return CHARACTER_COLORS.ACTIVE[tile:getCharacter():getFaction():getType()]
-            else
-                return CHARACTER_COLORS.INACTIVE[tile:getCharacter():getFaction():getType()]
+            local tchar = tile:getCharacter()
+            if tchar == character then
+                return TexturePacks.getColor( tchar:getFaction():getType() .. '_active' )
             end
+            return TexturePacks.getColor( tchar:getFaction():getType() .. '_inactive' )
         end
 
         if not tile:getInventory():isEmpty() then
-            return COLORS.DB16
+            return TexturePacks.getColor( 'items' )
         end
 
         if tile:hasWorldObject() then
-            return tile:getWorldObject():getColor()
+            return TexturePacks.getColor( tile:getWorldObject():getID() )
         end
 
-        return tile:getColor()
+        return TexturePacks.getColor( tile:getID() )
     end
 
     ---
@@ -124,20 +102,18 @@ function MapPainter.new()
     --
     local function selectCharacterTile( tile )
         local character = tile:getCharacter()
-        if character:getBody():getID() == 'dog' then
-            return tileset:getSprite( 101 )
-        end
-        if character:getStance() == STANCES.STAND then
-            if character:getFaction():getType() == FACTIONS.ENEMY then
-                return tileset:getSprite( 3 )
+        return tileset:getSprite( character:getBody():getID(), character:getStance() )
+    end
+
+    local function selectWorldObjectSprite( worldObject )
+        if worldObject:isOpenable() then
+            if worldObject:isPassable() then
+                return tileset:getSprite( worldObject:getID(), 'open' )
             else
-                return tileset:getSprite( 2 )
+                return tileset:getSprite( worldObject:getID(), 'closed' )
             end
-        elseif character:getStance() == STANCES.CROUCH then
-            return tileset:getSprite( 32 )
-        elseif character:getStance() == STANCES.PRONE then
-            return tileset:getSprite( 23 )
         end
+        return tileset:getSprite( worldObject:getID() )
     end
 
     ---
@@ -152,14 +128,14 @@ function MapPainter.new()
         end
 
         if not tile:getInventory():isEmpty() then
-            return tileset:getSprite( 34 )
+            return tileset:getSprite( 'items' )
         end
 
         if tile:hasWorldObject() then
-            return tileset:getSprite( tile:getWorldObject():getSprite() )
+            return selectWorldObjectSprite( tile:getWorldObject() )
         end
 
-        return tileset:getSprite( tile:getSprite() )
+        return tileset:getSprite( tile:getID() )
     end
 
     ---
@@ -191,7 +167,7 @@ function MapPainter.new()
 
         tileset = TexturePacks.getTileset()
         tw, th = tileset:getTileDimensions()
-        love.graphics.setBackgroundColor( COLORS.DB00 )
+        TexturePacks.setBackgroundColor()
         spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
         initSpritebatch()
     end

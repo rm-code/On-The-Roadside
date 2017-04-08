@@ -1,9 +1,8 @@
 local Object = require( 'src.Object' );
 local Translator = require( 'src.util.Translator' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local UIInventoryItem = {};
-
-local COLORS = require( 'src.constants.Colors' );
 
 function UIInventoryItem.new( x, y, width, height, item )
     local self = Object.new():addInstance( 'UIInventoryItem' );
@@ -24,14 +23,15 @@ function UIInventoryItem.new( x, y, width, height, item )
 
     function self:draw()
         if mouseOver then
-            love.graphics.setColor( COLORS.DB15 );
+            TexturePacks.setColor( 'ui_equipment_mouseover' )
         else
-            love.graphics.setColor( COLORS.DB00 );
+            TexturePacks.setColor( 'sys_background' )
         end
         love.graphics.rectangle( 'fill', x, y, width, height );
 
-        love.graphics.setColor( COLORS.DB20 );
+        TexturePacks.setColor( 'ui_equipment_item' )
         love.graphics.print( createLabel(), x, y );
+        TexturePacks.resetColor()
     end
 
     function self:update()

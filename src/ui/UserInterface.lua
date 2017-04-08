@@ -10,12 +10,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UserInterface = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -107,14 +101,14 @@ function UserInterface.new( game )
 
         if cost then
             local costString, costOffset = ' - ' .. cost, font:measureWidth( apString )
-            love.graphics.setColor( COLORS.DB27 );
+            TexturePacks.setColor( 'ui_ap_cost' )
             love.graphics.print( costString, tw + costOffset, love.graphics.getHeight() - th * 4 )
 
             local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, font:measureWidth( apString .. costString )
-            love.graphics.setColor( COLORS.DB10 );
+            TexturePacks.setColor( 'ui_ap_cost_result' )
             love.graphics.print( resultString, tw + resultOffset, love.graphics.getHeight() - th * 4 )
         end
-        love.graphics.setColor( COLORS.RESET );
+        TexturePacks.resetColor()
     end
 
     function self:draw()

@@ -15,7 +15,6 @@ local HealthScreen = {};
 -- Constants
 -- ------------------------------------------------
 
-local COLORS = require( 'src.constants.Colors' );
 local SCREEN_WIDTH  = 30;
 local SCREEN_HEIGHT = 16;
 
@@ -67,9 +66,8 @@ function HealthScreen.new()
     end
 
     function self:draw()
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-        love.graphics.setColor( COLORS.DB22 );
 
         outlines:draw( px, py )
 
@@ -79,19 +77,19 @@ function HealthScreen.new()
                 counter = counter + 1;
                 local status;
                 if bodyPart:isDestroyed() then
-                    love.graphics.setColor( COLORS.DB24 );
+                    TexturePacks.setColor( 'ui_health_destroyed_limb' )
                     status = 'DED'
                 elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.2 then
-                    love.graphics.setColor( COLORS.DB27 );
+                    TexturePacks.setColor( 'ui_health_badly_damaged_limb' )
                     status = 'OUCH'
                 elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.4 then
-                    love.graphics.setColor( COLORS.DB05 );
+                    TexturePacks.setColor( 'ui_health_damaged_limb' )
                     status = 'MEH'
                 elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
-                    love.graphics.setColor( COLORS.DB08 );
+                    TexturePacks.setColor( 'ui_health_ok_limb' )
                     status = 'OK'
                 else
-                    love.graphics.setColor( COLORS.DB10 );
+                    TexturePacks.setColor( 'ui_health_fine_limb' )
                     status = 'FINE'
                 end
                 love.graphics.print( Translator.getText( bodyPart:getID() ), px + tw, py + th * counter )
@@ -100,22 +98,22 @@ function HealthScreen.new()
                 if bodyPart:isBleeding() then
                     local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
                     if bodyPart:getBloodLoss() / 1.0 < 0.2 then
-                        love.graphics.setColor( COLORS.DB10 );
+                        TexturePacks.setColor( 'ui_health_bleeding_fine' )
                     elseif bodyPart:getBloodLoss() / 1.0 < 0.4 then
-                        love.graphics.setColor( COLORS.DB08 );
+                        TexturePacks.setColor( 'ui_health_bleeding_ok' )
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
-                        love.graphics.setColor( COLORS.DB05 );
+                        TexturePacks.setColor( 'ui_health_bleeding' )
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
-                        love.graphics.setColor( COLORS.DB27 );
+                        TexturePacks.setColor( 'ui_health_bleeding_bad' )
                     end
                     love.graphics.printf( str, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
                 end
             end
         end
 
-        love.graphics.setColor( COLORS.DB20 );
+        TexturePacks.setColor( 'ui_text' )
         love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + tw, py + th )
-        love.graphics.setColor( COLORS.RESET );
+        TexturePacks.resetColor()
     end
 
     function self:keypressed( key )

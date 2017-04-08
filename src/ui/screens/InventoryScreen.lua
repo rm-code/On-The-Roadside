@@ -15,12 +15,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local InventoryScreen = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -236,10 +230,9 @@ function InventoryScreen.new()
     -- Draws the inventory lists and the dragged item (if there is one).
     --
     function self:draw()
-        -- Draw a transparent overlay.
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
-        love.graphics.setColor( COLORS.RESET );
+        TexturePacks.resetColor()
 
         outlines:draw( 0, 0 )
         drawHeaders( love.graphics.getWidth() );
@@ -260,12 +253,12 @@ function InventoryScreen.new()
         if dragboard then
             local mx, my = love.mouse.getPosition();
 
-            love.graphics.setColor( COLORS.DB20 );
+            TexturePacks.setColor( 'ui_inventory_item' )
             for _, list in pairs( lists ) do
                 if list:isMouseOver() then
                     local di = dragboard.item;
                     if not list:doesFit( di ) then
-                        love.graphics.setColor( COLORS.DB27 );
+                        TexturePacks.setColor( 'ui_inventory_full' )
                         break;
                     end
                 end
@@ -277,7 +270,7 @@ function InventoryScreen.new()
                 str = string.format( '%s (%d)', str, item:getItemCount() );
             end
             love.graphics.print( str, mx, my );
-            love.graphics.setColor( COLORS.DB20 );
+            TexturePacks.setColor( 'ui_text' )
 
             itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
             itemDescriptionArea:draw();

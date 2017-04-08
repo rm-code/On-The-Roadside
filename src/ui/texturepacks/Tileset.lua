@@ -23,11 +23,12 @@ local Tileset = {}
 ---
 -- Creates a new instance of the Tileset class.
 -- @tparam  string source  The path to load the spritesheet file from.
+-- @tparam  table  infos   A table mapping tile and object IDs to sprite information.
 -- @tparam  number twidth  The width of one tile.
 -- @tparam  number theight The height of one tile.
 -- @treturn Font           The new Tileset instance.
 --
-function Tileset.new( source, twidth, theight )
+function Tileset.new( source, infos, twidth, theight )
     local self = Object.new():addInstance( 'Tileset' )
 
     -- ------------------------------------------------
@@ -60,8 +61,8 @@ function Tileset.new( source, twidth, theight )
     -- Getters
     -- ------------------------------------------------
 
-    function self:getSprite( number )
-        return sprites[number]
+    function self:getSprite( id, alt )
+        return alt and sprites[infos[id][alt]] or sprites[infos[id]]
     end
 
     function self:getSpritesheet()

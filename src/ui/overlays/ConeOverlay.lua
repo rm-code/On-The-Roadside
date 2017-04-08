@@ -24,7 +24,6 @@ local ConeOverlay = {}
 -- Constants
 -- ------------------------------------------------
 
-local COLORS       = require( 'src.constants.Colors' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 -- ------------------------------------------------
@@ -163,19 +162,19 @@ function ConeOverlay.new( game, pulser )
 
     function self:draw()
         for tile, status in pairs( cone ) do
+            local color
             if status == 1 then
-                love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
+                color = TexturePacks.getColor( 'ui_shot_valid' )
             elseif status == 2 then
-                love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
+                color = TexturePacks.getColor( 'ui_shot_potentially_blocked' )
             elseif status == 3 then
-                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
+                color = TexturePacks.getColor( 'ui_shot_blocked' )
             end
+            love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() )
+            love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
             cone[tile] = nil
         end
-        love.graphics.setColor( COLORS.RESET )
+        TexturePacks.resetColor()
     end
 
     return self

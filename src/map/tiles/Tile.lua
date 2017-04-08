@@ -32,8 +32,6 @@ function Tile.new( x, y, template )
     local id = template.id;
     local movementCost = template.movementCost;
     local passable = template.passable;
-    local sprite = template.sprite;
-    local color = template.color;
 
     local spriteID;
     local dirty;
@@ -143,14 +141,6 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Returns a table containing the RGB values for this tile.
-    -- @return (table) The table containing the RGB values.
-    --
-    function self:getColor()
-        return color;
-    end
-
-    ---
     -- Returns the tile's unique spriteID.
     -- @return (number) The tile's spriteID.
     --
@@ -190,13 +180,6 @@ function Tile.new( x, y, template )
     --
     function self:getInventory()
         return inventory;
-    end
-
-    ---
-    -- Gets the tile's index on the spritesheet.
-    -- @return (number) The sprite index.
-    function self:getSprite()
-        return sprite;
     end
 
     ---

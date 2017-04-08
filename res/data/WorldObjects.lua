@@ -1,8 +1,6 @@
 return {
     {
         id = 'worldobject_chair',
-        sprite = 111,
-        color = { 143, 86, 59 },
         size = 15,
         hp = 45,
         interactionCost = {
@@ -21,8 +19,6 @@ return {
     },
     {
         id = 'worldobject_crate',
-        sprite = 247,
-        color = { 143, 86, 59 },
         size = 50,
         hp = 110,
         energyReduction = 50,
@@ -37,9 +33,6 @@ return {
     },
     {
         id = 'worldobject_door',
-        sprite = 44,
-        openSprite = 96,
-        color = { 102, 57, 49 },
         size = 100,
         hp = 110,
         interactionCost = {
@@ -59,8 +52,6 @@ return {
     },
     {
         id = 'worldobject_fence',
-        sprite = 62,
-        color = { 143, 86, 59 },
         size = 35,
         hp = 55,
         interactionCost = {
@@ -80,9 +71,6 @@ return {
     },
     {
         id = 'worldobject_fencegate',
-        sprite = 241,
-        openSprite = 96,
-        color = { 143, 86, 59 },
         size = 40,
         hp = 65,
         interactionCost = {
@@ -102,8 +90,6 @@ return {
     },
     {
         id = 'worldobject_lowwall',
-        sprite = 62,
-        color = { 132, 126, 135 },
         size = 35,
         interactionCost = {
             stand  = 5,
@@ -117,8 +103,6 @@ return {
     },
     {
         id = 'worldobject_table',
-        sprite = 211,
-        color = { 143, 86, 59 },
         size = 25,
         hp = 65,
         interactionCost = {
@@ -137,8 +121,6 @@ return {
     },
     {
         id = 'worldobject_tree',
-        sprite = 7,
-        color = { 75, 105, 47 },
         size = 100,
         destructible = false,
         blocksVision = true,
@@ -146,8 +128,6 @@ return {
     },
     {
         id = 'worldobject_wall',
-        sprite = 36,
-        color = { 132, 126, 135 },
         size = 100,
         destructible = false,
         blocksVision = true,
@@ -155,8 +135,6 @@ return {
     },
     {
         id = 'worldobject_window',
-        sprite = 177,
-        color = { 95, 205, 228 },
         size = 100,
         hp = 25,
         energyReduction = 10,

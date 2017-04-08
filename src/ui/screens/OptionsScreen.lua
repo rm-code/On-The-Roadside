@@ -17,7 +17,6 @@ local OptionsScreen = {};
 -- ------------------------------------------------
 
 local FIELD_WIDTH = 300;
-local COLORS = require( 'src.constants.Colors' );
 
 local TITLE_POSITION = 2;
 local TITLE_STRING = {
@@ -58,13 +57,13 @@ function OptionsScreen.new()
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
                 if w == '@' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB18;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
                     coloredtext[#coloredtext + 1] = 'O';
                 elseif w == '!' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
                     coloredtext[#coloredtext + 1] = w;
                 else
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
                     coloredtext[#coloredtext + 1] = w;
                 end
                 title:add( coloredtext, 0, i * font:get():getHeight() )
