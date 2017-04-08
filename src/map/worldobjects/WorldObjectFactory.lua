@@ -11,7 +11,7 @@ local WorldObjectFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_DIRECTORY  = 'res/data/worldobjects/';
+local TEMPLATE_FILE  = 'res.data.WorldObjects';
 
 -- ------------------------------------------------
 -- Private Variables
@@ -24,23 +24,17 @@ local worldobjects = {};
 -- ------------------------------------------------
 
 ---
--- Loads all WorldObject templates found in the specified directory.
--- @param dir (string) The directory to load the templates from.
+-- Loads all WorldObject-templates found in the specified file.
+-- @tparam string src The file to load the templates from.
 --
-local function load( dir )
-    local files = love.filesystem.getDirectoryItems( dir );
-    for i, file in ipairs( files ) do
-        if love.filesystem.isFile( dir .. file ) then
-            local status, loaded = pcall( love.filesystem.load, dir .. file );
-            if not status then
-                Log.warn( 'Can not load ' .. dir .. file );
-            else
-                local template = loaded();
-                local id = template.id;
-                worldobjects[id] = template;
-                Log.debug( string.format( '  %d. %s', i, template.id ));
-            end
-        end
+local function load( src )
+    local module = require( src )
+    local counter = 0
+
+    for _, template in ipairs( module ) do
+        worldobjects[template.id] = template
+        counter = counter + 1
+        Log.debug( string.format( '  %3d. %s', counter, template.id ))
     end
 end
 
@@ -53,7 +47,7 @@ end
 --
 function WorldObjectFactory.loadTemplates()
     Log.debug( "Load WorldObject Templates:" )
-    load( TEMPLATE_DIRECTORY );
+    load( TEMPLATE_FILE )
 end
 
 ---
