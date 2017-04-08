@@ -47,7 +47,15 @@ function CombatState.new()
         map:init( savegame );
 
         factions = Factions.new( map );
-        factions:init( savegame );
+        factions:init()
+
+        if savegame then
+            factions:loadCharacters( savegame.factions )
+        else
+            factions:spawnCharacters( 10, FACTIONS.ALLIED  )
+            factions:spawnCharacters(  5, FACTIONS.NEUTRAL )
+            factions:spawnCharacters( 10, FACTIONS.ENEMY   )
+        end
 
         turnManager = TurnManager.new( map, factions );
 

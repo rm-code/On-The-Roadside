@@ -60,35 +60,6 @@ function Factions.new( map )
         return active:getObject();
     end
 
-    ---
-    -- Spawns characters on the map.
-    -- @param amount  (number) The amount of characters to spawn.
-    -- @param faction (string) The faction identifier.
-    --
-    local function spawnCharacters( amount, faction )
-        for _ = 1, amount do
-            local spawn = map:findSpawnPoint( faction );
-            -- TODO Character spawn based on templates.
-            local type = 'human';
-            if faction == FACTIONS.NEUTRAL then
-                type = 'dog';
-            end
-            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction ), type ));
-        end
-    end
-
-    local function loadCharacters( savedFactions )
-        for type, sfaction in pairs( savedFactions ) do
-            local faction = self:findFaction( type );
-            for _, savedCharacter in ipairs( sfaction ) do
-                if not savedCharacter.body.statusEffects[STATUS_EFFECTS.DEATH] then
-                    local tile = map:getTileAt( savedCharacter.x, savedCharacter.y );
-                    faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ));
-                end
-            end
-        end
-    end
-
     -- ------------------------------------------------
     -- Public Functions
     -- ------------------------------------------------
@@ -127,26 +98,43 @@ function Factions.new( map )
     -- Initialises the Factions object by creating a linked list of factions and
     -- spawning the characters for each faction at random locations on the map.
     --
-    function self:init( savegame )
+    function self:init()
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
         player = addFaction( Faction.new( FACTIONS.ALLIED,  false ));
-
-        if savegame then
-            loadCharacters( savegame.factions );
-            return;
-        end
-
-        self:spawnCharacters();
     end
 
     ---
     -- Spawns characters on the map.
+    -- @tparam number amount  The amount of characters to spawn.
+    -- @tparam string faction The faction to spawn the characters for.
     --
-    function self:spawnCharacters()
-        spawnCharacters( 10, FACTIONS.ALLIED  );
-        spawnCharacters(  5, FACTIONS.NEUTRAL );
-        spawnCharacters( 10, FACTIONS.ENEMY   );
+    function self:spawnCharacters( amount, faction )
+        for _ = 1, amount do
+            local spawn = map:findSpawnPoint( faction )
+            -- TODO Character spawn based on templates.
+            local type = 'human'
+            if faction == FACTIONS.NEUTRAL then
+                type = 'dog'
+            end
+            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction ), type ))
+        end
+    end
+
+    ---
+    -- Recreates saved charaters for each faction.
+    -- @tparam table savedFactions A table containing the information to load all characters.
+    --
+    function self:loadCharacters( savedFactions )
+        for type, sfaction in pairs( savedFactions ) do
+            local faction = self:findFaction( type )
+            for _, savedCharacter in ipairs( sfaction ) do
+                if not savedCharacter.body.statusEffects[STATUS_EFFECTS.DEATH] then
+                    local tile = map:getTileAt( savedCharacter.x, savedCharacter.y )
+                    faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ))
+                end
+            end
+        end
     end
 
     ---
