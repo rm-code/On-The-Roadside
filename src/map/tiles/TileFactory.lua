@@ -1,11 +1,21 @@
-local Log = require( 'src.util.Log' );
-local Tile = require( 'src.map.tiles.Tile' );
+---
+-- The TileFactory takes care of loading templates for all tiles in the game
+-- and provides a public function for creating tiles based on their ID.
+-- @module TileFactory
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Log = require( 'src.util.Log' )
+local Tile = require( 'src.map.tiles.Tile' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local TileFactory = {};
+local TileFactory = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -17,7 +27,7 @@ local TEMPLATE_FILE  = 'res.data.Tiles'
 -- Private Variables
 -- ------------------------------------------------
 
-local tiles = {};
+local tiles = {}
 
 -- ------------------------------------------------
 -- Private Functions
@@ -52,15 +62,15 @@ end
 
 ---
 -- Creates a tile of a certain id at the given coordinates.
--- @param x    (number) The tile's coordinate along the x-axis.
--- @param y    (number) The tile's coordinate along the y-axis.
--- @param id   (string) The id of Tile to create.
--- @return     (Tile)   The newly created Tile.
+-- @tparam  number  x   The tile's coordinate along the x-axis.
+-- @tparam  number  y   The tile's coordinate along the y-axis.
+-- @tparam  string  id  The id of Tile to create.
+-- @treturn Tile        The newly created Tile.
 --
 function TileFactory.create( x, y, id )
-    local template = tiles[id];
-    assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ));
-    return Tile.new( x, y, template );
+    local template = tiles[id]
+    assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ))
+    return Tile.new( x, y, template )
 end
 
-return TileFactory;
+return TileFactory
