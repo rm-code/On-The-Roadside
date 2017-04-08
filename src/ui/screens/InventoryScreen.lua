@@ -105,7 +105,7 @@ function InventoryScreen.new()
 
     local function returnItemToOrigin( item, origin )
         if origin:instanceOf( 'EquipmentSlot' ) then
-            origin:addItem( item );
+            character:getEquipment():addItem( origin, item )
         else
             origin:drop( item );
         end
