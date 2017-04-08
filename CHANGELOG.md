@@ -1,3 +1,11 @@
+# Version 0.8.1.949 - 2017-04-09
+
+## Fixes
+- Fixed bug where a character's inventory volume wasn't reset correctly
+
+
+
+
 # Version 0.8.0.933 - 2017-04-02
 
 ## Additions
