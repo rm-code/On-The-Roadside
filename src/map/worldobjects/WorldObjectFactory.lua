@@ -1,23 +1,34 @@
-local Log = require( 'src.util.Log' );
-local WorldObject = require( 'src.map.worldobjects.WorldObject' );
+---
+-- The WorldObjectFactory takes care of loading templates for and creating
+-- world objects such as doors, trees and basically any object that can be
+-- placed on a tile.
+-- @module WorldObjectFactory
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Log = require( 'src.util.Log' )
+local WorldObject = require( 'src.map.worldobjects.WorldObject' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local WorldObjectFactory = {};
+local WorldObjectFactory = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_FILE  = 'res.data.WorldObjects';
+local TEMPLATE_FILE  = 'res.data.WorldObjects'
 
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
 
-local worldobjects = {};
+local worldobjects = {}
 
 -- ------------------------------------------------
 -- Private Functions
@@ -52,13 +63,13 @@ end
 
 ---
 -- Creates a WorldObject of the given id.
--- @param id   (string)      The id of the WorldObject to create.
--- @return     (WorldObject) The newly created WorldObject.
+-- @tparam  string  id  The id of the WorldObject to create.
+-- @treturn WorldObject The newly created WorldObject.
 --
 function WorldObjectFactory.create( id )
-    local template = worldobjects[id];
-    assert( template, string.format( 'Requested worldobject id (%s) doesn\'t exist!', id ));
-    return WorldObject.new( template );
+    local template = worldobjects[id]
+    assert( template, string.format( 'Requested worldobject id (%s) doesn\'t exist!', id ))
+    return WorldObject.new( template )
 end
 
-return WorldObjectFactory;
+return WorldObjectFactory
