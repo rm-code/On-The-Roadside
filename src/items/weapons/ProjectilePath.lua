@@ -160,14 +160,13 @@ end
 -- The height of the target is halved and a random value is either added to or
 -- subtracted from it. The random value is based on half the target's size and
 -- an additional modifier.
--- @tparam  Tile   origin The starting tile.
--- @tparam  Tile   target The target tile.
--- @tparam  number steps  The distance to the target.
--- @treturn number        The calculated falloff value.
+-- @tparam  Tile   origin  The starting tile.
+-- @tparam  number theight The target's height.
+-- @tparam  number steps   The distance to the target.
+-- @treturn number         The calculated falloff value.
 --
-local function calculateFalloff( origin, target, steps )
+local function calculateFalloff( origin, theight, steps )
     local oheight = origin:getHeight()
-    local theight = target:getHeight()
 
     -- TODO base on skills?
     -- This takes the center of the target and adds or subtracts a random value
@@ -204,12 +203,14 @@ end
 ---
 -- Creates the path for a particular projectile.
 -- @param character (Character) The character shooting the weapon.
--- @param target    (Tile)      The target tile.
+-- @tparam number tx The target's x-coordinate.
+-- @tparam number ty The target's y-coordinate.
+-- @tparam number th The target's height.
 -- @param weapon    (Weapon)    The used weapon.
 -- @param count     (number)    Determines how many projectiles have been fired already.
 -- @return          (table)     A sequence containing all tiles of the projectile's path.
 --
-function ProjectilePath.calculate( character, target, weapon, count )
+function ProjectilePath.calculate( character, tx, ty, th, weapon, count )
     -- Calculate the angle of derivation.
     local maxDerivation = ProjectilePath.getMaximumDerivation( character, weapon, count );
     local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
@@ -217,14 +218,13 @@ function ProjectilePath.calculate( character, target, weapon, count )
     -- Apply the angle to find the final target tile.
     local origin = character:getTile();
     local px, py = origin:getPosition();
-    local tx, ty = target:getPosition();
 
     local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDerivation, love.math.random( 90, 130 ) / 100 );
     nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
 
     -- Determine the height falloff for the projectile.
     local _, steps = Bresenham.line( px, py, nx, ny )
-    local falloff = calculateFalloff( origin, target, steps )
+    local falloff = calculateFalloff( origin, th, steps )
 
     -- Get the coords of all tiles the projectile passes on the way to its target.
     local tiles = {};
