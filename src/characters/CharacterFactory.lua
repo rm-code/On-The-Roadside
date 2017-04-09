@@ -75,7 +75,6 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
 
     local body = BodyFactory.load( savedCharacter.body );
     character:setBody( body );
-    character:generateFOV();
     return character;
 end
 
@@ -83,7 +82,6 @@ function CharacterFactory.newCharacter( map, tile, faction, type )
     local character = Character.new( map, tile, faction );
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
-    character:generateFOV();
     return character;
 end
 

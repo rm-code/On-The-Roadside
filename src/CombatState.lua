@@ -57,6 +57,13 @@ function CombatState.new()
             factions:spawnCharacters( 10, FACTIONS.ENEMY   )
         end
 
+        -- Generate initial FOV for all factions.
+        factions:iterate( function( faction )
+            faction:iterate( function( character )
+                character:generateFOV()
+            end)
+        end)
+
         turnManager = TurnManager.new( map, factions );
 
         ProjectileManager.init( map );

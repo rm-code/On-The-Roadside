@@ -166,6 +166,18 @@ function Factions.new( map )
         end
     end
 
+    ---
+    -- Iterates over all factions and passes them to the callback function.
+    -- @tparam function callback The callback to use on the factions.
+    --
+    function self:iterate( callback )
+        local node = root;
+        while node do
+            callback( node:getObject() )
+            node = node:getNext()
+        end
+    end
+
     function self:serialize()
         local t = {}
         t[FACTIONS.ALLIED]  = self:findFaction( FACTIONS.ALLIED  ):serialize();
