@@ -31,6 +31,8 @@ return {
     ['weapon_m67_grenade'] =  8,
     ['weapon_shuriken']    = 16,
 
+    ['12_gauge'] = 8,
+
     -- ==============================
     -- WORLD OBJECTS (OPENABLE)
     -- ==============================
