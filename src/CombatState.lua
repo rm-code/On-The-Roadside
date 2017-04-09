@@ -9,10 +9,11 @@
 local Object = require( 'src.Object' );
 local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' );
-local TurnManager = require( 'src.turnbased.TurnManager' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
+local StateManager = require( 'src.turnbased.states.StateManager' )
+local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 
 -- ------------------------------------------------
 -- Module
@@ -35,8 +36,15 @@ function CombatState.new()
 
     local map;
     local factions;
-    local turnManager;
     local observations = {};
+
+    local stateManager
+    local states = {
+        execution = require( 'src.turnbased.states.ExecutionState' ),
+        planning  = require( 'src.turnbased.states.PlanningState' )
+    }
+
+    local sadisticAIDirector
 
     -- ------------------------------------------------
     -- Public Methods
@@ -64,7 +72,10 @@ function CombatState.new()
             end)
         end)
 
-        turnManager = TurnManager.new( map, factions );
+        stateManager = StateManager.new( states )
+        stateManager:push( 'planning', factions )
+
+        sadisticAIDirector = SadisticAIDirector.new( factions, stateManager )
 
         ProjectileManager.init( map );
         ExplosionManager.init( map );
@@ -86,7 +97,12 @@ function CombatState.new()
 
     function self:update( dt )
         map:update();
-        turnManager:update( dt )
+
+        -- Update AI if current faction is AI controlled.
+        if factions:getFaction():isAIControlled() and not stateManager:blocksInput() then
+            sadisticAIDirector:update( dt )
+        end
+        stateManager:update( dt )
 
         if not factions:findFaction( FACTIONS.ALLIED ):hasLivingCharacters() then
             ScreenManager.push( 'gameover', false );
@@ -119,15 +135,21 @@ function CombatState.new()
     end
 
     function self:keypressed( key, scancode, isrepeat )
-        turnManager:keypressed( key, scancode, isrepeat );
+        if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
+            return
+        end
+        stateManager:keypressed( key, scancode, isrepeat )
     end
 
     function self:mousepressed( mx, my, button )
-        turnManager:mousepressed( mx, my, button );
+        if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
+            return
+        end
+        stateManager:selectTile( map:getTileAt( mx, my ), button )
     end
 
     function self:getState()
-        return turnManager:getState();
+        return stateManager:getState()
     end
 
     function self:getCurrentCharacter()
