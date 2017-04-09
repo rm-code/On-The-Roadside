@@ -21,10 +21,12 @@ local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 ---
 -- Creates a new ThrownProjectileQueue.
 -- @param character (Character)       The character who started the attack.
--- @param target    (Tile)            The target tile.
+-- @tparam number tx                   The target's x-coordinate.
+-- @tparam number ty                   The target's y-coordinate.
+-- @tparam number th                   The target's height.
 -- @return          (ThrownProjectileQueue) A new instance of the ThrownProjectileQueue class.
 --
-function ThrownProjectileQueue.new( character, target )
+function ThrownProjectileQueue.new( character, tx, ty, th )
     local self = {};
 
     local projectiles = {};
@@ -48,7 +50,7 @@ function ThrownProjectileQueue.new( character, target )
         local success = character:getEquipment():searchAndRemoveItem( weapon );
         assert( success, "Couldn't remove the item from the character's equipment." );
 
-        local tiles = ProjectilePath.calculate( character, target, weapon );
+        local tiles = ProjectilePath.calculate( character, tx, ty, th, weapon )
         local projectile = Projectile.new( character, tiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() );
         index = index + 1;
         projectiles[index] = projectile;

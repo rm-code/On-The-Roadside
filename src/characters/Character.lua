@@ -392,14 +392,6 @@ function Character.new( map, tile, faction )
     end
 
     ---
-    -- Returns the game's map.
-    -- @return (Map) The map the character is existing on.
-    --
-    function self:getMap()
-        return map;
-    end
-
-    ---
     -- Returns the total amount of action points.
     -- @return (number) The total amount of action points.
     --
