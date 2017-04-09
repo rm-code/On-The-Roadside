@@ -4,7 +4,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local ItemStats = {};
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 function ItemStats.new( x, y, w, h )

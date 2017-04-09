@@ -10,7 +10,7 @@ local ItemFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
 
 local TEMPLATES_MELEE      = 'res.data.items.weapons.Melee';

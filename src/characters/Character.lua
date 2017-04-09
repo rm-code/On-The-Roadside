@@ -17,7 +17,7 @@ local Character = {};
 local DEFAULT_ACTION_POINTS = 40;
 
 local STANCES = require('src.constants.Stances');
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 
 -- ------------------------------------------------
 -- Constructor
