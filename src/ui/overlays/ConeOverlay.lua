@@ -130,7 +130,6 @@ function ConeOverlay.new( game, pulser )
                 -- 1 means the projectile can pass freely.
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
-                -- 4 means the projectile can't reach this tile.
                 local nstatus = 1
                 if tile:isOccupied() then
                     nstatus = 2
@@ -173,9 +172,6 @@ function ConeOverlay.new( game, pulser )
             elseif status == 3 then
                 love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
                 love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
-            elseif status == 4 then
-                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 89 ), tile:getX() * tw, tile:getY() * th )
             end
             cone[tile] = nil
         end
