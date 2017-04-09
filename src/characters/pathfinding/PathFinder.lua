@@ -4,7 +4,7 @@ local Path = require('src.characters.pathfinding.Path');
 -- Constants
 -- ------------------------------------------------
 
-local DIRECTION = require( 'src.constants.Direction' );
+local DIRECTION = require( 'src.constants.DIRECTION' );
 local MAX_TILES = 300;
 local SQRT = math.sqrt( 2 );
 
