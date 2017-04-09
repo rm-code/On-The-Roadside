@@ -78,7 +78,7 @@ local THROWN_STANCE_MODIFIERS = {
     [Stances.PRONE]  = 1.2, -- Throwing should be harder from a prone stance.
 }
 
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 -- ------------------------------------------------
 -- Local Functions

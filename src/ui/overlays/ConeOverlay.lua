@@ -25,7 +25,7 @@ local ConeOverlay = {}
 -- ------------------------------------------------
 
 local COLORS       = require( 'src.constants.Colors' )
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' )
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 -- ------------------------------------------------
 -- Constructor

@@ -11,7 +11,7 @@ local ItemFactory = {};
 -- ------------------------------------------------
 
 local ITEM_TYPES = require('src.constants.ITEM_TYPES')
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 local TEMPLATES_MELEE      = 'res.data.items.weapons.Melee';
 local TEMPLATES_RANGED     = 'res.data.items.weapons.Ranged';

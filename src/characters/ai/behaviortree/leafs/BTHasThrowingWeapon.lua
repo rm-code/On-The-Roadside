@@ -3,7 +3,7 @@ local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
 
 local BTHasThrowingWeapon = {};
 
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 function BTHasThrowingWeapon.new()
     local self = BTLeaf.new():addInstance( 'BTHasThrowingWeapon' );
