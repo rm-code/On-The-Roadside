@@ -22,7 +22,7 @@ return {
         },
         effects = {
             explosive    = { blastRadius = 2 },
-            customSprite = { sprite = 8 }
+            customSprite = { sprite = "weapon_m67_grenade" }
         },
         tags = {
             'humanoid'
@@ -50,7 +50,7 @@ return {
             }
         },
         effects = {
-            customSprite = { sprite = 16 }
+            customSprite = { sprite = "weapon_shuriken" }
         },
         tags = {
             'humanoid'
