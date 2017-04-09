@@ -116,6 +116,18 @@ function Character.new( map, tile, faction )
         return delta / steps;
     end
 
+    ---
+    -- Clears the list of seen tiles and marks them for a drawing update.
+    --
+    local function resetFOV()
+        for x, rx in pairs( fov ) do
+            for y, target in pairs( rx ) do
+                target:setDirty( true );
+                fov[x][y] = nil;
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -200,7 +212,7 @@ function Character.new( map, tile, faction )
     -- the blocksVision attribute set to true.
     --
     function self:generateFOV()
-        self:resetFOV();
+        resetFOV()
 
         local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
         local list = Util.getTilesInCircle( map, tile, range );
@@ -235,19 +247,7 @@ function Character.new( map, tile, faction )
             self:getEquipment():dropAllItems( tile );
             self:getInventory():dropAllItems( tile );
             tile:removeCharacter();
-            self:resetFOV();
-        end
-    end
-
-    ---
-    -- Clears the list of seen tiles and marks them for a drawing update.
-    --
-    function self:resetFOV()
-        for x, rx in pairs( fov ) do
-            for y, target in pairs( rx ) do
-                target:setDirty( true );
-                fov[x][y] = nil;
-            end
+            resetFOV()
         end
     end
 
@@ -269,7 +269,7 @@ function Character.new( map, tile, faction )
         if self:isDead() then
             self:getEquipment():dropAllItems( tile );
             tile:removeCharacter();
-            self:resetFOV();
+            resetFOV()
         end
     end
 
