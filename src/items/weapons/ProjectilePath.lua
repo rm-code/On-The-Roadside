@@ -1,4 +1,3 @@
-local Stances = require('src.constants.Stances');
 local Bresenham = require( 'lib.Bresenham' );
 local VectorMath = require( 'src.util.VectorMath' );
 
@@ -66,16 +65,17 @@ local RANGED_BURST_MODIFIERS = {
     [9] = 10
 }
 
+local STANCES = require( 'src.constants.STANCES' )
 local RANGED_STANCE_MODIFIER = {
-    [Stances.STAND]  = 1.0,
-    [Stances.CROUCH] = 0.7,
-    [Stances.PRONE]  = 0.5,
+    [STANCES.STAND]  = 1.0,
+    [STANCES.CROUCH] = 0.7,
+    [STANCES.PRONE]  = 0.5,
 }
 
 local THROWN_STANCE_MODIFIERS = {
-    [Stances.STAND]  = 1.0,
-    [Stances.CROUCH] = 0.7,
-    [Stances.PRONE]  = 1.2, -- Throwing should be harder from a prone stance.
+    [STANCES.STAND]  = 1.0,
+    [STANCES.CROUCH] = 0.7,
+    [STANCES.PRONE]  = 1.2, -- Throwing should be harder from a prone stance.
 }
 
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )

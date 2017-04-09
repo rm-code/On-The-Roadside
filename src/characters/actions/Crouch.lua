@@ -2,7 +2,7 @@ local Action = require('src.characters.actions.Action');
 
 local Crouch = {};
 
-local STANCES = require('src.constants.Stances');
+local STANCES = require( 'src.constants.STANCES' )
 
 function Crouch.new( character )
     local self = Action.new( 1, character:getTile() ):addInstance( 'Crouch' );

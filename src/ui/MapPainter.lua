@@ -41,7 +41,7 @@ local CHARACTER_COLORS = {
     }
 }
 
-local STANCES = require('src.constants.Stances')
+local STANCES = require( 'src.constants.STANCES' )
 
 -- ------------------------------------------------
 -- Constructor
