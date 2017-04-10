@@ -81,18 +81,10 @@ function CombatState.new()
         ExplosionManager.init( map );
 
         -- Register obsersvations.
-        observations[#observations + 1] = map:observe( self );
+        observations[#observations + 1] = map:observe( factions )
 
         -- Free memory if possible.
         collectgarbage( 'collect' );
-    end
-
-    function self:receive( event, ... )
-        if event == 'TILE_UPDATED' then
-            local tile = ...;
-            assert( tile:instanceOf( 'Tile' ), 'Expected an object of type Tile.' );
-            factions:getFaction():regenerateFOVSelectively( tile );
-        end
     end
 
     function self:update( dt )
