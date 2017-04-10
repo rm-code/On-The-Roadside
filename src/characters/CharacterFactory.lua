@@ -76,7 +76,7 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
     local body = BodyFactory.load( savedCharacter.body );
     character:setBody( body );
 
-    tile:addCharacter( character )
+    tile:setCharacter( character )
     character:setTile( tile )
     character:setMap( map )
 
@@ -88,7 +88,7 @@ function CharacterFactory.newCharacter( map, tile, faction, type )
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
 
-    tile:addCharacter( character )
+    tile:setCharacter( character )
     character:setTile( tile )
     character:setMap( map )
 

@@ -47,15 +47,6 @@ function Tile.new( x, y, template )
     -- ------------------------------------------------
 
     ---
-    -- Adds a character to this tile and marks the tile for updating.
-    -- @param nchar (Character) The character to add.
-    --
-    function self:addCharacter( nchar )
-        character = nchar;
-        self:setDirty( true );
-    end
-
-    ---
     -- Adds a table containing the neighbouring tiles. Note that some tiles
     -- might be nil.
     -- @param nneighbours (table) A table containing the neighbouring tiles.
@@ -288,6 +279,15 @@ function Tile.new( x, y, template )
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
+
+    ---
+    -- Sets a character for this tile and marks the tile for updating.
+    -- @tparam Character nchar The character to add.
+    --
+    function self:setCharacter( nchar )
+        character = nchar
+        self:setDirty( true )
+    end
 
     ---
     -- Sets the dirty state of the tile.
