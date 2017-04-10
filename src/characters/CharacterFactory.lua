@@ -66,7 +66,7 @@ end
 -- ------------------------------------------------
 
 function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
-    local character = Character.new( map, tile, faction );
+    local character = Character.new( faction )
     character:setActionPoints( savedCharacter.actionPoints );
     character:setAccuracy( savedCharacter.accuracy );
     character:setThrowingSkill( savedCharacter.throwingSkill );
@@ -75,13 +75,23 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
 
     local body = BodyFactory.load( savedCharacter.body );
     character:setBody( body );
+
+    tile:addCharacter( character )
+    character:setTile( tile )
+    character:setMap( map )
+
     return character;
 end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
-    local character = Character.new( map, tile, faction );
+    local character = Character.new( faction )
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
+
+    tile:addCharacter( character )
+    character:setTile( tile )
+    character:setMap( map )
+
     return character;
 end
 

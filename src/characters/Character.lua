@@ -25,20 +25,18 @@ local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 
 ---
 -- Creates a new character and places it on the target tile.
--- @param map     (Map)       A reference to the map object.
--- @param tile    (Tile)      The tile to spawn the character on.
 -- @param faction (Faction)   The Faction object determining the character's faction.
 -- @return        (Character) A new instance of the Character class.
 --
-function Character.new( map, tile, faction )
+function Character.new( faction )
     local self = Object.new():addInstance( 'Character' );
-
-    -- Add character to the tile.
-    tile:addCharacter( self );
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
+
+    local map
+    local tile
 
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
@@ -465,6 +463,14 @@ function Character.new( map, tile, faction )
     --
     function self:setBody( nbody )
         body = nbody;
+    end
+
+    ---
+    -- Sets the map the character is currently on.
+    -- @tparam Map map The map to set for this character.
+    --
+    function self:setMap( nmap )
+        map = nmap;
     end
 
     ---
