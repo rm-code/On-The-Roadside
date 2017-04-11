@@ -4,6 +4,7 @@ local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
 local SaveHandler = require( 'src.SaveHandler' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -126,10 +127,10 @@ function SplashScreen.new()
 
     local function createButtons()
         buttonList = HorizontalList.new( love.graphics.getWidth() * 0.5, 30 * 16, 12 * 8, 16 );
-        buttonList:addElement( Button.new( 'ui_main_menu_new_game', startNewGame ));
-        buttonList:addElement( Button.new( 'ui_main_menu_load_game', loadPreviousGame ));
-        buttonList:addElement( Button.new( 'ui_main_menu_options', openOptions ));
-        buttonList:addElement( Button.new( 'ui_main_menu_exit', exitGame ));
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_new_game' ), startNewGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_load_game' ), loadPreviousGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_options' ), openOptions ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_exit' ), exitGame ))
     end
 
     -- ------------------------------------------------

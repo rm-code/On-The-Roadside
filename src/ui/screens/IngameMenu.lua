@@ -71,9 +71,9 @@ function IngameMenu.new()
     local function createButtons()
         local x, y = px, py;
         buttonList = VerticalList.new( x, y + 3 * th, SCREEN_WIDTH * tw, th )
-        buttonList:addElement( Button.new( 'ui_ingame_save_game', saveGame ));
-        buttonList:addElement( Button.new( 'ui_ingame_open_help', openHelpScreen ));
-        buttonList:addElement( Button.new( 'ui_ingame_exit', exitToMainMenu ));
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_exit' ), exitToMainMenu ))
     end
 
     -- ------------------------------------------------

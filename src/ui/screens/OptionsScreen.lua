@@ -137,7 +137,7 @@ function OptionsScreen.new()
         local function callback()
             ScreenManager.switch( 'mainmenu' );
         end
-        return Button.new( 'ui_back', callback );
+        return Button.new( Translator.getText( 'ui_back' ), callback )
     end
 
     -- ------------------------------------------------
