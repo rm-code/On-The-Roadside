@@ -58,7 +58,7 @@ function Button.new( text, callback )
     end
 
     function self:getText()
-        return translatedText
+        return text
     end
 
     -- ------------------------------------------------
