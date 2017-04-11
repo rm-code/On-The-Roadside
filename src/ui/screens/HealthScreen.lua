@@ -112,7 +112,7 @@ function HealthScreen.new()
         end
 
         TexturePacks.setColor( 'ui_text' )
-        love.graphics.print( 'Type: ' .. Translator.getText( characterType ), px + tw, py + th )
+        love.graphics.print( Translator.getText( 'ui_character_type' ) .. Translator.getText( characterType ), px + tw, py + th )
         TexturePacks.resetColor()
     end
 

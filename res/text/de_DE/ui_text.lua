@@ -10,6 +10,9 @@ locale.strings = {
     ['ui_win'] = "Alle Gegner sind tot. Du hast gewonnen!\n\nDrücke eine Taste um fortzufahren...",
     ['ui_lose'] = "Dein Team ist tot. Du hast verloren!\n\nDrücke eine Taste um fortzufahren...",
 
+    -- Health screen
+    ['ui_character_type'] = "Typ: ",
+
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "Neu",
     ['ui_main_menu_load_game'] = "Laden",
