@@ -38,6 +38,8 @@ function Character.new( faction )
     local map
     local tile
 
+    local name
+
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
     local fov = {};
@@ -273,6 +275,7 @@ function Character.new( faction )
 
     function self:serialize()
         local t = {
+            ['name'] = name,
             ['actionPoints'] = actionPoints,
             ['accuracy'] = accuracy,
             ['throwingSkill'] = throwingSkill,
@@ -355,6 +358,14 @@ function Character.new( faction )
     --
     function self:getFOV()
         return fov;
+    end
+
+    ---
+    -- Gets the name of this character.
+    -- @treturn string The name.
+    --
+    function self:getName()
+        return name
     end
 
     ---
@@ -471,6 +482,14 @@ function Character.new( faction )
     --
     function self:setMap( nmap )
         map = nmap;
+    end
+
+    ---
+    -- Sets a new name for this character.
+    -- @tparam string nname The name to set for this character.
+    --
+    function self:setName( nname )
+        name = nname
     end
 
     ---

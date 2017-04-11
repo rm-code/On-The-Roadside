@@ -11,6 +11,7 @@ locale.strings = {
 
     -- Health screen
     ['ui_character_type'] = "Type: ",
+    ['ui_character_name'] = "Name: ",
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New",

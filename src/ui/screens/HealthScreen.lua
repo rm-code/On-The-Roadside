@@ -112,7 +112,15 @@ function HealthScreen.new()
         end
 
         TexturePacks.setColor( 'ui_text' )
-        love.graphics.print( Translator.getText( 'ui_character_type' ) .. Translator.getText( characterType ), px + tw, py + th )
+
+        -- Draw character type.
+        local type = Translator.getText( 'ui_character_type' ) .. Translator.getText( characterType )
+        love.graphics.print( type, px + tw, py + th )
+
+        -- Draw character name.
+        local name = Translator.getText( 'ui_character_name' ) .. character:getName()
+        love.graphics.print( name, px + 2 * tw + TexturePacks.getFont():measureWidth( type ), py + th )
+
         TexturePacks.resetColor()
     end
 

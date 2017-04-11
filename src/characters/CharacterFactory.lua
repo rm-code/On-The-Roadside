@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Character = require( 'src.characters.Character' );
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
@@ -13,10 +14,31 @@ local CharacterFactory = {};
 -- ------------------------------------------------
 
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
+local NAME_FILE = 'res/data/names.txt'
+
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
+
+local names
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
+
+---
+-- Load all names from the specified file.
+-- @tparam string path The path pointing to the file to load.
+--
+local function loadNames( path )
+    local n = {}
+    for line in love.filesystem.lines( path ) do
+        if line ~= '' then
+            n[#n + 1] = line
+        end
+    end
+    return n
+end
 
 ---
 -- Loads the character's weapon and adds ammunition to his inventory.
@@ -65,8 +87,14 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
+function CharacterFactory.init()
+    Log.debug( "Load Creature-Names:" )
+    names = loadNames( NAME_FILE )
+end
+
 function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
     local character = Character.new( faction )
+    character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints );
     character:setAccuracy( savedCharacter.accuracy );
     character:setThrowingSkill( savedCharacter.throwingSkill );
@@ -85,6 +113,7 @@ end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
     local character = Character.new( faction )
+    character:setName( names[love.math.random( #names )])
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
 
