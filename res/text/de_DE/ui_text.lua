@@ -4,7 +4,6 @@ locale.identifier = 'de_DE';
 locale.strings = {
     ['ui_tile'] = "Feld: ",
     ['ui_tile_unexplored'] = "Unerforscht",
-    ['ui_health'] = "Gesundheit: ",
     ['ui_weapon'] = "Waffe: ",
     ['ui_mode'] = "Modus: ",
     ['ui_win'] = "Alle Gegner sind tot. Du hast gewonnen!\n\nDrücke eine Taste um fortzufahren...",
