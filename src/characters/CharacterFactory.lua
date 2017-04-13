@@ -14,7 +14,13 @@ local CharacterFactory = {};
 -- ------------------------------------------------
 
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
-local NAME_FILE = 'res/data/names.txt'
+local NAME_FILE = 'res.data.Names'
+local NATIONALITY = {
+    'german',
+    'russian',
+    'british',
+    'finnish'
+}
 
 -- ------------------------------------------------
 -- Local Variables
@@ -31,13 +37,7 @@ local names
 -- @tparam string path The path pointing to the file to load.
 --
 local function loadNames( path )
-    local n = {}
-    for line in love.filesystem.lines( path ) do
-        if line ~= '' then
-            n[#n + 1] = line
-        end
-    end
-    return n
+    return require( path )
 end
 
 ---
@@ -113,7 +113,11 @@ end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
     local character = Character.new( faction )
-    character:setName( names[love.math.random( #names )])
+
+    local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
+    character:setNationality( nationality )
+    character:setName( names[nationality][love.math.random( #names[nationality] )])
+
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
 

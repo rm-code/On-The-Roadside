@@ -39,6 +39,7 @@ function Character.new( faction )
     local tile
 
     local name
+    local nationality
 
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
@@ -490,6 +491,10 @@ function Character.new( faction )
     --
     function self:setName( nname )
         name = nname
+    end
+
+    function self:setNationality( nnationality )
+        nationality = nnationality
     end
 
     ---
