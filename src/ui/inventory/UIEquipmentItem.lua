@@ -52,9 +52,7 @@ function UIEquipmentItem.new( id, x, y, width, height, slot )
     end
 
     function self:highlight( nitem )
-        if nitem then
-            highlight = nitem:isSameType( slot:getItemType(), slot:getSubType() );
-        end
+        highlight = nitem and nitem:isSameType( slot:getItemType(), slot:getSubType() ) or false
     end
 
     function self:getSlot()

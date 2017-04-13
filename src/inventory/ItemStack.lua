@@ -65,6 +65,10 @@ function ItemStack.new( id )
         return t;
     end
 
+    function self:isSameType( itemType, subType )
+        return items[#items]:isSameType( itemType, subType )
+    end
+
     function self:getItem()
         return items[#items];
     end
