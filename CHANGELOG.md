@@ -1,3 +1,12 @@
+# Version 0.8.2.976 - 2017-04-14
+
+## Fixes
+- Fixed crash when trying to drag an item stack in the inventory screen
+- Fixed highlighting of equipment slots not being removed correctly
+
+
+
+
 # Version 0.8.1.949 - 2017-04-09
 
 ## Fixes
