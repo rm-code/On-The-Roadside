@@ -46,8 +46,9 @@ function BaseState.new()
         map:init()
 
         factions = Factions.new( map )
-        factions:addFaction( Faction.new( FACTIONS.ALLIED,  false ), true )
-        factions:spawnCharacters( 10, FACTIONS.ALLIED )
+        factions:addFaction( Faction.new( FACTIONS.ALLIED, false ))
+        factions:findFaction( FACTIONS.ALLIED ):addCharacters( 10, 'human' )
+        factions:findFaction( FACTIONS.ALLIED ):spawnCharacters( map )
 
         -- Generate initial FOV for all factions.
         factions:iterate( function( faction )

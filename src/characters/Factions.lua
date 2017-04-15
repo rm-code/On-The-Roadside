@@ -1,7 +1,6 @@
 local Object = require( 'src.Object' );
 local Node = require( 'src.util.Node' );
 local Messenger = require( 'src.Messenger' );
-local CharacterFactory = require( 'src.characters.CharacterFactory' );
 local Log = require( 'src.util.Log' );
 
 -- ------------------------------------------------
@@ -15,7 +14,6 @@ local Factions = {};
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.FACTIONS' );
-local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -34,21 +32,6 @@ function Factions.new( map )
     -- ------------------------------------------------
     -- Public Functions
     -- ------------------------------------------------
-
-    ---
-    -- Adds a new character.
-    -- @param character (Character) The character to add.
-    --
-    function self:addCharacter( character )
-        local node = root;
-        while node do
-            if node:getObject():getType() == character:getFaction():getType() then
-                node:getObject():addCharacter( character );
-                break;
-            end
-            node = node:getNext();
-        end
-    end
 
     ---
     -- Adds a new faction node to the linked list.
@@ -85,39 +68,6 @@ function Factions.new( map )
                 return node:getObject();
             end
             node = node:getNext();
-        end
-    end
-
-    ---
-    -- Spawns characters on the map.
-    -- @tparam number amount  The amount of characters to spawn.
-    -- @tparam string faction The faction to spawn the characters for.
-    --
-    function self:spawnCharacters( amount, faction )
-        for _ = 1, amount do
-            local spawn = map:findSpawnPoint( faction )
-            -- TODO Character spawn based on templates.
-            local type = 'human'
-            if faction == FACTIONS.NEUTRAL then
-                type = 'dog'
-            end
-            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction ), type ))
-        end
-    end
-
-    ---
-    -- Recreates saved charaters for each faction.
-    -- @tparam table savedFactions A table containing the information to load all characters.
-    --
-    function self:loadCharacters( savedFactions )
-        for type, sfaction in pairs( savedFactions ) do
-            local faction = self:findFaction( type )
-            for _, savedCharacter in ipairs( sfaction ) do
-                if not savedCharacter.body.statusEffects[STATUS_EFFECTS.DEATH] then
-                    local tile = map:getTileAt( savedCharacter.x, savedCharacter.y )
-                    faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ))
-                end
-            end
         end
     end
 

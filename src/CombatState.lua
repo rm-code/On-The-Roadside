@@ -56,16 +56,20 @@ function CombatState.new()
         map:init( savegame );
 
         factions = Factions.new( map );
-        factions:addFaction( Faction.new( FACTIONS.ENEMY,   true  ), false )
-        factions:addFaction( Faction.new( FACTIONS.NEUTRAL, true  ), false )
-        factions:addFaction( Faction.new( FACTIONS.ALLIED,  false ), true  )
+        factions:addFaction( Faction.new( FACTIONS.ENEMY,   true  ))
+        factions:addFaction( Faction.new( FACTIONS.NEUTRAL, true  ))
+        factions:addFaction( Faction.new( FACTIONS.ALLIED,  false ))
 
         if savegame then
             factions:loadCharacters( savegame.factions )
         else
-            factions:spawnCharacters( 10, FACTIONS.ALLIED  )
-            factions:spawnCharacters(  5, FACTIONS.NEUTRAL )
-            factions:spawnCharacters( 10, FACTIONS.ENEMY   )
+            factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10, 'human' )
+            factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5, 'dog'   )
+            factions:findFaction( FACTIONS.ALLIED  ):addCharacters( 10, 'human' )
+
+            factions:findFaction( FACTIONS.ENEMY   ):spawnCharacters( map )
+            factions:findFaction( FACTIONS.NEUTRAL ):spawnCharacters( map )
+            factions:findFaction( FACTIONS.ALLIED  ):spawnCharacters( map )
         end
 
         -- Generate initial FOV for all factions.

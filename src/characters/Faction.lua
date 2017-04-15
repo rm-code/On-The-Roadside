@@ -2,6 +2,7 @@ local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Node = require('src.util.Node');
 local Messenger = require( 'src.Messenger' );
+local CharacterFactory = require( 'src.characters.CharacterFactory' )
 
 -- ------------------------------------------------
 -- Module
@@ -63,6 +64,35 @@ function Faction.new( type, controlledByAi )
         -- Make the new node active and mark it as the last node in our list.
         active = node;
         last = active;
+    end
+
+    ---
+    -- Adds characters to this faction.
+    -- @tparam number amount The amount of characters to add.
+    -- @tparam string ctype  The type of characters to add.
+    --
+    function self:addCharacters( amount, ctype )
+        for _ = 1, amount do
+            -- Create the new character.
+            local character = CharacterFactory.newCharacter( ctype )
+            character:setFaction( self )
+
+            -- Add it to this faction.
+            self:addCharacter( character )
+        end
+    end
+
+    ---
+    -- Spawns the characters of this Faction on the given map.
+    -- @tparam Map map The map to spawn the characters on.
+    --
+    function self:spawnCharacters( map )
+        self:iterate( function( character )
+            local tile = map:findSpawnPoint( type )
+            tile:setCharacter( character )
+            character:setTile( tile )
+            character:setMap( map )
+        end)
     end
 
     ---
