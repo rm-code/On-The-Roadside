@@ -65,6 +65,10 @@ function BaseScreen.new()
     end
 
     function self:update( dt )
+        if not self:isActive() then
+            return
+        end
+
         camera:update( dt )
         baseState:update()
         mapPainter:update()
@@ -73,6 +77,10 @@ function BaseScreen.new()
     end
 
     function self:keypressed( _, scancode )
+        if not self:isActive() then
+            return
+        end
+
         if scancode == 'i' and currentCharacter then
             ScreenManager.push( 'inventory', currentCharacter, baseState:getBaseInventory() )
         end
