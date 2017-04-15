@@ -25,15 +25,16 @@ local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 
 ---
 -- Creates a new character and places it on the target tile.
--- @param faction (Faction)   The Faction object determining the character's faction.
--- @return        (Character) A new instance of the Character class.
+-- @treturn Character A new instance of the Character class.
 --
-function Character.new( faction )
+function Character.new()
     local self = Object.new():addInstance( 'Character' );
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
+
+    local faction
 
     local map
     local tile
@@ -475,6 +476,13 @@ function Character.new( faction )
     --
     function self:setBody( nbody )
         body = nbody;
+    end
+
+    ----
+    -- @tparam Faction faction The Faction object determining the character's faction.
+    --
+    function self:setFaction( nfaction )
+        faction = nfaction
     end
 
     ---

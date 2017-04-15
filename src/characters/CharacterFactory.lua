@@ -93,7 +93,8 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
-    local character = Character.new( faction )
+    local character = Character.new()
+
     character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints );
     character:setAccuracy( savedCharacter.accuracy );
@@ -107,12 +108,13 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
     tile:setCharacter( character )
     character:setTile( tile )
     character:setMap( map )
+    character:setFaction( faction )
 
     return character;
 end
 
 function CharacterFactory.newCharacter( map, tile, faction, type )
-    local character = Character.new( faction )
+    local character = Character.new()
 
     local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
     character:setNationality( nationality )
@@ -124,6 +126,7 @@ function CharacterFactory.newCharacter( map, tile, faction, type )
     tile:setCharacter( character )
     character:setTile( tile )
     character:setMap( map )
+    character:setFaction( faction )
 
     return character;
 end
