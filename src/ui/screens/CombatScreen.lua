@@ -34,9 +34,9 @@ function CombatScreen.new()
     local observations = {}
     local tw, th = TexturePacks.getTileDimensions()
 
-    function self:init( savegame )
+    function self:init( playerFaction, savegame )
         combatState = CombatState.new()
-        combatState:init( savegame )
+        combatState:init( playerFaction, savegame )
 
         mapPainter = MapPainter.new()
         mapPainter:init( combatState:getMap(), combatState:getFactions() )

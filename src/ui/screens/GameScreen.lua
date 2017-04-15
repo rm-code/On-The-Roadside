@@ -11,12 +11,19 @@
 
 local Screen = require( 'lib.screenmanager.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
+local Faction = require( 'src.characters.Faction' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local GameScreen = {}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -26,7 +33,10 @@ function GameScreen.new()
     local self = Screen.new()
 
     function self:init()
-        ScreenManager.push( 'base' )
+        local playerFaction = Faction.new( FACTIONS.ALLIED, false )
+        playerFaction:addCharacters( 10, 'human' )
+
+        ScreenManager.push( 'base', playerFaction )
     end
 
     function self:draw()

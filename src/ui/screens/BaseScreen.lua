@@ -36,10 +36,13 @@ function BaseScreen.new()
     local camera
     local currentCharacter
     local characterSelector
+    local playerFaction
 
-    function self:init()
+    function self:init( nplayerFaction )
+        playerFaction = nplayerFaction
+
         baseState = BaseState.new()
-        baseState:init()
+        baseState:init( playerFaction )
 
         characterSelector = CharacterSelector.new()
         characterSelector:init( baseState:getFactions() )

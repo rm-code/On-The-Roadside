@@ -10,7 +10,6 @@ local Object = require( 'src.Object' )
 local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' )
 local Inventory = require( 'src.inventory.Inventory' )
-local Faction = require( 'src.characters.Faction' )
 
 -- ------------------------------------------------
 -- Module
@@ -22,7 +21,6 @@ local BaseState = {}
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.FACTIONS' )
 local WEIGHT_LIMIT = 1000000
 local VOLUME_LIMIT = 1000000
 
@@ -41,20 +39,19 @@ function BaseState.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init()
+    function self:init( playerFaction )
         map = MapLoader.create( 'base' )
         map:init()
 
         factions = Factions.new( map )
-        factions:addFaction( Faction.new( FACTIONS.ALLIED, false ))
-        factions:findFaction( FACTIONS.ALLIED ):addCharacters( 10, 'human' )
-        factions:findFaction( FACTIONS.ALLIED ):spawnCharacters( map )
+        factions:addFaction( playerFaction )
+
+        -- Spawn the characters on the map.
+        playerFaction:spawnCharacters( map )
 
         -- Generate initial FOV for all factions.
-        factions:iterate( function( faction )
-            faction:iterate( function( character )
-                character:generateFOV()
-            end)
+        playerFaction:iterate( function( character )
+            character:generateFOV()
         end)
 
         baseInventory = Inventory.new( WEIGHT_LIMIT, VOLUME_LIMIT )
