@@ -14,6 +14,7 @@ local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local StateManager = require( 'src.turnbased.states.StateManager' )
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
+local Faction = require( 'src.characters.Faction' )
 
 -- ------------------------------------------------
 -- Module
@@ -55,7 +56,9 @@ function CombatState.new()
         map:init( savegame );
 
         factions = Factions.new( map );
-        factions:init()
+        factions:addFaction( Faction.new( FACTIONS.ENEMY,   true  ), false )
+        factions:addFaction( Faction.new( FACTIONS.NEUTRAL, true  ), false )
+        factions:addFaction( Faction.new( FACTIONS.ALLIED,  false ), true  )
 
         if savegame then
             factions:loadCharacters( savegame.factions )

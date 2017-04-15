@@ -10,6 +10,7 @@ local Object = require( 'src.Object' )
 local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' )
 local Inventory = require( 'src.inventory.Inventory' )
+local Faction = require( 'src.characters.Faction' )
 
 -- ------------------------------------------------
 -- Module
@@ -45,7 +46,7 @@ function BaseState.new()
         map:init()
 
         factions = Factions.new( map )
-        factions:init()
+        factions:addFaction( Faction.new( FACTIONS.ALLIED,  false ), true )
         factions:spawnCharacters( 10, FACTIONS.ALLIED )
 
         -- Generate initial FOV for all factions.

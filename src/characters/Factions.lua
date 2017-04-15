@@ -1,5 +1,4 @@
 local Object = require( 'src.Object' );
-local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.util.Node' );
 local Messenger = require( 'src.Messenger' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' );
@@ -33,33 +32,6 @@ function Factions.new( map )
     local active;
 
     -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Adds a new faction node to the linked list.
-    -- @param faction (number) An index to identify the faction.
-    --
-    local function addFaction( faction )
-        local node = Node.new( faction );
-
-        -- Initialise root node.
-        if not root then
-            root = node;
-            active = root;
-            return active:getObject();
-        end
-
-        -- Doubly link the new node.
-        active:linkNext( node );
-        node:linkPrev( active );
-
-        -- Make it the active node.
-        active = node;
-        return active:getObject();
-    end
-
-    -- ------------------------------------------------
     -- Public Functions
     -- ------------------------------------------------
 
@@ -79,6 +51,29 @@ function Factions.new( map )
     end
 
     ---
+    -- Adds a new faction node to the linked list.
+    -- @tparam Faction faction The faction to add.
+    --
+    function self:addFaction( faction )
+        local node = Node.new( faction )
+
+        -- Initialise root node.
+        if not root then
+            root = node
+            active = root
+            return active:getObject()
+        end
+
+        -- Doubly link the new node.
+        active:linkNext( node )
+        node:linkPrev( active )
+
+        -- Make it the active node.
+        active = node
+        return active:getObject()
+    end
+
+    ---
     -- Find the faction object belonging to the specified identifier.
     -- @param type (string)  The identifier to look for.
     -- @return     (Faction) The faction.
@@ -91,16 +86,6 @@ function Factions.new( map )
             end
             node = node:getNext();
         end
-    end
-
-    ---
-    -- Initialises the Factions object by creating a linked list of factions and
-    -- spawning the characters for each faction at random locations on the map.
-    --
-    function self:init()
-        addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
-        addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
-        addFaction( Faction.new( FACTIONS.ALLIED,  false ))
     end
 
     ---
