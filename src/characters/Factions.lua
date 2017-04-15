@@ -31,7 +31,6 @@ function Factions.new( map )
 
     local root;
     local active;
-    local player;
 
     -- ------------------------------------------------
     -- Private Methods
@@ -101,7 +100,7 @@ function Factions.new( map )
     function self:init()
         addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
         addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
-        player = addFaction( Faction.new( FACTIONS.ALLIED,  false ));
+        addFaction( Faction.new( FACTIONS.ALLIED,  false ))
     end
 
     ---
@@ -207,7 +206,7 @@ function Factions.new( map )
     end
 
     function self:getPlayerFaction()
-        return player;
+        return self:findFaction( FACTIONS.ALLIED )
     end
 
     return self;
