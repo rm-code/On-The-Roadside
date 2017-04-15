@@ -11,6 +11,7 @@ locale.strings = {
 
     -- Base Screen
     ['ui_stalkers'] = "STALKER",
+    ['ui_next_mission'] = "Nächste Mission",
 
     -- Health screen
     ['ui_character_type'] = "Typ: ",

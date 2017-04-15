@@ -1,5 +1,5 @@
 ---
--- @module CharacterSelector
+-- @module NextMissionSelector
 --
 
 -- ------------------------------------------------
@@ -17,23 +17,23 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local CharacterSelector = {}
+local NextMissionSelector = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH = 10
-local FIELD_WIDTH  = 10
+local SCREEN_WIDTH  = 10
+local SCREEN_HEIGHT =  3
+local FIELD_WIDTH   = 10
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function CharacterSelector.new()
-    local self = Observable.new():addInstance( 'CharacterSelector' )
+function NextMissionSelector.new()
+    local self = Observable.new():addInstance( 'NextMissionSelector' )
 
-    local playerFaction
     local verticalList
     local font
     local outlines
@@ -45,44 +45,37 @@ function CharacterSelector.new()
                 if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
                     outlines:add( x, y )
                 end
-                if y == 2 then
-                    outlines:add( x, y )
-                end
             end
         end
     end
 
-    local function createCharacterButton( character )
+    local function createButton()
         local function callback()
-            self:publish( 'CHANGED_CHARACTER', character )
+            self:publish( 'LOAD_COMBAT_MISSION' )
         end
-        return Button.new( character:getName(), callback )
+        return Button.new( Translator.getText( 'ui_next_mission' ), callback )
     end
 
-    function self:init( nfactions )
-        playerFaction = nfactions:getPlayerFaction()
+    function self:init()
         font = TexturePacks.getFont()
-
         tw, th = TexturePacks.getTileset():getTileDimensions()
-        verticalList = VerticalList.new( 0, 3 * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
 
-        playerFaction:iterate( function( character )
-            verticalList:addElement( createCharacterButton( character ))
-        end)
+        verticalList = VerticalList.new( love.graphics.getWidth() - FIELD_WIDTH * tw, th, FIELD_WIDTH * tw, font:getGlyphHeight() )
+        verticalList:addElement( createButton() )
 
         outlines = Outlines.new()
-        createOutlines( SCREEN_WIDTH, 4 + verticalList:getElementCount() )
+        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
     end
 
     function self:draw()
         TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', 0, 0, FIELD_WIDTH * tw, (4 + verticalList:getElementCount()) * th )
+        love.graphics.rectangle( 'fill', love.graphics.getWidth() - FIELD_WIDTH * tw, 0, FIELD_WIDTH * tw, 3 * th )
         TexturePacks.resetColor()
 
         love.graphics.printf( Translator.getText( 'ui_stalkers' ), tw, th, (FIELD_WIDTH-2) * tw, 'center' )
 
-        outlines:draw( 0, 0 )
+        outlines:draw( love.graphics.getWidth() - FIELD_WIDTH * tw, 0 )
         verticalList:draw()
     end
 
@@ -105,4 +98,4 @@ function CharacterSelector.new()
     return self
 end
 
-return CharacterSelector
+return NextMissionSelector

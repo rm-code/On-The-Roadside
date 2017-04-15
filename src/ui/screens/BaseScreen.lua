@@ -16,6 +16,7 @@ local MapPainter = require( 'src.ui.MapPainter' )
 local CameraHandler = require( 'src.ui.CameraHandler' )
 local MousePointer = require( 'src.ui.MousePointer' )
 local CharacterSelector = require( 'src.ui.elements.CharacterSelector' )
+local NextMissionSelector = require( 'src.ui.elements.NextMissionSelector' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
@@ -36,6 +37,7 @@ function BaseScreen.new()
     local camera
     local currentCharacter
     local characterSelector
+    local nextMissionSelector
     local playerFaction
 
     function self:init( nplayerFaction )
@@ -47,6 +49,10 @@ function BaseScreen.new()
         characterSelector = CharacterSelector.new()
         characterSelector:init( baseState:getFactions() )
         characterSelector:observe( self )
+
+        nextMissionSelector = NextMissionSelector.new()
+        nextMissionSelector:init()
+        nextMissionSelector:observe( self )
 
         mapPainter = MapPainter.new()
         mapPainter:init( baseState:getMap(), baseState:getFactions() )
@@ -62,6 +68,7 @@ function BaseScreen.new()
         camera:detach()
 
         characterSelector:draw()
+        nextMissionSelector:draw()
     end
 
     function self:update( dt )
@@ -73,6 +80,7 @@ function BaseScreen.new()
         baseState:update()
         mapPainter:update()
         characterSelector:update()
+        nextMissionSelector:update()
         MousePointer.update()
     end
 
@@ -91,8 +99,21 @@ function BaseScreen.new()
         characterSelector:keypressed( _, scancode )
     end
 
+    function self:mousereleased()
+        characterSelector:mousereleased()
+        nextMissionSelector:mousereleased()
+    end
+
+    function self:mousemoved()
+        characterSelector:mousemoved()
+        nextMissionSelector:mousemoved()
+    end
+
     function self:receive( event, ... )
-        if event == 'CHANGED_CHARACTER' then
+        if event == 'LOAD_COMBAT_MISSION' then
+            ScreenManager.pop()
+            ScreenManager.push( 'combat', playerFaction )
+        elseif event == 'CHANGED_CHARACTER' then
             currentCharacter = ...
             local tx, ty = currentCharacter:getTile():getPosition()
             local tw, th = TexturePacks.getTileDimensions()
