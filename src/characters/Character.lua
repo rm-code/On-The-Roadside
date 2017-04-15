@@ -371,6 +371,14 @@ function Character.new()
     end
 
     ---
+    -- Returns the character's nationality.
+    -- @treturn string The nationality.
+    --
+    function self:getNationality()
+        return nationality
+    end
+
+    ---
     -- Returns the character's size based on his stance.
     -- @return (number) The character's size.
     --
