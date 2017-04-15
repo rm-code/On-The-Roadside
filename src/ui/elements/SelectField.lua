@@ -1,4 +1,5 @@
 local Object = require( 'src.Object' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local SelectField = {};
 
@@ -9,8 +10,10 @@ function SelectField.new( font, label, listOfValues, callback, default )
     local focus = false;
 
     function self:draw( x, y, w, _ )
+        TexturePacks.setColor( focus and 'ui_select_field_hot' or 'ui_select_field' )
         love.graphics.print( label, x, y );
         love.graphics.print( listOfValues[current].displayTextID, x + w - font:measureWidth( listOfValues[current].displayTextID ), y )
+        TexturePacks.resetColor()
     end
 
     function self:update( x, y, w, h )

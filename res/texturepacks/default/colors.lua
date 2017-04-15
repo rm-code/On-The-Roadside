@@ -96,6 +96,9 @@ return {
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
 
+    ['ui_select_field']     = COLORS.DB16,
+    ['ui_select_field_hot'] = COLORS.DB18,
+
     ['ui_outlines'] = COLORS.DB15,
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
