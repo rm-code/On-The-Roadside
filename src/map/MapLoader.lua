@@ -128,7 +128,9 @@ end
 function MapLoader.createRandom()
     local rnd = {}
     for name, _ in pairs( maps ) do
-        rnd[#rnd + 1] = name
+        if name ~= 'base' then
+            rnd[#rnd + 1] = name
+        end
     end
 
     local name = rnd[love.math.random( #rnd )]
