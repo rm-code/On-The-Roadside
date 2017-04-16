@@ -9,6 +9,7 @@ local VerticalList = require( 'src.ui.elements.VerticalList' )
 local Button = require( 'src.ui.elements.Button' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local SaveHandler = require( 'src.SaveHandler' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 
 -- ------------------------------------------------
 -- Module
@@ -50,6 +51,7 @@ function SavegameScreen.new()
     local title
     local verticalList
     local font
+    local footer
 
     -- ------------------------------------------------
     -- Private Functions
@@ -128,6 +130,8 @@ function SavegameScreen.new()
         end
 
         verticalList:addElement( createBackButton() )
+
+        footer = UICopyrightFooter.new()
     end
 
     function self:update()
@@ -139,6 +143,8 @@ function SavegameScreen.new()
         font:use()
         love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
         verticalList:draw()
+
+        footer:draw()
     end
 
     function self:keypressed( key, scancode )

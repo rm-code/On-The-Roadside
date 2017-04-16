@@ -4,6 +4,7 @@ local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 
 -- ------------------------------------------------
 -- Module
@@ -14,9 +15,6 @@ local SplashScreen = {};
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
-
-local VERSION_STRING = string.format( 'WIP - Version: %s ', getVersion() );
-local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2017. All rights reserved.';
 
 local TITLE_POSITION = 2;
 local TITLE_STRING = {
@@ -57,6 +55,7 @@ function SplashScreen.new()
     local title;
     local buttonList;
     local debug;
+    local footer
 
     -- ------------------------------------------------
     -- Private Functions
@@ -81,15 +80,6 @@ function SplashScreen.new()
                 title:add( coloredtext, 0, i * font:get():getHeight() )
             end
         end
-    end
-
-    local function drawInfo()
-        local font = TexturePacks.getFont()
-        local sw, sh = love.graphics.getDimensions();
-        TexturePacks.setColor( 'ui_text_dim' )
-        love.graphics.print( VERSION_STRING, sw - font:measureWidth( VERSION_STRING ), sh - font:getGlyphHeight() )
-        love.graphics.print( COPYRIGHT_STRING, 0, sh - font:getGlyphHeight() )
-        TexturePacks.resetColor()
     end
 
     local function drawDebugInfo()
@@ -134,6 +124,8 @@ function SplashScreen.new()
         createTitle();
         createButtons();
 
+        footer = UICopyrightFooter.new()
+
         -- Flush the LuaJIT cache to prevent memory leaks caused by cached
         -- upvalues and closures.
         -- @see https://github.com/LuaJIT/LuaJIT/issues/303
@@ -149,8 +141,9 @@ function SplashScreen.new()
 
         buttonList:draw();
 
-        drawInfo();
         drawDebugInfo();
+
+        footer:draw()
     end
 
     function self:update()

@@ -5,6 +5,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local VerticalList = require( 'src.ui.elements.VerticalList' );
 local Button = require( 'src.ui.elements.Button' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 
 -- ------------------------------------------------
 -- Module
@@ -46,6 +47,7 @@ function OptionsScreen.new()
     local title;
     local verticalList;
     local font
+    local footer
 
     -- ------------------------------------------------
     -- Private Functions
@@ -156,6 +158,8 @@ function OptionsScreen.new()
         verticalList:addElement( createFullscreenOption() );
         verticalList:addElement( createTexturePackOption() )
         verticalList:addElement(       createBackButton() );
+
+        footer = UICopyrightFooter.new()
     end
 
     function self:update()
@@ -167,6 +171,8 @@ function OptionsScreen.new()
         font:use()
         love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
         verticalList:draw();
+
+        footer:draw()
     end
 
     function self:keypressed( key, scancode )
