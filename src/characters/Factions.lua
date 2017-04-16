@@ -114,9 +114,9 @@ function Factions.new( map )
 
     function self:serialize()
         local t = {}
-        t[FACTIONS.ALLIED]  = self:findFaction( FACTIONS.ALLIED  ):serialize();
-        t[FACTIONS.NEUTRAL] = self:findFaction( FACTIONS.NEUTRAL ):serialize();
-        t[FACTIONS.ENEMY]   = self:findFaction( FACTIONS.ENEMY   ):serialize();
+        self:iterate( function( faction )
+            t[faction:getType()] = faction:serialize()
+        end)
         return t;
     end
 
