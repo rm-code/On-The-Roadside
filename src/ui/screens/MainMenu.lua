@@ -2,7 +2,6 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
-local SaveHandler = require( 'src.SaveHandler' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
 
@@ -108,13 +107,7 @@ function SplashScreen.new()
     end
 
     local function loadPreviousGame()
-        if SaveHandler.exists() then
-            local save = SaveHandler.load();
-
-            if save.gameversion == getVersion() then
-                ScreenManager.switch( 'combat', save );
-            end
-        end
+        ScreenManager.switch( 'loadgame' )
     end
 
     local function openOptions()

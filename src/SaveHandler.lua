@@ -114,8 +114,8 @@ function SaveHandler.save( t )
     love.filesystem.write( folder .. '/' .. COMPRESSED_SAVE, compress )
 end
 
-function SaveHandler.load()
-    local compressed, bytes = love.filesystem.read( 'compressed.data' );
+function SaveHandler.load( path )
+    local compressed, bytes = love.filesystem.read( path .. '/' .. COMPRESSED_SAVE )
     Log.print( string.format( 'Loaded savegame (Size: %d bytes)', bytes ), 'SaveHandler' );
 
     local decompressed = love.math.decompress( compressed, 'lz4' );
@@ -123,8 +123,8 @@ function SaveHandler.load()
     return convertStrings( rawsave );
 end
 
-function SaveHandler.exists()
-    return love.filesystem.exists( 'compressed.data' );
+function SaveHandler.getSaveFolder()
+    return SAVE_FOLDER
 end
 
 return SaveHandler;
