@@ -61,15 +61,16 @@ function CombatState.new()
         factions:addFaction( playerFaction )
 
         if savegame then
-            factions:loadCharacters( savegame.factions )
+            factions:findFaction( FACTIONS.ENEMY   ):loadCharacters( savegame.factions[FACTIONS.ENEMY] )
+            factions:findFaction( FACTIONS.NEUTRAL ):loadCharacters( savegame.factions[FACTIONS.NEUTRAL] )
         else
             factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10, 'human' )
             factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5, 'dog'   )
-
-            factions:findFaction( FACTIONS.ENEMY   ):spawnCharacters( map )
-            factions:findFaction( FACTIONS.NEUTRAL ):spawnCharacters( map )
-            playerFaction:spawnCharacters( map )
         end
+
+        factions:findFaction( FACTIONS.ENEMY   ):spawnCharacters( map )
+        factions:findFaction( FACTIONS.NEUTRAL ):spawnCharacters( map )
+        playerFaction:spawnCharacters( map )
 
         -- Generate initial FOV for all factions.
         factions:iterate( function( faction )
@@ -112,6 +113,7 @@ function CombatState.new()
 
     function self:serialize()
         local t = {
+            ['type'] = 'combat',
             ['map'] = map:serialize(),
             ['factions'] = factions:serialize()
         };

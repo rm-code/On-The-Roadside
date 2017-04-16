@@ -92,7 +92,7 @@ function CharacterFactory.init()
     names = loadNames( NAME_FILE )
 end
 
-function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
+function CharacterFactory.loadCharacter( savedCharacter )
     local character = Character.new()
 
     character:setName( savedCharacter.name )
@@ -105,10 +105,8 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
     local body = BodyFactory.load( savedCharacter.body );
     character:setBody( body );
 
-    tile:setCharacter( character )
-    character:setTile( tile )
-    character:setMap( map )
-    character:setFaction( faction )
+    -- TODO Remove hack for saving / loading characters
+    character:setSavedPosition( savedCharacter.x, savedCharacter.y )
 
     return character;
 end

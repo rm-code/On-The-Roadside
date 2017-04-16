@@ -39,7 +39,8 @@ function BaseState.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init( playerFaction )
+    function self:init( playerFaction, savegame )
+
         map = MapLoader.create( 'base' )
         map:init()
 
@@ -55,9 +56,21 @@ function BaseState.new()
         end)
 
         baseInventory = Inventory.new( WEIGHT_LIMIT, VOLUME_LIMIT )
+        if savegame then
+            baseInventory:loadItems( savegame.baseInventory )
+        end
 
         -- Free memory if possible.
         collectgarbage( 'collect' )
+    end
+
+    function self:serialize()
+        local t = {
+            ['type'] = 'base',
+            ['factions'] = factions:serialize(),
+            ['baseInventory'] = baseInventory:serialize()
+        };
+        return t;
     end
 
     function self:update()

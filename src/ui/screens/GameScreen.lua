@@ -32,11 +32,17 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 function GameScreen.new()
     local self = Screen.new()
 
-    function self:init()
+    function self:init( savegame )
         local playerFaction = Faction.new( FACTIONS.ALLIED, false )
-        playerFaction:addCharacters( 10, 'human' )
 
-        ScreenManager.push( 'base', playerFaction )
+        if savegame then
+            playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+        else
+            playerFaction:addCharacters( 10, 'human' )
+        end
+
+        local state = savegame and savegame.type or 'base'
+        ScreenManager.push( state, playerFaction, savegame )
     end
 
     function self:draw()

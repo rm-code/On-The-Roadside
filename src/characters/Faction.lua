@@ -83,12 +83,34 @@ function Faction.new( type, controlledByAi )
     end
 
     ---
+    -- Recreates saved charaters for each faction.
+    -- @tparam table savedFactions A table containing the information to load all characters.
+    --
+    function self:loadCharacters( characters )
+        for _, savedCharacter in ipairs( characters ) do
+            local character = CharacterFactory.loadCharacter( savedCharacter )
+            character:setFaction( self )
+            self:addCharacter( character )
+        end
+    end
+
+    ---
     -- Spawns the characters of this Faction on the given map.
     -- @tparam Map map The map to spawn the characters on.
     --
     function self:spawnCharacters( map )
         self:iterate( function( character )
-            local tile = map:findSpawnPoint( type )
+            local sx, sy = character:getSavedPosition()
+            character:setSavedPosition( nil, nil )
+
+            local tile
+
+            if sx and sy then
+                tile = map:getTileAt( sx, sy )
+            else
+                tile = map:findSpawnPoint( type )
+            end
+
             tile:setCharacter( character )
             character:setTile( tile )
             character:setMap( map )

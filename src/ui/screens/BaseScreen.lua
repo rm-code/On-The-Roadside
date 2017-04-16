@@ -40,11 +40,11 @@ function BaseScreen.new()
     local nextMissionSelector
     local playerFaction
 
-    function self:init( nplayerFaction )
+    function self:init( nplayerFaction, savegame )
         playerFaction = nplayerFaction
 
         baseState = BaseState.new()
-        baseState:init( playerFaction )
+        baseState:init( playerFaction, savegame )
 
         characterSelector = CharacterSelector.new()
         characterSelector:init( baseState:getFactions() )

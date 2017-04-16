@@ -97,7 +97,7 @@ function SavegameScreen.new()
         local function callback()
             if version == getVersion() then
                 local save = SaveHandler.load( folder )
-                ScreenManager.switch( 'combat', save )
+                ScreenManager.switch( 'gamescreen', save )
             end
         end
 

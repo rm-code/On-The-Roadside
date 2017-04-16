@@ -54,6 +54,9 @@ function Character.new()
 
     local finishedTurn = false;
 
+    -- TODO Remove hack for saving / loading characters
+    local savedX, savedY
+
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
@@ -540,6 +543,15 @@ function Character.new()
     --
     function self:setStance( nstance )
         stance = nstance;
+    end
+
+    -- TODO Remove hack for saving / loading characters
+    function self:getSavedPosition()
+        return savedX, savedY
+    end
+
+    function self:setSavedPosition( x, y )
+        savedX, savedY = x, y
     end
 
     return self;
