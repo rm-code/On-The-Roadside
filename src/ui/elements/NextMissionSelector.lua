@@ -73,8 +73,6 @@ function NextMissionSelector.new()
         love.graphics.rectangle( 'fill', love.graphics.getWidth() - FIELD_WIDTH * tw, 0, FIELD_WIDTH * tw, 3 * th )
         TexturePacks.resetColor()
 
-        love.graphics.printf( Translator.getText( 'ui_stalkers' ), tw, th, (FIELD_WIDTH-2) * tw, 'center' )
-
         outlines:draw( love.graphics.getWidth() - FIELD_WIDTH * tw, 0 )
         verticalList:draw()
     end
