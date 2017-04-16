@@ -17,6 +17,7 @@ local CameraHandler = require( 'src.ui.CameraHandler' )
 local MousePointer = require( 'src.ui.MousePointer' )
 local CharacterSelector = require( 'src.ui.elements.CharacterSelector' )
 local NextMissionSelector = require( 'src.ui.elements.NextMissionSelector' )
+local HealAllSelector = require( 'src.ui.elements.HealAllSelector' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
@@ -38,6 +39,7 @@ function BaseScreen.new()
     local currentCharacter
     local characterSelector
     local nextMissionSelector
+    local healAllSelector
     local playerFaction
 
     function self:init( nplayerFaction, savegame )
@@ -54,6 +56,10 @@ function BaseScreen.new()
         nextMissionSelector:init()
         nextMissionSelector:observe( self )
 
+        healAllSelector = HealAllSelector.new()
+        healAllSelector:init()
+        healAllSelector:observe( self )
+
         mapPainter = MapPainter.new()
         mapPainter:init( baseState:getMap(), baseState:getFactions() )
 
@@ -69,6 +75,7 @@ function BaseScreen.new()
 
         characterSelector:draw()
         nextMissionSelector:draw()
+        healAllSelector:draw()
     end
 
     function self:update( dt )
@@ -81,6 +88,7 @@ function BaseScreen.new()
         mapPainter:update()
         characterSelector:update()
         nextMissionSelector:update()
+        healAllSelector:update()
         MousePointer.update()
     end
 
@@ -102,15 +110,22 @@ function BaseScreen.new()
     function self:mousereleased()
         characterSelector:mousereleased()
         nextMissionSelector:mousereleased()
+        healAllSelector:mousereleased()
     end
 
     function self:mousemoved()
         characterSelector:mousemoved()
         nextMissionSelector:mousemoved()
+        healAllSelector:mousemoved()
     end
 
     function self:receive( event, ... )
-        if event == 'LOAD_COMBAT_MISSION' then
+        if event == 'HEAL_CHARACTERS' then
+            -- TODO Replace with proper healing system.
+            playerFaction:iterate( function( character )
+                character:getBody():heal()
+            end)
+        elseif event == 'LOAD_COMBAT_MISSION' then
             ScreenManager.pop()
             ScreenManager.push( 'combat', playerFaction )
         elseif event == 'CHANGED_CHARACTER' then

@@ -201,6 +201,19 @@ function Body.new( template )
         return t;
     end
 
+    function self:heal()
+        -- Restore blood volume.
+        bloodVolume = template.bloodVolume
+
+        -- Heal body parts.
+        for _, node in pairs( nodes ) do
+            node:heal()
+        end
+
+        -- Remove status effects.
+        statusEffects:remove({ STATUS_EFFECTS.BLIND })
+    end
+
     function self:getBodyParts()
         return nodes;
     end

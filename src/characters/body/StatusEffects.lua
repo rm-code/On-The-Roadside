@@ -80,6 +80,23 @@ function StatusEffects.new()
     end
 
     ---
+    -- Removes one or more status effects.
+    -- @tparam table effects A table containing the status effects to remove.
+    --
+    function self:remove( effects )
+        if not effects then
+            return
+        end
+
+        for _, effect in pairs( effects ) do
+            assert( validate( effect ), string.format( 'Status effect %s is not valid.', effect ))
+
+            Log.debug( 'Removing status effect ' .. effect )
+            active[effect] = false
+        end
+    end
+
+    ---
     -- Serializes this object.
     -- @treturn table A table containing the serialized values.
     --
