@@ -83,14 +83,23 @@ function SavegameScreen.new()
     end
 
     local function createSaveGameEntry( index, item, folder )
-        local date = os.date( index .. '. ' .. "%d.%m.%Y - %X", item )
+        local version = SaveHandler.loadVersion( folder )
 
-        local function callback()
-            local save = SaveHandler.load( folder )
-            ScreenManager.switch( 'combat', save )
+        local str
+        if version == getVersion() then
+            str = os.date( index .. '. ' .. "%d.%m.%Y - %X", item )
+        else
+            str = Translator.getText( 'ui_invalid_save_version' )
         end
 
-        return Button.new( date, callback )
+        local function callback()
+            if version == getVersion() then
+                local save = SaveHandler.load( folder )
+                ScreenManager.switch( 'combat', save )
+            end
+        end
+
+        return Button.new( str, callback )
     end
 
     -- ------------------------------------------------

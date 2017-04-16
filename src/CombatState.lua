@@ -112,7 +112,6 @@ function CombatState.new()
 
     function self:serialize()
         local t = {
-            ['gameversion'] = getVersion(),
             ['map'] = map:serialize(),
             ['factions'] = factions:serialize()
         };

@@ -23,6 +23,9 @@ locale.strings = {
     ['ui_main_menu_options'] = "Optionen",
     ['ui_main_menu_exit'] = "Beenden",
 
+    -- Loading screen
+    ['ui_invalid_save_version'] = "Version nicht kompatibel",
+
     -- Options
     ['ui_on']  = "<An>",
     ['ui_off'] = "<Aus>",

@@ -13,6 +13,7 @@ local SaveHandler = {};
 local SAVE_FOLDER = 'saves'
 local UNCOMPRESSED_SAVE = 'uncompressed.lua'
 local COMPRESSED_SAVE = 'compressed.data'
+local VERSION_FILE = 'version.data'
 local DEBUG = false
 
 -- ------------------------------------------------
@@ -81,6 +82,10 @@ local function convertStrings( value )
     return value;
 end
 
+local function createVersionFile( dir, version )
+    love.filesystem.write( dir .. '/' .. VERSION_FILE, love.math.compress( version, 'lz4', 9 ))
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -95,6 +100,8 @@ function SaveHandler.save( t )
     local timestamp = os.time()
     local folder = SAVE_FOLDER .. '/' .. timestamp
     love.filesystem.createDirectory( folder )
+
+    createVersionFile( folder, getVersion() )
 
     -- Serialize the table.
     local output = {};
@@ -121,6 +128,11 @@ function SaveHandler.load( path )
     local decompressed = love.math.decompress( compressed, 'lz4' );
     local rawsave = loadstring( decompressed )();
     return convertStrings( rawsave );
+end
+
+function SaveHandler.loadVersion( path )
+    local compressed = love.filesystem.read( path .. '/' .. VERSION_FILE )
+    return love.math.decompress( compressed, 'lz4' )
 end
 
 function SaveHandler.getSaveFolder()
