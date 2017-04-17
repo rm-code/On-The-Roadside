@@ -48,6 +48,7 @@ locale.strings = {
     ['ui_ingame_paused'] = "Paused",
     ['ui_ingame_save_game'] = "Save game",
     ['ui_ingame_open_help'] = "Show help",
+    ['ui_ingame_abort_mission'] = "Abort Mission",
     ['ui_ingame_exit'] = "Main menu",
 }
 
