@@ -94,7 +94,7 @@ function BaseScreen.new()
         end
         if scancode == 'escape' then
             -- TODO save game is currently broken
-            ScreenManager.push( 'ingamemenu', baseState )
+            ScreenManager.push( 'basemenu', baseState )
         end
         characterSelector:keypressed( _, scancode )
     end
