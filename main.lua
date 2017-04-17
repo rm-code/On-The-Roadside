@@ -38,7 +38,7 @@ function love.load()
     local screens = {
         bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
         mainmenu    = require( 'src.ui.screens.MainMenu'          ),
-        ingamemenu  = require( 'src.ui.screens.IngameMenu'        ),
+        ingamemenu  = require( 'src.ui.screens.IngameCombatMenu'  ),
         options     = require( 'src.ui.screens.OptionsScreen'     ),
         base        = require( 'src.ui.screens.BaseScreen'        ),
         combat      = require( 'src.ui.screens.CombatScreen'      ),

@@ -11,7 +11,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local IngameMenu = {};
+local IngameCombatMenu = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -24,7 +24,7 @@ local SCREEN_HEIGHT = 7;
 -- Constructor
 -- ------------------------------------------------
 
-function IngameMenu.new()
+function IngameCombatMenu.new()
     local self = Screen.new();
 
     -- ------------------------------------------------
@@ -135,4 +135,4 @@ function IngameMenu.new()
     return self;
 end
 
-return IngameMenu;
+return IngameCombatMenu
