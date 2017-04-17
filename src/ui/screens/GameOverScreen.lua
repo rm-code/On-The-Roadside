@@ -28,6 +28,8 @@ function GameOverScreen.new()
     local outlines
     local px, py;
     local tw, th = TexturePacks.getTileDimensions()
+    local win
+    local playerFaction
 
     local function createOutlines( w, h )
         for x = 0, w - 1 do
@@ -43,7 +45,10 @@ function GameOverScreen.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init( win )
+    function self:init( nplayerFaction, nwin )
+        playerFaction = nplayerFaction
+        win = nwin
+
         px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
         py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
         px, py = px * tw, py * th
@@ -65,7 +70,12 @@ function GameOverScreen.new()
     end
 
     function self:keypressed()
-        ScreenManager.switch( 'mainmenu' );
+        if win then
+            ScreenManager.pop()
+            ScreenManager.push( 'base', playerFaction )
+        else
+            ScreenManager.switch( 'mainmenu' )
+        end
     end
 
     return self;
