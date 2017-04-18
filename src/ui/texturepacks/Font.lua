@@ -57,6 +57,26 @@ function Font.new( source, glyphs, gwidth, gheight )
         return font:getWidth( str )
     end
 
+    ---
+    -- Aligns a string while taking the font's grid into account.
+    -- @tparam  string alignMode Determines how the font is aligned (center, left or right).
+    -- @tparam  string str       The text to align.
+    -- @tparam  number width     The width of the area in which to align the string.
+    -- @treturn number           The position at which to draw the string.
+    --
+    function self:align( alignMode, str, width )
+        if alignMode == 'center' then
+            local offset = width * 0.5 - font:getWidth( str ) * 0.5
+            return math.floor( offset / gwidth ) * gwidth
+        elseif alignMode == 'left' then
+            return 0
+        elseif alignMode == 'right' then
+            local offset = width - font:getWidth( str )
+            return math.floor( offset / gwidth ) * gwidth
+        end
+        error( string.format( 'Invalid align mode "%s". Use "center", "left" or "right" instead.' ), alignMode )
+    end
+
     -- ------------------------------------------------
     -- Getters
     -- ------------------------------------------------

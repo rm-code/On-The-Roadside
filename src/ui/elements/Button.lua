@@ -11,7 +11,7 @@ local Button = {};
 -- Constructor
 -- ------------------------------------------------
 
-function Button.new( text, callback )
+function Button.new( text, callback, alignMode )
     local self = Object.new():addInstance( 'Button' );
 
     -- ------------------------------------------------
@@ -31,7 +31,7 @@ function Button.new( text, callback )
 
     function self:draw( x, y, w, _ )
         TexturePacks.setColor( focus and 'ui_button_hot' or 'ui_button' )
-        love.graphics.printf( text, x, y, w, 'center' )
+        love.graphics.print( text, x + TexturePacks.getFont():align( alignMode or 'center', text, w ), y )
         TexturePacks.resetColor()
     end
 
