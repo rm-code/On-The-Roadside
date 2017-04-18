@@ -114,9 +114,11 @@ end
 function CharacterFactory.newCharacter( type )
     local character = Character.new()
 
-    local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
-    character:setNationality( nationality )
-    character:setName( names[nationality][love.math.random( #names[nationality] )])
+    if type == 'human' then
+        local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
+        character:setNationality( nationality )
+        character:setName( names[nationality][love.math.random( #names[nationality] )])
+    end
 
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );

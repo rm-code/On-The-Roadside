@@ -118,8 +118,10 @@ function HealthScreen.new()
         love.graphics.print( type, px + tw, py + th )
 
         -- Draw character name.
-        local name = Translator.getText( 'ui_character_name' ) .. character:getName()
-        love.graphics.print( name, px + 2 * tw + TexturePacks.getFont():measureWidth( type ), py + th )
+        if character:getName() then
+            local name = Translator.getText( 'ui_character_name' ) .. character:getName()
+            love.graphics.print( name, px + 2 * tw + TexturePacks.getFont():measureWidth( type ), py + th )
+        end
 
         TexturePacks.resetColor()
     end
