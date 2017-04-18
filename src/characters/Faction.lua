@@ -227,14 +227,16 @@ function Faction.new( type, controlledByAi )
 
     ---
     -- Iterates over all nodes in this Faction, gets their Characters and passes
-    -- them to the callback function.
-    -- @param callback (function) The callback to use on the characters.
+    -- them to the callback function if they are alive.
+    -- @tparam function callback The callback to use on the characters.
     --
     function self:iterate( callback )
-        local node = root;
+        local node = root
         while node do
-            callback( node:getObject() );
-            node = node:getNext();
+            if not node:getObject():isDead() then
+                callback( node:getObject() )
+            end
+            node = node:getNext()
         end
     end
 
