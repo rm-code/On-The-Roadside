@@ -22,7 +22,7 @@ function HelpScreen.new()
         '  space     - Select next character',
         '  return    - End turn',
         '  i         - Open inventory',
-        '  q         - Open health panel',
+        '  h         - Open health panel',
         '',
         'WEAPONS',
         '  left  - select previous firing mode',
