@@ -1,3 +1,31 @@
+# Version 0.9.0.1014 - 2017-04-18
+
+## Additions
+- Added basic base gameplay
+    - Base inventory can be used to store items between missions
+        - The inventory screen can be opened for an active character by pressing "i"
+    - A new combat mission can be started by pressing the "next mission" button
+    - All characters can be healed by pressing "Heal All"
+        - The health screen can be opened for an active character by pressing "h"
+- Added proper saving system
+    - Added a menu for loading savegames
+    - Savegames are stored and ordered by their time of creation
+    - Savegames which have been created with older versions of the game are marked as incompatible
+- Added footer to all menu screens
+- Added randomly generated nationality and names for characters
+
+## Removals
+- Removed unused translation strings
+
+## Other Changes
+- Colors and sprites can now be entirely defined via texture packs
+- Replaced randomized ASCII sprites for shotgun shots with different sprite
+- Exposed "Type:" string to translation files
+- Changed health screen hotkey from "q" to "h"
+
+
+
+
 # Version 0.8.2.976 - 2017-04-14
 
 ## Fixes
