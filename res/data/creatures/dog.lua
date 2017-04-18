@@ -27,7 +27,7 @@ return {
         type = 'node',
         health = 10,
         effects = {
-            'death'
+            'dead'
         }
     },
     {
@@ -40,7 +40,7 @@ return {
         type = 'node',
         health = 20,
         effects = {
-            'blindness'
+            'blind'
         }
     },
     {
@@ -58,7 +58,7 @@ return {
         type = 'node',
         health = 20,
         effects = {
-            'death'
+            'dead'
         }
     },
     -- ################################## Limbs
@@ -78,7 +78,7 @@ return {
         type = 'node',
         health = 20,
         effects = {
-            'death'
+            'dead'
         }
     },
     {
@@ -86,7 +86,7 @@ return {
         type = 'node',
         health = 40,
         effects = {
-            'death'
+            'dead'
         }
     },
     {
@@ -94,7 +94,7 @@ return {
         type = 'node',
         health = 30,
         effects = {
-            'death'
+            'dead'
         }
     },
     {
@@ -102,7 +102,7 @@ return {
         type = 'node',
         health = 40,
         effects = {
-            'death'
+            'dead'
         }
     },
     -- ################################## Equipment

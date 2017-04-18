@@ -100,7 +100,7 @@ function StatusEffects.new()
     -- @treturn boolean Wether the character is dead or not.
     --
     function self:isDead()
-        return active[STATUS_EFFECTS.DEATH]
+        return active[STATUS_EFFECTS.DEAD]
     end
 
     ---
@@ -108,7 +108,7 @@ function StatusEffects.new()
     -- @treturn boolean Wether the character is blind or not.
     --
     function self:isBlind()
-        return active[STATUS_EFFECTS.BLINDNESS]
+        return active[STATUS_EFFECTS.BLIND]
     end
 
     return self

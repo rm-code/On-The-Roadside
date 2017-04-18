@@ -43,7 +43,7 @@ function Body.new( template )
             bloodVolume = bloodVolume - node:getBloodLoss();
             if bloodVolume <= 0 then
                 Log.debug( 'Character bleeds to death!', 'Body' );
-                statusEffects:add({ STATUS_EFFECTS.DEATH });
+                statusEffects:add({ STATUS_EFFECTS.DEAD })
             end
         end
     end
