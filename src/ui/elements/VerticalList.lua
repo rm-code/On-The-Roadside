@@ -22,8 +22,6 @@ function VerticalList.new( x, y, itemW, itemH )
             return;
         end
 
-        self:unsetCursor()
-
         local elements = self:getElements();
         for i = 1, #elements do
             elements[i]:update( x, y + (i-1) * itemH, itemW, itemH );
@@ -31,6 +29,10 @@ function VerticalList.new( x, y, itemW, itemH )
                 self:setCursor( i );
             end
         end
+
+        -- If the mouse isn't over any elements we restore the original cursor.
+        local cursor = self:getCursor()
+        elements[cursor]:setFocus( true )
     end
 
     function self:draw()
@@ -64,11 +66,6 @@ function VerticalList.new( x, y, itemW, itemH )
 
     function self:deactivateMouse()
         love.mouse.setVisible( false );
-
-        local elements = self:getElements();
-        for i = 1, #elements do
-            elements[i]:setFocus( false );
-        end
     end
 
     function self:mousemoved()
