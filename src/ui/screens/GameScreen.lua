@@ -1,126 +1,57 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local Screen = require( 'lib.screenmanager.Screen' );
-local Game = require( 'src.Game' );
-local WorldPainter = require( 'src.ui.WorldPainter' );
-local CameraHandler = require('src.ui.CameraHandler');
-local MousePointer = require( 'src.ui.MousePointer' );
-local UserInterface = require( 'src.ui.UserInterface' );
-local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
-local Messenger = require( 'src.Messenger' );
-local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+---
+-- The game screen is the topmost game screen / state and acts as a parent for
+-- all the other parts of the game (such as combat and base views).
+--
+-- @module GameScreen
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Screen = require( 'lib.screenmanager.Screen' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
+local Faction = require( 'src.characters.Faction' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local GameScreen = {};
+local GameScreen = {}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
 function GameScreen.new()
-    local self = Screen.new();
-
-    local game;
-    local worldPainter;
-    local userInterface;
-    local overlayPainter;
-    local camera;
-    local observations = {};
-    local tw, th = TexturePacks.getTileDimensions()
+    local self = Screen.new()
 
     function self:init( savegame )
-        game = Game.new();
-        game:init( savegame );
+        local playerFaction = Faction.new( FACTIONS.ALLIED, false )
 
-        worldPainter = WorldPainter.new( game );
-        worldPainter:init();
+        if savegame then
+            playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+        else
+            playerFaction:addCharacters( 10, 'human' )
+        end
 
-        userInterface = UserInterface.new( game );
-
-        camera = CameraHandler.new( game:getMap() );
-
-        overlayPainter = OverlayPainter.new( game )
-
-        MousePointer.init( camera );
+        local state = savegame and savegame.type or 'base'
+        ScreenManager.push( state, playerFaction, savegame )
     end
 
     function self:draw()
-        camera:attach();
-        worldPainter:draw();
-        overlayPainter:draw();
-        camera:detach();
-        userInterface:draw();
     end
 
-    function self:update( dt )
-        if self:isActive() then
-            camera:update( dt );
-        end
-
-        game:update( dt );
-        worldPainter:update( dt );
-        overlayPainter:update( dt );
-        userInterface:update( dt );
-
-        if self:isActive() then
-            MousePointer.update();
-        end
+    function self:update()
     end
 
-    function self:keypressed( key, scancode, isrepeat )
-        if scancode == 'f' then
-            love.window.setFullscreen( not love.window.getFullscreen() );
-        end
-        if scancode == 'f1' then
-            userInterface:toggleDebugInfo();
-        end
-        if scancode == 'escape' then
-            ScreenManager.push( 'ingamemenu', game );
-        end
-
-        game:keypressed( key, scancode, isrepeat );
-    end
-
-    function self:mousepressed( _, _, button )
-        local mx, my = MousePointer.getGridPosition();
-        game:mousepressed( mx, my, button );
-    end
-
-    function self:mousefocus( f )
-        if f then
-            camera:unlock();
-        else
-            camera:lock();
-        end
-    end
-
-    function self:close()
-        for i = 1, #observations do
-            Messenger.remove( observations[i] );
-        end
-
-        MousePointer.clear();
-
-        game:close();
-    end
-
-    observations[#observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
-            return;
-        end
-        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
-    end)
-
-    observations[#observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
-        if not game:getFactions():getPlayerFaction():canSee( character:getTile() ) then
-            return;
-        end
-        camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
-    end)
-
-    return self;
+    return self
 end
 
-return GameScreen;
+return GameScreen

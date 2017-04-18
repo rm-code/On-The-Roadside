@@ -5,6 +5,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local VerticalList = require( 'src.ui.elements.VerticalList' );
 local Button = require( 'src.ui.elements.Button' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 
 -- ------------------------------------------------
 -- Module
@@ -17,7 +18,6 @@ local OptionsScreen = {};
 -- ------------------------------------------------
 
 local FIELD_WIDTH = 300;
-local COLORS = require( 'src.constants.Colors' );
 
 local TITLE_POSITION = 2;
 local TITLE_STRING = {
@@ -47,6 +47,7 @@ function OptionsScreen.new()
     local title;
     local verticalList;
     local font
+    local footer
 
     -- ------------------------------------------------
     -- Private Functions
@@ -58,13 +59,13 @@ function OptionsScreen.new()
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
                 if w == '@' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB18;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
                     coloredtext[#coloredtext + 1] = 'O';
                 elseif w == '!' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
                     coloredtext[#coloredtext + 1] = w;
                 else
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
                     coloredtext[#coloredtext + 1] = w;
                 end
                 title:add( coloredtext, 0, i * font:get():getHeight() )
@@ -138,7 +139,7 @@ function OptionsScreen.new()
         local function callback()
             ScreenManager.switch( 'mainmenu' );
         end
-        return Button.new( 'ui_back', callback );
+        return Button.new( Translator.getText( 'ui_back' ), callback )
     end
 
     -- ------------------------------------------------
@@ -157,6 +158,8 @@ function OptionsScreen.new()
         verticalList:addElement( createFullscreenOption() );
         verticalList:addElement( createTexturePackOption() )
         verticalList:addElement(       createBackButton() );
+
+        footer = UICopyrightFooter.new()
     end
 
     function self:update()
@@ -168,6 +171,8 @@ function OptionsScreen.new()
         font:use()
         love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
         verticalList:draw();
+
+        footer:draw()
     end
 
     function self:keypressed( key, scancode )

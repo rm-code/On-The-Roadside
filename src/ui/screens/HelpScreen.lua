@@ -1,17 +1,12 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local HelpScreen = {};
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
 
 -- ------------------------------------------------
 -- Constructor
@@ -27,7 +22,7 @@ function HelpScreen.new()
         '  space     - Select next character',
         '  return    - End turn',
         '  i         - Open inventory',
-        '  q         - Open health panel',
+        '  h         - Open health panel',
         '',
         'WEAPONS',
         '  left  - select previous firing mode',
@@ -49,11 +44,11 @@ function HelpScreen.new()
     }
 
     function self:draw()
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', 5, 5, love.graphics.getWidth() - 5, love.graphics.getHeight() - 5 );
-        love.graphics.setColor( COLORS.DB20 );
+        TexturePacks.setColor( 'ui_text' )
         love.graphics.rectangle( 'line', 5, 5, love.graphics.getWidth() - 5, love.graphics.getHeight() - 5 );
-        love.graphics.setColor( COLORS.RESET );
+        TexturePacks.resetColor()
 
         for i, line in ipairs( t ) do
             love.graphics.print( line, 20, 20 * i );

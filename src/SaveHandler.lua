@@ -7,6 +7,16 @@ local Log = require( 'src.util.Log' );
 local SaveHandler = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local SAVE_FOLDER = 'saves'
+local UNCOMPRESSED_SAVE = 'uncompressed.lua'
+local COMPRESSED_SAVE = 'compressed.data'
+local VERSION_FILE = 'version.data'
+local DEBUG = false
+
+-- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
@@ -72,25 +82,47 @@ local function convertStrings( value )
     return value;
 end
 
+local function createVersionFile( dir, version )
+    love.filesystem.write( dir .. '/' .. VERSION_FILE, love.math.compress( version, 'lz4', 9 ))
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
 
 function SaveHandler.save( t )
+    -- Create the saves folder it doesn't exist already.
+    if not love.filesystem.exists( SAVE_FOLDER ) then
+        love.filesystem.createDirectory( SAVE_FOLDER )
+    end
+
+    -- Create a folder with the timestamp for this specific savegame.
+    local timestamp = os.time()
+    local folder = SAVE_FOLDER .. '/' .. timestamp
+    love.filesystem.createDirectory( folder )
+
+    createVersionFile( folder, getVersion() )
+
+    -- Serialize the table.
     local output = {};
     table.insert( output, 'return {' );
     serialize( t, output, 0 )
     table.insert( output, '}' );
 
     local str = table.concat( output, '\n' );
-    -- love.filesystem.write( 'uncompressed.lua', str );
-
     local compress = love.math.compress( str, 'lz4', 9 );
-    love.filesystem.write( 'compressed.data', compress );
+
+    -- Save uncompressed output for debug purposes only.
+    if DEBUG then
+        love.filesystem.write( folder .. '/' .. UNCOMPRESSED_SAVE, str )
+    end
+
+    -- Save compressed file.
+    love.filesystem.write( folder .. '/' .. COMPRESSED_SAVE, compress )
 end
 
-function SaveHandler.load()
-    local compressed, bytes = love.filesystem.read( 'compressed.data' );
+function SaveHandler.load( path )
+    local compressed, bytes = love.filesystem.read( path .. '/' .. COMPRESSED_SAVE )
     Log.print( string.format( 'Loaded savegame (Size: %d bytes)', bytes ), 'SaveHandler' );
 
     local decompressed = love.math.decompress( compressed, 'lz4' );
@@ -98,8 +130,13 @@ function SaveHandler.load()
     return convertStrings( rawsave );
 end
 
-function SaveHandler.exists()
-    return love.filesystem.exists( 'compressed.data' );
+function SaveHandler.loadVersion( path )
+    local compressed = love.filesystem.read( path .. '/' .. VERSION_FILE )
+    return love.math.decompress( compressed, 'lz4' )
+end
+
+function SaveHandler.getSaveFolder()
+    return SAVE_FOLDER
 end
 
 return SaveHandler;

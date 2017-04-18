@@ -49,7 +49,7 @@ describe( 'Item template spec', function()
     end)
 
     it( 'makes sure the template has a valid item type', function()
-        local ITEM_TYPES = require('src.constants.ItemTypes');
+        local ITEM_TYPES = require('src.constants.ITEM_TYPES')
         for _, templates in ipairs( modules ) do
             for _, template in ipairs( templates ) do
                 local valid;

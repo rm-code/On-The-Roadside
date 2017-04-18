@@ -23,6 +23,8 @@ local TexturePacks = {}
 local TEXTURE_PACK_FOLDER     = 'res/texturepacks/'
 local MOD_TEXTURE_PACK_FOLDER = 'mod/texturepacks/'
 local INFO_FILE_NAME = 'info'
+local SPRITE_DEFINITIONS = 'sprites'
+local COLOR_DEFINITIONS  = 'colors'
 
 -- ------------------------------------------------
 -- Private Variables
@@ -78,8 +80,18 @@ local function load( src )
         return false
     end
 
+    local spriteInfos = require( src .. SPRITE_DEFINITIONS )
+    if not spriteInfos then
+        return false
+    end
+
+    local colorInfos = require( src .. COLOR_DEFINITIONS )
+    if not colorInfos then
+        return false
+    end
+
     local tpack = TexturePack.new()
-    tpack:init( src, module )
+    tpack:init( src, module, spriteInfos, colorInfos )
 
     return true, tpack
 end
@@ -148,8 +160,28 @@ function TexturePacks.getTileset()
     return texturePacks[current]:getTileset()
 end
 
+function TexturePacks.getSprite( id, alt )
+    return texturePacks[current]:getTileset():getSprite( id, alt )
+end
+
 function TexturePacks.getTileDimensions()
     return texturePacks[current]:getTileset():getTileDimensions()
+end
+
+function TexturePacks.setColor( id )
+    love.graphics.setColor( texturePacks[current]:getColor( id ))
+end
+
+function TexturePacks.getColor( id )
+    return texturePacks[current]:getColor( id )
+end
+
+function TexturePacks.setBackgroundColor()
+    love.graphics.setBackgroundColor( texturePacks[current]:getColor( 'sys_background' ))
+end
+
+function TexturePacks.resetColor()
+    love.graphics.setColor( texturePacks[current]:getColor( 'sys_reset' ))
 end
 
 -- ------------------------------------------------

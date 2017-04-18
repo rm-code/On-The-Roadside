@@ -27,7 +27,8 @@ return {
         permanent  = false,
         damageType = 'piercing',
         effects = {
-            spreadsOnShot = { pellets = 6 }
+            spreadsOnShot = { pellets = 6 },
+            customSprite  = { sprite = "12_gauge" }
         },
         tags = {
             'humanoid'

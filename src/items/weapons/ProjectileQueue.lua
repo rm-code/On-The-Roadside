@@ -16,10 +16,12 @@ local ProjectileQueue = {};
 ---
 -- Creates a new ProjectileQueue.
 -- @param character (Character)       The character who started the attack.
--- @param target    (Tile)            The target tile.
+-- @tparam number tx                   The target's x-coordinate.
+-- @tparam number ty                   The target's y-coordinate.
+-- @tparam number th                   The target's height.
 -- @return          (ProjectileQueue) A new instance of the ProjectileQueue class.
 --
-function ProjectileQueue.new( character, target )
+function ProjectileQueue.new( character, tx, ty, th )
     local self = {};
 
     local ammoQueue = Queue.new();
@@ -40,7 +42,7 @@ function ProjectileQueue.new( character, target )
     local function spawnProjectile()
         local round = ammoQueue:dequeue();
 
-        local path = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() )
+        local path = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - ammoQueue:getSize() )
         local projectile = Projectile.new( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
 
         -- Play sound and remove the round from the magazine.
@@ -51,7 +53,7 @@ function ProjectileQueue.new( character, target )
         if round:getEffects():spreadsOnShot() then
             for _ = 1, round:getEffects():getPellets() do
                 index = index + 1;
-                local spreadTiles = ProjectilePath.calculate( character, target, weapon, shots - ammoQueue:getSize() );
+                local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - ammoQueue:getSize() )
                 projectiles[index] = Projectile.new( character, spreadTiles, weapon:getDamage(), round:getDamageType(), round:getEffects() );
             end
             return;

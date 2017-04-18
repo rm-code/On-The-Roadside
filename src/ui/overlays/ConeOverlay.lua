@@ -24,8 +24,7 @@ local ConeOverlay = {}
 -- Constants
 -- ------------------------------------------------
 
-local COLORS       = require( 'src.constants.Colors' )
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' )
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -130,7 +129,6 @@ function ConeOverlay.new( game, pulser )
                 -- 1 means the projectile can pass freely.
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
-                -- 4 means the projectile can't reach this tile.
                 local nstatus = 1
                 if tile:isOccupied() then
                     nstatus = 2
@@ -164,22 +162,19 @@ function ConeOverlay.new( game, pulser )
 
     function self:draw()
         for tile, status in pairs( cone ) do
+            local color
             if status == 1 then
-                love.graphics.setColor( COLORS.DB09[1], COLORS.DB09[2], COLORS.DB09[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
+                color = TexturePacks.getColor( 'ui_shot_valid' )
             elseif status == 2 then
-                love.graphics.setColor( COLORS.DB05[1], COLORS.DB05[2], COLORS.DB05[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
+                color = TexturePacks.getColor( 'ui_shot_potentially_blocked' )
             elseif status == 3 then
-                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
-            elseif status == 4 then
-                love.graphics.setColor( COLORS.DB27[1], COLORS.DB27[2], COLORS.DB27[3], pulser:getPulse() )
-                love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 89 ), tile:getX() * tw, tile:getY() * th )
+                color = TexturePacks.getColor( 'ui_shot_blocked' )
             end
+            love.graphics.setColor( color[1], color[2], color[3], pulser:getPulse() )
+            love.graphics.rectangle( 'fill', tile:getX() * tw, tile:getY() * th, tw, th )
             cone[tile] = nil
         end
-        love.graphics.setColor( COLORS.RESET )
+        TexturePacks.resetColor()
     end
 
     return self

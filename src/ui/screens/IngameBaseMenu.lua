@@ -11,13 +11,12 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local IngameMenu = {};
+local IngameBaseMenu = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local COLORS = require( 'src.constants.Colors' );
 local SCREEN_WIDTH  = 8;
 local SCREEN_HEIGHT = 7;
 
@@ -25,7 +24,7 @@ local SCREEN_HEIGHT = 7;
 -- Constructor
 -- ------------------------------------------------
 
-function IngameMenu.new()
+function IngameBaseMenu.new()
     local self = Screen.new();
 
     -- ------------------------------------------------
@@ -72,9 +71,9 @@ function IngameMenu.new()
     local function createButtons()
         local x, y = px, py;
         buttonList = VerticalList.new( x, y + 3 * th, SCREEN_WIDTH * tw, th )
-        buttonList:addElement( Button.new( 'ui_ingame_save_game', saveGame ));
-        buttonList:addElement( Button.new( 'ui_ingame_open_help', openHelpScreen ));
-        buttonList:addElement( Button.new( 'ui_ingame_exit', exitToMainMenu ));
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_exit' ), exitToMainMenu ))
     end
 
     -- ------------------------------------------------
@@ -98,9 +97,8 @@ function IngameMenu.new()
     end
 
     function self:draw()
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' );
         love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-        love.graphics.setColor( COLORS.DB22 );
 
         outlines:draw( px, py )
 
@@ -137,4 +135,4 @@ function IngameMenu.new()
     return self;
 end
 
-return IngameMenu;
+return IngameBaseMenu

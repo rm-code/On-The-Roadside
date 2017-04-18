@@ -98,7 +98,7 @@ function PlanningState.new( stateManager )
         elseif scancode == 'i' then
             character:enqueueAction( OpenInventory.new( character, character:getTile() ));
             stateManager:push( 'execution', factions, character );
-        elseif scancode == 'q' then
+        elseif scancode == 'h' then
             ScreenManager.push( 'health', character );
         end
     end

@@ -32,9 +32,6 @@ function WorldObject.new( template )
     local openable = template.openable or false;
     local climbable = template.climbable or false;
     local blocksPathfinding = template.blocksPathfinding;
-    local sprite = template.sprite;
-    local openSprite = template.openSprite;
-    local color = template.color;
     local container = template.container;
     local drops = template.drops;
 
@@ -86,14 +83,6 @@ function WorldObject.new( template )
     --
     function self:blocksVision()
         return blocksVision;
-    end
-
-    ---
-    -- Returns a table containing the RGB values for this WorldObject.
-    -- @return (table) The table containing the RGB values.
-    --
-    function self:getColor()
-        return color;
     end
 
     ---
@@ -150,17 +139,6 @@ function WorldObject.new( template )
     --
     function self:getHeight()
         return height
-    end
-
-    ---
-    -- Returns the WorldObject's sprite index.
-    -- @return (number) The WorldObject's sprite index.
-    --
-    function self:getSprite()
-        if openable and passable then
-            return openSprite;
-        end
-        return sprite;
     end
 
     ---

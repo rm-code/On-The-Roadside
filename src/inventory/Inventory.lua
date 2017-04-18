@@ -13,7 +13,7 @@ local Inventory = {};
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 local DEFAULT_WEIGHT_LIMIT = 50;
 local DEFAULT_VOLUME_LIMIT = 50;
 

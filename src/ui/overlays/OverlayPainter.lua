@@ -24,12 +24,6 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local OverlayPainter = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -63,20 +57,21 @@ function OverlayPainter.new( game )
         local gx, gy = MousePointer.getGridPosition();
         local cx, cy = gx * tw, gy * th
 
-        love.graphics.setColor( COLORS.DB00 );
+        TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', cx, cy, tw, th )
 
+        local id
         if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
-            love.graphics.setColor( COLORS.DB18 );
-            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 176 ), cx, cy )
+            id = 'ui_mouse_pointer_movement'
         elseif game:getState():getInputMode():instanceOf( 'AttackInput' ) then
-            love.graphics.setColor( COLORS.DB27 );
-            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 11 ), cx, cy )
+            id = 'ui_mouse_pointer_attack'
         elseif game:getState():getInputMode():instanceOf( 'InteractionInput' ) then
-            love.graphics.setColor( COLORS.DB10 );
-            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 30 ), cx, cy )
+            id = 'ui_mouse_pointer_interact'
         end
-        love.graphics.setColor( COLORS.RESET );
+
+        TexturePacks.setColor( id )
+        love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( id ), cx, cy )
+        TexturePacks.resetColor()
     end
 
     ---
@@ -87,14 +82,12 @@ function OverlayPainter.new( game )
             for y, particle in pairs( row ) do
                 if game:getFactions():getPlayerFaction():canSee( game:getMap():getTileAt( x, y )) then
                     love.graphics.setColor( particle:getColors() );
-                    if particle:isAscii() then
-                        love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( love.math.random( 1, 256 )), x * tw, y * th )
-                    elseif particle:getSprite() then
+                    if particle:getSprite() then
                         love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( particle:getSprite() ), x * tw, y * th )
                     else
                         love.graphics.rectangle( 'fill', x * tw, y * th, tw, th )
                     end
-                    love.graphics.setColor( COLORS.RESET );
+                    TexturePacks.resetColor()
                 end
             end
         end

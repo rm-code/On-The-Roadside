@@ -1,8 +1,6 @@
 local Object = require( 'src.Object' );
-local Faction = require( 'src.characters.Faction' );
 local Node = require( 'src.util.Node' );
 local Messenger = require( 'src.Messenger' );
-local CharacterFactory = require( 'src.characters.CharacterFactory' );
 local Log = require( 'src.util.Log' );
 
 -- ------------------------------------------------
@@ -16,7 +14,6 @@ local Factions = {};
 -- ------------------------------------------------
 
 local FACTIONS = require( 'src.constants.FACTIONS' );
-local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' )
 
 -- ------------------------------------------------
 -- Constructor
@@ -31,81 +28,32 @@ function Factions.new( map )
 
     local root;
     local active;
-    local player;
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Adds a new faction node to the linked list.
-    -- @param faction (number) An index to identify the faction.
-    --
-    local function addFaction( faction )
-        local node = Node.new( faction );
-
-        -- Initialise root node.
-        if not root then
-            root = node;
-            active = root;
-            return active:getObject();
-        end
-
-        -- Doubly link the new node.
-        active:linkNext( node );
-        node:linkPrev( active );
-
-        -- Make it the active node.
-        active = node;
-        return active:getObject();
-    end
-
-    ---
-    -- Spawns characters on the map.
-    -- @param amount  (number) The amount of characters to spawn.
-    -- @param faction (string) The faction identifier.
-    --
-    local function spawnCharacters( amount, faction )
-        for _ = 1, amount do
-            local spawn = map:findSpawnPoint( faction );
-            -- TODO Character spawn based on templates.
-            local type = 'human';
-            if faction == FACTIONS.NEUTRAL then
-                type = 'dog';
-            end
-            self:addCharacter( CharacterFactory.newCharacter( map, spawn, self:findFaction( faction ), type ));
-        end
-    end
-
-    local function loadCharacters( savedFactions )
-        for type, sfaction in pairs( savedFactions ) do
-            local faction = self:findFaction( type );
-            for _, savedCharacter in ipairs( sfaction ) do
-                if not savedCharacter.body.statusEffects[STATUS_EFFECTS.DEATH] then
-                    local tile = map:getTileAt( savedCharacter.x, savedCharacter.y );
-                    faction:addCharacter( CharacterFactory.loadCharacter( map, tile, faction, savedCharacter ));
-                end
-            end
-        end
-    end
 
     -- ------------------------------------------------
     -- Public Functions
     -- ------------------------------------------------
 
     ---
-    -- Adds a new character.
-    -- @param character (Character) The character to add.
+    -- Adds a new faction node to the linked list.
+    -- @tparam Faction faction The faction to add.
     --
-    function self:addCharacter( character )
-        local node = root;
-        while node do
-            if node:getObject():getType() == character:getFaction():getType() then
-                node:getObject():addCharacter( character );
-                break;
-            end
-            node = node:getNext();
+    function self:addFaction( faction )
+        local node = Node.new( faction )
+
+        -- Initialise root node.
+        if not root then
+            root = node
+            active = root
+            return active:getObject()
         end
+
+        -- Doubly link the new node.
+        active:linkNext( node )
+        node:linkPrev( active )
+
+        -- Make it the active node.
+        active = node
+        return active:getObject()
     end
 
     ---
@@ -121,32 +69,6 @@ function Factions.new( map )
             end
             node = node:getNext();
         end
-    end
-
-    ---
-    -- Initialises the Factions object by creating a linked list of factions and
-    -- spawning the characters for each faction at random locations on the map.
-    --
-    function self:init( savegame )
-        addFaction( Faction.new( FACTIONS.ENEMY,   true  ));
-        addFaction( Faction.new( FACTIONS.NEUTRAL, true  ));
-        player = addFaction( Faction.new( FACTIONS.ALLIED,  false ));
-
-        if savegame then
-            loadCharacters( savegame.factions );
-            return;
-        end
-
-        self:spawnCharacters();
-    end
-
-    ---
-    -- Spawns characters on the map.
-    --
-    function self:spawnCharacters()
-        spawnCharacters( 10, FACTIONS.ALLIED  );
-        spawnCharacters(  5, FACTIONS.NEUTRAL );
-        spawnCharacters( 10, FACTIONS.ENEMY   );
     end
 
     ---
@@ -178,12 +100,32 @@ function Factions.new( map )
         end
     end
 
+    ---
+    -- Iterates over all factions and passes them to the callback function.
+    -- @tparam function callback The callback to use on the factions.
+    --
+    function self:iterate( callback )
+        local node = root;
+        while node do
+            callback( node:getObject() )
+            node = node:getNext()
+        end
+    end
+
     function self:serialize()
         local t = {}
-        t[FACTIONS.ALLIED]  = self:findFaction( FACTIONS.ALLIED  ):serialize();
-        t[FACTIONS.NEUTRAL] = self:findFaction( FACTIONS.NEUTRAL ):serialize();
-        t[FACTIONS.ENEMY]   = self:findFaction( FACTIONS.ENEMY   ):serialize();
+        self:iterate( function( faction )
+            t[faction:getType()] = faction:serialize()
+        end)
         return t;
+    end
+
+    function self:receive( event, ... )
+        if event == 'TILE_UPDATED' then
+            local tile = ...;
+            assert( tile:instanceOf( 'Tile' ), 'Expected an object of type Tile.' );
+            active:getObject():regenerateFOVSelectively( tile );
+        end
     end
 
     -- ------------------------------------------------
@@ -199,7 +141,7 @@ function Factions.new( map )
     end
 
     function self:getPlayerFaction()
-        return player;
+        return self:findFaction( FACTIONS.ALLIED )
     end
 
     return self;

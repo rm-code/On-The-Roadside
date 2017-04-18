@@ -2,6 +2,7 @@ local Log = require( 'src.util.Log' );
 local Object = require('src.Object');
 local Node = require('src.util.Node');
 local Messenger = require( 'src.Messenger' );
+local CharacterFactory = require( 'src.characters.CharacterFactory' )
 
 -- ------------------------------------------------
 -- Module
@@ -63,6 +64,57 @@ function Faction.new( type, controlledByAi )
         -- Make the new node active and mark it as the last node in our list.
         active = node;
         last = active;
+    end
+
+    ---
+    -- Adds characters to this faction.
+    -- @tparam number amount The amount of characters to add.
+    -- @tparam string ctype  The type of characters to add.
+    --
+    function self:addCharacters( amount, ctype )
+        for _ = 1, amount do
+            -- Create the new character.
+            local character = CharacterFactory.newCharacter( ctype )
+            character:setFaction( self )
+
+            -- Add it to this faction.
+            self:addCharacter( character )
+        end
+    end
+
+    ---
+    -- Recreates saved charaters for each faction.
+    -- @tparam table savedFactions A table containing the information to load all characters.
+    --
+    function self:loadCharacters( characters )
+        for _, savedCharacter in ipairs( characters ) do
+            local character = CharacterFactory.loadCharacter( savedCharacter )
+            character:setFaction( self )
+            self:addCharacter( character )
+        end
+    end
+
+    ---
+    -- Spawns the characters of this Faction on the given map.
+    -- @tparam Map map The map to spawn the characters on.
+    --
+    function self:spawnCharacters( map )
+        self:iterate( function( character )
+            local sx, sy = character:getSavedPosition()
+            character:setSavedPosition( nil, nil )
+
+            local tile
+
+            if sx and sy then
+                tile = map:getTileAt( sx, sy )
+            else
+                tile = map:findSpawnPoint( type )
+            end
+
+            tile:setCharacter( character )
+            character:setTile( tile )
+            character:setMap( map )
+        end)
     end
 
     ---
@@ -175,14 +227,16 @@ function Faction.new( type, controlledByAi )
 
     ---
     -- Iterates over all nodes in this Faction, gets their Characters and passes
-    -- them to the callback function.
-    -- @param callback (function) The callback to use on the characters.
+    -- them to the callback function if they are alive.
+    -- @tparam function callback The callback to use on the characters.
     --
     function self:iterate( callback )
-        local node = root;
+        local node = root
         while node do
-            callback( node:getObject() );
-            node = node:getNext();
+            if not node:getObject():isDead() then
+                callback( node:getObject() )
+            end
+            node = node:getNext()
         end
     end
 

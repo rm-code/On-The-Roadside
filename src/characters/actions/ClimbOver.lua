@@ -12,7 +12,7 @@ function ClimbOver.new( character, target )
         assert( target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' );
 
         current:removeCharacter();
-        target:addCharacter( character );
+        target:setCharacter( character );
         character:setTile( target );
 
         Messenger.publish( 'SOUND_CLIMB' );

@@ -2,8 +2,9 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Button = require( 'src.ui.elements.Button' );
 local HorizontalList = require( 'src.ui.elements.HorizontalList' );
-local SaveHandler = require( 'src.SaveHandler' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local Translator = require( 'src.util.Translator' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 
 -- ------------------------------------------------
 -- Module
@@ -14,10 +15,6 @@ local SplashScreen = {};
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
-
-local VERSION_STRING = string.format( 'WIP - Version: %s ', getVersion() );
-local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2017. All rights reserved.';
-local COLORS = require( 'src.constants.Colors' );
 
 local TITLE_POSITION = 2;
 local TITLE_STRING = {
@@ -58,6 +55,7 @@ function SplashScreen.new()
     local title;
     local buttonList;
     local debug;
+    local footer
 
     -- ------------------------------------------------
     -- Private Functions
@@ -70,13 +68,13 @@ function SplashScreen.new()
             local coloredtext = {};
             for w in string.gmatch( line, '.' ) do
                 if w == '@' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB18;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
                     coloredtext[#coloredtext + 1] = 'O';
                 elseif w == '!' then
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
                     coloredtext[#coloredtext + 1] = w;
                 else
-                    coloredtext[#coloredtext + 1] = COLORS.DB17;
+                    coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
                     coloredtext[#coloredtext + 1] = w;
                 end
                 title:add( coloredtext, 0, i * font:get():getHeight() )
@@ -84,22 +82,13 @@ function SplashScreen.new()
         end
     end
 
-    local function drawInfo()
-        local font = TexturePacks.getFont()
-        local sw, sh = love.graphics.getDimensions();
-        love.graphics.setColor( COLORS.DB01 );
-        love.graphics.print( VERSION_STRING, sw - font:measureWidth( VERSION_STRING ), sh - font:getGlyphHeight() )
-        love.graphics.print( COPYRIGHT_STRING, 0, sh - font:getGlyphHeight() )
-        love.graphics.setColor( COLORS.RESET );
-    end
-
     local function drawDebugInfo()
         local font = TexturePacks.getFont()
         if debug then
-            love.graphics.setColor( COLORS.DB01 );
+            TexturePacks.setColor( 'ui_text_dim' )
             love.graphics.print( love.timer.getFPS() .. ' FPS', font:getGlyphWidth(), font:getGlyphWidth() )
             love.graphics.print( math.floor( collectgarbage( 'count' )) .. ' kb', font:getGlyphWidth(), font:getGlyphWidth() + font:getGlyphHeight() )
-            love.graphics.setColor( COLORS.RESET );
+            TexturePacks.resetColor()
         end
     end
 
@@ -108,13 +97,7 @@ function SplashScreen.new()
     end
 
     local function loadPreviousGame()
-        if SaveHandler.exists() then
-            local save = SaveHandler.load();
-
-            if save.gameversion == getVersion() then
-                ScreenManager.switch( 'gamescreen', save );
-            end
-        end
+        ScreenManager.switch( 'loadgame' )
     end
 
     local function openOptions()
@@ -127,10 +110,10 @@ function SplashScreen.new()
 
     local function createButtons()
         buttonList = HorizontalList.new( love.graphics.getWidth() * 0.5, 30 * 16, 12 * 8, 16 );
-        buttonList:addElement( Button.new( 'ui_main_menu_new_game', startNewGame ));
-        buttonList:addElement( Button.new( 'ui_main_menu_load_game', loadPreviousGame ));
-        buttonList:addElement( Button.new( 'ui_main_menu_options', openOptions ));
-        buttonList:addElement( Button.new( 'ui_main_menu_exit', exitGame ));
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_new_game' ), startNewGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_load_game' ), loadPreviousGame ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_options' ), openOptions ))
+        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_exit' ), exitGame ))
     end
 
     -- ------------------------------------------------
@@ -140,6 +123,8 @@ function SplashScreen.new()
     function self:init()
         createTitle();
         createButtons();
+
+        footer = UICopyrightFooter.new()
 
         -- Flush the LuaJIT cache to prevent memory leaks caused by cached
         -- upvalues and closures.
@@ -156,8 +141,9 @@ function SplashScreen.new()
 
         buttonList:draw();
 
-        drawInfo();
         drawDebugInfo();
+
+        footer:draw()
     end
 
     function self:update()

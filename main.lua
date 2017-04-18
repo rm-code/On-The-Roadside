@@ -38,13 +38,17 @@ function love.load()
     local screens = {
         bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
         mainmenu    = require( 'src.ui.screens.MainMenu'          ),
-        ingamemenu  = require( 'src.ui.screens.IngameMenu'        ),
+        basemenu    = require( 'src.ui.screens.IngameBaseMenu'    ),
+        ingamemenu  = require( 'src.ui.screens.IngameCombatMenu'  ),
         options     = require( 'src.ui.screens.OptionsScreen'     ),
-        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
+        base        = require( 'src.ui.screens.BaseScreen'        ),
+        combat      = require( 'src.ui.screens.CombatScreen'      ),
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
         health      = require( 'src.ui.screens.HealthScreen'      ),
-        gameover    = require( 'src.ui.screens.GameOverScreen'    )
+        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
+        gameover    = require( 'src.ui.screens.GameOverScreen'    ),
+        loadgame    = require( 'src.ui.screens.SavegameScreen'    )
     };
 
     ScreenManager.init( screens, 'bootloading' );
@@ -168,6 +172,10 @@ function love.errhand( msg )
 
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
+
+    -- Open save directory where the error log is saved.
+    Log.error( 'You can find the error in the latest.log file in your save directory. Opening save directory now ...' );
+    love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
 
     local function draw()
         local pos = love.window.toPixels(70)

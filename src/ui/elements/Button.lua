@@ -1,5 +1,5 @@
 local Object = require( 'src.Object' );
-local Translator = require( 'src.util.Translator' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -8,23 +8,16 @@ local Translator = require( 'src.util.Translator' );
 local Button = {};
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local COLORS = require( 'src.constants.Colors' );
-
--- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function Button.new( textID, callback )
+function Button.new( text, callback )
     local self = Object.new():addInstance( 'Button' );
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
 
-    local translatedText = Translator.getText( textID );
     local focus;
 
     -- ------------------------------------------------
@@ -37,9 +30,9 @@ function Button.new( textID, callback )
     end
 
     function self:draw( x, y, w, _ )
-        love.graphics.setColor( focus and COLORS.DB18 or COLORS.DB16 );
-        love.graphics.printf( translatedText, x, y, w, 'center' );
-        love.graphics.setColor( COLORS.RESET );
+        TexturePacks.setColor( focus and 'ui_button_hot' or 'ui_button' )
+        love.graphics.printf( text, x, y, w, 'center' )
+        TexturePacks.resetColor()
     end
 
     function self:activate()
@@ -65,7 +58,7 @@ function Button.new( textID, callback )
     end
 
     function self:getText()
-        return translatedText
+        return text
     end
 
     -- ------------------------------------------------

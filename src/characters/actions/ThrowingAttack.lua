@@ -12,17 +12,18 @@ function ThrowingAttack.new( character, target )
         -- Pick the actual target based on the weapon's range attribute.
         local ox, oy = character:getTile():getPosition();
         local tx, ty = target:getPosition();
+        local th = target:getHeight()
 
-        local actualTarget;
+        local ax, ay
         Bresenham.line( ox, oy, tx, ty, function( cx, cy, count )
             if count > character:getWeapon():getRange() then
                 return false;
             end
-            actualTarget = character:getMap():getTileAt( cx, cy );
+            ax, ay = cx, cy
             return true;
         end);
 
-        local package = ThrownProjectileQueue.new( character, actualTarget );
+        local package = ThrownProjectileQueue.new( character, ax, ay, th )
         ProjectileManager.register( package );
         return true;
     end

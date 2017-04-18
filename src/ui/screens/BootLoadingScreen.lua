@@ -22,6 +22,8 @@ local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTre
 local SoundManager = require( 'src.SoundManager' );
 local MapLoader = require( 'src.map.MapLoader' )
 
+local CharacterFactory = require( 'src.characters.CharacterFactory' )
+
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
@@ -54,6 +56,8 @@ function BootLoadingScreen.new()
         WorldObjectFactory.loadTemplates();
         BehaviorTreeFactory.loadTemplates();
         SoundManager.loadResources();
+
+        CharacterFactory.init()
 
         MapLoader.load()
 

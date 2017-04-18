@@ -11,13 +11,13 @@ function ParticleLayer.new()
     local grid = {};
     local particles = ObjectPool.new( Particle, 'Particle' );
 
-    local function addParticleEffect( x, y, r, g, b, a, fade, ascii, sprite )
+    local function addParticleEffect( x, y, r, g, b, a, fade, sprite )
         grid[x] = grid[x] or {};
         -- Return previous particles on this tile to the particle pool.
         if grid[x][y] then
             particles:deposit( grid[x][y] );
         end
-        grid[x][y] = particles:request( r, g, b, a, fade, ascii, sprite );
+        grid[x][y] = particles:request( r, g, b, a, fade, sprite )
     end
 
     function self:update( dt )
@@ -43,12 +43,10 @@ function ParticleLayer.new()
         local tile = projectile:getTile();
         if tile then
             if projectile:getEffects():hasCustomSprite() then
-                addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, false, projectile:getEffects():getCustomSprite() );
+                addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, projectile:getEffects():getCustomSprite() )
             elseif projectile:getEffects():isExplosive() then
                 local col = love.math.random( 150, 255 );
                 addParticleEffect( tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 );
-            elseif projectile:getEffects():spreadsOnShot() then
-                addParticleEffect( tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, true );
             else
                 addParticleEffect( tile:getX(), tile:getY(), 223, 113,  38, 200, 500 );
             end

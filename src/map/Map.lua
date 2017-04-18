@@ -13,7 +13,7 @@ local Map = {};
 -- Constants
 -- ------------------------------------------------
 
-local DIRECTION = require( 'src.constants.Direction' );
+local DIRECTION = require( 'src.constants.DIRECTION' )
 
 -- ------------------------------------------------
 -- Constructor

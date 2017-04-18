@@ -1,9 +1,8 @@
 local Object = require( 'src.Object' );
 local Translator = require( 'src.util.Translator' );
+local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 local UIEquipmentItem = {};
-
-local COLORS = require( 'src.constants.Colors' );
 
 ---
 -- This class actually holds an EquipmentSlot object instead of an item.
@@ -33,19 +32,20 @@ function UIEquipmentItem.new( id, x, y, width, height, slot )
     end
 
     function self:draw()
-        if self:isMouseOver() then
-            love.graphics.setColor( COLORS.DB15 );
-        elseif highlight then
-            love.graphics.setColor( COLORS.DB10 );
+        if highlight then
+            TexturePacks.setColor( 'ui_equipment_highlight' )
+        elseif self:isMouseOver() then
+            TexturePacks.setColor( 'ui_equipment_mouseover' )
         else
-            love.graphics.setColor( COLORS.DB00 );
+            TexturePacks.setColor( 'sys_background' )
         end
+
         love.graphics.rectangle( 'fill', x, y, width, height );
 
-        if not slot:containsItem() then
-            love.graphics.setColor( COLORS.DB23 );
+        if slot:containsItem() then
+            TexturePacks.setColor( 'ui_equipment_item' )
         else
-            love.graphics.setColor( COLORS.DB20 );
+            TexturePacks.setColor( 'ui_equipment_empty' )
         end
 
         love.graphics.print( createLabel(), x, y );

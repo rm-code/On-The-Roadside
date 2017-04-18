@@ -16,8 +16,8 @@ local Character = {};
 
 local DEFAULT_ACTION_POINTS = 40;
 
-local STANCES = require('src.constants.Stances');
-local ITEM_TYPES = require('src.constants.ItemTypes');
+local STANCES = require( 'src.constants.STANCES' )
+local ITEM_TYPES = require('src.constants.ITEM_TYPES')
 
 -- ------------------------------------------------
 -- Constructor
@@ -25,20 +25,22 @@ local ITEM_TYPES = require('src.constants.ItemTypes');
 
 ---
 -- Creates a new character and places it on the target tile.
--- @param map     (Map)       A reference to the map object.
--- @param tile    (Tile)      The tile to spawn the character on.
--- @param faction (Faction)   The Faction object determining the character's faction.
--- @return        (Character) A new instance of the Character class.
+-- @treturn Character A new instance of the Character class.
 --
-function Character.new( map, tile, faction )
+function Character.new()
     local self = Object.new():addInstance( 'Character' );
-
-    -- Add character to the tile.
-    tile:addCharacter( self );
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
+
+    local faction
+
+    local map
+    local tile
+
+    local name
+    local nationality
 
     local actionPoints = DEFAULT_ACTION_POINTS;
     local actions = Queue.new();
@@ -51,6 +53,9 @@ function Character.new( map, tile, faction )
     local body;
 
     local finishedTurn = false;
+
+    -- TODO Remove hack for saving / loading characters
+    local savedX, savedY
 
     -- ------------------------------------------------
     -- Private Methods
@@ -114,6 +119,18 @@ function Character.new( map, tile, faction )
 
         local delta = oheight - theight;
         return delta / steps;
+    end
+
+    ---
+    -- Clears the list of seen tiles and marks them for a drawing update.
+    --
+    local function resetFOV()
+        for x, rx in pairs( fov ) do
+            for y, target in pairs( rx ) do
+                target:setDirty( true );
+                fov[x][y] = nil;
+            end
+        end
     end
 
     -- ------------------------------------------------
@@ -200,7 +217,7 @@ function Character.new( map, tile, faction )
     -- the blocksVision attribute set to true.
     --
     function self:generateFOV()
-        self:resetFOV();
+        resetFOV()
 
         local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
         local list = Util.getTilesInCircle( map, tile, range );
@@ -235,19 +252,7 @@ function Character.new( map, tile, faction )
             self:getEquipment():dropAllItems( tile );
             self:getInventory():dropAllItems( tile );
             tile:removeCharacter();
-            self:resetFOV();
-        end
-    end
-
-    ---
-    -- Clears the list of seen tiles and marks them for a drawing update.
-    --
-    function self:resetFOV()
-        for x, rx in pairs( fov ) do
-            for y, target in pairs( rx ) do
-                target:setDirty( true );
-                fov[x][y] = nil;
-            end
+            resetFOV()
         end
     end
 
@@ -269,12 +274,13 @@ function Character.new( map, tile, faction )
         if self:isDead() then
             self:getEquipment():dropAllItems( tile );
             tile:removeCharacter();
-            self:resetFOV();
+            resetFOV()
         end
     end
 
     function self:serialize()
         local t = {
+            ['name'] = name,
             ['actionPoints'] = actionPoints,
             ['accuracy'] = accuracy,
             ['throwingSkill'] = throwingSkill,
@@ -360,6 +366,22 @@ function Character.new( map, tile, faction )
     end
 
     ---
+    -- Gets the name of this character.
+    -- @treturn string The name.
+    --
+    function self:getName()
+        return name
+    end
+
+    ---
+    -- Returns the character's nationality.
+    -- @treturn string The nationality.
+    --
+    function self:getNationality()
+        return nationality
+    end
+
+    ---
     -- Returns the character's size based on his stance.
     -- @return (number) The character's size.
     --
@@ -389,14 +411,6 @@ function Character.new( map, tile, faction )
     --
     function self:getTile()
         return tile;
-    end
-
-    ---
-    -- Returns the game's map.
-    -- @return (Map) The map the character is existing on.
-    --
-    function self:getMap()
-        return map;
     end
 
     ---
@@ -475,6 +489,33 @@ function Character.new( map, tile, faction )
         body = nbody;
     end
 
+    ----
+    -- @tparam Faction faction The Faction object determining the character's faction.
+    --
+    function self:setFaction( nfaction )
+        faction = nfaction
+    end
+
+    ---
+    -- Sets the map the character is currently on.
+    -- @tparam Map map The map to set for this character.
+    --
+    function self:setMap( nmap )
+        map = nmap;
+    end
+
+    ---
+    -- Sets a new name for this character.
+    -- @tparam string nname The name to set for this character.
+    --
+    function self:setName( nname )
+        name = nname
+    end
+
+    function self:setNationality( nnationality )
+        nationality = nnationality
+    end
+
     ---
     -- Sets the character's tile.
     -- @param tile (Tile) The tile to set the character to.
@@ -502,6 +543,15 @@ function Character.new( map, tile, faction )
     --
     function self:setStance( nstance )
         stance = nstance;
+    end
+
+    -- TODO Remove hack for saving / loading characters
+    function self:getSavedPosition()
+        return savedX, savedY
+    end
+
+    function self:setSavedPosition( x, y )
+        savedX, savedY = x, y
     end
 
     return self;

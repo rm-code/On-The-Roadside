@@ -1,3 +1,4 @@
+local Log = require( 'src.util.Log' );
 local Character = require( 'src.characters.Character' );
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
@@ -12,11 +13,32 @@ local CharacterFactory = {};
 -- Constants
 -- ------------------------------------------------
 
-local WEAPON_TYPES = require( 'src.constants.WeaponTypes' );
+local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
+local NAME_FILE = 'res.data.Names'
+local NATIONALITY = {
+    'german',
+    'russian',
+    'british',
+    'finnish'
+}
+
+-- ------------------------------------------------
+-- Local Variables
+-- ------------------------------------------------
+
+local names
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
+
+---
+-- Load all names from the specified file.
+-- @tparam string path The path pointing to the file to load.
+--
+local function loadNames( path )
+    return require( path )
+end
 
 ---
 -- Loads the character's weapon and adds ammunition to his inventory.
@@ -65,8 +87,15 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
-function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
-    local character = Character.new( map, tile, faction );
+function CharacterFactory.init()
+    Log.debug( "Load Creature-Names:" )
+    names = loadNames( NAME_FILE )
+end
+
+function CharacterFactory.loadCharacter( savedCharacter )
+    local character = Character.new()
+
+    character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints );
     character:setAccuracy( savedCharacter.accuracy );
     character:setThrowingSkill( savedCharacter.throwingSkill );
@@ -75,15 +104,25 @@ function CharacterFactory.loadCharacter( map, tile, faction, savedCharacter )
 
     local body = BodyFactory.load( savedCharacter.body );
     character:setBody( body );
-    character:generateFOV();
+
+    -- TODO Remove hack for saving / loading characters
+    character:setSavedPosition( savedCharacter.x, savedCharacter.y )
+
     return character;
 end
 
-function CharacterFactory.newCharacter( map, tile, faction, type )
-    local character = Character.new( map, tile, faction );
+function CharacterFactory.newCharacter( type )
+    local character = Character.new()
+
+    if type == 'human' then
+        local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
+        character:setNationality( nationality )
+        character:setName( names[nationality][love.math.random( #names[nationality] )])
+    end
+
     character:setBody( BodyFactory.create( type ));
     createEquipment( character );
-    character:generateFOV();
+
     return character;
 end
 

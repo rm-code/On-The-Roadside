@@ -1,60 +1,134 @@
-local Log = require( 'src.util.Log' );
-local Object = require( 'src.Object' );
+---
+-- This module keeps track of the different status effects applied to a
+-- character's body.
+-- @module StatusEffects
+--
 
-local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' );
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-local StatusEffects = {};
+local Log = require( 'src.util.Log' )
+local Object = require( 'src.Object' )
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local StatusEffects = {}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' )
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
 
 function StatusEffects.new()
-    local self = Object.new():addInstance( 'StatusEffects' );
+    local self = Object.new():addInstance( 'StatusEffects' )
 
-    local active = {};
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
 
+    local active = {}
+
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Makes sure the applied status effect is from the actual list of status
+    -- effects.
+    -- @tparam  string effect The effect to check.
+    -- @treturn boolean       True if the status effect is valid.
+    --
     local function validate( effect )
-        local valid = false;
         for _, constant in pairs( STATUS_EFFECTS ) do
             if effect == constant then
-                valid = true;
+                return true
             end
         end
-        return valid;
+        return false
     end
 
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Adds one or more status effects.
+    -- @tparam table effects A table containing the status effects to apply.
+    --
     function self:add( effects )
         if not effects then
-            return;
+            return
         end
 
         for _, effect in pairs( effects ) do
-            local valid = validate( effect );
-            assert( valid, string.format( "Status effect %s is not valid.", effect ));
+            assert( validate( effect ), string.format( 'Status effect %s is not valid.', effect ))
 
             -- Only apply status effect if it isn't active already.
             if not active[effect] then
-                Log.debug( 'Apply status effect ' .. effect );
-                active[effect] = true;
+                Log.debug( 'Apply status effect ' .. effect )
+                active[effect] = true
             end
         end
     end
 
-    function self:serialize()
-        local t = {};
-        for effect, bool in pairs( active ) do
-            t[effect] = bool;
+    ---
+    -- Removes one or more status effects.
+    -- @tparam table effects A table containing the status effects to remove.
+    --
+    function self:remove( effects )
+        if not effects then
+            return
         end
-        return t;
+
+        for _, effect in pairs( effects ) do
+            assert( validate( effect ), string.format( 'Status effect %s is not valid.', effect ))
+
+            Log.debug( 'Removing status effect ' .. effect )
+            active[effect] = false
+        end
     end
 
+    ---
+    -- Serializes this object.
+    -- @treturn table A table containing the serialized values.
+    --
+    function self:serialize()
+        local t = {}
+        for effect, boolean in pairs( active ) do
+            t[effect] = boolean
+        end
+        return t
+    end
+
+    -- ------------------------------------------------
     -- Getters
+    -- ------------------------------------------------
+
+    ---
+    -- Returns wether the character is dead.
+    -- @treturn boolean Wether the character is dead or not.
+    --
     function self:isDead()
-        return active[STATUS_EFFECTS.DEATH];
+        return active[STATUS_EFFECTS.DEAD]
     end
 
+    ---
+    -- Returns wether the character is blind.
+    -- @treturn boolean Wether the character is blind or not.
+    --
     function self:isBlind()
-        return active[STATUS_EFFECTS.BLINDNESS];
+        return active[STATUS_EFFECTS.BLIND]
     end
 
-    return self;
+    return self
 end
 
-return StatusEffects;
+return StatusEffects

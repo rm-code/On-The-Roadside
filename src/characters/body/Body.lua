@@ -43,7 +43,7 @@ function Body.new( template )
             bloodVolume = bloodVolume - node:getBloodLoss();
             if bloodVolume <= 0 then
                 Log.debug( 'Character bleeds to death!', 'Body' );
-                statusEffects:add({ STATUS_EFFECTS.DEATH });
+                statusEffects:add({ STATUS_EFFECTS.DEAD })
             end
         end
     end
@@ -199,6 +199,19 @@ function Body.new( template )
         end
 
         return t;
+    end
+
+    function self:heal()
+        -- Restore blood volume.
+        bloodVolume = template.bloodVolume
+
+        -- Heal body parts.
+        for _, node in pairs( nodes ) do
+            node:heal()
+        end
+
+        -- Remove status effects.
+        statusEffects:remove({ STATUS_EFFECTS.BLIND })
     end
 
     function self:getBodyParts()

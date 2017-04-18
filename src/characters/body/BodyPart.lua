@@ -150,6 +150,12 @@ function BodyPart.new( index, template )
         return bloodLoss;
     end
 
+    function self:heal()
+        bleeding = false
+        bloodLoss = 0
+        health = maxHealth
+    end
+
     return self;
 end
 

@@ -24,11 +24,11 @@ function ScrollArea.new( x, y, w, h )
         end
 
         if verticalOffset < 0 then
-            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 31 ), (x + w - 2) * tw, ( y - 2 ) * th )
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 'ui_scroll_area_up' ), (x + w - 2) * tw, ( y - 2 ) * th )
         end
 
         if verticalOffset > h - #lines then
-            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 32 ), (x + w - 1) * tw, ( y - 2 ) * th )
+            love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( 'ui_scroll_area_down' ), (x + w - 1) * tw, ( y - 2 ) * th )
         end
     end
 

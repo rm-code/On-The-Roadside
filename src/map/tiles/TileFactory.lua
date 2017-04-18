@@ -1,46 +1,50 @@
-local Log = require( 'src.util.Log' );
-local Tile = require( 'src.map.tiles.Tile' );
+---
+-- The TileFactory takes care of loading templates for all tiles in the game
+-- and provides a public function for creating tiles based on their ID.
+-- @module TileFactory
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Log = require( 'src.util.Log' )
+local Tile = require( 'src.map.tiles.Tile' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local TileFactory = {};
+local TileFactory = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_DIRECTORY  = 'res/data/tiles/';
+local TEMPLATE_FILE  = 'res.data.Tiles'
 
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
 
-local tiles = {};
+local tiles = {}
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
 ---
--- Loads all Tile-templates found in the specified directory.
--- @param dir (string) The directory to load the templates from.
+-- Loads all Tile-templates found in the specified file.
+-- @tparam string src The file to load the templates from.
 --
-local function load( dir )
-    local files = love.filesystem.getDirectoryItems( dir );
-    for i, file in ipairs( files ) do
-        if love.filesystem.isFile( dir .. file ) then
-            local status, loaded = pcall( love.filesystem.load, dir .. file );
-            if not status then
-                Log.warn( 'Can not load ' .. dir .. file );
-            else
-                local template = loaded();
-                local id = template.id;
-                tiles[id] = template;
-                Log.debug( string.format( '  %d. %s', i, template.id ));
-            end
-        end
+local function load( src )
+    local module = require( src )
+    local counter = 0
+
+    for _, template in ipairs( module ) do
+        tiles[template.id] = template
+        counter = counter + 1
+        Log.debug( string.format( '  %3d. %s', counter, template.id ))
     end
 end
 
@@ -53,20 +57,20 @@ end
 --
 function TileFactory.loadTemplates()
     Log.debug( "Load Tile Templates:" )
-    load( TEMPLATE_DIRECTORY );
+    load( TEMPLATE_FILE )
 end
 
 ---
 -- Creates a tile of a certain id at the given coordinates.
--- @param x    (number) The tile's coordinate along the x-axis.
--- @param y    (number) The tile's coordinate along the y-axis.
--- @param id   (string) The id of Tile to create.
--- @return     (Tile)   The newly created Tile.
+-- @tparam  number  x   The tile's coordinate along the x-axis.
+-- @tparam  number  y   The tile's coordinate along the y-axis.
+-- @tparam  string  id  The id of Tile to create.
+-- @treturn Tile        The newly created Tile.
 --
 function TileFactory.create( x, y, id )
-    local template = tiles[id];
-    assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ));
-    return Tile.new( x, y, template );
+    local template = tiles[id]
+    assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ))
+    return Tile.new( x, y, template )
 end
 
-return TileFactory;
+return TileFactory

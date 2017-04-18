@@ -32,8 +32,6 @@ function Tile.new( x, y, template )
     local id = template.id;
     local movementCost = template.movementCost;
     local passable = template.passable;
-    local sprite = template.sprite;
-    local color = template.color;
 
     local spriteID;
     local dirty;
@@ -47,15 +45,6 @@ function Tile.new( x, y, template )
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
-
-    ---
-    -- Adds a character to this tile and marks the tile for updating.
-    -- @param nchar (Character) The character to add.
-    --
-    function self:addCharacter( nchar )
-        character = nchar;
-        self:setDirty( true );
-    end
 
     ---
     -- Adds a table containing the neighbouring tiles. Note that some tiles
@@ -143,14 +132,6 @@ function Tile.new( x, y, template )
     end
 
     ---
-    -- Returns a table containing the RGB values for this tile.
-    -- @return (table) The table containing the RGB values.
-    --
-    function self:getColor()
-        return color;
-    end
-
-    ---
     -- Returns the tile's unique spriteID.
     -- @return (number) The tile's spriteID.
     --
@@ -190,13 +171,6 @@ function Tile.new( x, y, template )
     --
     function self:getInventory()
         return inventory;
-    end
-
-    ---
-    -- Gets the tile's index on the spritesheet.
-    -- @return (number) The sprite index.
-    function self:getSprite()
-        return sprite;
     end
 
     ---
@@ -305,6 +279,15 @@ function Tile.new( x, y, template )
     -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
+
+    ---
+    -- Sets a character for this tile and marks the tile for updating.
+    -- @tparam Character nchar The character to add.
+    --
+    function self:setCharacter( nchar )
+        character = nchar
+        self:setDirty( true )
+    end
 
     ---
     -- Sets the dirty state of the tile.

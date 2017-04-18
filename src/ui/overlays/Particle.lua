@@ -5,7 +5,7 @@ local Particle = {};
 function Particle.new()
     local self = Object.new():addInstance( 'Particle' );
 
-    local r, g, b, a, fade, ascii, sprite;
+    local r, g, b, a, fade, sprite
 
     function self:update( dt )
         a = a - dt * fade;
@@ -19,20 +19,16 @@ function Particle.new()
         return a;
     end
 
-    function self:isAscii()
-        return ascii;
-    end
-
     function self:getSprite()
         return sprite;
     end
 
-    function self:setParameters( nr, ng, nb, na, nfade, nascii, nsprite )
-        r, g, b, a, fade, ascii, sprite = nr, ng, nb, na, nfade, nascii, nsprite;
+    function self:setParameters( nr, ng, nb, na, nfade, nsprite )
+        r, g, b, a, fade, sprite = nr, ng, nb, na, nfade, nsprite
     end
 
     function self:clear()
-        r, g, b, a, fade, ascii, sprite = nil, nil, nil, nil, nil, nil, nil;
+        r, g, b, a, fade, sprite = nil, nil, nil, nil, nil, nil
     end
 
     return self;
