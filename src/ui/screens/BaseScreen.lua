@@ -49,7 +49,7 @@ function BaseScreen.new()
         baseState:init( playerFaction, savegame )
 
         characterSelector = CharacterSelector.new()
-        characterSelector:init( baseState:getFactions() )
+        characterSelector:init( nplayerFaction )
         characterSelector:observe( self )
 
         nextMissionSelector = NextMissionSelector.new()

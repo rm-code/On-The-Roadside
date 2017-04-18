@@ -33,7 +33,7 @@ local FIELD_WIDTH  = 10
 function CharacterSelector.new()
     local self = Observable.new():addInstance( 'CharacterSelector' )
 
-    local playerFaction
+    local faction
     local verticalList
     local font
     local outlines
@@ -59,14 +59,14 @@ function CharacterSelector.new()
         return Button.new( character:getName(), callback )
     end
 
-    function self:init( nfactions )
-        playerFaction = nfactions:getPlayerFaction()
+    function self:init( nfaction )
+        faction = nfaction
         font = TexturePacks.getFont()
 
         tw, th = TexturePacks.getTileset():getTileDimensions()
         verticalList = VerticalList.new( 0, 3 * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
 
-        playerFaction:iterate( function( character )
+        faction:iterate( function( character )
             verticalList:addElement( createCharacterButton( character ))
         end)
 
@@ -91,6 +91,15 @@ function CharacterSelector.new()
     end
 
     function self:keypressed( _, scancode )
+        -- Character selection.
+        if scancode == 'space' then
+            local character = faction:nextCharacter()
+            self:publish( 'CHANGED_CHARACTER', character )
+        elseif scancode == 'backspace' then
+            local character = faction:prevCharacter()
+            self:publish( 'CHANGED_CHARACTER', character )
+        end
+
         verticalList:keypressed( _, scancode )
     end
 
