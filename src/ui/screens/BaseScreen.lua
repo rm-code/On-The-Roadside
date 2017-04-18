@@ -101,7 +101,6 @@ function BaseScreen.new()
             ScreenManager.push( 'inventory', currentCharacter, baseState:getBaseInventory() )
         end
         if scancode == 'escape' then
-            -- TODO save game is currently broken
             ScreenManager.push( 'basemenu', baseState )
         end
         characterSelector:keypressed( _, scancode )
