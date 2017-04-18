@@ -103,6 +103,10 @@ function BaseScreen.new()
         if scancode == 'escape' then
             ScreenManager.push( 'basemenu', baseState )
         end
+        if scancode == 'h' then
+            ScreenManager.push( 'health', currentCharacter )
+        end
+
         characterSelector:keypressed( _, scancode )
     end
 
