@@ -27,7 +27,13 @@ local SCROLL_SPEED = 10
 -- Constructor
 -- ------------------------------------------------
 
-function CameraHandler.new( map )
+---
+-- Creates a new CameraHandler instance.
+-- @tparam  number mw The map's width.
+-- @tparam  number mh The map's height.
+-- @treturn CameraHandler A new instance of the CameraHandler class.
+--
+function CameraHandler.new( mw, mh )
     local self = Camera.new()
 
     -- ------------------------------------------------
@@ -35,7 +41,6 @@ function CameraHandler.new( map )
     -- ------------------------------------------------
 
     local tw, th = TexturePacks:getTileDimensions()
-    local mw, mh = map:getDimensions()
     local px, py = mw * tw * 0.5, mh * th * 0.5
     local tx, ty = px, py
     local locked

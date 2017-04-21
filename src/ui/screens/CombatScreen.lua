@@ -43,7 +43,7 @@ function CombatScreen.new()
 
         userInterface = UserInterface.new( combatState )
 
-        camera = CameraHandler.new( combatState:getMap() )
+        camera = CameraHandler.new( combatState:getMap():getDimensions() )
 
         overlayPainter = OverlayPainter.new( combatState )
 
