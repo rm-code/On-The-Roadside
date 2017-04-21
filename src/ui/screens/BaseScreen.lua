@@ -63,7 +63,9 @@ function BaseScreen.new()
         mapPainter = MapPainter.new()
         mapPainter:init( baseState:getMap(), baseState:getFactions() )
 
-        camera = CameraHandler.new( baseState:getMap():getDimensions() )
+        local mw, mh = baseState:getMap():getDimensions()
+        local tw, th = TexturePacks:getTileDimensions()
+        camera = CameraHandler.new( mw, mh, tw, th )
 
         MousePointer.init( camera )
     end

@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Camera = require( 'lib.Camera' )
-local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,16 +30,17 @@ local SCROLL_SPEED = 10
 -- Creates a new CameraHandler instance.
 -- @tparam  number mw The map's width.
 -- @tparam  number mh The map's height.
+-- @tparam  number tw The width of the tiles used for map drawing.
+-- @tparam  number th The height of the tiles used for map drawing.
 -- @treturn CameraHandler A new instance of the CameraHandler class.
 --
-function CameraHandler.new( mw, mh )
+function CameraHandler.new( mw, mh, tw, th )
     local self = Camera.new()
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
-    local tw, th = TexturePacks:getTileDimensions()
     local px, py = mw * tw * 0.5, mh * th * 0.5
     local tx, ty = px, py
     local locked
