@@ -56,7 +56,7 @@ function CharacterSelector.new()
         local function callback()
             self:publish( 'CHANGED_CHARACTER', character )
         end
-        return Button.new( character:getName(), callback )
+        return Button.new( character:getName(), callback, 'left' )
     end
 
     function self:init( nfaction )
@@ -64,7 +64,7 @@ function CharacterSelector.new()
         font = TexturePacks.getFont()
 
         tw, th = TexturePacks.getTileset():getTileDimensions()
-        verticalList = VerticalList.new( 0, 3 * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
+        verticalList = VerticalList.new( tw, 3 * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
 
         faction:iterate( function( character )
             verticalList:addElement( createCharacterButton( character ))
