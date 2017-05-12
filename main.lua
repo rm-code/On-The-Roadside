@@ -174,8 +174,7 @@ function love.errhand( msg )
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
 
     -- Open save directory where the error log is saved.
-    Log.error( 'You can find the error in the latest.log file in your save directory. Opening save directory now ...' );
-    love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
+    Log.error( 'You can find the error in the latest.log file in your save directory.' )
 
     local function draw()
         local pos = love.window.toPixels(70)
@@ -189,7 +188,12 @@ function love.errhand( msg )
         for e, a, _, _ in love.event.poll() do
             if e == "quit" then
                 return
-            elseif e == "keypressed" and a == "escape" then
+            elseif e == "keypressed" then
+                if a == "escape" then
+                    return
+                end
+
+                love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
                 return
             elseif e == "touchpressed" then
                 local name = love.window.getTitle()
