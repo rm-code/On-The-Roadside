@@ -1,6 +1,7 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Button = require( 'src.ui.elements.Button' );
+local Label = require( 'src.ui.elements.Label' )
 local VerticalList = require( 'src.ui.elements.VerticalList' );
 local SaveHandler = require( 'src.SaveHandler' );
 local Translator = require( 'src.util.Translator' );
@@ -17,7 +18,7 @@ local IngameBaseMenu = {}
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH  = 8;
+local SCREEN_WIDTH  = 10
 local SCREEN_HEIGHT = 7;
 
 -- ------------------------------------------------
@@ -33,6 +34,7 @@ function IngameBaseMenu.new()
 
     local game;
     local buttonList;
+    local header
 
     local outlines
     local px, py;
@@ -94,6 +96,8 @@ function IngameBaseMenu.new()
         outlines:refresh()
 
         createButtons();
+
+        header = Label.new( Translator.getText( 'ui_ingame_paused' ), 'ui_label', 'center' )
     end
 
     function self:draw()
@@ -103,7 +107,7 @@ function IngameBaseMenu.new()
         outlines:draw( px, py )
 
         buttonList:draw();
-        love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), px + tw, py + th, (SCREEN_WIDTH - 2) * tw, 'center' )
+        header:draw( px + tw, py + th, (SCREEN_WIDTH - 2) * tw, th )
     end
 
     function self:update()

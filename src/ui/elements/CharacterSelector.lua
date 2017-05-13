@@ -9,6 +9,7 @@
 local Observable = require( 'src.util.Observable' )
 local VerticalList = require( 'src.ui.elements.VerticalList' )
 local Button = require( 'src.ui.elements.Button' )
+local Label = require( 'src.ui.elements.Label' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Outlines = require( 'src.ui.elements.Outlines' )
 local Translator = require( 'src.util.Translator' )
@@ -35,6 +36,7 @@ function CharacterSelector.new()
 
     local faction
     local verticalList
+    local header
     local font
     local outlines
     local tw, th
@@ -73,6 +75,8 @@ function CharacterSelector.new()
         outlines = Outlines.new()
         createOutlines( SCREEN_WIDTH, 4 + verticalList:getElementCount() )
         outlines:refresh()
+
+        header = Label.new( Translator.getText( 'ui_stalkers' ), 'ui_label', 'center' )
     end
 
     function self:draw()
@@ -80,7 +84,7 @@ function CharacterSelector.new()
         love.graphics.rectangle( 'fill', 0, 0, FIELD_WIDTH * tw, (4 + verticalList:getElementCount()) * th )
         TexturePacks.resetColor()
 
-        love.graphics.printf( Translator.getText( 'ui_stalkers' ), tw, th, (FIELD_WIDTH-2) * tw, 'center' )
+        header:draw( tw, th, (FIELD_WIDTH-2) * tw, 'center' )
 
         outlines:draw( 0, 0 )
         verticalList:draw()
