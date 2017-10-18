@@ -5,6 +5,7 @@ locale.strings = {
     ['ui_tile'] = "Feld: ",
     ['ui_tile_unexplored'] = "Unerforscht",
     ['ui_weapon'] = "Waffe: ",
+    ['ui_ammo'] = "Munition: ",
     ['ui_mode'] = "Modus: ",
     ['ui_win'] = "Alle Gegner sind tot. Du hast gewonnen!\n\nDrücke eine Taste um fortzufahren...",
     ['ui_lose'] = "Dein Team ist tot. Du hast verloren!\n\nDrücke eine Taste um fortzufahren...",

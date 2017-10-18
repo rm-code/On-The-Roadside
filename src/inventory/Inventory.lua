@@ -336,6 +336,30 @@ function Inventory.new( weightLimit, volumeLimit )
         end
     end
 
+    ---
+    -- Counts items of a certain type and id.
+    -- Items that are contained within a stack will be counted too.
+    --
+    -- @tparam  string type The item type to search for.
+    -- @tparam  string id   The item id to search for.
+    -- @treturn number      The total amount of found items.
+    --
+    function self:countItems( type, id )
+        local count = 0
+        for _, item in ipairs( items ) do
+            -- Match items based on type and id.
+            if item:getItemType() == type and item:getID() == id then
+                -- Count items in stacks.
+                if item:instanceOf( 'ItemStack' ) then
+                    count = count + item:getItemCount()
+                else
+                    count = count + 1
+                end
+            end
+        end
+        return count
+    end
+
     function self:receive( event, ... )
         if event == 'CHANGE_VOLUME' then
             updateVolume( ... );
