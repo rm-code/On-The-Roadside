@@ -172,7 +172,7 @@
 # Version 0.5.0.725 - 2017-02-09
 
 ## Additions
-- Added a new smaller map with more tactical possibilites
+- Added a new smaller map with more tactical possibilities
     - Added new tiles "Gravel" and "Wooden Floor"
     - Added new world object "Tree"
 - Added preliminary item descriptions
@@ -387,8 +387,8 @@
 - FOV isn't drawn for AI controlled factions
 - Tweaked shot calculations
     - Uses the maximum angle for a shot's derivation correctly now
-    - Randomly varies the projectile's travelling distance
-- Improved line of sight drawning
+    - Randomly varies the projectile's traveling distance
+- Improved line of sight drawing
     - Line of sight is now generated in real time between the active character and the mouse cursor
 - Center the camera on characters which have been selected via right-clicks
 - Use different sounds based on the selected weapon type
