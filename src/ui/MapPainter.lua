@@ -22,6 +22,12 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local MapPainter = {}
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local MAX_SPRITES = 16384 -- Enough sprites for a 128*128 map.
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -168,7 +174,7 @@ function MapPainter.new()
         tileset = TexturePacks.getTileset()
         tw, th = tileset:getTileDimensions()
         TexturePacks.setBackgroundColor()
-        spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
+        spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), MAX_SPRITES, 'dynamic' )
         initSpritebatch()
     end
 
