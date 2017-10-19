@@ -21,6 +21,7 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' );
 local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' );
 local SoundManager = require( 'src.SoundManager' );
 local MapLoader = require( 'src.map.MapLoader' )
+local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
 
@@ -60,6 +61,7 @@ function BootLoadingScreen.new()
         CharacterFactory.init()
 
         MapLoader.load()
+        PrefabLoader.load()
 
         local endTime = love.timer.getTime();
         Log.debug( string.format( 'Loading game resources took %.3f seconds!', endTime - startTime ), 'BootLoadingScreen' );
