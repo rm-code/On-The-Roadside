@@ -1,6 +1,6 @@
 ---
 -- This class handles the generation of procedural maps.
--- @module MapGenerator
+-- @module PrefabLoader
 --
 
 -- ------------------------------------------------
@@ -101,13 +101,13 @@ end
 --
 local function load( src )
     if not love.filesystem.exists( src .. INFO_FILE .. '.lua' ) then
-        Log.warn( string.format( 'Can\'t find info file. Ignoring path %s', src ), 'MapGenerator' )
+        Log.warn( string.format( 'Can\'t find info file. Ignoring path %s', src ), 'PrefabLoader' )
         return false
     end
 
     local module = require( src .. INFO_FILE )
     if not module then
-        Log.warn( string.format( 'Couldn\'t load prefab from %s. Bad format on info file.', src ), 'MapGenerator' )
+        Log.warn( string.format( 'Couldn\'t load prefab from %s. Bad format on info file.', src ), 'PrefabLoader' )
         return false
     end
 
