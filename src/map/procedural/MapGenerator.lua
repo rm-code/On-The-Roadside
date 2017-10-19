@@ -148,7 +148,7 @@ function MapGenerator.new()
         local prefab = PrefabLoader.getRandomPrefab()
         local pw, ph = prefab:getParcelDimensions()
 
-        local rotate = 0
+        local rotate
 
         if prefab:isSquare() then
             rotate = love.math.random(0, 3)
