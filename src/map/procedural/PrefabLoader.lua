@@ -132,7 +132,7 @@ local function loadPrefabTemplates( sourceFolder )
                 prefabs[prefab:getName()] = prefab
 
                 count = count + 1
-                Log.debug( string.format( '  %3d. %s', count, prefab.name ))
+                Log.debug( string.format( '  %3d. %s', count, prefab:getName() ))
             end
         end
     end
