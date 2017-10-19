@@ -11,11 +11,23 @@ local profile = 0;
 local info;
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local DEBUG_FLAG = '-d'
+
+-- ------------------------------------------------
 -- Callbacks
 -- ------------------------------------------------
 
-function love.load()
+function love.load( args )
     Log.init();
+
+    for _, arg in pairs( args ) do
+        if arg == DEBUG_FLAG then
+            Log.setDebugActive( true )
+        end
+    end
 
     info = {};
     info[#info + 1] = "===================";
