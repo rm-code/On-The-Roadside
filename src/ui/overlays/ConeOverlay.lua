@@ -130,7 +130,7 @@ function ConeOverlay.new( game, pulser )
                 -- 2 means the projectile might be blocked by a world object or character.
                 -- 3 means the projectile will be blocked by a world object.
                 local nstatus = 1
-                if tile:isOccupied() then
+                if tile:isOccupied() or not character:canSee( tile ) then
                     nstatus = 2
                 elseif tile:hasWorldObject() and height <= tile:getWorldObject():getHeight() then
                     -- Indestructible worldobjects block the shot.
