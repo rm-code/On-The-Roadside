@@ -136,7 +136,6 @@ function InventoryScreen.new()
                 returnItemToOrigin( dragboard.item, dragboard.origin );
             end
         end
-        createInventory();
         dragboard = nil;
     end
 
