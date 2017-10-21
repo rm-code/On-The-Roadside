@@ -8,6 +8,7 @@
 
 local Object = require( 'src.Object' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,10 +32,12 @@ function UICopyrightFooter.new()
 
     function self:draw()
         local font = TexturePacks.getFont()
-        local sw, sh = love.graphics.getDimensions()
+        local tw, th = TexturePacks.getTileDimensions()
+        local sw, sh = GridHelper.getScreenGridDimensions()
+
         TexturePacks.setColor( 'ui_text_dim' )
-        love.graphics.print( VERSION_STRING, sw - font:measureWidth( VERSION_STRING ), sh - font:getGlyphHeight() )
-        love.graphics.print( COPYRIGHT_STRING, 0, sh - font:getGlyphHeight() )
+        love.graphics.print( VERSION_STRING, sw*tw - font:measureWidth( VERSION_STRING ), sh*th - font:getGlyphHeight() )
+        love.graphics.print( COPYRIGHT_STRING, 0, sh*th - font:getGlyphHeight() )
         TexturePacks.resetColor()
     end
 
