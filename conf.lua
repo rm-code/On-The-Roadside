@@ -20,12 +20,12 @@ function love.conf(t)
 
     t.window.title = PROJECT_TITLE
     t.window.icon = nil
-    t.window.width = 800
-    t.window.height = 600
+    t.window.width = 0
+    t.window.height = 0
     t.window.borderless = false
     t.window.resizable = true
-    t.window.minwidth = 800
-    t.window.minheight = 600
+    t.window.minwidth = 1024
+    t.window.minheight = 768
     t.window.fullscreen = true
     t.window.fullscreentype = "desktop"
     t.window.vsync = true
