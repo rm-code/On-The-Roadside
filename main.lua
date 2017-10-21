@@ -1,6 +1,7 @@
 local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
+local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -10,11 +11,14 @@ local Log = require( 'src.util.Log' );
 local profile = 0;
 local info;
 
+local debugGrid
+
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local DEBUG_FLAG = '-d'
+local DEBUG_OUTPUT_FLAG = '-d'
+local DEBUG_GRID_FLAG   = '-g'
 
 -- ------------------------------------------------
 -- Callbacks
@@ -24,8 +28,10 @@ function love.load( args )
     Log.init();
 
     for _, arg in pairs( args ) do
-        if arg == DEBUG_FLAG then
+        if arg == DEBUG_OUTPUT_FLAG then
             Log.setDebugActive( true )
+        elseif arg == DEBUG_GRID_FLAG then
+            debugGrid = true
         end
     end
 
@@ -77,6 +83,10 @@ function love.draw()
         ProFi:stop();
         ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
         profile = 0;
+    end
+
+    if debugGrid then
+        DebugGrid.draw()
     end
 end
 

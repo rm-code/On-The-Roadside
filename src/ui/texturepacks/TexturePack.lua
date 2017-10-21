@@ -29,6 +29,7 @@ function TexturePack.new()
 
     local name
     local font
+    local glyphWidth, glyphHeight
     local tileset
     local colors
 
@@ -42,6 +43,7 @@ function TexturePack.new()
         -- Generate font.
         local f = source.font
         font = Font.new( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
+        glyphWidth, glyphHeight = f.glyphs.width, f.glyphs.height
 
         -- Generate tileset.
         local t = source.tileset
@@ -61,6 +63,10 @@ function TexturePack.new()
 
     function self:getFont()
         return font
+    end
+
+    function self:getGlyphDimensions()
+        return glyphWidth, glyphHeight
     end
 
     function self:getTileset()

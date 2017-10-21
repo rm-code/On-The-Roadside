@@ -164,6 +164,10 @@ function TexturePacks.getSprite( id, alt )
     return texturePacks[current]:getTileset():getSprite( id, alt )
 end
 
+function TexturePacks.getGlyphDimensions()
+    return texturePacks[current]:getGlyphDimensions()
+end
+
 function TexturePacks.getTileDimensions()
     return texturePacks[current]:getTileset():getTileDimensions()
 end
