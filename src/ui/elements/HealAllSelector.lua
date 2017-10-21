@@ -12,6 +12,7 @@ local Button = require( 'src.ui.elements.Button' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Outlines = require( 'src.ui.elements.Outlines' )
 local Translator = require( 'src.util.Translator' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -58,11 +59,13 @@ function HealAllSelector.new()
     end
 
     function self:init()
+        local sw, sh = GridHelper.getScreenGridDimensions()
+        px, py = sw - FIELD_WIDTH, sh - SCREEN_HEIGHT
+
         font = TexturePacks.getFont()
         tw, th = TexturePacks.getTileset():getTileDimensions()
-        px, py = love.graphics.getWidth() - FIELD_WIDTH * tw, love.graphics.getHeight() - SCREEN_HEIGHT * th
 
-        verticalList = VerticalList.new( px, py + th, FIELD_WIDTH * tw, font:getGlyphHeight() )
+        verticalList = VerticalList.new( px*tw, (py+1)*th, FIELD_WIDTH * tw, font:getGlyphHeight() )
         verticalList:addElement( createButton() )
 
         outlines = Outlines.new()
@@ -72,10 +75,10 @@ function HealAllSelector.new()
 
     function self:draw()
         TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', px, py, FIELD_WIDTH * tw, SCREEN_HEIGHT * th )
+        love.graphics.rectangle( 'fill', px*tw, py*th, FIELD_WIDTH * tw, SCREEN_HEIGHT * th )
         TexturePacks.resetColor()
 
-        outlines:draw( px, py )
+        outlines:draw( px*tw, py*th )
         verticalList:draw()
     end
 
