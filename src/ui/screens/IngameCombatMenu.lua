@@ -6,6 +6,7 @@ local SaveHandler = require( 'src.SaveHandler' );
 local Translator = require( 'src.util.Translator' );
 local Outlines = require( 'src.ui.elements.Outlines' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -75,8 +76,7 @@ function IngameCombatMenu.new()
     end
 
     local function createButtons()
-        local x, y = px, py;
-        buttonList = VerticalList.new( x, y + 3 * th, SCREEN_WIDTH * tw, th )
+        buttonList = VerticalList.new( px*tw, (py+3) * th, SCREEN_WIDTH * tw, th )
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_abort_mission' ), exitToBase ))
@@ -88,15 +88,12 @@ function IngameCombatMenu.new()
     -- ------------------------------------------------
 
     function self:init( ngame )
-        tw, th = TexturePacks.getTileDimensions()
-
         game = ngame;
 
-        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
-        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
+        tw, th = TexturePacks.getTileDimensions()
+        px, py = GridHelper.centerElement( SCREEN_WIDTH, SCREEN_HEIGHT )
 
-        outlines = Outlines.new()
+        outlines = Outlines.new( px, py )
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
 
@@ -105,12 +102,12 @@ function IngameCombatMenu.new()
 
     function self:draw()
         TexturePacks.setColor( 'sys_background' );
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
+        love.graphics.rectangle( 'fill', px*tw, py*th, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
 
-        outlines:draw( px, py )
+        outlines:draw()
 
         buttonList:draw();
-        love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), px + tw, py + th, (SCREEN_WIDTH - 2) * tw, 'center' )
+        love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), (px+1) * tw, (py+1) * th, (SCREEN_WIDTH - 2) * tw, 'center' )
     end
 
     function self:update()

@@ -1,5 +1,11 @@
 ---
 -- Creates outlines for UI elements with correctly drawn intersections.
+--
+-- Make sure to always start the outline grid at coordinates [x=0, y=0], because
+-- the draw function uses an offset to determine where to start drawing.
+-- If the grid starts at coordinates [x=1, y=1] the outlines will be drawn in
+-- the wrong place.
+--
 -- @module Outlines
 --
 
@@ -22,9 +28,11 @@ local Outlines = {}
 
 ---
 -- Creates a new Outlines instance.
+-- @tparam  number   ox The x–coordinate at which to start drawing the outlines.
+-- @tparam  number   oy The y–coordinate at which to start drawing the outlines.
 -- @treturn Outlines The new instance.
 --
-function Outlines.new()
+function Outlines.new( ox, oy )
     local self = Object.new():addInstance( 'Outlines' )
 
     -- ------------------------------------------------
@@ -158,14 +166,12 @@ function Outlines.new()
 
     ---
     -- Draws the outlines at the specified position.
-    -- @tparam number px The x coordinate to draw the outline grid from.
-    -- @tparam number py The y coordinate to draw the outline grid from.
     --
-    function self:draw( px, py )
+    function self:draw()
         TexturePacks.setColor( 'ui_outlines' )
         for x, line in pairs( grid ) do
             for y, sprite in pairs( line ) do
-                love.graphics.draw( tileset:getSpritesheet(), sprite, px + x * tw, py + y * th )
+                love.graphics.draw( tileset:getSpritesheet(), sprite, (ox+x) * tw, (oy+y) * th )
             end
         end
         TexturePacks.resetColor()

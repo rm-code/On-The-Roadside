@@ -4,6 +4,7 @@ local Screen = require( 'lib.screenmanager.Screen' );
 local Translator = require( 'src.util.Translator' );
 local Outlines = require( 'src.ui.elements.Outlines' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -52,24 +53,21 @@ function HealthScreen.new()
 
     function self:init( ncharacter )
         tw, th = TexturePacks.getTileDimensions()
+        px, py = GridHelper.centerElement( SCREEN_WIDTH, SCREEN_HEIGHT )
 
         character = ncharacter;
         characterType = character:getBody():getID();
 
-        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
-        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
-
-        outlines = Outlines.new()
+        outlines = Outlines.new( px, py )
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
     end
 
     function self:draw()
         TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
+        love.graphics.rectangle( 'fill', px*tw, py*th, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
 
-        outlines:draw( px, py )
+        outlines:draw()
 
         local counter = 3;
         for _, bodyPart in pairs( character:getBody():getBodyParts() ) do
@@ -92,8 +90,8 @@ function HealthScreen.new()
                     TexturePacks.setColor( 'ui_health_fine_limb' )
                     status = 'FINE'
                 end
-                love.graphics.print( Translator.getText( bodyPart:getID() ), px + tw, py + th * counter )
-                love.graphics.printf( status, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'right' )
+                love.graphics.print( Translator.getText( bodyPart:getID() ), (px+1) * tw, (py+counter) * th )
+                love.graphics.printf( status, (px+1) * tw, (py+counter) * th, ( SCREEN_WIDTH - 2 ) * tw, 'right' )
 
                 if bodyPart:isBleeding() then
                     local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
@@ -106,7 +104,7 @@ function HealthScreen.new()
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
                         TexturePacks.setColor( 'ui_health_bleeding_bad' )
                     end
-                    love.graphics.printf( str, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
+                    love.graphics.printf( str, (px+1) * tw, (py+counter) * th, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
                 end
             end
         end
@@ -115,12 +113,12 @@ function HealthScreen.new()
 
         -- Draw character type.
         local type = Translator.getText( 'ui_character_type' ) .. Translator.getText( characterType )
-        love.graphics.print( type, px + tw, py + th )
+        love.graphics.print( type, (px+1) * tw, (py+1) * th )
 
         -- Draw character name.
         if character:getName() then
             local name = Translator.getText( 'ui_character_name' ) .. character:getName()
-            love.graphics.print( name, px + 2 * tw + TexturePacks.getFont():measureWidth( type ), py + th )
+            love.graphics.print( name, (px+2) * tw + TexturePacks.getFont():measureWidth( type ), (py+1) * th )
         end
 
         TexturePacks.resetColor()

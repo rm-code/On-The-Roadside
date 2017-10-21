@@ -217,7 +217,7 @@ function InventoryScreen.new()
         love.mouse.setVisible( true );
         updateScreenDimensions( love.graphics.getDimensions() );
 
-        outlines = Outlines.new();
+        outlines = Outlines.new( 0, 0 )
         createOutlines()
         outlines:refresh()
 
@@ -239,7 +239,7 @@ function InventoryScreen.new()
         love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
         TexturePacks.resetColor()
 
-        outlines:draw( 0, 0 )
+        outlines:draw()
         drawHeaders( love.graphics.getWidth() );
 
         for _, list in pairs( lists ) do

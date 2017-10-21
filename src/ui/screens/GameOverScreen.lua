@@ -53,7 +53,7 @@ function GameOverScreen.new()
         py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
         px, py = px * tw, py * th
 
-        outlines = Outlines.new()
+        outlines = Outlines.new( SCREEN_WIDTH, SCREEN_HEIGHT )
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
 
@@ -64,7 +64,7 @@ function GameOverScreen.new()
         TexturePacks.setColor( 'sys_background' )
         love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
 
-        outlines:draw( px, py )
+        outlines:draw()
 
         love.graphics.printf( text, px, py + 3 * tw, SCREEN_WIDTH * th, 'center' )
     end

@@ -72,7 +72,7 @@ function CharacterSelector.new()
             verticalList:addElement( createCharacterButton( character ))
         end)
 
-        outlines = Outlines.new()
+        outlines = Outlines.new( 0, 0 )
         createOutlines( SCREEN_WIDTH, 4 + verticalList:getElementCount() )
         outlines:refresh()
 
@@ -86,7 +86,7 @@ function CharacterSelector.new()
 
         header:draw( tw, th, (FIELD_WIDTH-2) * tw, 'center' )
 
-        outlines:draw( 0, 0 )
+        outlines:draw()
         verticalList:draw()
     end
 

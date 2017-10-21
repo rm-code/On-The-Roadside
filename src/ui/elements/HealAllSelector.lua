@@ -68,7 +68,7 @@ function HealAllSelector.new()
         verticalList = VerticalList.new( px*tw, (py+1)*th, FIELD_WIDTH * tw, font:getGlyphHeight() )
         verticalList:addElement( createButton() )
 
-        outlines = Outlines.new()
+        outlines = Outlines.new( px, py )
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
     end
@@ -78,7 +78,7 @@ function HealAllSelector.new()
         love.graphics.rectangle( 'fill', px*tw, py*th, FIELD_WIDTH * tw, SCREEN_HEIGHT * th )
         TexturePacks.resetColor()
 
-        outlines:draw( px*tw, py*th )
+        outlines:draw()
         verticalList:draw()
     end
 

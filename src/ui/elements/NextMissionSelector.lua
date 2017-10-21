@@ -12,6 +12,7 @@ local Button = require( 'src.ui.elements.Button' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Outlines = require( 'src.ui.elements.Outlines' )
 local Translator = require( 'src.util.Translator' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -57,13 +58,16 @@ function NextMissionSelector.new()
     end
 
     function self:init()
+        local sw, _ = GridHelper.getScreenGridDimensions()
+        local x, y = sw - FIELD_WIDTH, 1
+
         font = TexturePacks.getFont()
         tw, th = TexturePacks.getTileset():getTileDimensions()
 
-        verticalList = VerticalList.new( love.graphics.getWidth() - FIELD_WIDTH * tw, th, FIELD_WIDTH * tw, font:getGlyphHeight() )
+        verticalList = VerticalList.new( x * tw, y * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
         verticalList:addElement( createButton() )
 
-        outlines = Outlines.new()
+        outlines = Outlines.new( x, 0 )
         createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
         outlines:refresh()
     end
@@ -73,7 +77,7 @@ function NextMissionSelector.new()
         love.graphics.rectangle( 'fill', love.graphics.getWidth() - FIELD_WIDTH * tw, 0, FIELD_WIDTH * tw, 3 * th )
         TexturePacks.resetColor()
 
-        outlines:draw( love.graphics.getWidth() - FIELD_WIDTH * tw, 0 )
+        outlines:draw()
         verticalList:draw()
     end
 
