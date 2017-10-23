@@ -52,10 +52,10 @@ local prefabs = {}
 -- @treturn string           The template id.
 --
 --
-local function mapPixels( templates, r, g, b, _ )
+local function mapPixels( templates, r, g, b, a )
     local id
     for _, template in ipairs( templates ) do
-        if template.r == r and template.g == g and template.b == b then
+        if template.r == r and template.g == g and template.b == b and a == 255 then
             id = template.id
             break
         end
