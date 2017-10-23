@@ -20,7 +20,7 @@ local PrefabLoader = {}
 -- Constants
 -- ------------------------------------------------
 
-local PREFAB_SOURCE_FOLDER = 'res/data/maps/prefabs/'
+local PREFAB_SOURCE_FOLDER = 'res/data/procgen/prefabs/'
 
 local INFO_FILE = 'info'
 local GROUND_LAYER_FILE = 'ground.png'
