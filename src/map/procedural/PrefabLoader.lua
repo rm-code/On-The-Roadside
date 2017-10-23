@@ -26,6 +26,12 @@ local INFO_FILE = 'info'
 local GROUND_LAYER_FILE = 'ground.png'
 local OBJECT_LAYER_FILE = 'objects.png'
 
+local PREFAB_TYPES_ROAD   = 'road'
+local PREFAB_TYPES_SMALL  = 'small'
+local PREFAB_TYPES_MEDIUM = 'medium'
+local PREFAB_TYPES_LARGE  = 'large'
+local PREFAB_TYPES_HUGE   = 'huge'
+
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
@@ -83,7 +89,7 @@ end
 -- @treturn Prefab         The newly created Prefab.
 --
 local function createPrefab( info, ground, objects )
-    local prefab = Prefab.new( info.name, info.parcelsize, info.rotatable )
+    local prefab = Prefab.new( info.name, info.type )
 
     prefab:setTiles( convertImageToTemplates( info.ground, ground ))
     prefab:setObjects( convertImageToTemplates( info.objects, objects ))
@@ -129,7 +135,7 @@ local function loadPrefabTemplates( sourceFolder )
             local success, prefab = load( path )
 
             if success then
-                prefabs[prefab:getName()] = prefab
+                prefabs[prefab:getType()][#prefabs[prefab:getType()] + 1] = prefab
 
                 count = count + 1
                 Log.debug( string.format( '  %3d. %s', count, prefab:getName() ))
@@ -147,17 +153,19 @@ end
 --
 function PrefabLoader.load()
     Log.debug( 'Loading parcel prefabs:' )
+
+    -- Init prefab tables.
+    prefabs[PREFAB_TYPES_ROAD] = {}
+    prefabs[PREFAB_TYPES_SMALL] = {}
+    prefabs[PREFAB_TYPES_MEDIUM] = {}
+    prefabs[PREFAB_TYPES_LARGE] = {}
+    prefabs[PREFAB_TYPES_HUGE] = {}
+
     loadPrefabTemplates( PREFAB_SOURCE_FOLDER )
 end
 
-function PrefabLoader.getRandomPrefab()
-    local array = {}
-    for i, _ in pairs( prefabs ) do
-        array[#array + 1] = i
-    end
-
-    local name = array[love.math.random( #array )]
-    return prefabs[name]
+function PrefabLoader.getPrefab( size )
+    return prefabs[size][love.math.random(#prefabs[size])]
 end
 
 return PrefabLoader

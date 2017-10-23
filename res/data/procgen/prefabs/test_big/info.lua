@@ -1,9 +1,6 @@
 return {
     name = 'test_big',
-    parcelsize = {
-        width  = 2,
-        height = 2
-    },
+    type = 'large',
     ground = {
         { r =   0, g =   0, b =   0, id = 'tile_asphalt'     },
         { r = 102, g =  57, b =  49, id = 'tile_woodenfloor' }

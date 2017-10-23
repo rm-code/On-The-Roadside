@@ -1,10 +1,6 @@
 return {
     name = 'test_long',
-    rotatable = true,
-    parcelsize = {
-        width  = 2,
-        height = 1
-    },
+    type = 'medium',
     ground = {
         { r =   0, g =   0, b =   0, id = 'tile_asphalt' },
         { r =  75, g = 105, b =  47, id = 'tile_grass'   }

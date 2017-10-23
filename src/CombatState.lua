@@ -55,7 +55,6 @@ function CombatState.new()
     function self:init( playerFaction, savegame )
         local generator = MapGenerator.new()
         generator:init()
-        generator:createParcels()
 
         local tiles = generator:getTiles()
         local mw, mh = generator:getTileGridDimensions()

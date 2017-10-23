@@ -4,7 +4,7 @@
 
 local Prefab = {}
 
-function Prefab.new( name, parcelsize, rotatable )
+function Prefab.new( name, type )
     local self = {}
 
     local grid = {}
@@ -13,16 +13,8 @@ function Prefab.new( name, parcelsize, rotatable )
         return name
     end
 
-    function self:getParcelDimensions()
-        return parcelsize.width, parcelsize.height
-    end
-
-    function self:isRotatable()
-        return rotatable
-    end
-
-    function self:isSquare()
-        return parcelsize.width == parcelsize.height
+    function self:getType()
+        return type
     end
 
     function self:setTiles( ntiles )

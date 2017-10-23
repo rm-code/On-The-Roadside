@@ -19,6 +19,7 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local BehaviorTreeFactory = require( 'src.characters.ai.behaviortree.BehaviorTreeFactory' )
 local SoundManager = require( 'src.SoundManager' )
 local MapLoader = require( 'src.map.MapLoader' )
+local MapGenerator = require( 'src.map.procedural.MapGenerator' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
 
@@ -58,6 +59,7 @@ function BootLoadingScreen.new()
         CharacterFactory.init()
 
         MapLoader.load()
+        MapGenerator.load()
         PrefabLoader.load()
 
         local endTime = love.timer.getTime()
