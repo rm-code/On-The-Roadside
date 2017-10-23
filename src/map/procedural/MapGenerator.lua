@@ -10,6 +10,7 @@
 local Log = require( 'src.util.Log' )
 local ArrayRotation = require( 'src.util.ArrayRotation' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
+local ParcelGrid = require( 'src.map.procedural.ParcelGrid' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 
@@ -69,8 +70,16 @@ end
 function MapGenerator.new()
     local self = {}
 
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
+
+    -- The actual tile map.
     local tileGrid
     local width, height
+
+    -- The parcel layout.
+    local parcelGrid
 
     -- ------------------------------------------------
     -- Private Methods
@@ -145,6 +154,8 @@ function MapGenerator.new()
             Log.debug( string.format( 'Placing %s parcels.', type ), 'MapGenerator' )
 
             for _, definition in ipairs( definitions ) do
+                parcelGrid:addParcels( definition.x, definition.y, definition.w, definition.h, type )
+
                 local prefab = PrefabLoader.getPrefab( type )
                 if prefab then
                     local rotation = rotateParcels( definition.w, definition.h )
@@ -158,6 +169,30 @@ function MapGenerator.new()
                 end
             end
         end
+    end
+
+    ---
+    -- Spawns trees in designated parcels.
+    --
+    local function spawnFoliage()
+        parcelGrid:iterate( function( parcel, x, y )
+            if parcel:getType() ~= 'foliage' then
+                return
+            end
+
+            local n = parcel:getNeighbourCount()
+
+            local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
+            for w = 1, PARCEL_SIZE.WIDTH do
+                for h = 1, PARCEL_SIZE.HEIGHT do
+
+                    -- Increase density based on count of neighbouring foliage tiles.
+                    if love.math.random() < n/10 then
+                        tileGrid[tx + w][ty + h]:addWorldObject( WorldObjectFactory.create( 'worldobject_tree' ))
+                    end
+                end
+            end
+        end)
     end
 
     ---
@@ -187,10 +222,19 @@ function MapGenerator.new()
         -- Select random layout.
         local layout = layouts[love.math.random( #layouts )]
 
+        -- Generate empty parcel grid.
+        parcelGrid = ParcelGrid.new()
+        parcelGrid:init( layout.dimensions.width, layout.dimensions.height )
+
+        -- Generate empty tile grid.
         width, height = layout.dimensions.width, layout.dimensions.height
         tileGrid = createTileGrid( width, height )
 
         fillParcels( layout.parcels )
+
+        parcelGrid:createNeighbours()
+
+        spawnFoliage()
     end
 
     function self:getTiles()

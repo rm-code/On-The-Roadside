@@ -164,8 +164,11 @@ function PrefabLoader.load()
     loadPrefabTemplates( PREFAB_SOURCE_FOLDER )
 end
 
-function PrefabLoader.getPrefab( size )
-    return prefabs[size][love.math.random(#prefabs[size])]
+function PrefabLoader.getPrefab( type )
+    if not prefabs[type] then
+        return false
+    end
+    return prefabs[type][love.math.random(#prefabs[type])]
 end
 
 return PrefabLoader
