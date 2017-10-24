@@ -52,6 +52,9 @@ locale.strings = {
     ['ui_ingame_open_help'] = "Show help",
     ['ui_ingame_abort_mission'] = "Abort Mission",
     ['ui_ingame_exit'] = "Main menu",
+
+    -- Help Screen
+    ['ui_help_header'] = 'Help'
 }
 
 return locale;

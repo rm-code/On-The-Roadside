@@ -105,6 +105,8 @@ return {
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
 
+    ['ui_help_section'] = COLORS.DB24,
+
     ['ui_equipment_highlight'] = COLORS.DB10,
     ['ui_equipment_mouseover'] = COLORS.DB15,
     ['ui_equipment_item']      = COLORS.DB20,
