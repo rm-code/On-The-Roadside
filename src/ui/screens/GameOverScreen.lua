@@ -1,44 +1,73 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local Screen = require( 'lib.screenmanager.Screen' );
-local Translator = require( 'src.util.Translator' );
-local Outlines = require( 'src.ui.elements.Outlines' )
+---
+-- @module GameOverScreen
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
+local Screen = require( 'lib.screenmanager.Screen' )
+local Translator = require( 'src.util.Translator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local GameOverScreen = {};
+local GameOverScreen = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH  = 30;
-local SCREEN_HEIGHT = 16;
+local UI_GRID_WIDTH  = 30
+local UI_GRID_HEIGHT = 16
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
 function GameOverScreen.new()
-    local self = Screen.new();
+    local self = Screen.new()
 
-    local text;
+    -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
+
+    local text
     local outlines
-    local px, py;
-    local tw, th = TexturePacks.getTileDimensions()
+    local background
+    local x, y
     local win
     local playerFaction
 
-    local function createOutlines( w, h )
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-            end
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Generates the outlines for this screen.
+    --
+    local function generateOutlines()
+        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        -- Horizontal borders.
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 0                ) -- Top
+            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
         end
+
+        -- Vertical outlines.
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 0,               oy ) -- Left
+            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+        end
+
+        outlines:refresh()
     end
 
     -- ------------------------------------------------
@@ -49,24 +78,22 @@ function GameOverScreen.new()
         playerFaction = nplayerFaction
         win = nwin
 
-        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
-        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        outlines = Outlines.new( SCREEN_WIDTH, SCREEN_HEIGHT )
-        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
-        outlines:refresh()
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background:init()
 
-        text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' );
+        generateOutlines()
+
+        text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
     end
 
     function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-
+        background:draw()
         outlines:draw()
 
-        love.graphics.printf( text, px, py + 3 * tw, SCREEN_WIDTH * th, 'center' )
+        local tw, th = TexturePacks.getTileDimensions()
+        love.graphics.printf( text, x * tw, (y+6) * th, UI_GRID_WIDTH * tw, 'center' )
     end
 
     function self:keypressed()
@@ -78,7 +105,7 @@ function GameOverScreen.new()
         end
     end
 
-    return self;
+    return self
 end
 
-return GameOverScreen;
+return GameOverScreen
