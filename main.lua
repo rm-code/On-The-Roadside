@@ -191,7 +191,7 @@ function love.errhand( msg )
     end
 
     table.insert(err, '\n\nYou can find the error in the latest.log file in your save directory.' )
-    table.insert(err, 'Press <return> to open the directoy.' )
+    table.insert(err, 'Press <return> to open the directoy. Press <escape> to close the game.' )
 
     local p = table.concat(err, "\n")
 
@@ -214,8 +214,9 @@ function love.errhand( msg )
                 if a == "return" then
                     love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
                     return
+                elseif a == "escape" then
+                    return
                 end
-                return
             elseif e == "touchpressed" then
                 local name = love.window.getTitle()
                 if #name == 0 or name == "Untitled" then name = "Game" end
