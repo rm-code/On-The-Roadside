@@ -41,7 +41,7 @@ function UIBackground.new( px, py, rx, ry, w, h )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local color
+    local color = 'sys_background'
 
     -- ------------------------------------------------
     -- Public Methods
@@ -52,7 +52,7 @@ function UIBackground.new( px, py, rx, ry, w, h )
     -- @tparam string ncolor The color ID to use for drawing the background.
     --
     function self:init( ncolor )
-        color = ncolor or 'sys_background'
+        color = ncolor
     end
 
     ---

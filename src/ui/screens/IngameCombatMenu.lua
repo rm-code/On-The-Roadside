@@ -105,7 +105,6 @@ function IngameCombatMenu.new()
         x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-        background:init()
 
         generateOutlines()
 
