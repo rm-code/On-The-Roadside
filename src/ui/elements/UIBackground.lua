@@ -65,6 +65,14 @@ function UIBackground.new( px, py, rx, ry, w, h )
         TexturePacks.resetColor()
     end
 
+    ---
+    -- Changes the color used for drawing the background.
+    -- @tparam string ncolor The color ID to use for drawing the background.
+    --
+    function self:setColor( ncolor )
+        color = ncolor
+    end
+
     return self
 end
 

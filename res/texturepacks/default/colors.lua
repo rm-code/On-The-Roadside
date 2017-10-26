@@ -98,6 +98,9 @@ return {
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
 
+    ['ui_scrollbar_element'] = COLORS.DB01,
+    ['ui_scrollbar_cursor']  = COLORS.DB25,
+
     ['ui_select_field']     = COLORS.DB16,
     ['ui_select_field_hot'] = COLORS.DB18,
 
@@ -107,13 +110,22 @@ return {
 
     ['ui_help_section'] = COLORS.DB24,
 
-    ['ui_equipment_highlight'] = COLORS.DB10,
+    ['ui_equipment_highlight'] = COLORS.DB12,
     ['ui_equipment_mouseover'] = COLORS.DB15,
     ['ui_equipment_item']      = COLORS.DB20,
     ['ui_equipment_empty']     = COLORS.DB23,
 
+    ['ui_inventory_headers'] = COLORS.DB20,
     ['ui_inventory_item'] = COLORS.DB20,
     ['ui_inventory_full'] = COLORS.DB27,
+
+    ['ui_inventory_stats_name'] = COLORS.DB12,
+    ['ui_inventory_stats_type'] = COLORS.DB24,
+    ['ui_inventory_stats_value'] = COLORS.DB20,
+    ['ui_inventory_description'] = COLORS.DB20,
+
+    ['ui_inventory_drag_bg'] = COLORS.DB01,
+    ['ui_inventory_drag_text'] = COLORS.DB20,
 
     ['ui_ap_cost'] = COLORS.DB27,
     ['ui_ap_cost_result'] = COLORS.DB10,

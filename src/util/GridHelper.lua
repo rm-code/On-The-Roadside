@@ -33,4 +33,9 @@ function GridHelper.centerElement( w, h )
     return math.floor(( sw-w ) * 0.5 ), math.floor(( sh-h ) * 0.5 )
 end
 
+function GridHelper.pixelsToGrid( x, y )
+    local tw, th = TexturePacks.getTileDimensions()
+    return math.floor( x / tw ), math.floor( y / th )
+end
+
 return GridHelper

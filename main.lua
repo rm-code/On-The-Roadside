@@ -144,6 +144,10 @@ function love.mousemoved( x, y, dx, dy, isTouch )
     ScreenManager.mousemoved( x, y, dx, dy, isTouch );
 end
 
+function love.wheelmoved( dx, dy )
+    ScreenManager.wheelmoved( dx, dy )
+end
+
 function love.errhand( msg )
     msg = tostring( msg );
 

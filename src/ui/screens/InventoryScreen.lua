@@ -1,202 +1,292 @@
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local Screen = require( 'lib.screenmanager.Screen' );
-local UIInventoryList = require( 'src.ui.inventory.UIInventoryList' );
-local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
-local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
-local ItemStats = require( 'src.ui.inventory.ItemStats' );
-local Translator = require( 'src.util.Translator' );
+---
+-- @module InventoryScreen
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Screen = require( 'lib.screenmanager.Screen' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
-local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
+local UIEquipmentList = require( 'src.ui.elements.inventory.UIEquipmentList' )
+local UIInventoryList = require( 'src.ui.elements.inventory.UIInventoryList' )
+local UITranslatedLabel = require( 'src.ui.elements.UITranslatedLabel' )
+local UIInventoryDragboard = require( 'src.ui.elements.inventory.UIInventoryDragboard' )
+local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local InventoryScreen = {};
+local InventoryScreen = {}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+-- The dimensions of the whole inventory screen.
+local UI_GRID_WIDTH  = 64
+local UI_GRID_HEIGHT = 48
+
+-- The width and height of the inventory columns.
+local COLUMN_WIDTH = 20
+local COLUMN_HEIGHT = 44
+
+-- The width and hight of the item equipment column.
+local EQUIPMENT_WIDTH = COLUMN_WIDTH
+local EQUIPMENT_HEIGHT = 12
+
+-- The width and hight of the item stats column.
+local ITEM_STATS_WIDTH = COLUMN_WIDTH
+local ITEM_STATS_HEIGHT = COLUMN_HEIGHT - EQUIPMENT_HEIGHT - 1
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
 function InventoryScreen.new()
-    local self = Screen.new();
+    local self = Screen.new()
 
-    local character;
-    local lists;
-    local dragboard;
-    local target;
-
-    local  w,  h;
-    local sx, sy; -- Spacers.
-    local itemDescriptionSpacer; -- Spacers.
-    local tw, th
-
-    local itemDescriptionArea;
-    local itemStatsArea;
+    local x, y
 
     local outlines
+    local background
+
+    local lists
+    local listLabels
+
+    local itemStats
+
+    local dragboard
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
 
-    local function getColumnWidth()
-        return ( sx - 1 ) * tw
+    ---
+    -- Creates the outlines for the Inventory window.
+    --
+    local function generateOutlines()
+        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        -- Horizontal borders.
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 0                ) -- Top
+            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
+        end
+
+        -- Horizontal line below Equipment list.
+        -- Offset calculations:
+        --  y-axis: Outline top + Header + Outline Header + EQUIPMENT_HEIGHT => EQUIPMENT_HEIGHT+3
+        for ox = 0, COLUMN_WIDTH do
+            outlines:add( ox, EQUIPMENT_HEIGHT+3 )
+        end
+
+        -- Vertical outlines.
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 0,               oy ) -- Left
+            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+        end
+
+        -- Vertical line after the equipment column.
+        -- Offset calculations:
+        --  x:axis: Outline left + First column => 1 + COLUMN_WIDTH
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 1+COLUMN_WIDTH, oy )
+        end
+
+        -- Vertical line after the inventory column.
+        -- Offset calculations:
+        --  x-axis: Outline left + First column + Outline + Second Column
+        --      => 1 + COLUMN_WIDTH + 1 + COLUMN_WIDTH
+        --      => 2 + 2*COLUMN_WIDTH
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 2 + 2*COLUMN_WIDTH, oy )
+        end
+
+        -- Horizontal line for column headers.
+        -- Offset calculations:
+        --  x-axis: Outline top + Header line => 2
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 2 )
+        end
+
+        outlines:refresh()
     end
 
-    local function getEquipmentColumnOffset()
-        return tw
+    ---
+    -- Creates the equipment list for the currently selected character and the
+    -- associated header label.
+    -- @tparam Character character The character to use for the equipment list.
+    --
+    local function createEquipmentList( character )
+        -- Offset calculations:
+        --  x-axis: Outline left => 1
+        --  y-axis: Outline top + Header Text + Outline below Header => 3
+        local ox, oy = 1, 3
+        lists.equipment = UIEquipmentList.new( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT )
+        lists.equipment:init( character )
+
+        -- Offset calculations:
+        --  x-axis: Outline left => 1
+        --  y-axis: Outline top => 1
+        local lx, ly = 1, 1
+        listLabels.equipment = UITranslatedLabel.new( x, y, lx, ly, EQUIPMENT_WIDTH, 1, 'inventory_equipment', 'ui_inventory_headers' )
     end
 
-    local function getOtherColumnOffset()
-        return ( 2 + 2 * sx ) * tw
+    ---
+    -- Creates the character's "backpack" inventory in which all items he carries
+    -- are stored and the associated header label.
+    -- @tparam Character character The character to use for the equipment list.
+    --
+    local function createCharacterInventoryList( character )
+        -- Offset calculations:
+        --  x-axis: Outline left + Equipment Column + Equipment Column Outline
+        --      => 1 + COLUMN_WIDTH + 1
+        --      => 2 + COLUMN_WIDTH
+        --  y-axis: Outline top + Header Text + Outline below Header => 3
+        local ox, oy = 2 + COLUMN_WIDTH, 3
+        lists.characterInventory = UIInventoryList.new( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT )
+        lists.characterInventory:init( character:getInventory() )
+
+        -- Label coordinates relative to the screen's coordinates.
+        --      x-axis: Outline left + Equipment Column + Equipment Column Outline
+        --              => 1 + COLUMN_WIDTH + 1
+        --              => 2 + COLUMN_WIDTH
+        --      y-axis: Outline top => 1
+        local lx, ly = 2 + COLUMN_WIDTH, 1
+        listLabels.characterInventory = UITranslatedLabel.new( x, y, lx, ly, COLUMN_WIDTH, 1, 'inventory_character', 'ui_inventory_headers' )
     end
 
-    local function getInventoryColumnOffset()
-        return ( 2 + sx ) * tw
+    ---
+    -- Creates the target inventory with which the character wants to interact.
+    -- and the associated header label.
+    -- @tparam Character character The character to use for the equipment list.
+    -- @tparam Tile      target    The target tile to interact with.
+    --
+    local function createTargetInventoryList( character, target )
+        local id, inventory
+
+        -- TODO How to handle base inventory?
+        if target:instanceOf( 'Inventory' ) then
+            id, inventory = 'inventory_base', target
+        elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
+            id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()
+        elseif target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
+            id, inventory = 'inventory_character', target:getCharacter():getInventory()
+        else
+            id, inventory = 'inventory_tile_inventory', target:getInventory()
+        end
+
+        -- Offset calculations:
+        --  x-axis: Outline left + Equipment Column + Equipment Column Outline
+        --          + Character Inventory Column + Character Inventory Column Outline
+        --          => 1 + COLUMN_WIDTH + 1 + COLUMN_WIDTH + 1
+        --          => 3 + 2 * COLUMN_WIDTH
+        --  y-axis: Outline top + Header Text + Outline below Header => 3
+        local ox, oy = 3 + 2 * COLUMN_WIDTH, 3
+        lists.targetInventory = UIInventoryList.new( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT )
+        lists.targetInventory:init( inventory )
+
+        -- Offset calculations:
+        --  x-axis: Outline left + Equipment Column + Equipment Column Outline
+        --          + Character Inventory Column + Character Inventory Column Outline
+        --          => 1 + COLUMN_WIDTH + 1 + COLUMN_WIDTH + 1
+        --          => 3 + 2 * COLUMN_WIDTH
+        --  y-axis: Outline top => 1
+        local lx, ly = 3 + 2 * COLUMN_WIDTH, 1
+        listLabels.targetInventory = UITranslatedLabel.new( x, y, lx, ly, COLUMN_WIDTH, 1, id, 'ui_inventory_headers' )
     end
 
+    ---
+    -- Creates the equipment and inventory lists.
+    -- @tparam Character character The character to use for the equipment list.
+    -- @tparam Tile      target    The target tile to interact with.
+    --
+    local function createInventoryLists( character, target )
+        lists = {}
+        listLabels = {}
+        createEquipmentList( character )
+        createCharacterInventoryList( character )
+        createTargetInventoryList( character, target )
+    end
+
+    ---
+    -- Returns the list the mouse is currently over.
+    -- @return The equipment or inventory list the mouse is over.
+    --
     local function getListBelowCursor()
         for _, list in pairs( lists ) do
             if list:isMouseOver() then
-                return list;
+                return list
             end
         end
-        return false;
     end
 
-    local function createEquipment()
-        lists.equipment = UIEquipmentList.new( getEquipmentColumnOffset(), 3 * th, sx * tw, 'inventory_equipment', character )
-        lists.equipment:init();
+    ---
+    -- Refreshes all inventor lists.
+    --
+    local function refreshLists()
+        for _, list in pairs( lists ) do
+            list:refresh()
+        end
     end
 
-    local function createInventory()
-        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), 3 * th, getColumnWidth(), 'inventory_character', character:getInventory() )
-        lists.inventory:init();
-    end
-
-    local function createOtherInventory()
-        local x, y, cw = getOtherColumnOffset(), 3 * th, getColumnWidth()
-
-        if target:instanceOf( 'Inventory' ) then
-            lists.other = UIInventoryList.new( x, y, cw, 'inventory_base', target )
-            lists.other:init()
+    ---
+    -- Initiates a drag action.
+    -- @tparam number button The mouse button index.
+    --
+    local function drag( button )
+        -- Can't drag if we are already dragging.
+        if dragboard:hasDragContext() then
             return
         end
 
-        -- Create inventory for container world objects.
-        if target:hasWorldObject() and target:getWorldObject():isContainer() then
-            lists.other = UIInventoryList.new( x, y, cw, 'inventory_container_inventory', target:getWorldObject():getInventory() );
-            lists.other:init();
-            return;
-        end
-
-        -- Create inventory for other characters of the same faction.
-        if target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-            lists.other = UIInventoryList.new( x, y, cw, 'inventory_character', target:getCharacter():getInventory() );
-            lists.other:init();
-            return;
-        end
-
-        -- Create inventory for a tile's floor.
-        lists.other = UIInventoryList.new( x, y, cw, 'inventory_tile_inventory', target:getInventory() );
-        lists.other:init();
-    end
-
-    local function returnItemToOrigin( item, origin )
-        if origin:instanceOf( 'EquipmentSlot' ) then
-            character:getEquipment():addItem( origin, item )
-        else
-            origin:drop( item );
-        end
-    end
-
-    local function drag( list, button )
+        -- Can't drag if not over a list.
+        local list = getListBelowCursor()
         if not list then
-            return;
+            return
         end
 
-        local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ));
-        if item then
-            -- If we have an actual item slot we use it as the origin to
-            -- which the item is returned in case it can't be dropped anywhere.
-            dragboard = { item = item, origin = slot or list };
-            if item:instanceOf( 'Container' ) then
-                createInventory();
-            end
+        local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ))
+
+        -- Abort if there is nothing to drag here.
+        if not item then
+            return
+        end
+
+        -- Display stats for the dragged item.
+        itemStats:setItem( item )
+
+        -- If we have an actual item slot we use it as the origin to
+        -- which the item is returned in case it can't be dropped anywhere.
+        dragboard:drag( item, slot or list )
+
+        -- If the dragged item is a container we need to refresh the inventory lists
+        -- because it changes the inventory volumes.
+        if item:instanceOf( 'Container' ) then
+            refreshLists()
         end
     end
 
-    local function drop( list )
+    ---
+    -- Selects an item for the item stats area.
+    --
+    local function selectItem()
+        local list = getListBelowCursor()
         if not list then
-            returnItemToOrigin( dragboard.item, dragboard.origin );
-        else
-            local success = list:drop( dragboard.item, dragboard.origin );
-            if not success then
-                returnItemToOrigin( dragboard.item, dragboard.origin );
-            end
-        end
-        dragboard = nil;
-    end
-
-    local function drawHeaders()
-        love.graphics.print( lists.equipment:getLabel(), getEquipmentColumnOffset(), th )
-
-        if lists.inventory then
-            love.graphics.print( lists.inventory:getLabel(), getInventoryColumnOffset(), th )
-        else
-            love.graphics.print( 'No inventory equipped', getInventoryColumnOffset(), th )
+            return
         end
 
-        love.graphics.print( lists.other:getLabel(), getOtherColumnOffset(), th )
-
-        love.graphics.print( 'Item Description', getEquipmentColumnOffset(), ( 1 + 2 * sy ) * th )
-        love.graphics.print( 'Item Attributes',  ( itemDescriptionSpacer + 1 ) * tw, ( 1 + 2 * sy ) * th )
-    end
-
-    local function updateScreenDimensions( nw, nh )
-        w  = math.floor( nw / tw )
-        h  = math.floor( nh / th )
-        sx = math.floor( w / 3 );
-        sy = math.floor( h / 3 );
-        itemDescriptionSpacer = math.floor( w / 2 );
-    end
-
-    local function createOutlines()
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                -- Draw borders.
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-
-                -- Draw vertical column lines.
-                if ( x == 1 + sx or x == 1 + 2 * sx ) and ( y < 2 * sy ) then
-                    outlines:add( x, y )
-                end
-
-                -- Draw bottom line of the column headers.
-                if y == 2 then
-                    outlines:add( x, y )
-                end
-
-                -- Draw the horizontal line below the inventory columns.
-                if y == 2 * sy then
-                    outlines:add( x, y )
-                end
-
-                -- Draw item description separator.
-                if x == itemDescriptionSpacer and y > 2 * sy then
-                    outlines:add( x, y )
-                end
-
-                -- Draw horizontal line for item stats and description.
-                if y == ( 2 * sy + 2 ) then
-                    outlines:add( x, y )
-                end
-            end
+        local item = list:getItemBelowCursor()
+        if not item then
+            return
         end
+
+        itemStats:setItem( item )
     end
 
     -- ------------------------------------------------
@@ -204,144 +294,106 @@ function InventoryScreen.new()
     -- ------------------------------------------------
 
     ---
-    -- Creates the three inventory lists for the player's equipment, his inventory
-    -- and the tile he is standing on.
-    -- @param ncharacter (Character) The character to open the inventory for.
-    -- @param ntarget    (Tile)      The target tile to open the inventory for.
+    -- Initialises the inventory screen.
+    -- @tparam Character ncharacter The character to open the inventory for.
+    -- @tparam Tile      ntarget    The target tile to open the inventory for.
     --
-    function self:init( ncharacter, ntarget )
-        tw, th = TexturePacks.getTileDimensions()
+    function self:init( character, target )
+        love.mouse.setVisible( true )
 
-        character = ncharacter;
-        target = ntarget;
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        love.mouse.setVisible( true );
-        updateScreenDimensions( love.graphics.getDimensions() );
+        -- General UI Elements.
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        generateOutlines()
 
-        outlines = UIOutlines.new( 0, 0, 0, 0, GridHelper.getScreenGridDimensions() )
-        createOutlines()
-        outlines:refresh()
+        -- UI inventory lists.
+        createInventoryLists( character, target )
 
-        itemDescriptionArea = ScrollArea.new( 1, 3 + 2 * sy, itemDescriptionSpacer - 1, sy - 3 );
-        itemStatsArea = ItemStats.new( itemDescriptionSpacer + 1, 3 + 2 * sy, itemDescriptionSpacer - 2, sy - 3 );
+        dragboard = UIInventoryDragboard.new()
 
-        lists = {};
-
-        createEquipment();
-        createInventory();
-        createOtherInventory();
+        -- Add the item stats area which displays the item attributes and a description area.
+        --      x-axis: Outline left => 1
+        --      y-axis: Outline top + Header + Outl ine Header
+        --              + Outline below equipment + EQUIPMENT_HEIGHT
+        --              => EQUIPMENT_HEIGHT+4
+        itemStats = UIItemStats.new( x, y, 1, EQUIPMENT_HEIGHT+4, ITEM_STATS_WIDTH, ITEM_STATS_HEIGHT )
     end
 
     ---
-    -- Draws the inventory lists and the dragged item (if there is one).
+    -- Draws the inventory screen.
     --
     function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() );
-        TexturePacks.resetColor()
-
+        background:draw()
         outlines:draw()
-        drawHeaders( love.graphics.getWidth() );
 
         for _, list in pairs( lists ) do
-            list:draw();
-            if list:isMouseOver() then
-                local item = list:getItemBelowCursor();
-                if item then
-                    itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
-                    itemDescriptionArea:draw();
-
-                    itemStatsArea:setItem( item );
-                end
-            end
+            list:draw()
         end
 
-        if dragboard then
-            local mx, my = love.mouse.getPosition();
-
-            TexturePacks.setColor( 'ui_inventory_item' )
-            for _, list in pairs( lists ) do
-                if list:isMouseOver() then
-                    local di = dragboard.item;
-                    if not list:doesFit( di ) then
-                        TexturePacks.setColor( 'ui_inventory_full' )
-                        break;
-                    end
-                end
-            end
-
-            local item = dragboard.item;
-            local str = item and Translator.getText( item:getID() ) or Translator.getText( 'inventory_empty_slot' );
-            if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
-                str = string.format( '%s (%d)', str, item:getItemCount() );
-            end
-            love.graphics.print( str, mx, my );
-            TexturePacks.setColor( 'ui_text' )
-
-            itemDescriptionArea:setText( Translator.getText( item:getDescriptionID() ));
-            itemDescriptionArea:draw();
-
+        for _, label in pairs( listLabels ) do
+            label:draw()
         end
 
-        lists.equipment:highlightSlot( dragboard and dragboard.item );
-        itemStatsArea:draw();
+        -- Highlight equipment slot if draggable item can be put there.
+        lists.equipment:highlight( dragboard:getDragContext() and dragboard:getDraggedItem() )
+
+        itemStats:draw()
+        dragboard:draw( lists )
     end
 
     ---
-    -- Updates the inventory lists.
+    -- This method is called when the inventory screen is closed.
     --
-    function self:update( dt )
-        if target:instanceOf( 'Tile' ) then
-            target:setDirty( true )
-        end
+    function self:close()
+        love.mouse.setVisible( false )
 
-        for _, list in pairs( lists ) do
-            list:update( dt );
+        -- Drop any item that is currently dragged.
+        if dragboard:hasDragContext() then
+            dragboard:drop()
         end
     end
+
+    -- ------------------------------------------------
+    -- Input Callbacks
+    -- ------------------------------------------------
 
     function self:keypressed( key )
-        if key == 'up' then
-            itemDescriptionArea:scrollVertically( 1 );
-        elseif key == 'down' then
-            itemDescriptionArea:scrollVertically( -1 );
-        elseif key == 'escape' or key == 'i' then
-            ScreenManager.pop();
+        if key == 'escape' or key == 'i' then
+            ScreenManager.pop()
         end
+
+        itemStats:keypressed( key )
     end
 
-    function self:mousepressed( _, _, button )
-        if dragboard then
-            return;
-        end
+    function self:mousepressed( mx, my, button )
+        local gx, gy = GridHelper.pixelsToGrid( mx, my )
 
-        local list = getListBelowCursor();
-        drag( list, button );
+        if button == 2 then
+            selectItem()
+        end
+        drag( button )
+
+        itemStats:mousepressed( gx, gy, button )
     end
 
     function self:mousereleased( _, _, _ )
-        if not dragboard then
-            return;
+        if not dragboard:hasDragContext() then
+            return
         end
 
-        local list = getListBelowCursor();
-        drop( list );
+        local list = getListBelowCursor()
+        dragboard:drop( list )
+
+        -- Refresh lists in case volumes have changed.
+        refreshLists()
     end
 
-    function self:resize()
-        self:init( character, target );
+    function self:wheelmoved( dx, dy )
+        itemStats:wheelmoved( dx, dy )
     end
 
-    function self:close()
-        love.mouse.setVisible( false );
-
-        -- Drop any item that is currently dragged.
-        if dragboard then
-            drop();
-        end
-    end
-
-    return self;
+    return self
 end
 
-return InventoryScreen;
+return InventoryScreen

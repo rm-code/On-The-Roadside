@@ -61,8 +61,11 @@ return {
     ['ui_mouse_pointer_attack']   =  11,
     ['ui_mouse_pointer_interact'] =  30,
 
+    -- Scrollareas
     ['ui_scroll_area_up']   = 31,
     ['ui_scroll_area_down'] = 32,
+    ['ui_scrollbar_cursor']  = 180,
+    ['ui_scrollbar_element'] = 180,
 
     -- ==============================
     -- Creatures
