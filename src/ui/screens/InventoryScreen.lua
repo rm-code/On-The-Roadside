@@ -5,8 +5,9 @@ local UIEquipmentList = require( 'src.ui.inventory.UIEquipmentList' );
 local ScrollArea = require( 'src.ui.inventory.ScrollArea' );
 local ItemStats = require( 'src.ui.inventory.ItemStats' );
 local Translator = require( 'src.util.Translator' );
-local Outlines = require( 'src.ui.elements.Outlines' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -217,7 +218,7 @@ function InventoryScreen.new()
         love.mouse.setVisible( true );
         updateScreenDimensions( love.graphics.getDimensions() );
 
-        outlines = Outlines.new( 0, 0 )
+        outlines = UIOutlines.new( 0, 0, 0, 0, GridHelper.getScreenGridDimensions() )
         createOutlines()
         outlines:refresh()
 
