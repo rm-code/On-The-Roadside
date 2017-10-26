@@ -72,7 +72,7 @@ function InventoryScreen.new()
     end
 
     local function createInventory()
-        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), 3 * th, getColumnWidth(), 'inventory_inventory', character:getInventory() )
+        lists.inventory = UIInventoryList.new( getInventoryColumnOffset(), 3 * th, getColumnWidth(), 'inventory_character', character:getInventory() )
         lists.inventory:init();
     end
 
@@ -94,7 +94,7 @@ function InventoryScreen.new()
 
         -- Create inventory for other characters of the same faction.
         if target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-            lists.other = UIInventoryList.new( x, y, cw, 'inventory_inventory', target:getCharacter():getInventory() );
+            lists.other = UIInventoryList.new( x, y, cw, 'inventory_character', target:getCharacter():getInventory() );
             lists.other:init();
             return;
         end
