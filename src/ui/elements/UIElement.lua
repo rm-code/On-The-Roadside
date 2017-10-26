@@ -78,10 +78,10 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     function self:isMouseOver()
         local mx, my = love.mouse.getPosition()
         local gx, gy = GridHelper.pixelsToGrid( mx, my )
-        return  gx >= self.ox + self.x
-            and gx <  self.ox + self.x + self.w
-            and gy >= self.oy + self.y
-            and gy <  self.oy + self.y + self.h
+        return  gx >= self.ox + self.rx
+            and gx <  self.ox + self.rx + self.w
+            and gy >= self.oy + self.ry
+            and gy <  self.oy + self.ry + self.h
     end
 
     return self
