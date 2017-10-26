@@ -5,7 +5,8 @@ local Label = require( 'src.ui.elements.Label' )
 local VerticalList = require( 'src.ui.elements.VerticalList' );
 local SaveHandler = require( 'src.SaveHandler' );
 local Translator = require( 'src.util.Translator' );
-local Outlines = require( 'src.ui.elements.Outlines' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -19,8 +20,8 @@ local IngameBaseMenu = {}
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH  = 10
-local SCREEN_HEIGHT = 7;
+local UI_GRID_WIDTH  = 10
+local UI_GRID_HEIGHT =  7
 
 -- ------------------------------------------------
 -- Constructor
@@ -37,25 +38,35 @@ function IngameBaseMenu.new()
     local buttonList;
     local header
 
+    local background
     local outlines
-    local px, py;
+    local x, y
     local tw, th
 
     -- ------------------------------------------------
-    -- Private Functions
+    -- Private Methods
     -- ------------------------------------------------
 
-    local function createOutlines( w, h )
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-                if y == 2 then
-                    outlines:add( x, y )
-                end
-            end
+    ---
+    -- Generates the outlines for this screen.
+    --
+    local function generateOutlines()
+        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        -- Horizontal borders.
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 0                ) -- Top
+            outlines:add( ox, 2                ) -- Header
+            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
         end
+
+        -- Vertical outlines.
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 0,               oy ) -- Left
+            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+        end
+
+        outlines:refresh()
     end
 
     local function saveGame()
@@ -72,7 +83,7 @@ function IngameBaseMenu.new()
     end
 
     local function createButtons()
-        buttonList = VerticalList.new( px * tw, (py+3) * th, SCREEN_WIDTH * tw, th )
+        buttonList = VerticalList.new( x * tw, (y+3) * th, UI_GRID_WIDTH * tw, th )
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_exit' ), exitToMainMenu ))
@@ -86,11 +97,12 @@ function IngameBaseMenu.new()
         game = ngame;
 
         tw, th = TexturePacks.getTileDimensions()
-        px, py = GridHelper.centerElement( SCREEN_WIDTH, SCREEN_HEIGHT )
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        outlines = Outlines.new( px, py )
-        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
-        outlines:refresh()
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background:init()
+
+        generateOutlines()
 
         createButtons();
 
@@ -98,13 +110,11 @@ function IngameBaseMenu.new()
     end
 
     function self:draw()
-        TexturePacks.setColor( 'sys_background' );
-        love.graphics.rectangle( 'fill', px*tw, py*th, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-
+        background:draw()
         outlines:draw()
 
         buttonList:draw();
-        header:draw( (px+1) * tw, (py+1) * th, (SCREEN_WIDTH - 2) * tw, th )
+        header:draw( (x+1) * tw, (y+1) * th, (UI_GRID_WIDTH - 2) * tw, th )
     end
 
     function self:update()
@@ -125,12 +135,6 @@ function IngameBaseMenu.new()
 
     function self:mousereleased()
         buttonList:mousereleased();
-    end
-
-    function self:resize( sx, sy )
-        px = math.floor( sx / tw ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 )
-        py = math.floor( sy / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
     end
 
     return self;
