@@ -10,7 +10,8 @@ local Observable = require( 'src.util.Observable' )
 local VerticalList = require( 'src.ui.elements.VerticalList' )
 local Button = require( 'src.ui.elements.Button' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local Outlines = require( 'src.ui.elements.Outlines' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -24,9 +25,8 @@ local HealAllSelector = {}
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH  = 10
-local SCREEN_HEIGHT =  3
-local FIELD_WIDTH   = 10
+local UI_GRID_WIDTH  = 10
+local UI_GRID_HEIGHT =  3
 
 -- ------------------------------------------------
 -- Constructor
@@ -37,18 +37,35 @@ function HealAllSelector.new()
 
     local verticalList
     local font
+
+    local background
     local outlines
     local tw, th
-    local px, py
+    local x, y
 
-    local function createOutlines( w, h )
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-            end
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Generates the outlines for this screen.
+    --
+    local function generateOutlines()
+        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        -- Horizontal borders.
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 0                ) -- Top
+            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
         end
+
+        -- Vertical outlines.
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 0,               oy ) -- Left
+            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+        end
+
+        outlines:refresh()
     end
 
     local function createButton()
@@ -58,26 +75,28 @@ function HealAllSelector.new()
         return Button.new( Translator.getText( 'ui_heal_all' ), callback )
     end
 
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
     function self:init()
         local sw, sh = GridHelper.getScreenGridDimensions()
-        px, py = sw - FIELD_WIDTH, sh - SCREEN_HEIGHT
+        x, y = sw - UI_GRID_WIDTH, sh - UI_GRID_WIDTH
 
         font = TexturePacks.getFont()
         tw, th = TexturePacks.getTileset():getTileDimensions()
 
-        verticalList = VerticalList.new( px*tw, (py+1)*th, FIELD_WIDTH * tw, font:getGlyphHeight() )
+        verticalList = VerticalList.new( x*tw, (y+1)*th, UI_GRID_WIDTH * tw, font:getGlyphHeight() )
         verticalList:addElement( createButton() )
 
-        outlines = Outlines.new( px, py )
-        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
-        outlines:refresh()
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background:init()
+
+        generateOutlines()
     end
 
     function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', px*tw, py*th, FIELD_WIDTH * tw, SCREEN_HEIGHT * th )
-        TexturePacks.resetColor()
-
+        background:draw()
         outlines:draw()
         verticalList:draw()
     end
