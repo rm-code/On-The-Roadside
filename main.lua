@@ -17,8 +17,10 @@ local debugGrid
 -- Constants
 -- ------------------------------------------------
 
-local DEBUG_OUTPUT_FLAG = '-d'
-local DEBUG_GRID_FLAG   = '-g'
+local DEBUG_OUTPUT_FLAG     = '-d'
+local DEBUG_GRID_FLAG       = '-g'
+local DEBUG_FULLSCREEN_FLAG = '-f'
+local DEBUG_WINDOWED_FLAG   = '-w'
 
 -- ------------------------------------------------
 -- Callbacks
@@ -32,6 +34,10 @@ function love.load( args )
             Log.setDebugActive( true )
         elseif arg == DEBUG_GRID_FLAG then
             debugGrid = true
+        elseif arg == DEBUG_FULLSCREEN_FLAG then
+            love.window.setFullscreen( true )
+        elseif arg == DEBUG_WINDOWED_FLAG then
+            love.window.setFullscreen( false )
         end
     end
 
