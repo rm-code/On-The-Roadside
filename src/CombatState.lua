@@ -61,6 +61,7 @@ function CombatState.new()
 
         map = ProceduralMap.new( tiles, mw, mh )
         map:init()
+        map:setSpawnpoints( generator:getSpawnpoints() )
 
         factions = Factions.new( map );
         factions:addFaction( Faction.new( FACTIONS.ENEMY,   true ))

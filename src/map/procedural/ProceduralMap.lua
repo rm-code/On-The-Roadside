@@ -22,6 +22,12 @@ function ProceduralMap.new( tiles, width, height )
     local self = Observable.new():addInstance( 'ProceduralMap' )
 
     -- ------------------------------------------------
+    -- Private Attributes
+    -- ------------------------------------------------
+
+    local spawnpoints
+
+    -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
 
@@ -81,14 +87,23 @@ function ProceduralMap.new( tiles, width, height )
     -- Randomly searches for a tile on which a player could be spawned.
     -- @treturn Tile A tile suitable for spawning.
     --
-    function self:findSpawnPoint()
-        while true do
+    function self:findSpawnPoint( faction )
+        for i = 1, 2000 do
             local x = love.math.random( 1, width )
             local y = love.math.random( 1, height )
 
-            local tile = self:getTileAt( x, y )
-            if tile:isPassable() and not tile:isOccupied() then
-                return tile
+            if faction ~= 'allied' then
+                local tile = self:getTileAt( x, y )
+                if tile:isPassable() and not tile:isOccupied() then
+                    return tile
+                end
+            else
+                local tile = self:getTileAt( x, y );
+                for _, spawn in ipairs( spawnpoints[faction] ) do
+                    if tile == spawn and tile:isPassable() and not tile:isOccupied() then
+                        return tile;
+                    end
+                end
             end
         end
     end
@@ -187,6 +202,10 @@ function ProceduralMap.new( tiles, width, height )
     --
     function self:getDimensions()
         return width, height
+    end
+
+    function self:setSpawnpoints( nspawnpoints )
+        spawnpoints = nspawnpoints
     end
 
     return self

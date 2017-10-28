@@ -81,6 +81,11 @@ function MapGenerator.new()
     -- The parcel layout.
     local parcelGrid
 
+    -- Spawnpoints.
+    local spawnpoints = {
+        allied = {}
+    }
+
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
@@ -214,6 +219,22 @@ function MapGenerator.new()
         return tiles
     end
 
+    ---
+    -- Create spawnpoints.
+    -- TODO Proper implementation.
+    --
+    local function createSpawnPoints( spawns )
+        for _, definition in ipairs( spawns ) do
+            local x, y = definition.x * PARCEL_SIZE.WIDTH, definition.y * PARCEL_SIZE.HEIGHT
+
+            for w = 0, PARCEL_SIZE.WIDTH-1 do
+                for h = 0, PARCEL_SIZE.HEIGHT-1 do
+                    spawnpoints.allied[#spawnpoints.allied + 1] = tileGrid[x+w][y+h]
+                end
+            end
+        end
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -235,6 +256,12 @@ function MapGenerator.new()
         parcelGrid:createNeighbours()
 
         spawnFoliage()
+
+        createSpawnPoints( layout.parcels.spawns )
+    end
+
+    function self:getSpawnpoints()
+        return spawnpoints
     end
 
     function self:getTiles()
