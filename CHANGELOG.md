@@ -1,3 +1,11 @@
+# Version 0.9.1.1073 - 2017-10-28
+
+## Fixes
+- Fix infinite loading bug on macOS High Sierra 10.13
+
+
+
+
 # Version 0.9.0.1014 - 2017-04-18
 
 ## Additions
