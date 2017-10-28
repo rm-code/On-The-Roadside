@@ -145,10 +145,10 @@ function MapGenerator.new()
                     local y = definition.y
 
                     -- Place tiles.
-                    placePrefabTiles( prefab:getTiles(), (x-1) * PARCEL_SIZE.WIDTH, (y-1) * PARCEL_SIZE.HEIGHT, rotation )
+                    placePrefabTiles( prefab:getTiles(), x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
 
                     -- Place objects.
-                    placePrefabObjects( prefab:getObjects(), (x-1) * PARCEL_SIZE.WIDTH, (y-1) * PARCEL_SIZE.HEIGHT, rotation )
+                    placePrefabObjects( prefab:getObjects(), x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
                 end
             end
         end
