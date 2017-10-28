@@ -56,7 +56,7 @@ local function loadFile( path )
     -- TODO love.filesystem.lines is currently bugged on Mac OS 10.13
     -- therefore we have to use a quick workaround
     local str = love.filesystem.read(path)
-    for line in str:gmatch("^[\r\n]+") do
+    for line in str:gmatch("[^\r\n]+") do
         if line == '#' then
             target = edges;
         else
