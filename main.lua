@@ -1,6 +1,7 @@
 local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
+local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -10,12 +11,35 @@ local Log = require( 'src.util.Log' );
 local profile = 0;
 local info;
 
+local debugGrid
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local DEBUG_OUTPUT_FLAG     = '-d'
+local DEBUG_GRID_FLAG       = '-g'
+local DEBUG_FULLSCREEN_FLAG = '-f'
+local DEBUG_WINDOWED_FLAG   = '-w'
+
 -- ------------------------------------------------
 -- Callbacks
 -- ------------------------------------------------
 
-function love.load()
+function love.load( args )
     Log.init();
+
+    for _, arg in pairs( args ) do
+        if arg == DEBUG_OUTPUT_FLAG then
+            Log.setDebugActive( true )
+        elseif arg == DEBUG_GRID_FLAG then
+            debugGrid = true
+        elseif arg == DEBUG_FULLSCREEN_FLAG then
+            love.window.setFullscreen( true )
+        elseif arg == DEBUG_WINDOWED_FLAG then
+            love.window.setFullscreen( false )
+        end
+    end
 
     info = {};
     info[#info + 1] = "===================";
@@ -66,6 +90,10 @@ function love.draw()
         ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
         profile = 0;
     end
+
+    if debugGrid then
+        DebugGrid.draw()
+    end
 end
 
 function love.update(dt)
@@ -114,6 +142,10 @@ end
 
 function love.mousemoved( x, y, dx, dy, isTouch )
     ScreenManager.mousemoved( x, y, dx, dy, isTouch );
+end
+
+function love.wheelmoved( dx, dy )
+    ScreenManager.wheelmoved( dx, dy )
 end
 
 function love.errhand( msg )
@@ -168,14 +200,13 @@ function love.errhand( msg )
         end
     end
 
+    table.insert(err, '\n\nYou can find the error in the latest.log file in your save directory.' )
+    table.insert(err, 'Press <return> to open the directoy. Press <escape> to close the game.' )
+
     local p = table.concat(err, "\n")
 
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
-
-    -- Open save directory where the error log is saved.
-    Log.error( 'You can find the error in the latest.log file in your save directory. Opening save directory now ...' );
-    love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
 
     local function draw()
         local pos = love.window.toPixels(70)
@@ -189,8 +220,13 @@ function love.errhand( msg )
         for e, a, _, _ in love.event.poll() do
             if e == "quit" then
                 return
-            elseif e == "keypressed" and a == "escape" then
-                return
+            elseif e == "keypressed" then
+                if a == "return" then
+                    love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
+                    return
+                elseif a == "escape" then
+                    return
+                end
             elseif e == "touchpressed" then
                 local name = love.window.getTitle()
                 if #name == 0 or name == "Untitled" then name = "Game" end

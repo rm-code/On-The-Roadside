@@ -77,8 +77,15 @@ mv -i -v OTR_$formatted.app ../OTR_$formatted-OSX.app
 cd ..
 rm -r LOVE_OSX
 
+## ZIP THE LOVE FILE
+# Fix for https://github.com/itchio/butler/issues/58#issuecomment-299619964
+zip OTR_$formatted-LOVE.zip OTR_$formatted.love
+
+# Remove original love file.
+rm OTR_$formatted.love
+
 # Publish to itch.io
 echo "Publishing to itch.io"
 butler push OTR_$formatted-WIN.zip rmcode/on-the-roadside:win --userversion $major.$minor.$patch.$build
 butler push OTR_$formatted-OSX.app rmcode/on-the-roadside:osx --userversion $major.$minor.$patch.$build
-butler push OTR_$formatted.love rmcode/on-the-roadside:win-osx-linux --userversion $major.$minor.$patch.$build
+butler push OTR_$formatted-LOVE.zip rmcode/on-the-roadside:win-osx-linux --userversion $major.$minor.$patch.$build

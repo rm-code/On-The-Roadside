@@ -1,3 +1,33 @@
+# Version 0.10.0.1089 - 2017-10-28
+
+## Additions
+- Added ammo indicator which displays the total amount of ammunition a character has in his inventory
+- Added basics for parcel based procedural map generation
+    - Map layouts determine the general look of the map such as road placement and where parcels are placed
+    - Building-prefabs can be spawned in parcels matching their size
+    - Prefabs can be rotated randomly
+    - Spawn randomly generated foliage parcels
+- Added completely revamped inventory user interface
+    - General groundwork for future user interface additions
+
+## Removals
+- Removed unused resource file
+- Removed heal all selector on base screen
+
+## Fixes
+- Fixed crash on base screen when health screen was opened before a character was selected
+
+## Other Changes
+- Character names are aligned to the left now
+- Improved interaction between mouse and keyboard controls in menu screens
+- Nationalities are now picked from a weighted list to control the rarity of certain nations
+- The aim overlay will always mark unseen tiles as potentially blocking
+- Changed minimum resolution from 800x600 to 1024x768
+- Improved the ingame help screen and updated it to follow the general UI style
+
+
+
+
 # Version 0.9.2.1079 - 2017-10-28
 
 ## Fixes
@@ -188,7 +218,7 @@
 # Version 0.5.0.725 - 2017-02-09
 
 ## Additions
-- Added a new smaller map with more tactical possibilites
+- Added a new smaller map with more tactical possibilities
     - Added new tiles "Gravel" and "Wooden Floor"
     - Added new world object "Tree"
 - Added preliminary item descriptions
@@ -403,8 +433,8 @@
 - FOV isn't drawn for AI controlled factions
 - Tweaked shot calculations
     - Uses the maximum angle for a shot's derivation correctly now
-    - Randomly varies the projectile's travelling distance
-- Improved line of sight drawning
+    - Randomly varies the projectile's traveling distance
+- Improved line of sight drawing
     - Line of sight is now generated in real time between the active character and the mouse cursor
 - Center the camera on characters which have been selected via right-clicks
 - Use different sounds based on the selected weapon type

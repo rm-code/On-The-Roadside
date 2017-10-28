@@ -55,12 +55,24 @@ local function loadFile( path )
     -- Change the target table once the '#' separator is reached.
     -- TODO love.filesystem.lines is currently bugged on Mac OS 10.13
     -- therefore we have to use a quick workaround
-    local str = love.filesystem.read(path)
-    for line in str:gmatch("[^\r\n]+") do
-        if line == '#' then
-            target = edges;
-        else
-            target[#target + 1] = line;
+
+    if love then
+        local str = love.filesystem.read(path)
+        for line in str:gmatch("[^\r\n]+") do
+            if line == '#' then
+                target = edges;
+            else
+                target[#target + 1] = line;
+            end
+        end
+    else
+        -- Change the target table once the '#' separator is reached.
+        for line in io.lines( path ) do
+            if line == '#' then
+                target = edges;
+            else
+                target[#target + 1] = line;
+            end
         end
     end
 

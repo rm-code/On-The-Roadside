@@ -1,31 +1,39 @@
 ---
 -- Creates outlines for UI elements with correctly drawn intersections.
--- @module Outlines
+--
+-- Make sure to always start the outline grid at coordinates [x=0, y=0], because
+-- the draw function uses an offset to determine where to start drawing.
+-- If the grid starts at coordinates [x=1, y=1] the outlines will be drawn in
+-- the wrong place.
+--
+-- @module UIOutlines
 --
 
 -- ------------------------------------------------
 -- Required Modules
 -- ------------------------------------------------
 
-local Object = require( 'src.Object' )
+local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Outlines = {}
+local UIOutlines = {}
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
 ---
--- Creates a new Outlines instance.
--- @treturn Outlines The new instance.
+-- Creates a new UIOutlines instance.
+-- @tparam  number   ox The x–coordinate at which to start drawing the outlines.
+-- @tparam  number   oy The y–coordinate at which to start drawing the outlines.
+-- @treturn UIOutlines The new instance.
 --
-function Outlines.new()
-    local self = Object.new():addInstance( 'Outlines' )
+function UIOutlines.new( px, py, ox, oy, w, h )
+    local self = UIElement.new( px, py, ox, oy, w, h ):addInstance( 'UIOutlines' )
 
     -- ------------------------------------------------
     -- Private Variables
@@ -158,14 +166,12 @@ function Outlines.new()
 
     ---
     -- Draws the outlines at the specified position.
-    -- @tparam number px The x coordinate to draw the outline grid from.
-    -- @tparam number py The y coordinate to draw the outline grid from.
     --
-    function self:draw( px, py )
+    function self:draw()
         TexturePacks.setColor( 'ui_outlines' )
         for x, line in pairs( grid ) do
             for y, sprite in pairs( line ) do
-                love.graphics.draw( tileset:getSpritesheet(), sprite, px + x * tw, py + y * th )
+                love.graphics.draw( tileset:getSpritesheet(), sprite, (self.ax+x) * tw, (self.ay+y) * th )
             end
         end
         TexturePacks.resetColor()
@@ -174,4 +180,4 @@ function Outlines.new()
     return self
 end
 
-return Outlines
+return UIOutlines

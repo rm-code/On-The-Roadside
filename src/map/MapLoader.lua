@@ -59,6 +59,11 @@ end
 -- @treturn table       The loaded mapTemplate (only if successful).
 --
 local function load( src )
+    if not love.filesystem.exists( src .. INFO_FILE .. '.lua' ) then
+        Log.warn( string.format( 'Can\'t find info file. Ignoring path %s', src ), 'MapLoader' )
+        return false
+    end
+
     local module = require( src .. INFO_FILE )
     if not module or not validate( module ) then
         Log.warn( string.format( 'Couldn\'t load map from %s. Bad format on info file.', src ), 'MapLoader' )

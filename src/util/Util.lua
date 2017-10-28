@@ -29,4 +29,8 @@ function Util.getTilesInCircle( map, centerTile, radius )
     return list;
 end
 
+function Util.swap( a, b )
+    return b, a
+end
+
 return Util;

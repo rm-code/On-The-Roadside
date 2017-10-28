@@ -16,10 +16,10 @@ local CharacterFactory = {};
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 local NAME_FILE = 'res.data.Names'
 local NATIONALITY = {
-    'german',
-    'russian',
-    'british',
-    'finnish'
+    { id = 'german',  weight = 10 },
+    { id = 'russian', weight =  3 },
+    { id = 'british', weight =  3 },
+    { id = 'finnish', weight =  1 }
 }
 
 -- ------------------------------------------------
@@ -27,6 +27,7 @@ local NATIONALITY = {
 -- ------------------------------------------------
 
 local names
+local nationalityWeight
 
 -- ------------------------------------------------
 -- Private Functions
@@ -38,6 +39,35 @@ local names
 --
 local function loadNames( path )
     return require( path )
+end
+
+---
+-- Calculates the total weight of all nationalities used for their random
+-- selection.
+-- @treturn number The total weight.
+--
+local function calculateNationalitiesWeight()
+    local weight = 0
+    for i = 1, #NATIONALITY do
+        weight = weight + NATIONALITY[i].weight
+    end
+    return weight
+end
+
+---
+-- Randomly chooses a nationality from the weighted list of nationalities.
+-- @treturn string The selected nationality's id.
+--
+local function chooseNationality()
+    local rnd = love.math.random( nationalityWeight )
+    local weight = 0
+    for i = 1, #NATIONALITY do
+        weight = weight + NATIONALITY[i].weight
+        if rnd <= weight then
+            return NATIONALITY[i].id
+        end
+    end
+    error( 'Random selection of nationality failed. No nationality found.' )
 end
 
 ---
@@ -90,6 +120,8 @@ end
 function CharacterFactory.init()
     Log.debug( "Load Creature-Names:" )
     names = loadNames( NAME_FILE )
+
+    nationalityWeight = calculateNationalitiesWeight()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
@@ -115,7 +147,7 @@ function CharacterFactory.newCharacter( type )
     local character = Character.new()
 
     if type == 'human' then
-        local nationality = NATIONALITY[love.math.random( #NATIONALITY )]
+        local nationality = chooseNationality()
         character:setNationality( nationality )
         character:setName( names[nationality][love.math.random( #names[nationality] )])
     end

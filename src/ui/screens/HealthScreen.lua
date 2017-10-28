@@ -1,9 +1,10 @@
-local Log = require( 'src.util.Log' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local Screen = require( 'lib.screenmanager.Screen' );
 local Translator = require( 'src.util.Translator' );
-local Outlines = require( 'src.ui.elements.Outlines' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -15,8 +16,8 @@ local HealthScreen = {};
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH  = 30;
-local SCREEN_HEIGHT = 16;
+local UI_GRID_WIDTH  = 30
+local UI_GRID_HEIGHT = 16
 
 -- ------------------------------------------------
 -- Constructor
@@ -28,22 +29,35 @@ function HealthScreen.new()
     local character;
     local characterType;
 
+    local background
     local outlines
-    local px, py;
+    local x, y
     local tw, th
 
-    local function createOutlines( w, h )
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                -- Draw screen borders.
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-                if y == 2 then
-                    outlines:add( x, y )
-                end
-            end
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Generates the outlines for this screen.
+    --
+    local function generateOutlines()
+        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        -- Horizontal borders.
+        for ox = 0, UI_GRID_WIDTH-1 do
+            outlines:add( ox, 0                ) -- Top
+            outlines:add( ox, 2                ) -- Header
+            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
         end
+
+        -- Vertical outlines.
+        for oy = 0, UI_GRID_HEIGHT-1 do
+            outlines:add( 0,               oy ) -- Left
+            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+        end
+
+        outlines:refresh()
     end
 
     -- ------------------------------------------------
@@ -52,24 +66,19 @@ function HealthScreen.new()
 
     function self:init( ncharacter )
         tw, th = TexturePacks.getTileDimensions()
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         character = ncharacter;
         characterType = character:getBody():getID();
 
-        px = math.floor( love.graphics.getWidth() / tw ) * 0.5 - math.floor( SCREEN_WIDTH * 0.5 )
-        py = math.floor( love.graphics.getHeight() / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        outlines = Outlines.new()
-        createOutlines( SCREEN_WIDTH, SCREEN_HEIGHT )
-        outlines:refresh()
+        generateOutlines()
     end
 
     function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', px, py, SCREEN_WIDTH * tw, SCREEN_HEIGHT * th )
-
-        outlines:draw( px, py )
+        background:draw()
+        outlines:draw()
 
         local counter = 3;
         for _, bodyPart in pairs( character:getBody():getBodyParts() ) do
@@ -92,8 +101,8 @@ function HealthScreen.new()
                     TexturePacks.setColor( 'ui_health_fine_limb' )
                     status = 'FINE'
                 end
-                love.graphics.print( Translator.getText( bodyPart:getID() ), px + tw, py + th * counter )
-                love.graphics.printf( status, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'right' )
+                love.graphics.print( Translator.getText( bodyPart:getID() ), (x+1) * tw, (y+counter) * th )
+                love.graphics.printf( status, (x+1) * tw, (y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'right' )
 
                 if bodyPart:isBleeding() then
                     local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() );
@@ -106,7 +115,7 @@ function HealthScreen.new()
                     elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
                         TexturePacks.setColor( 'ui_health_bleeding_bad' )
                     end
-                    love.graphics.printf( str, px + tw, py + th * counter, ( SCREEN_WIDTH - 2 ) * tw, 'center' )
+                    love.graphics.printf( str, (x+1) * tw, (y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'center' )
                 end
             end
         end
@@ -115,12 +124,12 @@ function HealthScreen.new()
 
         -- Draw character type.
         local type = Translator.getText( 'ui_character_type' ) .. Translator.getText( characterType )
-        love.graphics.print( type, px + tw, py + th )
+        love.graphics.print( type, (x+1) * tw, (y+1) * th )
 
         -- Draw character name.
         if character:getName() then
             local name = Translator.getText( 'ui_character_name' ) .. character:getName()
-            love.graphics.print( name, px + 2 * tw + TexturePacks.getFont():measureWidth( type ), py + th )
+            love.graphics.print( name, (x+2) * tw + TexturePacks.getFont():measureWidth( type ), (y+1) * th )
         end
 
         TexturePacks.resetColor()
@@ -130,13 +139,6 @@ function HealthScreen.new()
         if key == 'escape' or key == 'q' then
             ScreenManager.pop();
         end
-    end
-
-    function self:resize( sx, sy )
-        px = math.floor( sx / tw ) * 0.5 - math.floor( SCREEN_WIDTH  * 0.5 )
-        py = math.floor( sy / th ) * 0.5 - math.floor( SCREEN_HEIGHT * 0.5 )
-        px, py = px * tw, py * th
-        Log.debug( string.format( "Adjust position for Health Screen -> %d (%d), %d (%d)", sx, px, sy, py ));
     end
 
     return self;

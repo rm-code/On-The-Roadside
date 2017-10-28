@@ -9,8 +9,10 @@
 local Observable = require( 'src.util.Observable' )
 local VerticalList = require( 'src.ui.elements.VerticalList' )
 local Button = require( 'src.ui.elements.Button' )
+local Label = require( 'src.ui.elements.Label' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local Outlines = require( 'src.ui.elements.Outlines' )
+local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
 local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
@@ -23,8 +25,7 @@ local CharacterSelector = {}
 -- Constants
 -- ------------------------------------------------
 
-local SCREEN_WIDTH = 10
-local FIELD_WIDTH  = 10
+local UI_GRID_WIDTH = 10
 
 -- ------------------------------------------------
 -- Constructor
@@ -35,54 +36,78 @@ function CharacterSelector.new()
 
     local faction
     local verticalList
+    local header
     local font
+
+    local background
     local outlines
     local tw, th
+    local x, y
 
-    local function createOutlines( w, h )
-        for x = 0, w - 1 do
-            for y = 0, h - 1 do
-                if x == 0 or x == (w - 1) or y == 0 or y == (h - 1) then
-                    outlines:add( x, y )
-                end
-                if y == 2 then
-                    outlines:add( x, y )
-                end
-            end
+    -- ------------------------------------------------
+    -- Private Methods
+    -- ------------------------------------------------
+
+    ---
+    -- Generates the outlines for this screen.
+    --
+    local function generateOutlines( w, h )
+        outlines = UIOutlines.new( x, y, 0, 0, w, h )
+
+        -- Horizontal borders.
+        for ox = 0, w-1 do
+            outlines:add( ox, 0   ) -- Top
+            outlines:add( ox, 2   ) -- Top
+            outlines:add( ox, h-1 ) -- Bottom
         end
+
+        -- Vertical outlines.
+        for oy = 0, h-1 do
+            outlines:add( 0,   oy ) -- Left
+            outlines:add( w-1, oy ) -- Right
+        end
+
+        outlines:refresh()
     end
 
     local function createCharacterButton( character )
         local function callback()
             self:publish( 'CHANGED_CHARACTER', character )
         end
-        return Button.new( character:getName(), callback )
+        return Button.new( character:getName(), callback, 'left' )
     end
+
+    local function createCharacterList()
+        verticalList = VerticalList.new( tw, 3 * th, (UI_GRID_WIDTH-2) * tw, font:getGlyphHeight() )
+        faction:iterate( function( character )
+            verticalList:addElement( createCharacterButton( character ))
+        end)
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
 
     function self:init( nfaction )
         faction = nfaction
         font = TexturePacks.getFont()
 
+        x, y = 0, 0
         tw, th = TexturePacks.getTileset():getTileDimensions()
-        verticalList = VerticalList.new( 0, 3 * th, FIELD_WIDTH * tw, font:getGlyphHeight() )
 
-        faction:iterate( function( character )
-            verticalList:addElement( createCharacterButton( character ))
-        end)
+        createCharacterList()
 
-        outlines = Outlines.new()
-        createOutlines( SCREEN_WIDTH, 4 + verticalList:getElementCount() )
-        outlines:refresh()
+        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, 4 + verticalList:getElementCount() )
+
+        generateOutlines( UI_GRID_WIDTH, 4 + verticalList:getElementCount() )
+
+        header = Label.new( Translator.getText( 'ui_stalkers' ), 'ui_label', 'center' )
     end
 
     function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', 0, 0, FIELD_WIDTH * tw, (4 + verticalList:getElementCount()) * th )
-        TexturePacks.resetColor()
-
-        love.graphics.printf( Translator.getText( 'ui_stalkers' ), tw, th, (FIELD_WIDTH-2) * tw, 'center' )
-
-        outlines:draw( 0, 0 )
+        background:draw()
+        outlines:draw()
+        header:draw( tw, th, (UI_GRID_WIDTH-2) * tw, 'center' )
         verticalList:draw()
     end
 

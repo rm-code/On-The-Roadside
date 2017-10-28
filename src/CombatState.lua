@@ -7,7 +7,8 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' );
-local MapLoader = require( 'src.map.MapLoader' )
+local MapGenerator = require( 'src.map.procedural.MapGenerator' )
+local ProceduralMap = require( 'src.map.procedural.ProceduralMap' )
 local Factions = require( 'src.characters.Factions' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
@@ -52,8 +53,15 @@ function CombatState.new()
     -- ------------------------------------------------
 
     function self:init( playerFaction, savegame )
-        map = MapLoader.createRandom()
-        map:init( savegame );
+        local generator = MapGenerator.new()
+        generator:init()
+
+        local tiles = generator:getTiles()
+        local mw, mh = generator:getTileGridDimensions()
+
+        map = ProceduralMap.new( tiles, mw, mh )
+        map:init()
+        map:setSpawnpoints( generator:getSpawnpoints() )
 
         factions = Factions.new( map );
         factions:addFaction( Faction.new( FACTIONS.ENEMY,   true ))

@@ -10,6 +10,12 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UserInterface = {};
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -32,7 +38,7 @@ function UserInterface.new( game )
     -- Draws some information of the tile the mouse is currently hovering over.
     --
     local function inspectTile()
-        local x, y = tw, love.graphics.getHeight() - th * 5
+        local x, y = tw, love.graphics.getHeight() - th * 6
         local tile = map:getTileAt( mouseX, mouseY );
 
         if not tile then
@@ -51,18 +57,25 @@ function UserInterface.new( game )
         end
     end
 
-    local function drawWeaponInfo( weapon )
+    local function drawWeaponInfo( inventory, weapon )
         if weapon then
-            local text = Translator.getText( weapon:getID() );
+            love.graphics.print( Translator.getText( 'ui_weapon' ), tw, love.graphics.getHeight() - th * 4 )
+            love.graphics.print( Translator.getText( weapon:getID() ), tw + font:measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - th * 4 )
+
+            -- If the weapon is reloadable we show the current ammo in the magazine,
+            -- the maximum capacity of the magazine and the total amount of ammo
+            -- on the character.
             if weapon:isReloadable() then
-                text = text .. string.format( ' (%d/%d)', weapon:getMagazine():getRounds(), weapon:getMagazine():getCapacity() )
+                local magazine = weapon:getMagazine()
+                local total = inventory:countItems( ITEM_TYPES.AMMO, magazine:getCaliber() )
+
+                local text = string.format( ' %d/%d (%d)', magazine:getRounds(), magazine:getCapacity(), total )
+                love.graphics.print( Translator.getText( 'ui_ammo' ), tw, love.graphics.getHeight() - th * 3 )
+                love.graphics.print( text, tw + font:measureWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - th * 3 )
             end
-            love.graphics.print( Translator.getText( 'ui_weapon' ), tw, love.graphics.getHeight() - th * 3 )
-            love.graphics.print( text, tw + font:measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - th * 3 )
 
             love.graphics.print( Translator.getText( 'ui_mode' ), tw, love.graphics.getHeight() - th * 2 )
             love.graphics.print( weapon:getAttackMode().name, tw + font:measureWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - th * 2 )
-
         end
     end
 
@@ -77,7 +90,7 @@ function UserInterface.new( game )
 
     local function drawActionPoints( character )
         local apString = 'AP: ' .. character:getActionPoints();
-        love.graphics.print( apString, tw, love.graphics.getHeight() - th * 4 )
+        love.graphics.print( apString, tw, love.graphics.getHeight() - th * 5 )
 
         -- Hide the cost display during the turn's execution.
         if game:getState():instanceOf( 'ExecutionState' ) then
@@ -102,11 +115,11 @@ function UserInterface.new( game )
         if cost then
             local costString, costOffset = ' - ' .. cost, font:measureWidth( apString )
             TexturePacks.setColor( 'ui_ap_cost' )
-            love.graphics.print( costString, tw + costOffset, love.graphics.getHeight() - th * 4 )
+            love.graphics.print( costString, tw + costOffset, love.graphics.getHeight() - th * 5 )
 
             local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, font:measureWidth( apString .. costString )
             TexturePacks.setColor( 'ui_ap_cost_result' )
-            love.graphics.print( resultString, tw + resultOffset, love.graphics.getHeight() - th * 4 )
+            love.graphics.print( resultString, tw + resultOffset, love.graphics.getHeight() - th * 5 )
         end
         TexturePacks.resetColor()
     end
@@ -121,7 +134,7 @@ function UserInterface.new( game )
 
         drawActionPoints( character );
         inspectTile();
-        drawWeaponInfo( character:getWeapon() );
+        drawWeaponInfo( character:getInventory(), character:getWeapon() )
     end
 
     function self:update()

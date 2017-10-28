@@ -5,6 +5,7 @@ locale.strings = {
     ['ui_tile'] = "Feld: ",
     ['ui_tile_unexplored'] = "Unerforscht",
     ['ui_weapon'] = "Waffe: ",
+    ['ui_ammo'] = "Munition: ",
     ['ui_mode'] = "Modus: ",
     ['ui_win'] = "Alle Gegner sind tot. Du hast gewonnen!\n\nDrücke eine Taste um fortzufahren...",
     ['ui_lose'] = "Dein Team ist tot. Du hast verloren!\n\nDrücke eine Taste um fortzufahren...",
@@ -52,6 +53,9 @@ locale.strings = {
     ['ui_ingame_open_help'] = "Hilfe",
     ['ui_ingame_abort_mission'] = "Mission abbrechen",
     ['ui_ingame_exit'] = "Hauptmenü",
+
+    -- Help Screen
+    ['ui_help_header'] = 'Hilfe'
 }
 
 return locale;

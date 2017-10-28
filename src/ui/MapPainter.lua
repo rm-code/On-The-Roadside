@@ -22,6 +22,12 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local MapPainter = {}
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local MAX_SPRITES = 16384 -- Enough sprites for a 128*128 map.
+
+-- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
@@ -62,10 +68,11 @@ function MapPainter.new()
     -- Selects a color which to use when a tile is drawn based on its contents.
     -- @tparam  Tile      tile      The tile to choose a color for.
     -- @tparam  Faction   faction   The faction to draw for.
-    -- @tparam  Character character The faction's currently active character.
     -- @treturn table               A table containing RGBA values.
     --
-    local function selectTileColor( tile, faction, character )
+    local function selectTileColor( tile, faction )
+        local character = faction:getCurrentCharacter()
+
         -- Hide unexplored tiles.
         if not tile:isExplored( faction:getType() ) then
             return TexturePacks.getColor( 'tile_unexplored' )
@@ -146,7 +153,7 @@ function MapPainter.new()
         local faction = factions:getPlayerFaction()
         map:iterate( function( tile, x, y )
             if tile:isDirty() then
-                spritebatch:setColor( selectTileColor( tile, faction, faction:getCurrentCharacter() ))
+                spritebatch:setColor( selectTileColor( tile, faction ))
                 spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * tw, y * th )
                 tile:setDirty( false )
             end
@@ -168,7 +175,7 @@ function MapPainter.new()
         tileset = TexturePacks.getTileset()
         tw, th = tileset:getTileDimensions()
         TexturePacks.setBackgroundColor()
-        spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), 10000, 'dynamic' )
+        spritebatch = love.graphics.newSpriteBatch( tileset:getSpritesheet(), MAX_SPRITES, 'dynamic' )
         initSpritebatch()
     end
 
