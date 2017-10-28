@@ -87,42 +87,32 @@ function MapGenerator.new()
         return TileFactory.create( x, y, tile )
     end
 
-    local function placePrefabTiles( tiles, px, py, rotate )
+    ---
+    -- Places the tiles and world objects belonging to this prefab.
+    -- @tparam Prefab prefab The prefab to place.
+    -- @tparam number px     The starting coordinates along the x-axis for this prefab.
+    -- @tparam number py     The starting coordinates along the y-axis for this prefab.
+    -- @tparam number rotate The rotation to apply to the prefab before placing it.
+    --
+    local function placePrefab( prefab, px, py, rotate )
+        local tiles = prefab:getTiles()
+        local objects = prefab:getObjects()
+
         if rotate then
             tiles = ArrayRotation.rotate( tiles, rotate )
+            objects = ArrayRotation.rotate( objects, rotate )
         end
 
         for tx = 1, #tiles do
             for ty = 1, #tiles[tx] do
                 tileGrid[tx + px][ty + py] = createTile( tx + px, ty + py, tiles[tx][ty] )
-            end
-        end
-    end
 
-    local function placePrefabObjects( objects, px, py, rotate )
-        if rotate then
-            objects = ArrayRotation.rotate( objects, rotate )
-        end
-
-        for tx = 1, #objects do
-            for ty = 1, #objects[tx] do
+                -- The object grid can contain empty tiles.
                 if objects[tx][ty] then
                     tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( objects[tx][ty] ))
                 end
             end
         end
-    end
-
-    local function createTileGrid( w, h )
-        local tiles = {}
-        for x = 1, w * PARCEL_SIZE.WIDTH do
-            tiles[x] = {}
-            for y = 1, h * PARCEL_SIZE.HEIGHT do
-                local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
-                tiles[x][y] = createTile( x, y, id )
-            end
-        end
-        return tiles
     end
 
     ---
@@ -145,6 +135,11 @@ function MapGenerator.new()
         end
     end
 
+    ---
+    -- Iterates over the parcel definitions for this map layout and tries to
+    -- place prefabs for each of them.
+    -- @tparam table parcels The parcel definitions.
+    --
     local function fillParcels( parcels )
         for type, definitions in pairs( parcels ) do
             Log.debug( string.format( 'Placing %s parcels.', type ), 'MapGenerator' )
@@ -158,14 +153,30 @@ function MapGenerator.new()
                     local x = definition.x
                     local y = definition.y
 
-                    -- Place tiles.
-                    placePrefabTiles( prefab:getTiles(), x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
-
-                    -- Place objects.
-                    placePrefabObjects( prefab:getObjects(), x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
+                    -- Place tiles and worldobjects.
+                    placePrefab( prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
                 end
             end
         end
+    end
+
+    ---
+    -- Creates an empty tile grid.
+    -- @tparam number w The width of the grid in parcels.
+    -- @tparam number h The height of the grid in parcels.
+    -- @tparam table    The new tile grid.
+    --
+    local function createTileGrid( w, h )
+        local tiles = {}
+        for x = 1, w * PARCEL_SIZE.WIDTH do
+            tiles[x] = {}
+            for y = 1, h * PARCEL_SIZE.HEIGHT do
+                -- TODO Better algorithm for placing ground tiles.
+                local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
+                tiles[x][y] = createTile( x, y, id )
+            end
+        end
+        return tiles
     end
 
     -- ------------------------------------------------
