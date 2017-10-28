@@ -51,7 +51,6 @@ locale.strings = {
     ['ui_ingame_paused'] = "Pausiert",
     ['ui_ingame_save_game'] = "Speichern",
     ['ui_ingame_open_help'] = "Hilfe",
-    ['ui_ingame_abort_mission'] = "Mission abbrechen",
     ['ui_ingame_exit'] = "Hauptmenü",
 
     -- Help Screen

@@ -76,12 +76,6 @@ function IngameCombatMenu.new()
         ScreenManager.push( 'help' );
     end
 
-    local function exitToBase()
-        ScreenManager.pop() -- Ingame
-        ScreenManager.pop() -- Combat
-        ScreenManager.push( 'base', game:getFactions():getPlayerFaction() )
-    end
-
     local function exitToMainMenu()
         ScreenManager.switch( 'mainmenu' );
     end
@@ -90,7 +84,6 @@ function IngameCombatMenu.new()
         buttonList = VerticalList.new( x*tw, (y+3) * th, UI_GRID_WIDTH * tw, th )
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_abort_mission' ), exitToBase ))
         buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_exit' ), exitToMainMenu ))
     end
 
