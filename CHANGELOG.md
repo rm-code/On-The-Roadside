@@ -1,3 +1,11 @@
+# Version 0.9.2.1079 - 2017-10-28
+
+## Fixes
+- Fix crash caused by faulty parser pattern
+
+
+
+
 # Version 0.9.1.1073 - 2017-10-28
 
 ## Fixes
