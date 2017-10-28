@@ -125,6 +125,26 @@ function MapGenerator.new()
         return tiles
     end
 
+    ---
+    -- Determines a random rotation for a certain parcel layout.
+    -- @tparam  number pw The parcel's width.
+    -- @tparam  number ph The parcel's height.
+    -- @treturn number    The rotation direction [0, 3].
+    --
+    local function rotateParcels( pw, ph )
+        -- Square parcels can be rotated in all directions.
+        if pw == ph then
+            return love.math.random( 0, 3 )
+        end
+
+        -- Handle rotation for rectangular parcels.
+        if pw < ph then
+            return love.math.random() > 0.5 and 1 or 3
+        elseif pw > ph then
+            return love.math.random() > 0.5 and 0 or 2
+        end
+    end
+
     local function fillParcels( parcels )
         for type, definitions in pairs( parcels ) do
             Log.debug( string.format( 'Placing %s parcels.', type ), 'MapGenerator' )
@@ -132,13 +152,7 @@ function MapGenerator.new()
             for _, definition in ipairs( definitions ) do
                 local prefab = PrefabLoader.getPrefab( type )
                 if prefab then
-                    local rotation = 0
-
-                    -- Non square parcel layouts are only rotated by 90° if the parcel
-                    -- layout is rotated.
-                    if definition.h > definition.w then
-                        rotation = 1
-                    end
+                    local rotation = rotateParcels( definition.w, definition.h )
 
                     -- Get parcel coordinates.
                     local x = definition.x
