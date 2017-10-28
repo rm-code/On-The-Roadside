@@ -76,7 +76,6 @@ function OptionsScreen.new()
     local function createLanguageOption()
         local listOfValues = {
             { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' },
-            { displayTextID = Translator.getText( 'ui_lang_ger' ), value = 'de_DE' },
         }
 
         local function callback( val )
