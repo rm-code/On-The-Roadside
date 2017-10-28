@@ -88,7 +88,7 @@ function ProceduralMap.new( tiles, width, height )
     -- @treturn Tile A tile suitable for spawning.
     --
     function self:findSpawnPoint( faction )
-        for i = 1, 2000 do
+        for _ = 1, 2000 do
             local x = love.math.random( 1, width )
             local y = love.math.random( 1, height )
 
