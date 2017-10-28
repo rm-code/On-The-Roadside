@@ -106,6 +106,9 @@ function BaseScreen.new()
             ScreenManager.push( 'basemenu', baseState )
         end
         if scancode == 'h' then
+            if not currentCharacter then
+                return
+            end
             ScreenManager.push( 'health', currentCharacter )
         end
 
