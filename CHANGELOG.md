@@ -1,3 +1,33 @@
+# Version 0.10.0.1089 - 2017-10-28
+
+## Additions
+- Added ammo indicator which displays the total amount of ammunition a character has in his inventory
+- Added basics for parcel based procedural map generation
+    - Map layouts determine the general look of the map such as road placement and where parcels are placed
+    - Building-prefabs can be spawned in parcels matching their size
+    - Prefabs can be rotated randomly
+    - Spawn randomly generated foliage parcels
+- Added completely revamped inventory user interface
+    - General groundwork for future user interface additions
+
+## Removals
+- Removed unused resource file
+- Removed heal all selector on base screen
+
+## Fixes
+- Fixed crash on base screen when health screen was opened before a character was selected
+
+## Other Changes
+- Character names are aligned to the left now
+- Improved interaction between mouse and keyboard controls in menu screens
+- Nationalities are now picked from a weighted list to control the rarity of certain nations
+- The aim overlay will always mark unseen tiles as potentially blocking
+- Changed minimum resolution from 800x600 to 1024x768
+- Improved the ingame help screen and updated it to follow the general UI style
+
+
+
+
 # Version 0.9.2.1079 - 2017-10-28
 
 ## Fixes
