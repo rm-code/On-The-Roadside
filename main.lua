@@ -2,6 +2,7 @@ local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
+local Letterbox = require( 'src.ui.overlays.Letterbox' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -12,6 +13,8 @@ local profile = 0;
 local info;
 
 local debugGrid
+
+local letterbox
 
 -- ------------------------------------------------
 -- Constants
@@ -74,6 +77,9 @@ function love.load( args )
     };
 
     ScreenManager.init( screens, 'bootloading' );
+
+    letterbox = Letterbox.new()
+    letterbox:init()
 end
 
 function love.draw()
@@ -92,6 +98,8 @@ function love.draw()
     if debugGrid then
         DebugGrid.draw()
     end
+
+    letterbox.draw()
 end
 
 function love.update(dt)
@@ -124,6 +132,8 @@ end
 
 function love.resize( w, h )
     ScreenManager.resize( w, h );
+
+    letterbox:resize( w, h )
 end
 
 function love.mousepressed( mx, my, button, isTouch )
