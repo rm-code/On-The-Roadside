@@ -66,12 +66,7 @@ return {
     -- ==============================
     -- CHARACTERS
     -- ==============================
-    ['allied_active']    = COLORS.DB17,
-    ['allied_inactive']  = COLORS.DB15,
-    ['neutral_active']   = COLORS.DB09,
     ['neutral_inactive'] = COLORS.DB10,
-    ['enemy_active']     = COLORS.DB05,
-    ['enemy_inactive']   = COLORS.DB27,
 
     -- ==============================
     -- ITEMS
@@ -92,8 +87,6 @@ return {
     ['ui_title_1'] = COLORS.DB18,
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,
-
-    ['ui_label'] = COLORS.DB07,
 
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
@@ -116,7 +109,6 @@ return {
     ['ui_equipment_empty']     = COLORS.DB23,
 
     ['ui_inventory_headers'] = COLORS.DB20,
-    ['ui_inventory_item'] = COLORS.DB20,
     ['ui_inventory_full'] = COLORS.DB27,
 
     ['ui_inventory_stats_name'] = COLORS.DB12,
