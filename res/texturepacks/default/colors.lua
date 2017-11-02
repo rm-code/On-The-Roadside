@@ -66,7 +66,12 @@ return {
     -- ==============================
     -- CHARACTERS
     -- ==============================
+    ['allied_active']    = COLORS.DB17,
+    ['allied_inactive']  = COLORS.DB15,
+    ['neutral_active']   = COLORS.DB09,
     ['neutral_inactive'] = COLORS.DB10,
+    ['enemy_active']     = COLORS.DB05,
+    ['enemy_inactive']   = COLORS.DB27,
 
     -- ==============================
     -- ITEMS
