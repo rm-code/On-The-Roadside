@@ -3,7 +3,6 @@ sudo: false
 
 env:
   - LUA="luajit 2.0"
-  - LUA="luajit 2.1"
 
 before_install:
   - pip install hererocks
@@ -16,7 +15,8 @@ install:
 
 script:
   - luacheck .
-  - busted spc
+  - busted tests/spc
+  - tests/templates/validate_templates.sh
 
 branches:
   only:
