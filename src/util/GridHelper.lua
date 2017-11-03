@@ -30,6 +30,17 @@ function GridHelper.getScreenGridDimensions()
 end
 
 ---
+-- Calculate the parts of the screen which don't fit in the grid space.
+-- @treturn number The overflow along the x-axis in pixels.
+-- @treturn number The overflow along the y-axis in pixels.
+--
+function GridHelper.getScreenOverflow()
+    local sw, sh = love.graphics.getDimensions()
+    local tw, th = TexturePacks.getTileDimensions()
+    return sw % tw, sh % th
+end
+
+---
 -- Calculates the coordinates to be used to center an UI element of the
 -- given dimensions.
 -- @tparam  number w The grid width of the UI element to center.

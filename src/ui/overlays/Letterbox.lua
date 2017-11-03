@@ -26,32 +26,13 @@ local Letterbox = {}
 function Letterbox.new()
     local self = Object.new():addInstance( 'Letterbox' )
 
-    local sw, sh
-    local w, h
-
-    local function calculateDimensions( nsw, nsh )
-        local gw, gh = GridHelper.getScreenGridDimensions()
-        local tw, th = TexturePacks.getTileDimensions()
-
-        sw, sh = nsw, nsh
-
-        w = love.graphics.getWidth() - (gw * tw)
-        h = love.graphics.getHeight() - (gh * th)
-    end
-
-    function self:init()
-        calculateDimensions( love.graphics.getDimensions() )
-    end
-
     function self:draw()
+        local sw, sh = love.graphics.getDimensions()
+        local ow, oh = GridHelper.getScreenOverflow()
         TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', 0, sh-h, sw, h )
-        love.graphics.rectangle( 'fill', sw-w, 0, w, sh )
+        love.graphics.rectangle( 'fill',     0, sh-oh, sw, oh )
+        love.graphics.rectangle( 'fill', sw-ow,     0, ow, sh )
         TexturePacks.resetColor()
-    end
-
-    function self:resize( nsw, nsh )
-        calculateDimensions( nsw, nsh )
     end
 
     return self

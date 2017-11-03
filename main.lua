@@ -79,7 +79,6 @@ function love.load( args )
     ScreenManager.init( screens, 'bootloading' );
 
     letterbox = Letterbox.new()
-    letterbox:init()
 end
 
 function love.draw()
@@ -132,8 +131,6 @@ end
 
 function love.resize( w, h )
     ScreenManager.resize( w, h );
-
-    letterbox:resize( w, h )
 end
 
 function love.mousepressed( mx, my, button, isTouch )
