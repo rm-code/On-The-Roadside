@@ -1,10 +1,11 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local Button = require( 'src.ui.elements.Button' );
-local HorizontalList = require( 'src.ui.elements.HorizontalList' );
+local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIHorizontalList = require( 'src.ui.elements.lists.UIHorizontalList' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local Translator = require( 'src.util.Translator' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
+local GridHelper = require( 'src.util.GridHelper' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -40,6 +41,9 @@ local TITLE_STRING = {
     " ::   !:  ::!:!!::   ::   ::  !:.:.:::  ::!::::    ::  !:!!::.:  ::!:.:: ",
     "  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:",
 }
+
+local BUTTON_LIST_WIDTH = 40
+local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
 -- Constructor
@@ -92,28 +96,29 @@ function SplashScreen.new()
         end
     end
 
-    local function startNewGame()
-        ScreenManager.switch( 'gamescreen' );
-    end
-
-    local function loadPreviousGame()
-        ScreenManager.switch( 'loadgame' )
-    end
-
-    local function openOptions()
-        ScreenManager.switch( 'options' );
-    end
-
-    local function exitGame()
-        love.event.quit();
-    end
-
     local function createButtons()
-        buttonList = HorizontalList.new( love.graphics.getWidth() * 0.5, 30 * 16, 12 * 8, 16 );
-        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_new_game' ), startNewGame ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_load_game' ), loadPreviousGame ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_options' ), openOptions ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_main_menu_exit' ), exitGame ))
+        local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+
+        local _, sh = GridHelper.getScreenGridDimensions()
+        local ly = sh - BUTTON_LIST_Y
+
+        buttonList = UIHorizontalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+
+        local newGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
+        newGameButton:init( Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
+        buttonList:addElement( newGameButton )
+
+        local loadPreviousGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
+        loadPreviousGameButton:init( Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
+        buttonList:addElement( loadPreviousGameButton )
+
+        local openOptionsButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
+        openOptionsButton:init( Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
+        buttonList:addElement( openOptionsButton )
+
+        local exitGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
+        exitGameButton:init( Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
+        buttonList:addElement( exitGameButton )
     end
 
     -- ------------------------------------------------

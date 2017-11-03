@@ -93,8 +93,10 @@ return {
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,
 
+    -- Buttons.
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
+    ['ui_button_focus'] = COLORS.DB18,
 
     ['ui_scrollbar_element'] = COLORS.DB01,
     ['ui_scrollbar_cursor']  = COLORS.DB25,

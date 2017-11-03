@@ -1,11 +1,11 @@
 local Screen = require( 'lib.screenmanager.Screen' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local Button = require( 'src.ui.elements.Button' );
-local VerticalList = require( 'src.ui.elements.VerticalList' );
 local SaveHandler = require( 'src.SaveHandler' );
 local Translator = require( 'src.util.Translator' );
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
+local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
+local UITextButton = require( 'src.ui.elements.UITextButton' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -72,19 +72,26 @@ function IngameCombatMenu.new()
         ScreenManager.pop();
     end
 
-    local function openHelpScreen()
-        ScreenManager.push( 'help' );
-    end
-
-    local function exitToMainMenu()
-        ScreenManager.switch( 'mainmenu' );
-    end
-
     local function createButtons()
-        buttonList = VerticalList.new( x*tw, (y+3) * th, UI_GRID_WIDTH * tw, th )
-        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_save_game' ), saveGame ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_open_help' ), openHelpScreen ))
-        buttonList:addElement( Button.new( Translator.getText( 'ui_ingame_exit' ), exitToMainMenu ))
+        local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        buttonList = UIVerticalList.new( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+        local saveGameButton = UITextButton.new( lx, ly, 0, 3, UI_GRID_WIDTH, 1 )
+        saveGameButton:init( Translator.getText( 'ui_ingame_save_game' ), saveGame )
+        buttonList:addElement( saveGameButton )
+
+        local openHelpButton = UITextButton.new( lx, ly, 0, 4, UI_GRID_WIDTH, 1 )
+        openHelpButton:init( Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
+        buttonList:addElement( openHelpButton )
+
+        local exitButton = UITextButton.new( lx, ly, 0, 5, UI_GRID_WIDTH, 1 )
+        exitButton:init( Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        buttonList:addElement( exitButton )
+
+        local closeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
+        closeButton:init( Translator.getText( 'ui_ingame_close' ), function() ScreenManager.pop() end )
+        buttonList:addElement( closeButton )
     end
 
     -- ------------------------------------------------
