@@ -116,6 +116,10 @@ function SplashScreen.new()
         openOptionsButton:init( Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
         buttonList:addChild( openOptionsButton )
 
+        local changelogButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
+        changelogButton:init( Translator.getText( 'ui_main_menu_changelog' ), function() ScreenManager.switch( 'changelog' ) end )
+        buttonList:addChild( changelogButton )
+
         local exitGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
         exitGameButton:init( Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
         buttonList:addChild( exitGameButton )

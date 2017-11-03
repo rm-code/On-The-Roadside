@@ -18,6 +18,7 @@ locale.strings = {
     ['ui_main_menu_new_game'] = "New",
     ['ui_main_menu_load_game'] = "Load",
     ['ui_main_menu_options'] = "Options",
+    ['ui_main_menu_changelog'] = "Changes",
     ['ui_main_menu_exit'] = "Exit",
 
     -- Options

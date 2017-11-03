@@ -155,6 +155,14 @@ return {
     ['ui_health_bleeding_ok']        = COLORS.DB08,
     ['ui_health_bleeding_fine']      = COLORS.DB10,
 
+    -- Changelog Menu
+    ['ui_changelog_version'] = COLORS.DB05,
+    ['ui_changelog_additions'] = COLORS.DB16,
+    ['ui_changelog_removals'] = COLORS.DB16,
+    ['ui_changelog_fixes'] = COLORS.DB16,
+    ['ui_changelog_other'] = COLORS.DB16,
+    ['ui_changelog_text'] = COLORS.DB25,
+
     -- ==============================
     -- SYSTEM
     -- ==============================

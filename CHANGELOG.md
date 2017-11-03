@@ -371,7 +371,7 @@
 - The game starts in fullscreen now by default
 - The mouse scrolling stops if the mouse cursor leaves the game's window
 - Increased the size of the mouse scrolling area
-- Renamed _Police Baton_ to _Tonfa_
+- Renamed Police Baton to Tonfa
 - Ammunition is now handled on a single-round level instead of using magazines
 - Pathfinding now uses the more appropriate Chebyshev distance as an heuristic
 - Updated spawnpoints for player's characters
@@ -445,6 +445,8 @@
 
 
 # Version 0.1.0.337 - 2016-07-31
+
+## Additions
 - Initial Release
 - Add basic implementation of turn based combat mechanics
     - Three different factions
