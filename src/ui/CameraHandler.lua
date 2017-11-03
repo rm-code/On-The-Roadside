@@ -119,19 +119,6 @@ function CameraHandler.new( mw, mh, tw, th )
     end
 
     -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    ---
-    -- Returns the position of the mouse pointer.
-    -- @treturn number The x coordinate of the mouse pointer.
-    -- @treturn number The y coordinate of the mouse pointer.
-    --
-    function self:getMousePosition()
-        return self:mousepos()
-    end
-
-    -- ------------------------------------------------
     -- Setters
     -- ------------------------------------------------
 
