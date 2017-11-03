@@ -70,6 +70,13 @@ local function reduceProjectileEnergy( energy, reduction )
 end
 
 ---
+--
+local function hitCharacter( index, remove, tile, projectile )
+    Log.debug( 'Projectile hit character', 'ProjectileManager' )
+    hitTile( index, remove, tile, projectile )
+end
+
+---
 -- Handles how to proceed if the projectile hits a world object.
 -- @param index       (number)      The id of the projectile which will be used for removing it.
 -- @param projectile  (Projectile)  The projectile to handle.
@@ -97,6 +104,8 @@ local function hitWorldObject( index, projectile, tile, worldObject )
         return;
     end
 
+    Log.debug( 'Projectile hit destructible world object', 'ProjectileManager' )
+
     -- Projectiles passing through world objects lose some of their energy.
     local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
     projectile:setEnergy( energy );
@@ -120,16 +129,15 @@ local function checkForHits( index, projectile, tile, character )
         return;
     end
 
-    -- Hit the tile if it is occupied by a character or the target of the attack.
-    if tile:isOccupied() or projectile:hasReachedTarget() then
-        hitTile( index, true, tile, projectile );
-        return;
+    if tile:isOccupied() then
+        hitCharacter( index, true, tile, projectile )
+    elseif tile:hasWorldObject() then
+        hitWorldObject( index, projectile, tile, tile:getWorldObject(), character );
     end
 
-    -- Handle world objects.
-    if tile:hasWorldObject() then
-        hitWorldObject( index, projectile, tile, tile:getWorldObject(), character );
-        return;
+    if projectile:hasReachedTarget() then
+        Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
+        queue:removeProjectile( index )
     end
 end
 
