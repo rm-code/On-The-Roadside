@@ -7,7 +7,7 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' );
-local MapGenerator = require( 'src.map.procedural.MapGenerator' )
+local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local ProceduralMap = require( 'src.map.procedural.ProceduralMap' )
 local Factions = require( 'src.characters.Factions' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
@@ -53,7 +53,7 @@ function CombatState.new()
     -- ------------------------------------------------
 
     function self:init( playerFaction, savegame )
-        local generator = MapGenerator.new()
+        local generator = ProceduralMapGenerator.new()
         generator:init()
 
         local tiles = generator:getTiles()

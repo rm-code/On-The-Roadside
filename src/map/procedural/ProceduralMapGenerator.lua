@@ -1,6 +1,6 @@
 ---
 -- This class handles the generation of procedural maps.
--- @module MapGenerator
+-- @module ProceduralMapGenerator
 --
 
 -- ------------------------------------------------
@@ -18,7 +18,7 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 -- Module
 -- ------------------------------------------------
 
-local MapGenerator = {}
+local ProceduralMapGenerator = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -58,7 +58,7 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
-function MapGenerator.load()
+function ProceduralMapGenerator.load()
     Log.debug( 'Loading parcel layouts:' )
     loadLayoutTemplates( LAYOUTS_SOURCE_FOLDER )
 end
@@ -67,7 +67,7 @@ end
 -- Constructor
 -- ------------------------------------------------
 
-function MapGenerator.new()
+function ProceduralMapGenerator.new()
     local self = {}
 
     -- ------------------------------------------------
@@ -156,7 +156,7 @@ function MapGenerator.new()
     --
     local function fillParcels( parcels )
         for type, definitions in pairs( parcels ) do
-            Log.debug( string.format( 'Placing %s parcels.', type ), 'MapGenerator' )
+            Log.debug( string.format( 'Placing %s parcels.', type ), 'ProceduralMapGenerator' )
 
             for _, definition in ipairs( definitions ) do
                 parcelGrid:addParcels( definition.x, definition.y, definition.w, definition.h, type )
@@ -275,4 +275,4 @@ function MapGenerator.new()
     return self
 end
 
-return MapGenerator
+return ProceduralMapGenerator
