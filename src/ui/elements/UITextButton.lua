@@ -38,14 +38,14 @@ function UITextButton.new( px, py, x, y, w, h )
 
     local function selectColor()
         if active then
-            if self:isMouseOver() then
+            if love.mouse.isVisible() and self:isMouseOver() then
                 return 'ui_button_hot'
             elseif self:hasFocus() then
                 return 'ui_button_focus'
             end
             return 'ui_button'
         elseif not active then
-            if self:isMouseOver() then
+            if love.mouse.isVisible() and self:isMouseOver() then
                 return 'ui_button_inactive_hot'
             elseif self:hasFocus() then
                 return 'ui_button_inactive_focus'
