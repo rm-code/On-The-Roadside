@@ -103,6 +103,7 @@ function SavegameScreen.new()
 
         local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
         button:init( str, callback )
+        button:setActive( version == getVersion() )
         return button
     end
 

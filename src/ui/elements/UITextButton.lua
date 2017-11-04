@@ -30,18 +30,28 @@ function UITextButton.new( px, py, x, y, w, h )
     local text
     local callback
     local alignMode
+    local active
 
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
 
     local function selectColor()
-        if self:isMouseOver() then
-            return 'ui_button_hot'
-        elseif self:hasFocus() then
-            return 'ui_button_focus'
+        if active then
+            if self:isMouseOver() then
+                return 'ui_button_hot'
+            elseif self:hasFocus() then
+                return 'ui_button_focus'
+            end
+            return 'ui_button'
+        elseif not active then
+            if self:isMouseOver() then
+                return 'ui_button_inactive_hot'
+            elseif self:hasFocus() then
+                return 'ui_button_inactive_focus'
+            end
+            return 'ui_button_inactive'
         end
-        return 'ui_button'
     end
 
     -- ------------------------------------------------
@@ -52,6 +62,7 @@ function UITextButton.new( px, py, x, y, w, h )
         text = ntext
         callback = ncallback
         alignMode = nalignMode or 'center'
+        active = true
     end
 
     function self:draw()
@@ -62,6 +73,9 @@ function UITextButton.new( px, py, x, y, w, h )
     end
 
     function self:activate()
+        if not active then
+            return
+        end
         callback()
     end
 
@@ -75,6 +89,10 @@ function UITextButton.new( px, py, x, y, w, h )
         if self:isMouseOver() then
             self:activate()
         end
+    end
+
+    function self:setActive( nactive )
+        active = nactive
     end
 
     return self

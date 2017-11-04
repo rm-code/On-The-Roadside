@@ -97,6 +97,9 @@ return {
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
     ['ui_button_focus'] = COLORS.DB18,
+    ['ui_button_inactive'] = COLORS.DB25,
+    ['ui_button_inactive_hot'] = COLORS.DB24,
+    ['ui_button_inactive_focus'] = COLORS.DB24,
 
     ['ui_scrollbar_element'] = COLORS.DB01,
     ['ui_scrollbar_cursor']  = COLORS.DB25,
