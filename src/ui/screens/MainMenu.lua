@@ -1,5 +1,5 @@
-local Screen = require( 'lib.screenmanager.Screen' );
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
+local Screen = require( 'lib.screenmanager.Screen' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local UITextButton = require( 'src.ui.elements.UITextButton' )
 local UIHorizontalList = require( 'src.ui.elements.lists.UIHorizontalList' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -11,13 +11,13 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local SplashScreen = {};
+local SplashScreen = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local TITLE_POSITION = 2;
+local TITLE_POSITION = 2
 local TITLE_STRING = {
     "             @@@@    @@   @@       @@@@@@@  @@@  @@@  @@@@@@@            ",
     "           @@@@@@@@  @@@  @@@      @@@@@@@  @@@  @@@  @@@@@@@@           ",
@@ -50,15 +50,15 @@ local BUTTON_LIST_Y = 20
 -- ------------------------------------------------
 
 function SplashScreen.new()
-    local self = Screen.new();
+    local self = Screen.new()
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
 
-    local title;
-    local buttonList;
-    local debug;
+    local title
+    local buttonList
+    local debug
     local footer
 
     -- ------------------------------------------------
@@ -67,19 +67,19 @@ function SplashScreen.new()
 
     local function createTitle()
         local font = TexturePacks.getFont()
-        title = love.graphics.newText( font:get() );
+        title = love.graphics.newText( font:get() )
         for i, line in ipairs( TITLE_STRING ) do
-            local coloredtext = {};
+            local coloredtext = {}
             for w in string.gmatch( line, '.' ) do
                 if w == '@' then
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                    coloredtext[#coloredtext + 1] = 'O';
+                    coloredtext[#coloredtext + 1] = 'O'
                 elseif w == '!' then
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
-                    coloredtext[#coloredtext + 1] = w;
+                    coloredtext[#coloredtext + 1] = w
                 else
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
-                    coloredtext[#coloredtext + 1] = w;
+                    coloredtext[#coloredtext + 1] = w
                 end
                 title:add( coloredtext, 0, i * font:get():getHeight() )
             end
@@ -126,17 +126,17 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     function self:init()
-        createTitle();
-        createButtons();
+        createTitle()
+        createButtons()
 
         footer = UICopyrightFooter.new()
 
         -- Flush the LuaJIT cache to prevent memory leaks caused by cached
         -- upvalues and closures.
         -- @see https://github.com/LuaJIT/LuaJIT/issues/303
-        jit.flush();
+        jit.flush()
 
-        collectgarbage( 'collect' );
+        collectgarbage( 'collect' )
     end
 
     function self:draw()
@@ -144,34 +144,34 @@ function SplashScreen.new()
         font:use()
         love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
 
-        buttonList:draw();
+        buttonList:draw()
 
-        drawDebugInfo();
+        drawDebugInfo()
 
         footer:draw()
     end
 
     function self:update()
-        buttonList:update();
+        buttonList:update()
     end
 
     function self:keypressed( _, scancode )
-        buttonList:keypressed( _, scancode );
+        buttonList:keypressed( _, scancode )
 
         if scancode == 'f1' then
-            debug = not debug;
+            debug = not debug
         end
     end
 
     function self:mousemoved()
-        buttonList:mousemoved();
+        buttonList:mousemoved()
     end
 
     function self:mousereleased()
-        buttonList:mousereleased();
+        buttonList:mousereleased()
     end
 
-    return self;
+    return self
 end
 
-return SplashScreen;
+return SplashScreen
