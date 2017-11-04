@@ -67,13 +67,16 @@ function UIScrollArea.new( px, py, x, y, w, h )
             -- The up button is placed in the top right corner of the scroll area.
             upButton = UIButton.new( self.ax, self.ay, self.w-1, 0, 1, 1 )
             upButton:init( 'ui_scroll_area_up', function() self:scroll(-1) end )
+            self:addChild( upButton )
 
             downButton = UIButton.new( self.ax, self.ay, self.w-1, self.h-1, 1, 1 )
             downButton:init( 'ui_scroll_area_down', function() self:scroll(1) end )
+            self:addChild( downButton )
 
             -- Scroll bar is positioned between the buttons.
             scrollbar = UIScrollbar.new( self.ax, self.ay, self.w-1, 1, 1, self.h-2, 'ui_scroll_area_down' )
             scrollbar:init( self.h, contentHeight, scrollAreaHeight, function( noffset ) self:scroll( noffset ) end )
+            self:addChild( scrollbar )
         end
     end
 
@@ -100,20 +103,6 @@ function UIScrollArea.new( px, py, x, y, w, h )
         offset = math.max( 0, math.min( offset, scrollAreaHeight ))
 
         scrollbar:scroll( offset )
-    end
-
-    function self:setPosition( nx, ny )
-        self.ox = nx
-        self.oy = ny
-
-        if not scrollable then
-            return
-        end
-
-        local rx, ry = self:getRelativePosition()
-        upButton:setOrigin( nx+rx, ny+ry )
-        downButton:setOrigin( nx+rx, ny+ry )
-        scrollbar:setOrigin( nx+rx, ny+ry )
     end
 
     function self:setText( textString, gw, gh )

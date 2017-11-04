@@ -46,6 +46,7 @@ function UIInventoryItem.new( item, px, py, x, y, w, h )
             count = item:getItemCount()
         end
         amount = UILabel.new( self.ax, self.ay, self.w-2, 0, self.w, 1, count, 'ui_equipment_item' )
+        self:addChild( amount )
     end
 
     -- ------------------------------------------------
@@ -54,7 +55,10 @@ function UIInventoryItem.new( item, px, py, x, y, w, h )
 
     function self:init()
         background = UIBackground.new( self.ax, self.ay, 0, 0, self.w, self.h )
+        self:addChild( background )
+
         label = UITranslatedLabel.new( self.ax, self.ay, 0, 0, self.w, 1, item:getID(), 'ui_equipment_item' )
+        self:addChild( label )
 
         createInfo()
     end

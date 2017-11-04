@@ -46,6 +46,8 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     -- setters and getters for that purpose!
     -- ------------------------------------------------
 
+    self.children = {}
+
     -- Origin (parent coordinates).
     self.ox = ox
     self.oy = oy
@@ -66,6 +68,17 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     -- Public Methods
     -- ------------------------------------------------
 
+    function self:addChild( child )
+        if not child:instanceOf( 'UIElement' ) then
+            error( 'Children of a UIElement must be derived from the UIElement class themselves.' )
+        end
+        self.children[#self.children + 1] = child
+    end
+
+    function self:clearChildren()
+        self.children = {}
+    end
+
     ---
     -- Sets the origin for this UIElement and updates the absolute position
     -- accordingly.
@@ -77,6 +90,10 @@ function UIElement.new( ox, oy, rx, ry, w, h )
         self.oy = ny
         self.ax = self.ox + self.rx
         self.ay = self.oy + self.ry
+
+        for i = 1, #self.children do
+            self.children[i]:setOrigin( self.ax, self.ay )
+        end
     end
 
     ---

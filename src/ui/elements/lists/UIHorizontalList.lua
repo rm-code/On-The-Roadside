@@ -26,7 +26,7 @@ function UIHorizontalList.new( px, py, x, y, w, h )
     -- ------------------------------------------------
 
     function self:update()
-        local elements = self:getElements()
+        local elements = self.children
         local itemWidth = math.floor( self.w / #elements )
 
         for i = 1, #elements do
@@ -46,7 +46,7 @@ function UIHorizontalList.new( px, py, x, y, w, h )
     end
 
     function self:draw()
-        local elements = self:getElements()
+        local elements = self.children
         for i = 1, #elements do
             elements[i]:draw()
         end

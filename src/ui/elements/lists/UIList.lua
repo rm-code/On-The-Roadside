@@ -25,40 +25,30 @@ function UIList.new( px, py, x, y, w, h )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local elements = {}
     local cursor = 1
 
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:addElement( nelement )
-        elements[#elements + 1] = nelement
-
-        -- Set the focus on the first element.
-        if #elements == 1 then
-            nelement:setFocus( true )
-        end
-    end
-
     function self:prev()
-        if elements[cursor] then
-            elements[cursor]:setFocus( false )
-            cursor = cursor <= 1 and #elements or cursor - 1
+        if self.children[cursor] then
+            self.children[cursor]:setFocus( false )
+            cursor = cursor <= 1 and #self.children or cursor - 1
         else
             cursor = 1
         end
-        elements[cursor]:setFocus( true )
+        self.children[cursor]:setFocus( true )
     end
 
     function self:next()
-        if elements[cursor] then
-            elements[cursor]:setFocus( false )
-            cursor = cursor >= #elements and 1 or cursor + 1
+        if self.children[cursor] then
+            self.children[cursor]:setFocus( false )
+            cursor = cursor >= #self.children and 1 or cursor + 1
         else
             cursor = 1
         end
-        elements[cursor]:setFocus( true )
+        self.children[cursor]:setFocus( true )
     end
 
     function self:mousereleased( mx, my, button, isTouch )
@@ -83,12 +73,8 @@ function UIList.new( px, py, x, y, w, h )
     -- Getters
     -- ------------------------------------------------
 
-    function self:getElements()
-        return elements
-    end
-
     function self:getActiveElement()
-        return elements[cursor]
+        return self.children[cursor]
     end
 
     function self:getCursor()
@@ -96,7 +82,7 @@ function UIList.new( px, py, x, y, w, h )
     end
 
     function self:getElementCount()
-        return #elements
+        return #self.children
     end
 
     -- ------------------------------------------------

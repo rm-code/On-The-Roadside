@@ -79,19 +79,19 @@ function IngameCombatMenu.new()
 
         local saveGameButton = UITextButton.new( lx, ly, 0, 3, UI_GRID_WIDTH, 1 )
         saveGameButton:init( Translator.getText( 'ui_ingame_save_game' ), saveGame )
-        buttonList:addElement( saveGameButton )
+        buttonList:addChild( saveGameButton )
 
         local openHelpButton = UITextButton.new( lx, ly, 0, 4, UI_GRID_WIDTH, 1 )
         openHelpButton:init( Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
-        buttonList:addElement( openHelpButton )
+        buttonList:addChild( openHelpButton )
 
         local exitButton = UITextButton.new( lx, ly, 0, 5, UI_GRID_WIDTH, 1 )
         exitButton:init( Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
-        buttonList:addElement( exitButton )
+        buttonList:addChild( exitButton )
 
         local closeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
         closeButton:init( Translator.getText( 'ui_ingame_close' ), function() ScreenManager.pop() end )
-        buttonList:addElement( closeButton )
+        buttonList:addChild( closeButton )
     end
 
     -- ------------------------------------------------
@@ -137,6 +137,13 @@ function IngameCombatMenu.new()
 
     function self:mousereleased()
         buttonList:mousereleased();
+    end
+
+    function self:resize( _, _ )
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background:setOrigin( x, y )
+        outlines:setOrigin( x, y )
+        buttonList:setOrigin( x, y )
     end
 
     return self;

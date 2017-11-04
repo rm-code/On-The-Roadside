@@ -148,6 +148,7 @@ function UIItemStats.new( px, py, x, y, w, h )
     local function addDescriptionArea( item )
         description = UIScrollArea.new( self.ax, self.ay, 0, VERTICAL_DESCRIPTION_OFFSET, self.w, self.h-VERTICAL_DESCRIPTION_OFFSET )
         description:init({ descColor, Translator.getText( item:getDescriptionID() )})
+        self:addChild( description )
     end
 
     -- ------------------------------------------------

@@ -157,10 +157,10 @@ function OptionsScreen.new()
 
         buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
-        buttonList:addElement(    createLanguageOption( lx, ly, 1 ))
-        buttonList:addElement(  createFullscreenOption( lx, ly, 2 ))
-        buttonList:addElement( createTexturePackOption( lx, ly, 3 ))
-        buttonList:addElement(        createBackButton( lx, ly, 4 ))
+        buttonList:addChild(    createLanguageOption( lx, ly, 1 ))
+        buttonList:addChild(  createFullscreenOption( lx, ly, 2 ))
+        buttonList:addChild( createTexturePackOption( lx, ly, 3 ))
+        buttonList:addChild(        createBackButton( lx, ly, 4 ))
     end
 
 
@@ -203,6 +203,13 @@ function OptionsScreen.new()
 
     function self:mousemoved()
         buttonList:mousemoved()
+    end
+
+    function self:resize( _, _ )
+        local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+        local ly = BUTTON_LIST_Y
+
+        buttonList:setOrigin( lx, ly )
     end
 
     return self;

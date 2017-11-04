@@ -122,11 +122,11 @@ function SavegameScreen.new()
             local item = items[i]
             if love.filesystem.isDirectory( SaveHandler.getSaveFolder() .. '/' .. item ) then
                 counter = counter + 1
-                buttonList:addElement( createSaveGameEntry( lx, ly, counter, item, SaveHandler.getSaveFolder() .. '/' .. item ))
+                buttonList:addChild( createSaveGameEntry( lx, ly, counter, item, SaveHandler.getSaveFolder() .. '/' .. item ))
             end
         end
 
-        buttonList:addElement( createBackButton( lx, ly, counter+2 ))
+        buttonList:addChild( createBackButton( lx, ly, counter+2 ))
     end
 
 
@@ -171,10 +171,10 @@ function SavegameScreen.new()
         buttonList:mousemoved()
     end
 
-    function self:resize( nw, _ )
-        local x = nw * 0.5 - FIELD_WIDTH * 0.5
-        local y = 20 * font:getGlyphHeight()
-        buttonList:setPosition( x, y )
+    function self:resize( _, _ )
+        local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+        local ly = BUTTON_LIST_Y
+        buttonList:setOrigin( lx, ly )
     end
 
     return self

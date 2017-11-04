@@ -106,19 +106,19 @@ function SplashScreen.new()
 
         local newGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
         newGameButton:init( Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
-        buttonList:addElement( newGameButton )
+        buttonList:addChild( newGameButton )
 
         local loadPreviousGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
         loadPreviousGameButton:init( Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
-        buttonList:addElement( loadPreviousGameButton )
+        buttonList:addChild( loadPreviousGameButton )
 
         local openOptionsButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
         openOptionsButton:init( Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
-        buttonList:addElement( openOptionsButton )
+        buttonList:addChild( openOptionsButton )
 
         local exitGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
         exitGameButton:init( Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
-        buttonList:addElement( exitGameButton )
+        buttonList:addChild( exitGameButton )
     end
 
     -- ------------------------------------------------
@@ -169,6 +169,14 @@ function SplashScreen.new()
 
     function self:mousereleased()
         buttonList:mousereleased()
+    end
+
+    function self:resize( _, _ )
+        local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+        local _, sh = GridHelper.getScreenGridDimensions()
+        local ly = sh - BUTTON_LIST_Y
+
+        buttonList:setOrigin( lx, ly )
     end
 
     return self

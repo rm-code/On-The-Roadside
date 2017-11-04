@@ -31,7 +31,7 @@ function UIVerticalList.new( px, py, x, y, w, h )
         end
 
         -- Check if mouse is over any elements.
-        local elements = self:getElements()
+        local elements = self.children
         for i = 1, #elements do
             elements[i]:setFocus( false )
             if elements[i]:isMouseOver() then
@@ -45,7 +45,7 @@ function UIVerticalList.new( px, py, x, y, w, h )
     end
 
     function self:draw()
-        local elements = self:getElements()
+        local elements = self.children
         for i = 1, #elements do
             elements[i]:draw()
         end
