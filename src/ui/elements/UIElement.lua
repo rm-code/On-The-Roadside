@@ -93,16 +93,10 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     end
 
     ---
-    -- Checks wether or not the mouse cursor is over this element. It will
-    -- always return false if the mouse cursor is hidden.
+    -- Checks wether or not the mouse cursor is over this element.
     -- @treturn boolean True if the mouse is within this element's bounds.
     --
     function self:isMouseOver()
-        -- Mouse over is always false if the mouse isn't visible.
-        if not love.mouse.isVisible() then
-            return false
-        end
-
         local mx, my = love.mouse.getPosition()
         local gx, gy = GridHelper.pixelsToGrid( mx, my )
         return  gx >= self.ox + self.rx
