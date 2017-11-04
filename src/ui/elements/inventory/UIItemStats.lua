@@ -9,13 +9,13 @@
 local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
+local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UIItemStats = {}
-local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 
 -- ------------------------------------------------
 -- Constants
