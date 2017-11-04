@@ -20,9 +20,6 @@ locale.strings = {
     ['ui_main_menu_options'] = "Options",
     ['ui_main_menu_exit'] = "Exit",
 
-    -- Loading screen
-    ['ui_invalid_save_version'] = "Incompatible savegame",
-
     -- Options
     ['ui_on']  = "On",
     ['ui_off'] = "Off",
