@@ -199,6 +199,12 @@ return {
 
     ['ui_character_name'] = COLORS.DB17,
 
+    -- Message log
+    ['ui_msg_info'] = COLORS.DB25,
+    ['ui_msg_important'] = COLORS.DB08,
+    ['ui_msg_warning']  = COLORS.DB05,
+    ['ui_msg_danger']  = COLORS.DB27,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================

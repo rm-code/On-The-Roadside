@@ -2,6 +2,8 @@ local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Util = require( 'src.util.Util' )
+local MessageQueue = require( 'src.util.MessageQueue' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -62,6 +64,7 @@ end
 ---
 --
 local function hitCharacter( index, remove, tile, projectile )
+    MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_character' ), tile:getCharacter():getName() ), 'WARNING' )
     Log.debug( 'Projectile hit character', 'ProjectileManager' )
     hitTile( index, remove, tile, projectile )
 end
@@ -90,6 +93,7 @@ local function hitWorldObject( index, projectile, tile, worldObject )
             tile = projectile:getPreviousTile();
         end
 
+        MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
         hitTile( index, true, tile, projectile );
         return;
     end
@@ -99,6 +103,8 @@ local function hitWorldObject( index, projectile, tile, worldObject )
     -- Projectiles passing through world objects lose some of their energy.
     local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
     projectile:setEnergy( energy );
+
+    MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
 
     -- Apply the damage to the tile and only remove it if the energy is 0.
     hitTile( index, energy <= 0, tile, projectile );

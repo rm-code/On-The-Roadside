@@ -13,6 +13,7 @@ local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
 local UITileInfo = require( 'src.ui.elements.UITileInfo' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIMessageLog = require( 'src.ui.elements.UIMessageLog' )
 
 -- ------------------------------------------------
 -- Module
@@ -64,6 +65,8 @@ function UserInterface:initialize( game, camera )
 
     self.mouseX, self.mouseY = 0, 0
 
+    self.msgLog = UIMessageLog()
+
     self.debug = false
 end
 
@@ -77,6 +80,7 @@ function UserInterface:draw()
     self.background:draw()
     self.characterInfo:draw()
     self.tileInfo:draw()
+    self.msgLog:draw()
 end
 
 function UserInterface:update()
@@ -84,6 +88,7 @@ function UserInterface:update()
 
     self.characterInfo:update( self.game:getState(), self.map, self.camera, self.factions:getFaction():getCurrentCharacter() )
     self.tileInfo:update( self.mouseX, self.mouseY, self.map )
+    self.msgLog:update()
 end
 
 function UserInterface:toggleDebugInfo()
