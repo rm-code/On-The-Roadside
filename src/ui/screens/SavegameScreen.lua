@@ -22,8 +22,6 @@ local SavegameScreen = {}
 -- Constants
 -- ------------------------------------------------
 
-local FIELD_WIDTH = 300
-
 local TITLE_POSITION = 2
 local TITLE_STRING = {
     " @@@@@     @@@@@@   @@@  @@@  @@@@@@@    @@@@@  ",
