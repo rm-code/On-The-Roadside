@@ -133,6 +133,17 @@ function Character.new()
         end
     end
 
+    ---
+    -- Drops all inventory and equipment items, removes the character from
+    -- the tile and resets the FOV information for this character.
+    --
+    local function handleDeath()
+        self:getEquipment():dropAllItems( tile )
+        self:getInventory():dropAllItems( tile )
+        tile:removeCharacter()
+        resetFOV()
+    end
+
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
@@ -249,10 +260,7 @@ function Character.new()
         self:generateFOV();
 
         if self:isDead() then
-            self:getEquipment():dropAllItems( tile );
-            self:getInventory():dropAllItems( tile );
-            tile:removeCharacter();
-            resetFOV()
+            handleDeath()
         end
     end
 
@@ -272,9 +280,7 @@ function Character.new()
     function self:tickOneTurn()
         body:tickOneTurn();
         if self:isDead() then
-            self:getEquipment():dropAllItems( tile );
-            tile:removeCharacter();
-            resetFOV()
+            handleDeath()
         end
     end
 
