@@ -43,7 +43,7 @@ local TITLE_STRING = {
     "  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:",
 }
 
-local BUTTON_LIST_WIDTH = 40
+local BUTTON_LIST_WIDTH = 60
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
@@ -120,6 +120,9 @@ function SplashScreen.new()
 
         local openOptionsButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'options' ) end, Translator.getText( 'ui_main_menu_options' ))
         buttonList:addChild( openOptionsButton )
+
+        local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
+        buttonList:addChild( mapEditorButton )
 
         local changelogButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'changelog' ) end, Translator.getText( 'ui_main_menu_changelog' ))
         buttonList:addChild( changelogButton )

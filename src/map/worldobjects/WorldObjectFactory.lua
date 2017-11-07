@@ -72,4 +72,12 @@ function WorldObjectFactory.create( id )
     return WorldObject.new( template )
 end
 
+---
+-- Returns the table containing all the worldobject templates.
+-- @treturn table A table containing all templates indexed by their id.
+--
+function WorldObjectFactory.getTemplates()
+    return worldobjects
+end
+
 return WorldObjectFactory

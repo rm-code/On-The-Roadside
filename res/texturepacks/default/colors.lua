@@ -165,6 +165,17 @@ return {
     ['ui_changelog_text'] = COLORS.DB25,
 
     -- ==============================
+    -- MAP EDITOR
+    -- ==============================
+
+    ['parcel_xs'] = COLORS.DB09,
+    ['parcel_s'] = COLORS.DB08,
+    ['parcel_m'] = COLORS.DB05,
+    ['parcel_l'] = COLORS.DB27,
+    ['parcel_xl'] = COLORS.DB25,
+    ['ingame_editor_grid_lines'] = COLORS.DB14,
+
+    -- ==============================
     -- SYSTEM
     -- ==============================
     ['sys_background'] = { 0, 0, 0, 255 },

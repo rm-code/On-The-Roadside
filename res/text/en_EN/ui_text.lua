@@ -18,6 +18,7 @@ locale.strings = {
     ['ui_main_menu_new_game'] = "New",
     ['ui_main_menu_load_game'] = "Load",
     ['ui_main_menu_options'] = "Options",
+    ['ui_main_menu_mapeditor'] = "Map Editor",
     ['ui_main_menu_changelog'] = "Changes",
     ['ui_main_menu_exit'] = "Exit",
 
@@ -28,6 +29,22 @@ locale.strings = {
     ['ui_no'] = "No",
     ['ui_apply'] = "Apply",
     ['ui_unsaved_changes'] = "There are unsaved changes. Are you sure you want to quit?",
+
+    -- Map Editor
+    ['ui_mapeditor_save'] = "Save Layout",
+    ['ui_mapeditor_load'] = "Load Layout",
+    ['ui_mapeditor_test'] = "Test Map",
+    ['ui_mapeditor_switch'] = "Prefab Editor",
+    ['ui_mapeditor_exit'] = "Exit",
+    ['ui_mapeditor_enter_name'] = "Save layout as:",
+
+    -- Prefab Editor
+    ['ui_prefabeditor_save'] = "Save Prefab",
+    ['ui_prefabeditor_load'] = "Load Prefab",
+    ['ui_prefabeditor_test'] = "Test Map",
+    ['ui_prefabeditor_switch'] = "Layout Editor",
+    ['ui_prefabeditor_exit'] = "Exit",
+    ['ui_prefabeditor_enter_name'] = "Save prefab as:",
 
     -- Texture packs
     ['ui_texturepack'] = "Texture Pack:",

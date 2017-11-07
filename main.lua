@@ -70,7 +70,13 @@ function love.load( args )
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
         loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
         confirm     = require( 'src.ui.screens.ConfirmationModal' ),
-        inputdialog = require( 'src.ui.screens.InputDialog'       )
+        inputdialog = require( 'src.ui.screens.InputDialog'       ),
+        maptest          = require( 'src.ui.screens.MapTest'                ),
+        mapeditor        = require( 'src.ui.screens.MapEditor'              ),
+        mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'          ),
+        prefabeditor     = require( 'src.ui.screens.PrefabEditor'           ),
+        prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'       ),
+        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  )
     }
 
     ScreenManager.init( screens, 'bootloading' )

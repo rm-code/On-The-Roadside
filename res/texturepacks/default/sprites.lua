@@ -68,6 +68,14 @@ return {
     ['ui_scrollbar_element'] = 180,
 
     -- ==============================
+    -- Prefab Editor
+    -- ==============================
+
+    ['prefab_editor_cursor_draw'] = 101,
+    ['prefab_editor_cursor_fill'] = 160,
+    ['prefab_editor_cursor_erase'] = 89,
+
+    -- ==============================
     -- Creatures
     -- ==============================
     ['human'] = { stand =   2, crouch =  32, prone =  23 },

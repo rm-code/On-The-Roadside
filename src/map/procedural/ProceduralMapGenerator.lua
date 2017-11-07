@@ -255,9 +255,9 @@ function ProceduralMapGenerator.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init()
-        -- Select random layout.
-        local layout = layouts[love.math.random( #layouts )]
+    function self:init( nlayout )
+        -- Use specific layout or select a random one.
+        local layout = nlayout or layouts[love.math.random( #layouts )]
 
         -- Generate empty parcel grid.
         parcelGrid = ParcelGrid.new()
