@@ -1,5 +1,4 @@
 local Log = require( 'src.util.Log' );
-local MousePointer = require( 'src.ui.MousePointer' );
 local Translator = require( 'src.util.Translator' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
@@ -22,9 +21,10 @@ local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 ---
 -- Creates an new instance of the UserInterface class.
 -- @param game (Game)          The game object.
+-- @tparam CameraHandler camera A camera object used to move the map.
 -- @return     (UserInterface) The new instance.
 --
-function UserInterface.new( game )
+function UserInterface.new( game, camera )
     local self = {};
 
     local map = game:getMap();
@@ -98,7 +98,7 @@ function UserInterface.new( game )
         end
 
         local mode = game:getState():getInputMode();
-        local tile = game:getMap():getTileAt( MousePointer.getGridPosition() );
+        local tile = game:getMap():getTileAt( camera:getMouseWorldGridPosition() )
         local cost;
 
         if tile then
@@ -138,7 +138,7 @@ function UserInterface.new( game )
     end
 
     function self:update()
-        mouseX, mouseY = MousePointer.getGridPosition();
+        mouseX, mouseY = camera:getMouseWorldGridPosition()
     end
 
     function self:toggleDebugInfo()

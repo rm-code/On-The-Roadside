@@ -7,6 +7,7 @@
 -- ------------------------------------------------
 
 local Camera = require( 'lib.Camera' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -133,6 +134,21 @@ function CameraHandler.new( mw, mh, tw, th )
     --
     function self:setTargetPosition( dx, dy )
         tx, ty = dx, dy
+    end
+
+    -- ------------------------------------------------
+    -- Getters
+    -- ------------------------------------------------
+
+    ---
+    -- Returns the mouse position on the game's grid manipulated by the camera's
+    -- coordinate system. Use this for any mouse interactions with the actual
+    -- game world (map, objects, etc.).
+    -- @treturn number The mouse cursor's position along the x-axis.
+    -- @treturn number The mouse cursor's position along the y-axis.
+    --
+    function self:getMouseWorldGridPosition()
+        return GridHelper.pixelsToGrid( self:mousepos() )
     end
 
     return self

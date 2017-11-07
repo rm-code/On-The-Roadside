@@ -11,7 +11,6 @@
 -- ------------------------------------------------
 
 local Pulser = require( 'src.util.Pulser' );
-local MousePointer = require( 'src.ui.MousePointer' );
 local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
 local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
 local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
@@ -29,10 +28,11 @@ local OverlayPainter = {};
 
 ---
 -- Creates an new instance of the OverlayPainter class.
--- @tparam  Game           game The game object.
--- @treturn OverlayPainter      The new instance.
+-- @tparam  Game           game   The game object.
+-- @tparam  CameraHandler  camera A camera object used to move the map.
+-- @treturn OverlayPainter        The new instance.
 --
-function OverlayPainter.new( game )
+function OverlayPainter.new( game, camera )
     local self = {};
 
     -- ------------------------------------------------
@@ -41,7 +41,7 @@ function OverlayPainter.new( game )
 
     local particleLayer = ParticleLayer.new()
     local pulser = Pulser.new( 4, 80, 80 );
-    local coneOverlay = ConeOverlay.new( game, pulser )
+    local coneOverlay = ConeOverlay.new( game, pulser, camera )
     local pathOverlay = PathOverlay.new( game, pulser )
     local tileset = TexturePacks.getTileset()
     local tw, th = TexturePacks.getTileDimensions()
@@ -54,7 +54,7 @@ function OverlayPainter.new( game )
     -- Draws a mouse cursor that snaps to the grid.
     --
     local function drawMouseCursor()
-        local gx, gy = MousePointer.getGridPosition();
+        local gx, gy = camera:getMouseWorldGridPosition()
         local cx, cy = gx * tw, gy * th
 
         TexturePacks.setColor( 'sys_background' )
