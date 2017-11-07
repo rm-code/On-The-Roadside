@@ -13,6 +13,8 @@ local CharacterFactory = {};
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
+local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 local NAME_FILE = 'res.data.Names'
 local NATIONALITY = {
@@ -92,18 +94,35 @@ end
 
 ---
 -- Creates the equipment for a character.
--- @param character (Character) The character to equip with new items.
+-- @tparam Character character   The character to equip with new items.
+-- @tparam string    factionType The type of faction this character is created for.
 --
-local function createEquipment( character )
+local function createEquipment( character, factionType )
     local body = character:getBody();
     local equipment = body:getEquipment();
+    local inventory = body:getInventory()
     local tags = body:getTags();
 
     for _, slot in pairs( equipment:getSlots() ) do
-        equipment:addItem( slot, ItemFactory.createRandomItem( tags, slot:getItemType(), slot:getSubType() ));
+        -- The player's characters should start mainly with guns. Shurikens, grenades
+        -- and melee weapons should added as secondary weaponry.
+        if factionType == FACTIONS.ALLIED and slot:getItemType() == ITEM_TYPES.WEAPON then
+            equipment:addItem( slot, ItemFactory.createRandomItem( tags, slot:getItemType(), WEAPON_TYPES.RANGED ))
+
+            -- Additionally add either a melee or some throwing weapons.
+            if love.math.random() > 0.5 then
+                inventory:addItem( ItemFactory.createRandomItem( tags, ITEM_TYPES.WEAPON, WEAPON_TYPES.MELEE ))
+            else
+                inventory:addItem( ItemFactory.createRandomItem( tags, ITEM_TYPES.WEAPON, WEAPON_TYPES.THROWN ))
+                inventory:addItem( ItemFactory.createRandomItem( tags, ITEM_TYPES.WEAPON, WEAPON_TYPES.THROWN ))
+                inventory:addItem( ItemFactory.createRandomItem( tags, ITEM_TYPES.WEAPON, WEAPON_TYPES.THROWN ))
+            end
+        else
+            equipment:addItem( slot, ItemFactory.createRandomItem( tags, slot:getItemType(), slot:getSubType() ))
+        end
     end
 
-    local weapon, inventory = character:getWeapon(), character:getInventory();
+    local weapon = character:getWeapon()
     if weapon:isReloadable() then
         createAmmunition( weapon, inventory );
     elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
@@ -143,7 +162,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
     return character;
 end
 
-function CharacterFactory.newCharacter( type )
+function CharacterFactory.newCharacter( type, factionType )
     local character = Character.new()
 
     if type == 'human' then
@@ -153,7 +172,7 @@ function CharacterFactory.newCharacter( type )
     end
 
     character:setBody( BodyFactory.create( type ));
-    createEquipment( character );
+    createEquipment( character, factionType )
 
     return character;
 end

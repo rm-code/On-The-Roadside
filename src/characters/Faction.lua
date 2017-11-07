@@ -74,7 +74,7 @@ function Faction.new( type, controlledByAi )
     function self:addCharacters( amount, ctype )
         for _ = 1, amount do
             -- Create the new character.
-            local character = CharacterFactory.newCharacter( ctype )
+            local character = CharacterFactory.newCharacter( ctype, self:getType() )
             character:setFaction( self )
 
             -- Add it to this faction.
