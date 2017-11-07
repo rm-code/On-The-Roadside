@@ -114,7 +114,6 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     -- @treturn boolean True if the mouse is within this element's bounds.
     --
     function self:isMouseOver()
-        local mx, my = love.mouse.getPosition()
         local gx, gy = GridHelper.getMouseGridPosition()
         return  gx >= self.ox + self.rx
             and gx <  self.ox + self.rx + self.w
