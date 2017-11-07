@@ -366,8 +366,8 @@ function InventoryScreen.new()
         itemStats:keypressed( key )
     end
 
-    function self:mousepressed( mx, my, button )
-        local gx, gy = GridHelper.pixelsToGrid( mx, my )
+    function self:mousepressed( _, _, button )
+        local gx, gy = GridHelper.getMouseGridPosition()
 
         if button == 2 then
             selectItem()

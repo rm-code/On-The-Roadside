@@ -243,8 +243,8 @@ function ChangelogScreen.new()
         buttonList:keypressed( key, scancode )
     end
 
-    function self:mousepressed( mx, my )
-        local gx, gy = GridHelper.pixelsToGrid( mx, my )
+    function self:mousepressed( _, _ )
+        local gx, gy = GridHelper.getMouseGridPosition()
         if scrollarea:isMouseOver() then
             scrollarea:mousepressed( gx, gy )
         end

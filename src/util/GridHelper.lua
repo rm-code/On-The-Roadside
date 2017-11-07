@@ -65,4 +65,27 @@ function GridHelper.pixelsToGrid( x, y )
     return math.floor( x / tw ), math.floor( y / th )
 end
 
+---
+-- Takes a grid coordinate and constrains it to the screen's grid space.
+-- @tparam  number gx The grid coordinate along the x-axis.
+-- @tparam  number gy The grid coordinate along the y-axis.
+-- @treturn number    The adjusted coordinate along the x-axis.
+-- @treturn number    The adjusted coordinate along the y-axis.
+--
+function GridHelper.constrainToGrid( gx, gy )
+    local sw, sh = GridHelper.getScreenGridDimensions()
+    return math.min( gx, sw-1 ), math.min( gy, sh-1 )
+end
+
+---
+-- Gets the mouse cursor's position on the screen grid. The coordinates will be
+-- limited to the rounded screen grid size (only fully drawn tiles are counted).
+-- Use this for mouse input on the User Interface.
+-- @treturn number The mouse cursor's position along the x-axis.
+-- @treturn number The mouse cursor's position along the y-axis.
+--
+function GridHelper.getMouseGridPosition()
+    return GridHelper.constrainToGrid( GridHelper.pixelsToGrid( love.mouse.getPosition() ))
+end
+
 return GridHelper

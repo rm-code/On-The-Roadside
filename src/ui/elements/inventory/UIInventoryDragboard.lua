@@ -69,7 +69,7 @@ function UIInventoryDragboard.new()
         end
 
         local tw, th = TexturePacks.getTileDimensions()
-        local gx, gy = GridHelper.pixelsToGrid( love.mouse.getPosition() )
+        local gx, gy = GridHelper.getMouseGridPosition()
 
         -- Move background and draw it.
         background:setOrigin( gx, gy )
