@@ -1,3 +1,17 @@
+# Version 0.11.1.1132 - 2017-11-08
+
+## Fixes
+- Fixed offset between screen mouse coordinates and game world coordinates
+- Fixed blurry menu titles being caused by drawing at non-integer coordinates if screen dimensions were odd
+- Fixed eplosive weapons not triggering when hitting empty tiles
+
+## Other Changes
+- Health screen can be closed by pressing 'h' again
+- Make sure mouse cursor is visible in combat state
+
+
+
+
 # Version 0.11.0.1125 - 2017-11-08
 
 ## Additions
