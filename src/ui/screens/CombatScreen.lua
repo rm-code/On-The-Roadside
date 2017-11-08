@@ -34,6 +34,8 @@ function CombatScreen.new()
     local tw, th = TexturePacks.getTileDimensions()
 
     function self:init( playerFaction, savegame )
+        love.mouse.setVisible( true )
+
         combatState = CombatState.new()
         combatState:init( playerFaction, savegame )
 

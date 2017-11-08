@@ -136,7 +136,7 @@ function HealthScreen.new()
     end
 
     function self:keypressed( key )
-        if key == 'escape' or key == 'q' then
+        if key == 'escape' or key == 'h' then
             ScreenManager.pop();
         end
     end
