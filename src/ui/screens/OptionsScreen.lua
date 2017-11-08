@@ -75,6 +75,13 @@ function OptionsScreen.new()
         end
     end
 
+    local function drawTitle()
+        local cx, _ = GridHelper.centerElement( GridHelper.pixelsToGrid( title:getWidth(), title:getHeight() * #TITLE_STRING ))
+        local tw, _ = TexturePacks.getTileDimensions()
+        love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
+    end
+
+
     local function createLanguageOption( lx, ly, index )
         local listOfValues = {
             { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' },
@@ -184,7 +191,7 @@ function OptionsScreen.new()
 
     function self:draw()
         font:use()
-        love.graphics.draw( title, love.graphics.getWidth() * 0.5 - title:getWidth() * 0.5, TITLE_POSITION * font:getGlyphHeight() )
+        drawTitle()
         buttonList:draw()
 
         footer:draw()
