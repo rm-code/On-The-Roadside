@@ -41,6 +41,7 @@ function UIEquipmentList.new( px, py, x, y, w, h )
             local uiItem = UIEquipmentSlot.new( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1 )
             uiItem:init( slot )
             nList[slot:getSortOrder()] = uiItem
+            self:addChild( uiItem )
         end
         return nList
     end

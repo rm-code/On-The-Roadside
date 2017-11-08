@@ -18,14 +18,16 @@ build=${version[3]}
 
 formatted="$major$minor$patch-$build"
 
-# Zip files. Exclude git folder and DS_Store files.
+# Zip files.
 echo "Packing .love file for $major.$minor.$patch.$build"
-zip -r -q OTR_$formatted.love ./ -x *.git* -x *.DS_Store* -x *.sh* -x *.idea* -x .travis.yml -x .luacheckrc -x README.md
+zip -r -q OTR_$formatted.love ./ -x .\* -x \*.sh -x tests/\* -x README.md -x config.ld
 
 # Move to releases folder and cd to releases.
 mkdir ../releases/OTR_$formatted
 mv -i -v OTR_$formatted.love ../releases/OTR_$formatted
 cd ../releases/OTR_$formatted || exit
+
+exit
 
 ## CREATE WINDOWS EXECUTABLE
 # Unzip the LÖVE binaries.

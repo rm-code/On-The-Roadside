@@ -1,3 +1,29 @@
+# Version 0.11.0.1125 - 2017-11-08
+
+## Additions
+- Added letterboxing to hide parts of the screen which don't fit on the tile grid
+- Added Changelog screen to the main menu
+
+## Removals
+- Removed old base screen
+- Removed german translation
+- Removed generators and templates for static maps
+
+## Fixes
+- Fixed issue with registering attacks hitting indestructible objects
+- Fixed alignment of ui items when the window is resized
+- Fixed camera grid alignment
+- Fixed inventory items not being dropped when a character bled to death
+
+## Other Changes
+- Calculated deviation for ranged shots is floored instead of rounded
+- Updated the savegame screen
+- Limited mouse cursor for the UI to the actual screen grid
+- Player-controlled characters now always spawn with a ranged weapon (additionally they either get a melee or some throwing weapons)
+
+
+
+
 # Version 0.10.0.1089 - 2017-10-28
 
 ## Additions
@@ -371,7 +397,7 @@
 - The game starts in fullscreen now by default
 - The mouse scrolling stops if the mouse cursor leaves the game's window
 - Increased the size of the mouse scrolling area
-- Renamed _Police Baton_ to _Tonfa_
+- Renamed Police Baton to Tonfa
 - Ammunition is now handled on a single-round level instead of using magazines
 - Pathfinding now uses the more appropriate Chebyshev distance as an heuristic
 - Updated spawnpoints for player's characters
@@ -445,6 +471,8 @@
 
 
 # Version 0.1.0.337 - 2016-07-31
+
+## Additions
 - Initial Release
 - Add basic implementation of turn based combat mechanics
     - Three different factions

@@ -27,6 +27,22 @@ local MapPainter = {}
 
 local MAX_SPRITES = 16384 -- Enough sprites for a 128*128 map.
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
+local COLORS = {
+    [FACTIONS.ALLIED] = {
+        ACTIVE   = 'allied_active',
+        INACTIVE = 'allied_inactive'
+    },
+    [FACTIONS.ENEMY] = {
+        ACTIVE   = 'enemy_active',
+        INACTIVE = 'enemy_inactive'
+    },
+    [FACTIONS.NEUTRAL] = {
+        ACTIVE   = 'neutral_active',
+        INACTIVE = 'neutral_inactive'
+    },
+}
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -86,9 +102,9 @@ function MapPainter.new()
         if tile:isOccupied() then
             local tchar = tile:getCharacter()
             if tchar == character then
-                return TexturePacks.getColor( tchar:getFaction():getType() .. '_active' )
+                return TexturePacks.getColor( COLORS[tchar:getFaction():getType()].ACTIVE )
             end
-            return TexturePacks.getColor( tchar:getFaction():getType() .. '_inactive' )
+            return TexturePacks.getColor( COLORS[tchar:getFaction():getType()].INACTIVE )
         end
 
         if not tile:getInventory():isEmpty() then

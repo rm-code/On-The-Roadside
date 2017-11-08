@@ -2,6 +2,7 @@ local ScreenManager = require('lib.screenmanager.ScreenManager');
 local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
+local Letterbox = require( 'src.ui.overlays.Letterbox' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -12,6 +13,8 @@ local profile = 0;
 local info;
 
 local debugGrid
+
+local letterbox
 
 -- ------------------------------------------------
 -- Constants
@@ -62,10 +65,9 @@ function love.load( args )
     local screens = {
         bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
         mainmenu    = require( 'src.ui.screens.MainMenu'          ),
-        basemenu    = require( 'src.ui.screens.IngameBaseMenu'    ),
         ingamemenu  = require( 'src.ui.screens.IngameCombatMenu'  ),
         options     = require( 'src.ui.screens.OptionsScreen'     ),
-        base        = require( 'src.ui.screens.BaseScreen'        ),
+        changelog   = require( 'src.ui.screens.ChangelogScreen'   ),
         combat      = require( 'src.ui.screens.CombatScreen'      ),
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
@@ -76,6 +78,8 @@ function love.load( args )
     };
 
     ScreenManager.init( screens, 'bootloading' );
+
+    letterbox = Letterbox.new()
 end
 
 function love.draw()
@@ -94,6 +98,8 @@ function love.draw()
     if debugGrid then
         DebugGrid.draw()
     end
+
+    letterbox.draw()
 end
 
 function love.update(dt)

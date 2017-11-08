@@ -41,7 +41,7 @@ function GameScreen.new()
             playerFaction:addCharacters( 10, 'human' )
         end
 
-        local state = savegame and savegame.type or 'base'
+        local state = savegame and savegame.type or 'combat'
         ScreenManager.push( state, playerFaction, savegame )
     end
 

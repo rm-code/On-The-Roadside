@@ -72,8 +72,10 @@ function UIEquipmentSlot.new( px, py, x, y, w, h )
         slot = nslot
 
         background = UIBackground.new( self.ax, self.ay, 0, 0, self.w, self.h )
+        self:addChild( background )
 
         label = UILabel.new( self.ax, self.ay, 0, 0, self.w, self.h )
+        self:addChild( label )
     end
 
     function self:draw()

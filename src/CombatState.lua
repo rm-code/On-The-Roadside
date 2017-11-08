@@ -7,8 +7,9 @@
 -- ------------------------------------------------
 
 local Object = require( 'src.Object' );
-local MapGenerator = require( 'src.map.procedural.MapGenerator' )
-local ProceduralMap = require( 'src.map.procedural.ProceduralMap' )
+local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
+local MapLoader = require( 'src.map.MapLoader' )
+local Map = require( 'src.map.Map' )
 local Factions = require( 'src.characters.Factions' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
@@ -49,19 +50,38 @@ function CombatState.new()
     local sadisticAIDirector
 
     -- ------------------------------------------------
-    -- Public Methods
+    -- Local Methods
     -- ------------------------------------------------
 
-    function self:init( playerFaction, savegame )
-        local generator = MapGenerator.new()
+    local function loadMap( savedMap )
+        local loader = MapLoader.new()
+        local tiles, mw, mh = loader:recreateMap( savedMap )
+        map = Map.new()
+        map:init( tiles, mw, mh )
+    end
+
+    local function createMap()
+        local generator = ProceduralMapGenerator.new()
         generator:init()
 
         local tiles = generator:getTiles()
         local mw, mh = generator:getTileGridDimensions()
 
-        map = ProceduralMap.new( tiles, mw, mh )
-        map:init()
+        map = Map.new()
+        map:init( tiles, mw, mh )
         map:setSpawnpoints( generator:getSpawnpoints() )
+    end
+
+    -- ------------------------------------------------
+    -- Public Methods
+    -- ------------------------------------------------
+
+    function self:init( playerFaction, savegame )
+        if savegame then
+            loadMap( savegame.map )
+        else
+            createMap()
+        end
 
         factions = Factions.new( map );
         factions:addFaction( Faction.new( FACTIONS.ENEMY,   true ))

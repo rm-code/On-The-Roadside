@@ -168,6 +168,12 @@ function HelpScreen.new()
         end
     end
 
+    function self:resize( _, _ )
+        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background:setOrigin( x, y )
+        outlines:setOrigin( x, y )
+    end
+
     return self
 end
 

@@ -93,10 +93,13 @@ return {
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,
 
-    ['ui_label'] = COLORS.DB07,
-
+    -- Buttons.
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
+    ['ui_button_focus'] = COLORS.DB18,
+    ['ui_button_inactive'] = COLORS.DB25,
+    ['ui_button_inactive_hot'] = COLORS.DB24,
+    ['ui_button_inactive_focus'] = COLORS.DB24,
 
     ['ui_scrollbar_element'] = COLORS.DB01,
     ['ui_scrollbar_cursor']  = COLORS.DB25,
@@ -116,7 +119,6 @@ return {
     ['ui_equipment_empty']     = COLORS.DB23,
 
     ['ui_inventory_headers'] = COLORS.DB20,
-    ['ui_inventory_item'] = COLORS.DB20,
     ['ui_inventory_full'] = COLORS.DB27,
 
     ['ui_inventory_stats_name'] = COLORS.DB12,
@@ -152,6 +154,14 @@ return {
     ['ui_health_bleeding']           = COLORS.DB05,
     ['ui_health_bleeding_ok']        = COLORS.DB08,
     ['ui_health_bleeding_fine']      = COLORS.DB10,
+
+    -- Changelog Menu
+    ['ui_changelog_version'] = COLORS.DB05,
+    ['ui_changelog_additions'] = COLORS.DB16,
+    ['ui_changelog_removals'] = COLORS.DB16,
+    ['ui_changelog_fixes'] = COLORS.DB16,
+    ['ui_changelog_other'] = COLORS.DB16,
+    ['ui_changelog_text'] = COLORS.DB25,
 
     -- ==============================
     -- SYSTEM

@@ -9,13 +9,13 @@
 local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
+local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UIItemStats = {}
-local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 
 -- ------------------------------------------------
 -- Constants
@@ -146,8 +146,13 @@ function UIItemStats.new( px, py, x, y, w, h )
     end
 
     local function addDescriptionArea( item )
+        local tw, _ = TexturePacks.getTileDimensions()
+        local descriptionText = love.graphics.newText( TexturePacks.getFont():get() )
+        descriptionText:setf({ descColor, Translator.getText( item:getDescriptionID() )}, (self.w - 1) * tw, 'left' )
+
         description = UIScrollArea.new( self.ax, self.ay, 0, VERTICAL_DESCRIPTION_OFFSET, self.w, self.h-VERTICAL_DESCRIPTION_OFFSET )
-        description:init({ descColor, Translator.getText( item:getDescriptionID() )})
+        description:init( descriptionText, descriptionText:getHeight() )
+        self:addChild( description )
     end
 
     -- ------------------------------------------------

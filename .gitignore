@@ -13,3 +13,6 @@
 
 # Log files
 .consolelog
+
+# Automatically created files
+templates.out

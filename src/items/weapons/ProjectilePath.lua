@@ -12,45 +12,45 @@ local ProjectilePath = {};
 -- ------------------------------------------------
 
 local MARKSMAN_SKILL_MODIFIERS = {
-      [0] = 30,
-     [10] = 28,
-     [20] = 25,
-     [30] = 23,
-     [40] = 20,
-     [50] = 15,
-     [60] = 11,
-     [70] =  8,
-     [80] =  4,
-     [90] =  2,
-    [100] =  1,
+     [0] = 30,
+     [1] = 28,
+     [2] = 25,
+     [3] = 23,
+     [4] = 20,
+     [5] = 15,
+     [6] = 11,
+     [7] =  8,
+     [8] =  4,
+     [9] =  2,
+    [10] =  1
 }
 
 local THROWING_SKILL_MODIFIERS = {
-      [0] = 30,
-     [10] = 28,
-     [20] = 25,
-     [30] = 23,
-     [40] = 20,
-     [50] = 15,
-     [60] = 11,
-     [70] =  8,
-     [80] =  4,
-     [90] =  2,
-    [100] =  1,
+     [0] = 30,
+     [1] = 28,
+     [2] = 25,
+     [3] = 23,
+     [4] = 20,
+     [5] = 15,
+     [6] = 11,
+     [7] =  8,
+     [8] =  4,
+     [9] =  2,
+    [10] =  1
 }
 
 local RANGED_WEAPON_MODIFIERS = {
-    [0] = 27,
-   [10] = 23,
-   [20] = 20,
-   [30] = 17,
-   [40] = 14,
-   [50] = 11,
-   [60] =  8,
-   [70] =  5,
-   [80] =  3,
-   [90] =  1,
-  [100] =  0,
+     [0] = 27,
+     [1] = 23,
+     [2] = 20,
+     [3] = 17,
+     [4] = 14,
+     [5] = 11,
+     [6] =  8,
+     [7] =  5,
+     [8] =  3,
+     [9] =  1,
+    [10] =  0
 }
 
 local RANGED_BURST_MODIFIERS = {
@@ -93,12 +93,12 @@ local function randomSign()
 end
 
 ---
--- Rounds a value to the next multiple of ten.
--- @param value (number) The value to round.
--- @return      (number) The rounded value.
+-- Floors a value to the previous multiple of ten.
+-- @tparam  number value The value to round.
+-- @treturn number       The rounded value.
 --
-local function roundToMultipleOfTen( value )
-    return math.floor( value / 10 + 0.5 ) * 10;
+local function floor( value )
+    return math.floor( value / 10 )
 end
 
 ---
@@ -118,8 +118,8 @@ end
 -- @return          (number)    The maximum range for the derivation.
 --
 local function calculateRangedMaximumDerivation( character, weapon, count )
-    local marksmanSkill = roundToMultipleOfTen( character:getAccuracy() );
-    local weaponAccuracy = roundToMultipleOfTen( weapon:getAccuracy() );
+    local marksmanSkill  = floor( character:getAccuracy() )
+    local weaponAccuracy = floor( weapon:getAccuracy() )
 
     local derivation = 0;
     -- Random angle based on the character's accuracy skill.
@@ -132,7 +132,7 @@ local function calculateRangedMaximumDerivation( character, weapon, count )
     -- Stances influence the whole angle.
     derivation = derivation * RANGED_STANCE_MODIFIER[character:getStance()];
 
-    return derivation;
+    return math.max( derivation, 0 )
 end
 
 ---
@@ -141,7 +141,7 @@ end
 -- @return  (number) The maximum range for the derivation.
 --
 local function calculateThrownMaximumDerivation( character )
-    local throwingSkill = roundToMultipleOfTen( character:getThrowingSkill() );
+    local throwingSkill = floor( character:getThrowingSkill() )
 
     local derivation = 0;
     -- Random angle based on the character's accuracy skill.

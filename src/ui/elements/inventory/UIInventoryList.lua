@@ -37,6 +37,7 @@ function UIInventoryList.new( px, py, x, y, w, h )
             -- Spawn elements at the list's position but offset them vertically.
             local uiItem = UIInventoryItem.new( item, self.ax, self.ay, 0, offset, self.w, 1 )
             uiItem:init()
+            self:addChild( uiItem )
             nList[#nList + 1] = uiItem
         end
         return nList
@@ -45,6 +46,7 @@ function UIInventoryList.new( px, py, x, y, w, h )
     local function generateStorageInfo()
         local infoText = string.format( 'W: %0.1f/%0.1f V: %0.1f/%0.1f', inventory:getWeight(), inventory:getWeightLimit(), inventory:getVolume(), inventory:getVolumeLimit() )
         info = UILabel.new( self.ax, self.ay, 0, 0, self.w, 1, infoText, 'ui_text_dim' )
+        self:addChild( info )
         return info
     end
 

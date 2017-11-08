@@ -17,8 +17,8 @@ return {
         }
     },
     {
-        id         = "12 gauge",
-        idDesc     = "12 gauge_desc",
+        id         = "12_gauge",
+        idDesc     = "12_gauge_desc",
         itemType   = "Ammunition",
         weight     = 0,
         volume     = 0,

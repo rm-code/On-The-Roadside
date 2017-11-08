@@ -72,7 +72,7 @@ return {
         stackable  = false,
         permanent  = false,
         subType    = "Ranged",
-        caliber    = "12 gauge",
+        caliber    = "12_gauge",
         sound      = 'SHOTGUN',
         damage     = 15,
         magSize    = 8,

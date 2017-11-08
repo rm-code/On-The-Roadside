@@ -25,7 +25,6 @@ function UIScrollArea.new( px, py, x, y, w, h )
     -- ------------------------------------------------
 
     local text
-    local font
     local offset
     local scrollAreaHeight
 
@@ -39,42 +38,39 @@ function UIScrollArea.new( px, py, x, y, w, h )
     -- Private Methods
     -- ------------------------------------------------
 
-    local function calculateContentHeight()
-        return text:getHeight() / TexturePacks.getFont():getGlyphHeight()
+    local function createScrollbar( height )
+        scrollable = true
+
+        -- The height of the scroll content in grid space.
+        local contentHeight = height / TexturePacks.getFont():getGlyphHeight()
+
+        -- The max offset is calculated by taking the height of the scroll area
+        -- the text height (transformed to grid space). This will stop the scroll
+        -- offset as soon as the last line hits the bottom of the scroll area.
+        scrollAreaHeight = contentHeight - self.h
+
+        -- The up button is placed in the top right corner of the scroll area.
+        upButton = UIButton.new( self.ax, self.ay, self.w-1, 0, 1, 1 )
+        upButton:init( 'ui_scroll_area_up', function() self:scroll(-1) end )
+        self:addChild( upButton )
+
+        downButton = UIButton.new( self.ax, self.ay, self.w-1, self.h-1, 1, 1 )
+        downButton:init( 'ui_scroll_area_down', function() self:scroll(1) end )
+        self:addChild( downButton )
+
+        -- Scroll bar is positioned between the buttons.
+        scrollbar = UIScrollbar.new( self.ax, self.ay, self.w-1, 1, 1, self.h-2, 'ui_scroll_area_down' )
+        scrollbar:init( self.h, contentHeight, scrollAreaHeight, function( noffset ) self:scroll( noffset ) end )
+        self:addChild( scrollbar )
     end
 
     -- ------------------------------------------------
     -- Public Method
     -- ------------------------------------------------
 
-    function self:init( textString )
-        font = TexturePacks.getFont():get()
-        text = love.graphics.newText( font )
+    function self:init( ntext, nheight )
         offset = 0
-
-        self:setText( textString, self.w, self.h )
-
-        if scrollable then
-
-            -- The height of the scroll content in grid space.
-            local contentHeight = calculateContentHeight()
-
-            -- The max offset is calculated by taking the height of the scroll area
-            -- the text height (transformed to grid space). This will stop the scroll
-            -- offset as soon as the last line hits the bottom of the scroll area.
-            scrollAreaHeight = contentHeight - self.h
-
-            -- The up button is placed in the top right corner of the scroll area.
-            upButton = UIButton.new( self.ax, self.ay, self.w-1, 0, 1, 1 )
-            upButton:init( 'ui_scroll_area_up', function() self:scroll(-1) end )
-
-            downButton = UIButton.new( self.ax, self.ay, self.w-1, self.h-1, 1, 1 )
-            downButton:init( 'ui_scroll_area_down', function() self:scroll(1) end )
-
-            -- Scroll bar is positioned between the buttons.
-            scrollbar = UIScrollbar.new( self.ax, self.ay, self.w-1, 1, 1, self.h-2, 'ui_scroll_area_down' )
-            scrollbar:init( self.h, contentHeight, scrollAreaHeight, function( noffset ) self:scroll( noffset ) end )
-        end
+        self:setText( ntext, nheight )
     end
 
     function self:draw()
@@ -98,36 +94,15 @@ function UIScrollArea.new( px, py, x, y, w, h )
 
         offset = offset + dir
         offset = math.max( 0, math.min( offset, scrollAreaHeight ))
-
         scrollbar:scroll( offset )
     end
 
-    function self:setPosition( nx, ny )
-        self.ox = nx
-        self.oy = ny
+    function self:setText( ntext, nheight )
+        text = ntext
 
-        if not scrollable then
-            return
-        end
-
-        local rx, ry = self:getRelativePosition()
-        upButton:setOrigin( nx+rx, ny+ry )
-        downButton:setOrigin( nx+rx, ny+ry )
-        scrollbar:setOrigin( nx+rx, ny+ry )
-    end
-
-    function self:setText( textString, gw, gh )
-        local tw, _ = TexturePacks.getTileDimensions()
-
-        -- The text wrap is one smaller than the scroll area to provide space
-        -- for the scrollbar.
-        text:setf( textString, gw * tw, 'left' )
-
-        -- If the scroll content is bigger than the viewport we add scrollbars.
-        local textGridHeight = calculateContentHeight()
-        if textGridHeight > gh then
-            text:setf( textString, (gw-1) * tw, 'left' )
-            scrollable = true
+        local _, gh = TexturePacks.getGlyphDimensions()
+        if math.floor( nheight / gh ) > self.h then
+            createScrollbar( nheight )
         else
             scrollable = false
         end

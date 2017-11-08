@@ -7,7 +7,6 @@ local Screen = require( 'lib.screenmanager.Screen' )
 local CombatState = require( 'src.CombatState' )
 local MapPainter = require( 'src.ui.MapPainter' )
 local CameraHandler = require('src.ui.CameraHandler')
-local MousePointer = require( 'src.ui.MousePointer' )
 local UserInterface = require( 'src.ui.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' )
@@ -41,14 +40,12 @@ function CombatScreen.new()
         mapPainter = MapPainter.new()
         mapPainter:init( combatState:getMap(), combatState:getFactions() )
 
-        userInterface = UserInterface.new( combatState )
-
         local mw, mh = combatState:getMap():getDimensions()
         camera = CameraHandler.new( mw, mh, tw, th )
 
-        overlayPainter = OverlayPainter.new( combatState )
+        userInterface = UserInterface.new( combatState, camera )
 
-        MousePointer.init( camera )
+        overlayPainter = OverlayPainter.new( combatState, camera )
     end
 
     function self:draw()
@@ -68,10 +65,6 @@ function CombatScreen.new()
         mapPainter:update( dt )
         overlayPainter:update( dt )
         userInterface:update( dt )
-
-        if self:isActive() then
-            MousePointer.update()
-        end
     end
 
     function self:keypressed( key, scancode, isrepeat )
@@ -89,7 +82,7 @@ function CombatScreen.new()
     end
 
     function self:mousepressed( _, _, button )
-        local mx, my = MousePointer.getGridPosition()
+        local mx, my = camera:getMouseWorldGridPosition()
         combatState:mousepressed( mx, my, button )
     end
 
@@ -105,9 +98,6 @@ function CombatScreen.new()
         for i = 1, #observations do
             Messenger.remove( observations[i] )
         end
-
-        MousePointer.clear()
-
         combatState:close()
     end
 

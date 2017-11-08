@@ -8,7 +8,6 @@
 -- ------------------------------------------------
 
 local Object         = require( 'src.Object' )
-local MousePointer   = require( 'src.ui.MousePointer' )
 local Bresenham      = require( 'lib.Bresenham' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
 local VectorMath     = require( 'src.util.VectorMath' )
@@ -30,7 +29,7 @@ local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 -- Constructor
 -- ------------------------------------------------
 
-function ConeOverlay.new( game, pulser )
+function ConeOverlay.new( game, pulser, camera )
     local self = Object.new():addInstance( 'ConeOverlay' )
 
     local map = game:getMap()
@@ -75,7 +74,7 @@ function ConeOverlay.new( game, pulser )
         end
 
         -- Get the tile at the mouse pointer's position.
-        local cx, cy = MousePointer.getGridPosition()
+        local cx, cy = camera:getMouseWorldGridPosition()
         local target = map:getTileAt( cx, cy )
 
         -- Exit early if we don't have a valid target.
