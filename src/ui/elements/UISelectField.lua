@@ -43,15 +43,18 @@ function UISelectField.new( px, py, x, y, w, h )
     end
 
     function self:draw()
+        TexturePacks.resetColor()
+        love.graphics.rectangle( 'fill', self.ax * 16, self.ay * 16, self.w * 16, self.h * 16 )
+
         local tw, th = TexturePacks.getTileDimensions()
         -- Draw the label on the left side of the SelectField.
         TexturePacks.setColor( self:hasFocus() and 'ui_select_field_hot' or 'ui_select_field' )
         love.graphics.print( label, self.ax * tw, self.ay * th )
 
-        -- Draw the current value on right left side of the SelectField.
-        local value = listOfValues[current].displayTextID
+        -- Draw the current value on right side of the SelectField.
+        local value = string.format( '<%s>', listOfValues[current].displayTextID )
         local width = TexturePacks.getFont():measureWidth( value )
-        love.graphics.print( string.format( '<%s>', value ), self.ax * tw + self.w * th - width, self.ay * th )
+        love.graphics.print( value, self.ax * tw + self.w * th - width, self.ay * th )
         TexturePacks.resetColor()
     end
 
