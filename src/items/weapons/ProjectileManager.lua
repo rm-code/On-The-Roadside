@@ -137,7 +137,7 @@ local function checkForHits( index, projectile, tile, character )
 
     if projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
-        queue:removeProjectile( index )
+        hitTile( index, true, tile, projectile )
     end
 end
 
