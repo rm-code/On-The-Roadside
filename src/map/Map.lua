@@ -6,7 +6,7 @@ local ItemFactory = require( 'src.items.ItemFactory' )
 -- Module
 -- ------------------------------------------------
 
-local ProceduralMap = {}
+local Map = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -18,13 +18,15 @@ local DIRECTION = require( 'src.constants.DIRECTION' )
 -- Constructor
 -- ------------------------------------------------
 
-function ProceduralMap.new( tiles, width, height )
-    local self = Observable.new():addInstance( 'ProceduralMap' )
+function Map.new()
+    local self = Observable.new():addInstance( 'Map' )
 
     -- ------------------------------------------------
     -- Private Attributes
     -- ------------------------------------------------
 
+    local tiles
+    local width, height
     local spawnpoints
 
     -- ------------------------------------------------
@@ -61,13 +63,9 @@ function ProceduralMap.new( tiles, width, height )
     -- Initialises the map by creating the Tiles, creating references to the
     -- neighbouring tiles and adding WorldObjects.
     --
-    function self:init( savegame )
-        -- TODO Fix savegames
-        if savegame then
-            error( 'Savegames are currently borked!' )
-            return
-        end
-
+    function self:init( ntiles, nwidth, nheight )
+        tiles = ntiles
+        width, height = nwidth, nheight
         addNeighbours()
     end
 
@@ -211,4 +209,4 @@ function ProceduralMap.new( tiles, width, height )
     return self
 end
 
-return ProceduralMap
+return Map
