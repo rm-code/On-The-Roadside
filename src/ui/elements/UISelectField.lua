@@ -43,9 +43,6 @@ function UISelectField.new( px, py, x, y, w, h )
     end
 
     function self:draw()
-        TexturePacks.resetColor()
-        love.graphics.rectangle( 'fill', self.ax * 16, self.ay * 16, self.w * 16, self.h * 16 )
-
         local tw, th = TexturePacks.getTileDimensions()
         -- Draw the label on the left side of the SelectField.
         TexturePacks.setColor( self:hasFocus() and 'ui_select_field_hot' or 'ui_select_field' )
