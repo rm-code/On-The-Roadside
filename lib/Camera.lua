@@ -72,8 +72,6 @@ end
 
 function camera:attach()
     local cx,cy = love.graphics.getWidth()/(2*self.scale), love.graphics.getHeight()/(2*self.scale)
-    cx, cy = math.floor( cx / 16 ) * 16, math.floor( cy / 16 ) * 16
-
     love.graphics.push()
     love.graphics.scale(self.scale)
     love.graphics.translate(cx, cy)
