@@ -1,6 +1,16 @@
-local Screen = require( 'lib.screenmanager.Screen' );
-local Translator = require( 'src.util.Translator' );
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
+---
+-- The OptionsScreen module is a menu in which the player can customize certain
+-- aspects of the game.
+-- @module OptionsScreen
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Screen = require( 'lib.screenmanager.Screen' )
+local Translator = require( 'src.util.Translator' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
@@ -12,13 +22,13 @@ local GridHelper = require( 'src.util.GridHelper' )
 -- Module
 -- ------------------------------------------------
 
-local OptionsScreen = {};
+local OptionsScreen = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local TITLE_POSITION = 2;
+local TITLE_POSITION = 2
 local TITLE_STRING = {
     "  @@@@    @@@@@@@   @@@@@@@  @@@    @@@@    @@   @@    @@@@@  ",
     "@@@@@@@@  @@@@@@@@  @@@@@@@  @@@  @@@@@@@@  @@@  @@@  @@@@@@@ ",
@@ -40,13 +50,13 @@ local BUTTON_LIST_Y = 20
 -- ------------------------------------------------
 
 function OptionsScreen.new()
-    local self = Screen.new();
+    local self = Screen.new()
 
     -- ------------------------------------------------
     -- Private Variables
     -- ------------------------------------------------
 
-    local title;
+    local title
     local buttonList
     local font
     local footer
@@ -55,88 +65,131 @@ function OptionsScreen.new()
     -- Private Functions
     -- ------------------------------------------------
 
+    ---
+    -- Creates the ASCII title at the top of the page.
+    --
     local function createTitle()
         title = love.graphics.newText( font:get() )
         for i, line in ipairs( TITLE_STRING ) do
-            local coloredtext = {};
+            local coloredtext = {}
             for w in string.gmatch( line, '.' ) do
                 if w == '@' then
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                    coloredtext[#coloredtext + 1] = 'O';
+                    coloredtext[#coloredtext + 1] = 'O'
                 elseif w == '!' then
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
-                    coloredtext[#coloredtext + 1] = w;
+                    coloredtext[#coloredtext + 1] = w
                 else
                     coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
-                    coloredtext[#coloredtext + 1] = w;
+                    coloredtext[#coloredtext + 1] = w
                 end
                 title:add( coloredtext, 0, i * font:get():getHeight() )
             end
         end
     end
 
+    ---
+    -- Draws the ASCII title at the top of the page at a grid aligned position.
+    --
     local function drawTitle()
         local cx, _ = GridHelper.centerElement( GridHelper.pixelsToGrid( title:getWidth(), title:getHeight() * #TITLE_STRING ))
         local tw, _ = TexturePacks.getTileDimensions()
         love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
     end
 
-
+    ---
+    -- Creates a UISelectField which allows the user to change the game's
+    -- language settings.
+    -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
+    -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
+    -- @tparam  number        index The index the UISelectField will have in the UIList.
+    -- @treturn UISelectField       The newly created UISelectField.
+    --
     local function createLanguageOption( lx, ly, index )
+        -- The list of values to display.
         local listOfValues = {
-            { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' },
+            { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' }
         }
 
+        -- The function to call when the value of the UISelectField changes.
         local function callback( val )
-            Translator.setLocale( val );
+            Translator.setLocale( val )
         end
 
-        local default = 1;
+        -- Search the value corresponding to the currently selected option or
+        -- take the first one and make it the current display value.
+        local default = 1
         for i, option in ipairs( listOfValues ) do
             if option.value == Translator.getLocale() then
-                default = i;
+                default = i
             end
         end
 
+        -- Create the UISelectField.
         local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
         field:init( Translator.getText( 'ui_lang' ), listOfValues, callback, default )
         return field
     end
 
+    ---
+    -- Creates a UISelectField which allows the user to change the game's
+    -- fullscreen settings.
+    -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
+    -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
+    -- @tparam  number        index The index the UISelectField will have in the UIList.
+    -- @treturn UISelectField       The newly created UISelectField.
+    --
     local function createFullscreenOption( lx, ly, index )
+        -- The list of values to display.
         local listOfValues = {
             { displayTextID = Translator.getText( 'ui_on' ), value = true },
-            { displayTextID = Translator.getText( 'ui_off' ), value = false },
+            { displayTextID = Translator.getText( 'ui_off' ), value = false }
         }
 
+        -- The function to call when the value of the UISelectField changes.
         local function callback( val )
-            love.window.setFullscreen( val );
+            love.window.setFullscreen( val )
         end
 
-        local default = 1;
+        -- Search the value corresponding to the currently selected option or
+        -- take the first one and make it the current display value.
+        local default = 1
         for i, option in ipairs( listOfValues ) do
             if option.value == love.window.getFullscreen() then
-                default = i;
+                default = i
             end
         end
 
+        -- Create the UISelectField.
         local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
         field:init( Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
         return field
     end
 
+    ---
+    -- Creates a UISelectField which allows the user to change the game's
+    -- fullscreen settings.
+    -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
+    -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
+    -- @tparam  number        index The index the UISelectField will have in the UIList.
+    -- @treturn UISelectField       The newly created UISelectField.
+    --
     local function createTexturePackOption( lx, ly, index )
+        -- The list of values to display. We populate it with the TexturePacks
+        -- we found in the game's directory.
         local listOfValues = {}
-
         local packs = TexturePacks.getTexturePacks()
         for name, _ in pairs( packs ) do
             listOfValues[#listOfValues + 1] = { displayTextID = name, value = name }
         end
 
+        -- The function to call when the value of the UISelectField changes.
         local function callback( val )
             TexturePacks.setCurrent( val )
         end
 
+        -- Search the value corresponding to the currently selected option or
+        -- take the first one and make it the current display value.
         local default = 1
         for i, option in ipairs( listOfValues ) do
             if option.value == TexturePacks.getName() then
@@ -144,51 +197,74 @@ function OptionsScreen.new()
             end
         end
 
+        -- Create the UISelectField.
         local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
         field:init( Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
         return field
     end
 
+    ---
+    -- Creates a button which allows the user to return to the main menu.
+    -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
+    -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
+    -- @tparam  number       index The index the UISelectField will have in the UIList.
+    -- @treturn UITextButton       The newly created UITextButton.
+    --
     local function createBackButton( lx, ly, index )
+        -- The function to call when the button is activated.
         local function callback()
-            ScreenManager.switch( 'mainmenu' );
+            ScreenManager.switch( 'mainmenu' )
         end
+
+        -- Create the UITextButton.
         local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
         button:init( Translator.getText( 'ui_back' ), callback )
         return button
     end
 
-    local function createButtons()
+    ---
+    -- Creates a vertical list containing all the ui elements.
+    --
+    local function createUIList()
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = BUTTON_LIST_Y
 
         buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
+        -- Create the UIElements and add them to the list.
         buttonList:addChild(    createLanguageOption( lx, ly, 1 ))
         buttonList:addChild(  createFullscreenOption( lx, ly, 2 ))
         buttonList:addChild( createTexturePackOption( lx, ly, 3 ))
         buttonList:addChild(        createBackButton( lx, ly, 4 ))
     end
 
-
     -- ------------------------------------------------
     -- Public Methods
     -- ------------------------------------------------
 
+    ---
+    -- Initialises the OptionsScreen.
+    --
     function self:init()
         font = TexturePacks.getFont()
 
-        createTitle();
-        createButtons()
+        createTitle()
+        createUIList()
 
         footer = UICopyrightFooter.new()
     end
 
+    ---
+    -- Updates the OptionsScreen.
+    --
     function self:update()
         font = TexturePacks.getFont()
         buttonList:update()
     end
 
+    ---
+    -- Draws the OptionsScreen.
+    --
     function self:draw()
         font:use()
         drawTitle()
@@ -197,21 +273,33 @@ function OptionsScreen.new()
         footer:draw()
     end
 
+    ---
+    -- Handle keypressed events.
+    --
     function self:keypressed( key, scancode )
         if scancode == 'escape' then
-            ScreenManager.switch( 'mainmenu' );
+            ScreenManager.switch( 'mainmenu' )
         end
         buttonList:keypressed( key, scancode )
     end
 
+    ---
+    -- Handle mousereleased events.
+    --
     function self:mousereleased()
         buttonList:mousereleased()
     end
 
+    ---
+    -- Handle mousemoved events.
+    --
     function self:mousemoved()
         buttonList:mousemoved()
     end
 
+    ---
+    -- Handle resize events and update the position of the UIElements accordingly.
+    --
     function self:resize( _, _ )
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = BUTTON_LIST_Y
@@ -219,7 +307,7 @@ function OptionsScreen.new()
         buttonList:setOrigin( lx, ly )
     end
 
-    return self;
+    return self
 end
 
-return OptionsScreen;
+return OptionsScreen
