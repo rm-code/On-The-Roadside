@@ -1,5 +1,4 @@
 local ScreenManager = require('lib.screenmanager.ScreenManager');
-local ProFi = require( 'lib.ProFi' );
 local Log = require( 'src.util.Log' );
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 local Letterbox = require( 'src.ui.overlays.Letterbox' )
@@ -8,8 +7,6 @@ local Letterbox = require( 'src.ui.overlays.Letterbox' )
 -- Local Variables
 -- ------------------------------------------------
 
--- TODO Remove profiling code.
-local profile = 0;
 local info;
 
 local debugGrid
@@ -84,17 +81,7 @@ function love.load( args )
 end
 
 function love.draw()
-    if profile == 2 then
-        ProFi:start();
-    end
-
     ScreenManager.draw();
-
-    if profile == 2 then
-        ProFi:stop();
-        ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
-        profile = 0;
-    end
 
     if debugGrid then
         DebugGrid.draw()
@@ -104,17 +91,7 @@ function love.draw()
 end
 
 function love.update(dt)
-    if profile == 1 then
-        ProFi:start();
-    end
-
     ScreenManager.update(dt);
-
-    if profile == 1 then
-        ProFi:stop();
-        local success = ProFi:writeReport( string.format( '../profiling/update_%d.txt', os.time( os.date( '*t' ))));
-        profile = success and 2 or 0;
-    end
 end
 
 function love.quit(q)
@@ -124,9 +101,7 @@ end
 function love.keypressed( key, scancode, isrepeat )
     ScreenManager.keypressed( key, scancode, isrepeat );
 
-    if scancode == '0' then
-        profile = 1;
-    elseif scancode == 'f2' then
+    if scancode == 'f2' then
         Log.setDebugActive( not Log.getDebugActive() );
     end
 end
