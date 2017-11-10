@@ -100,10 +100,6 @@ end
 
 function love.keypressed( key, scancode, isrepeat )
     ScreenManager.keypressed( key, scancode, isrepeat );
-
-    if scancode == 'f2' then
-        Log.setDebugActive( not Log.getDebugActive() );
-    end
 end
 
 function love.resize( w, h )
