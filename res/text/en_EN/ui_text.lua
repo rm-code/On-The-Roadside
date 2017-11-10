@@ -22,8 +22,12 @@ locale.strings = {
     ['ui_main_menu_exit'] = "Exit",
 
     -- Options
-    ['ui_on']  = "On",
+    ['ui_on'] = "On",
     ['ui_off'] = "Off",
+    ['ui_yes'] = "Yes",
+    ['ui_no'] = "No",
+    ['ui_apply'] = "Apply",
+    ['ui_unsaved_changes'] = "There are unsaved changes. Are you sure you want to quit?",
 
     -- Texture packs
     ['ui_texturepack'] = "Texture Pack:",

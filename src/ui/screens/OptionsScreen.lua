@@ -17,6 +17,7 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UITextButton = require( 'src.ui.elements.UITextButton' )
 local UISelectField = require( 'src.ui.elements.UISelectField' )
 local GridHelper = require( 'src.util.GridHelper' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -98,6 +99,34 @@ function OptionsScreen.new()
     end
 
     ---
+    -- Closes the OptionsScreen and displays a confirmation dialog if any
+    -- settings have been changed.
+    --
+    local function close()
+        if Settings.hasChanged() then
+            local function confirm()
+                ScreenManager.switch( 'mainmenu' )
+            end
+            local function cancel()
+                ScreenManager.pop()
+            end
+            ScreenManager.push( 'confirm', Translator.getText( 'ui_unsaved_changes' ), confirm, cancel )
+        else
+            ScreenManager.switch( 'mainmenu' )
+        end
+    end
+
+    ---
+    -- Applies the settings and saves them to a file.
+    --
+    local function applySettings()
+        Settings.save()
+        Translator.init( Settings.getLocale() )
+        TexturePacks.setCurrent( Settings.getTexturepack() )
+        love.window.setFullscreen( Settings.getFullscreen() )
+    end
+
+    ---
     -- Creates a UISelectField which allows the user to change the game's
     -- language settings.
     -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
@@ -113,12 +142,12 @@ function OptionsScreen.new()
 
         -- The function to call when the value of the UISelectField changes.
         local function callback( val )
-            Translator.setLocale( val )
+            Settings.setLocale( val )
         end
 
         -- Search the value corresponding to the currently selected option or
         -- take the first one and make it the current display value.
-        local default = 1
+        local default = Settings.getLocale()
         for i, option in ipairs( listOfValues ) do
             if option.value == Translator.getLocale() then
                 default = i
@@ -148,12 +177,12 @@ function OptionsScreen.new()
 
         -- The function to call when the value of the UISelectField changes.
         local function callback( val )
-            love.window.setFullscreen( val )
+            Settings.setFullscreen( val )
         end
 
         -- Search the value corresponding to the currently selected option or
         -- take the first one and make it the current display value.
-        local default = 1
+        local default = Settings.getFullscreen()
         for i, option in ipairs( listOfValues ) do
             if option.value == love.window.getFullscreen() then
                 default = i
@@ -185,12 +214,12 @@ function OptionsScreen.new()
 
         -- The function to call when the value of the UISelectField changes.
         local function callback( val )
-            TexturePacks.setCurrent( val )
+            Settings.setTexturepack( val )
         end
 
         -- Search the value corresponding to the currently selected option or
         -- take the first one and make it the current display value.
-        local default = 1
+        local default = Settings.getTexturepack()
         for i, option in ipairs( listOfValues ) do
             if option.value == TexturePacks.getName() then
                 default = i
@@ -204,6 +233,25 @@ function OptionsScreen.new()
     end
 
     ---
+    -- Creates a button which allows the user to apply the new settings.
+    -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
+    -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
+    -- @tparam  number       index The index the UISelectField will have in the UIList.
+    -- @treturn UITextButton       The newly created UITextButton.
+    --
+    local function createApplyButton( lx, ly, index )
+        -- The function to call when the button is activated.
+        local function callback()
+            applySettings()
+        end
+
+        -- Create the UITextButton.
+        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
+        button:init( Translator.getText( 'ui_apply' ), callback )
+        return button
+    end
+
+    ---
     -- Creates a button which allows the user to return to the main menu.
     -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
@@ -213,7 +261,7 @@ function OptionsScreen.new()
     local function createBackButton( lx, ly, index )
         -- The function to call when the button is activated.
         local function callback()
-            ScreenManager.switch( 'mainmenu' )
+            close()
         end
 
         -- Create the UITextButton.
@@ -235,7 +283,8 @@ function OptionsScreen.new()
         buttonList:addChild(    createLanguageOption( lx, ly, 1 ))
         buttonList:addChild(  createFullscreenOption( lx, ly, 2 ))
         buttonList:addChild( createTexturePackOption( lx, ly, 3 ))
-        buttonList:addChild(        createBackButton( lx, ly, 4 ))
+        buttonList:addChild(       createApplyButton( lx, ly, 4 ))
+        buttonList:addChild(        createBackButton( lx, ly, 5 ))
     end
 
     -- ------------------------------------------------
@@ -246,6 +295,7 @@ function OptionsScreen.new()
     -- Initialises the OptionsScreen.
     --
     function self:init()
+        Settings.load()
         font = TexturePacks.getFont()
 
         createTitle()
@@ -278,7 +328,7 @@ function OptionsScreen.new()
     --
     function self:keypressed( key, scancode )
         if scancode == 'escape' then
-            ScreenManager.switch( 'mainmenu' )
+            close()
         end
         buttonList:keypressed( key, scancode )
     end

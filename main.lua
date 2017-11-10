@@ -74,7 +74,8 @@ function love.load( args )
         health      = require( 'src.ui.screens.HealthScreen'      ),
         gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
-        loadgame    = require( 'src.ui.screens.SavegameScreen'    )
+        loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
+        confirm     = require( 'src.ui.screens.ConfirmationModal' )
     };
 
     ScreenManager.init( screens, 'bootloading' );

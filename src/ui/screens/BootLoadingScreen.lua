@@ -21,18 +21,13 @@ local SoundManager = require( 'src.SoundManager' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local BootLoadingScreen = {}
-
--- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local DEFAULT_LOCALE = 'en_EN'
 
 -- ------------------------------------------------
 -- Constructor
@@ -43,8 +38,6 @@ function BootLoadingScreen.new()
 
     function self:init()
         local startTime = love.timer.getTime()
-
-        Translator.init( DEFAULT_LOCALE )
 
         TexturePacks.load()
 
@@ -59,6 +52,13 @@ function BootLoadingScreen.new()
 
         ProceduralMapGenerator.load()
         PrefabLoader.load()
+
+        -- Load settings.
+        Settings.load()
+
+        Translator.init( Settings.getLocale() )
+        TexturePacks.setCurrent( Settings.getTexturepack() )
+        love.window.setFullscreen( Settings.getFullscreen() )
 
         local endTime = love.timer.getTime()
         Log.debug( string.format( 'Loading game resources took %.3f seconds!', endTime - startTime ), 'BootLoadingScreen' )
