@@ -21,7 +21,7 @@ local TexturePacks = {}
 -- ------------------------------------------------
 
 local TEXTURE_PACK_FOLDER     = 'res/texturepacks/'
-local MOD_TEXTURE_PACK_FOLDER = 'mod/texturepacks/'
+local MOD_TEXTURE_PACK_FOLDER = 'mods/texturepacks/'
 local INFO_FILE_NAME = 'info'
 local SPRITE_DEFINITIONS = 'sprites'
 local COLOR_DEFINITIONS  = 'colors'
