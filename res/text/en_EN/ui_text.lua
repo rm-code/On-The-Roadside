@@ -47,7 +47,7 @@ locale.strings = {
     ['ui_ingame_save_game'] = "Save game",
     ['ui_ingame_open_help'] = "Show help",
     ['ui_ingame_exit'] = "Main menu",
-    ['ui_ingame_close'] = "Close",
+    ['ui_ingame_resume'] = "Resume",
 
     -- Help Screen
     ['ui_help_header'] = 'Help'

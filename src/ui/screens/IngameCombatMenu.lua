@@ -89,9 +89,9 @@ function IngameCombatMenu.new()
         exitButton:init( Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
         buttonList:addChild( exitButton )
 
-        local closeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
-        closeButton:init( Translator.getText( 'ui_ingame_close' ), function() ScreenManager.pop() end )
-        buttonList:addChild( closeButton )
+        local resumeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
+        resumeButton:init( Translator.getText( 'ui_ingame_resume' ), function() ScreenManager.pop() end )
+        buttonList:addChild( resumeButton )
     end
 
     -- ------------------------------------------------
