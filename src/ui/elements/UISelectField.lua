@@ -71,10 +71,10 @@ function UISelectField.new( px, py, x, y, w, h )
         callback( listOfValues[current].value )
     end
 
-    function self:keypressed( _, scancode )
-        if scancode == 'left' then
+    function self:command( cmd )
+        if cmd == 'left' then
             self:prev()
-        elseif scancode == 'right' then
+        elseif cmd == 'right' then
             self:next()
         end
     end

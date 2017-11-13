@@ -167,7 +167,13 @@ function SplashScreen.new()
     end
 
     function self:keypressed( _, scancode )
-        buttonList:keypressed( _, scancode )
+        if scancode == 'left' then
+            buttonList:command( 'left' )
+        elseif scancode == 'right' then
+            buttonList:command( 'right' )
+        elseif scancode == 'return' then
+            buttonList:command( 'activate' )
+        end
 
         if scancode == 'f1' then
             debug = not debug

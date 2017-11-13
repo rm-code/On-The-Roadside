@@ -51,15 +51,15 @@ function UIVerticalList.new( px, py, x, y, w, h )
         end
     end
 
-    function self:keypressed( key, scancode )
-        if scancode == 'up' then
+    function self:command( cmd )
+        if cmd == 'up' then
             self:deactivateMouse()
             self:prev()
-        elseif scancode == 'down' then
+        elseif cmd == 'down' then
             self:deactivateMouse()
             self:next()
         elseif self:getActiveElement() then
-            self:getActiveElement():keypressed( key, scancode )
+            self:getActiveElement():command( cmd )
         end
     end
 

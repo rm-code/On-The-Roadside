@@ -175,14 +175,14 @@ function UIItemStats.new( px, py, x, y, w, h )
         addDescriptionArea( item )
     end
 
-    function self:keypressed( k )
+    function self:command( cmd )
         if not self:isMouseOver() or not description then
             return
         end
 
-        if k == 'up' then
+        if cmd == 'up' then
             description:scroll( -1 )
-        elseif k == 'down' then
+        elseif cmd == 'down' then
             description:scroll( 1 )
         end
     end

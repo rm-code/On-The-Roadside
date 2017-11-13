@@ -52,15 +52,15 @@ function UIHorizontalList.new( px, py, x, y, w, h )
         end
     end
 
-    function self:keypressed( key, scancode )
-        if scancode == 'right' then
+    function self:command( cmd )
+        if cmd == 'right' then
             self:deactivateMouse()
             self:next()
-        elseif scancode == 'left' then
+        elseif cmd == 'left' then
             self:deactivateMouse()
             self:prev()
         elseif self:getActiveElement() then
-            self:getActiveElement():keypressed( key, scancode )
+            self:getActiveElement():command( cmd )
         end
     end
 

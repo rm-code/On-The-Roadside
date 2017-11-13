@@ -79,8 +79,8 @@ function UITextButton.new( px, py, x, y, w, h )
         callback()
     end
 
-    function self:keypressed( _, scancode )
-        if scancode == 'return' then
+    function self:command( cmd )
+        if cmd == 'activate' then
             self:activate()
         end
     end

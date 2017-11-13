@@ -358,12 +358,16 @@ function InventoryScreen.new()
     -- Input Callbacks
     -- ------------------------------------------------
 
-    function self:keypressed( key )
+    function self:keypressed( key, scancode )
         if key == 'escape' or key == 'i' then
             ScreenManager.pop()
         end
 
-        itemStats:keypressed( key )
+        if scancode == 'up' then
+            itemStats:command( 'up' )
+        elseif scancode == 'down' then
+            itemStats:command( 'down' )
+        end
     end
 
     function self:mousepressed( _, _, button )

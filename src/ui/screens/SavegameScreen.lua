@@ -160,11 +160,18 @@ function SavegameScreen.new()
         footer:draw()
     end
 
-    function self:keypressed( key, scancode )
+    function self:keypressed( _, scancode )
         if scancode == 'escape' then
             ScreenManager.switch( 'mainmenu' )
         end
-        buttonList:keypressed( key, scancode )
+
+        if scancode == 'up' then
+            buttonList:command( 'up' )
+        elseif scancode == 'down' then
+            buttonList:command( 'down' )
+        elseif scancode == 'return' then
+            buttonList:command( 'activate' )
+        end
     end
 
     function self:mousereleased()

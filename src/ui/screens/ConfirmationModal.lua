@@ -146,7 +146,14 @@ function ConfirmationModal.new()
         if key == 'escape' then
             falseCallback()
         end
-        buttonList:keypressed( key, scancode )
+
+        if scancode == 'left' then
+            buttonList:command( 'left' )
+        elseif scancode == 'right' then
+            buttonList:command( 'right' )
+        elseif scancode == 'return' then
+            buttonList:command( 'activate' )
+        end
     end
 
     ---

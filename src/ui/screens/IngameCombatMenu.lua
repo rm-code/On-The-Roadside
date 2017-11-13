@@ -124,7 +124,13 @@ function IngameCombatMenu.new()
     end
 
     function self:keypressed( _, scancode )
-        buttonList:keypressed( _, scancode );
+        if scancode == 'up' then
+            buttonList:command( 'up' )
+        elseif scancode == 'down' then
+            buttonList:command( 'down' )
+        elseif scancode == 'return' then
+            buttonList:command( 'activate' )
+        end
 
         if scancode == 'escape' then
             ScreenManager.pop();

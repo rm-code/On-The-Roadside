@@ -326,11 +326,22 @@ function OptionsScreen.new()
     ---
     -- Handle keypressed events.
     --
-    function self:keypressed( key, scancode )
+    function self:keypressed( _, scancode )
         if scancode == 'escape' then
             close()
         end
-        buttonList:keypressed( key, scancode )
+
+        if scancode == 'up' then
+            buttonList:command( 'up' )
+        elseif scancode == 'down' then
+            buttonList:command( 'down' )
+        elseif scancode == 'left' then
+            buttonList:command( 'left' )
+        elseif scancode == 'right' then
+            buttonList:command( 'right' )
+        elseif scancode == 'return' then
+            buttonList:command( 'activate' )
+        end
     end
 
     ---
