@@ -280,11 +280,11 @@ function OptionsScreen.new()
         buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         -- Create the UIElements and add them to the list.
-        buttonList:addChild(    createLanguageOption( lx, ly, 1 ))
-        buttonList:addChild(  createFullscreenOption( lx, ly, 2 ))
-        buttonList:addChild( createTexturePackOption( lx, ly, 3 ))
-        buttonList:addChild(       createApplyButton( lx, ly, 4 ))
-        buttonList:addChild(        createBackButton( lx, ly, 5 ))
+        buttonList:addChild(    createLanguageOption( lx, ly, 0 ))
+        buttonList:addChild(  createFullscreenOption( lx, ly, 1 ))
+        buttonList:addChild( createTexturePackOption( lx, ly, 2 ))
+        buttonList:addChild(       createApplyButton( lx, ly, 3 ))
+        buttonList:addChild(        createBackButton( lx, ly, 4 ))
     end
 
     -- ------------------------------------------------
