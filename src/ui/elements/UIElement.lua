@@ -75,10 +75,6 @@ function UIElement.new( ox, oy, rx, ry, w, h )
         self.children[#self.children + 1] = child
     end
 
-    function self:clearChildren()
-        self.children = {}
-    end
-
     ---
     -- Sets the origin for this UIElement and updates the absolute position
     -- accordingly.
