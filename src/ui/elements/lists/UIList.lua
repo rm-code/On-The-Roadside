@@ -93,10 +93,6 @@ function UIList.new( px, py, x, y, w, h )
         cursor = ncursor
     end
 
-    function self:unsetCursor()
-        cursor = 0
-    end
-
     return self
 end
 
