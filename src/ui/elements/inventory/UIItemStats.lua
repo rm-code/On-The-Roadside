@@ -15,7 +15,7 @@ local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 -- Module
 -- ------------------------------------------------
 
-local UIItemStats = {}
+local UIItemStats = UIElement:subclass( 'UIItemStats' )
 
 -- ------------------------------------------------
 -- Constants
@@ -40,172 +40,165 @@ local VERTICAL_DESCRIPTION_OFFSET = 12
 -- Constructor
 -- ------------------------------------------------
 
-function UIItemStats.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIItemStats' )
+function UIItemStats:initialize( px, py, x, y, w, h )
+    UIElement.initialize( self, px, py, x, y, w, h )
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+    self.nameColor  = TexturePacks.getColor( 'ui_inventory_stats_name' )
+    self.typeColor  = TexturePacks.getColor( 'ui_inventory_stats_type' )
+    self.valueColor = TexturePacks.getColor( 'ui_inventory_stats_value' )
+    self.descColor  = TexturePacks.getColor( 'ui_inventory_description' )
 
-    local nameColor  = TexturePacks.getColor( 'ui_inventory_stats_name' )
-    local typeColor  = TexturePacks.getColor( 'ui_inventory_stats_type' )
-    local valueColor = TexturePacks.getColor( 'ui_inventory_stats_value' )
-    local descColor  = TexturePacks.getColor( 'ui_inventory_description' )
+    self.stats = nil
+    self.description = nil
+end
 
-    local stats
-    local description
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+local function addHeader( self, text, item )
+    text:add({ self.nameColor, Translator.getText( item:getID() )}, 0, 0 )
+end
 
-    local function addHeader( ntext, item )
-        ntext:add({ nameColor, Translator.getText( item:getID() )}, 0, 0 )
+local function addTypeInformation( self, text, item, tw, th )
+    text:add({ self.typeColor, 'Type:' },             COLUMN_1 * tw, 2 * th )
+    text:add({ self.valueColor, item:getItemType() }, COLUMN_2 * tw, 2 * th )
+
+    -- Add subtype (if the item has one).
+    if item:getItemType() == ITEM_TYPES.WEAPON then
+        text:add({ self.typeColor, 'Weapon:' },          COLUMN_3 * tw, 2 * th )
+        text:add({ self.valueColor, item:getSubType() }, COLUMN_4 * tw, 2 * th )
+    end
+end
+
+local function addWeightInformation( self, text, item, tw, th )
+    local wgt = string.format( '%.1f', item:getWeight() )
+    text:add({ self.typeColor, 'WGT:' }, COLUMN_1 * tw, 3 * th )
+    text:add({ self.valueColor, wgt },   COLUMN_2 * tw, 3 * th )
+
+    local vol = string.format( '%.1f', item:getVolume() )
+    text:add({ self.typeColor, 'VOL:' }, COLUMN_3 * tw, 3 * th )
+    text:add({ self.valueColor, vol },   COLUMN_4 * tw, 3 * th )
+end
+
+local function addContainerInformation( self, text, item, tw, th )
+    if item:getItemType() == ITEM_TYPES.CONTAINER then
+        local volumeLimit = item:getCarryCapacity()
+        text:add({ self.typeColor, 'Capacity:' }, COLUMN_1 * tw, 4 * th )
+        text:add({ self.valueColor, volumeLimit }, COLUMN_2 * tw, 4 * th )
+    end
+end
+
+local function addWeaponInformation( self, text, item, tw, th )
+    if item:getItemType() ~= ITEM_TYPES.WEAPON then
+        return
     end
 
-    local function addTypeInformation( ntext, item, tw, th )
-        ntext:add({ typeColor, 'Type:' },             COLUMN_1 * tw, 2 * th )
-        ntext:add({ valueColor, item:getItemType() }, COLUMN_2 * tw, 2 * th )
-
-        -- Add subtype (if the item has one).
-        if item:getItemType() == ITEM_TYPES.WEAPON then
-            ntext:add({ typeColor, 'Weapon:' },          COLUMN_3 * tw, 2 * th )
-            ntext:add({ valueColor, item:getSubType() }, COLUMN_4 * tw, 2 * th )
-        end
+    if item:getSubType() == WEAPON_TYPES.RANGED then
+        local ammo = item:getMagazine():getCaliber()
+        text:add({ self.typeColor, 'Ammo:' }, COLUMN_1 * tw, 4 * th )
+        text:add({ self.valueColor, ammo },    COLUMN_2 * tw, 4 * th )
+        love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (self.x + self.w * 0.5) * tw, (self.y + 2) * th )
     end
 
-    local function addWeightInformation( ntext, item, tw, th )
-        local wgt = string.format( '%.1f', item:getWeight() )
-        ntext:add({ typeColor, 'WGT:' }, COLUMN_1 * tw, 3 * th )
-        ntext:add({ valueColor, wgt },   COLUMN_2 * tw, 3 * th )
+    text:add({ self.typeColor, 'MODE' },    WEAPON_COLUMN_MODE    * tw, 6 * th )
+    text:add({ self.typeColor, 'AP' },      WEAPON_COLUMN_AP      * tw, 6 * th )
+    text:add({ self.typeColor, 'ACC' },     WEAPON_COLUMN_ACC     * tw, 6 * th )
+    text:add({ self.typeColor, 'ATTACKS' }, WEAPON_COLUMN_ATTACKS * tw, 6 * th )
+    for i, mode in ipairs( item:getModes() ) do
+        text:add({ self.valueColor, mode.name },     WEAPON_COLUMN_MODE    * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.cost },     WEAPON_COLUMN_AP      * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.accuracy }, WEAPON_COLUMN_ACC     * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.attacks  }, WEAPON_COLUMN_ATTACKS * tw, (6+i) * th )
+    end
+end
 
-        local vol = string.format( '%.1f', item:getVolume() )
-        ntext:add({ typeColor, 'VOL:' }, COLUMN_3 * tw, 3 * th )
-        ntext:add({ valueColor, vol },   COLUMN_4 * tw, 3 * th )
+local function addDescriptionHeader( self, text, tw, th )
+    text:add({ self.typeColor, 'Description:' }, COLUMN_1 * tw, (VERTICAL_DESCRIPTION_OFFSET-1) * th )
+end
+
+local function assembleText( self, item )
+    local text = love.graphics.newText( TexturePacks.getFont():get() )
+    local tw, th = TexturePacks.getGlyphDimensions()
+
+    -- Header.
+    addHeader( self, text, item, tw, th )
+
+    -- Add type.
+    addTypeInformation( self, text, item, tw, th )
+
+    -- Add weight and volume information.
+    addWeightInformation( self, text, item, tw, th )
+
+    -- Add container information.
+    addContainerInformation( self, text, item, tw, th )
+
+    -- Add weapon information.
+    addWeaponInformation( self, text, item, tw, th )
+
+    -- Add description header.
+    addDescriptionHeader( self, text, tw, th )
+
+    return text
+end
+
+local function addDescriptionArea( self, item )
+    local tw, _ = TexturePacks.getTileDimensions()
+    local descriptionText = love.graphics.newText( TexturePacks.getFont():get() )
+    descriptionText:setf({ self.descColor, Translator.getText( item:getDescriptionID() )}, (self.w - 1) * tw, 'left' )
+
+    self.description = UIScrollArea( self.ax, self.ay, 0, VERTICAL_DESCRIPTION_OFFSET, self.w, self.h-VERTICAL_DESCRIPTION_OFFSET, descriptionText, descriptionText:getHeight() )
+    self:addChild( self.description )
+end
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function UIItemStats:draw()
+    if not self.stats then
+        return
     end
 
-    local function addContainerInformation( ntext, item, tw, th )
-        if item:getItemType() == ITEM_TYPES.CONTAINER then
-            local volumeLimit = item:getCarryCapacity()
-            ntext:add({ typeColor, 'Capacity:' }, COLUMN_1 * tw, 4 * th )
-            ntext:add({ valueColor, volumeLimit }, COLUMN_2 * tw, 4 * th )
-        end
+    local tw, th = TexturePacks.getTileDimensions()
+
+    love.graphics.draw( self.stats, self.ax * tw, self.ay * th )
+    self.description:draw()
+end
+
+function UIItemStats:setItem( item )
+    self.stats = assembleText( self, item )
+    addDescriptionArea( self, item )
+end
+
+function UIItemStats:command( cmd )
+    if not self:isMouseOver() or not self.description then
+        return
     end
 
-    local function addWeaponInformation( ntext, item, tw, th )
-        if item:getItemType() ~= ITEM_TYPES.WEAPON then
-            return
-        end
+    if cmd == 'up' then
+        self.description:scroll( -1 )
+    elseif cmd == 'down' then
+        self.description:scroll( 1 )
+    end
+end
 
-        if item:getSubType() == WEAPON_TYPES.RANGED then
-            local ammo = item:getMagazine():getCaliber()
-            ntext:add({ typeColor, 'Ammo:' }, COLUMN_1 * tw, 4 * th )
-            ntext:add({ valueColor, ammo },    COLUMN_2 * tw, 4 * th )
-            love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (x + w * 0.5) * tw, (y + 2) * th )
-        end
-
-        ntext:add({ typeColor, 'MODE' },    WEAPON_COLUMN_MODE    * tw, 6 * th )
-        ntext:add({ typeColor, 'AP' },      WEAPON_COLUMN_AP      * tw, 6 * th )
-        ntext:add({ typeColor, 'ACC' },     WEAPON_COLUMN_ACC     * tw, 6 * th )
-        ntext:add({ typeColor, 'ATTACKS' }, WEAPON_COLUMN_ATTACKS * tw, 6 * th )
-        for i, mode in ipairs( item:getModes() ) do
-            ntext:add({ valueColor, mode.name },     WEAPON_COLUMN_MODE    * tw, (6+i) * th )
-            ntext:add({ valueColor, mode.cost },     WEAPON_COLUMN_AP      * tw, (6+i) * th )
-            ntext:add({ valueColor, mode.accuracy }, WEAPON_COLUMN_ACC     * tw, (6+i) * th )
-            ntext:add({ valueColor, mode.attacks  }, WEAPON_COLUMN_ATTACKS * tw, (6+i) * th )
-        end
+function UIItemStats:mousepressed( mx, my )
+    if not self:isMouseOver() or not self.description then
+        return
     end
 
-    local function addDescriptionHeader( ntext, tw, th )
-        ntext:add({ typeColor, 'Description:' }, COLUMN_1 * tw, (VERTICAL_DESCRIPTION_OFFSET-1) * th )
+    if self.description:isMouseOver() then
+        self.description:mousepressed( mx, my )
+    end
+end
+
+function UIItemStats:wheelmoved( _, dy )
+    if not self:isMouseOver() or not self.description then
+        return
     end
 
-    local function assembleText( item )
-        local ntext = love.graphics.newText( TexturePacks.getFont():get() )
-        local tw, th = TexturePacks.getGlyphDimensions()
-
-        -- Header.
-        addHeader( ntext, item, tw, th )
-
-        -- Add type.
-        addTypeInformation( ntext, item, tw, th )
-
-        -- Add weight and volume information.
-        addWeightInformation( ntext, item, tw, th )
-
-        -- Add container information.
-        addContainerInformation( ntext, item, tw, th )
-
-        -- Add weapon information.
-        addWeaponInformation( ntext, item, tw, th )
-
-        -- Add description header.
-        addDescriptionHeader( ntext, tw, th )
-
-        return ntext
-    end
-
-    local function addDescriptionArea( item )
-        local tw, _ = TexturePacks.getTileDimensions()
-        local descriptionText = love.graphics.newText( TexturePacks.getFont():get() )
-        descriptionText:setf({ descColor, Translator.getText( item:getDescriptionID() )}, (self.w - 1) * tw, 'left' )
-
-        description = UIScrollArea.new( self.ax, self.ay, 0, VERTICAL_DESCRIPTION_OFFSET, self.w, self.h-VERTICAL_DESCRIPTION_OFFSET )
-        description:init( descriptionText, descriptionText:getHeight() )
-        self:addChild( description )
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:draw()
-        if not stats then
-            return
-        end
-
-        local tw, th = TexturePacks.getTileDimensions()
-
-        love.graphics.draw( stats, self.ax * tw, self.ay * th )
-        description:draw()
-    end
-
-    function self:setItem( item )
-        stats = assembleText( item )
-        addDescriptionArea( item )
-    end
-
-    function self:command( cmd )
-        if not self:isMouseOver() or not description then
-            return
-        end
-
-        if cmd == 'up' then
-            description:scroll( -1 )
-        elseif cmd == 'down' then
-            description:scroll( 1 )
-        end
-    end
-
-    function self:mousepressed( mx, my )
-        if not self:isMouseOver() or not description then
-            return
-        end
-
-        if description:isMouseOver() then
-            description:mousepressed( mx, my )
-        end
-    end
-
-    function self:wheelmoved( _, dy )
-        if not self:isMouseOver() or not description then
-            return
-        end
-
-        description:scroll( dy )
-    end
-
-    return self
+    self.description:scroll( dy )
 end
 
 return UIItemStats

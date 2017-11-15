@@ -198,10 +198,9 @@ function ChangelogScreen.new()
     --
     local function createButtons()
         local lx, ly = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        buttonList = UIVerticalList.new( lx, ly + SCROLLAREA_GRID_HEIGHT + 2, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
+        buttonList = UIVerticalList( lx, ly + SCROLLAREA_GRID_HEIGHT + 2, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
 
-        local closeButton = UITextButton.new( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1 )
-        closeButton:init( Translator.getText( 'ui_back' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local closeButton = UITextButton( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1, Translator.getText( 'ui_back' ), function() ScreenManager.switch( 'mainmenu' ) end )
         buttonList:addChild( closeButton )
     end
 
@@ -218,8 +217,7 @@ function ChangelogScreen.new()
         createButtons()
 
         local ox, oy = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        scrollarea = UIScrollArea.new( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        scrollarea:init( text, textHeight )
+        scrollarea = UIScrollArea( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT, text, textHeight )
 
         footer = UICopyrightFooter.new()
     end

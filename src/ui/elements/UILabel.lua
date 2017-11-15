@@ -14,38 +14,37 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local UILabel = {}
+local UILabel = UIElement:subclass( 'UILabel' )
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function UILabel.new( px, py, x, y, w, h, text, color )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UILabel' )
+function UILabel:initialize( px, py, x, y, w, h, text, color )
+    UIElement.initialize( self, px, py, x, y, w, h )
 
-    color = color or 'sys_reset'
+    self.text = text
+    self.color = color or 'sys_reset'
+end
 
+function UILabel:draw()
     local tw, th = TexturePacks.getTileDimensions()
 
-    function self:draw()
-        TexturePacks.setColor( color )
-        love.graphics.print( text, self.ax * tw, self.ay * th )
-        TexturePacks.resetColor()
-    end
+    TexturePacks.setColor( self.color )
+    love.graphics.print( self.text, self.ax * tw, self.ay * th )
+    TexturePacks.resetColor()
+end
 
-    function self:setText( ntextID )
-        text = Translator.getText( ntextID )
-    end
+function UILabel:setText( ntextID )
+    self.text = Translator.getText( ntextID )
+end
 
-    function self:setColor( ncolor )
-        color = ncolor
-    end
+function UILabel:setColor( ncolor )
+    self.color = ncolor
+end
 
-    function self:setUpper( nupper )
-        text = nupper and string.upper( text ) or text
-    end
-
-    return self
+function UILabel:setUpper( nupper )
+    self.text = nupper and string.upper( self.text ) or self.text
 end
 
 return UILabel

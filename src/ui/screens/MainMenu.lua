@@ -108,26 +108,21 @@ function SplashScreen.new()
         local _, sh = GridHelper.getScreenGridDimensions()
         local ly = sh - BUTTON_LIST_Y
 
-        buttonList = UIHorizontalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIHorizontalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
-        local newGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        newGameButton:init( Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
+        local newGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
         buttonList:addChild( newGameButton )
 
-        local loadPreviousGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        loadPreviousGameButton:init( Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
+        local loadPreviousGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
         buttonList:addChild( loadPreviousGameButton )
 
-        local openOptionsButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        openOptionsButton:init( Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
+        local openOptionsButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
         buttonList:addChild( openOptionsButton )
 
-        local changelogButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        changelogButton:init( Translator.getText( 'ui_main_menu_changelog' ), function() ScreenManager.switch( 'changelog' ) end )
+        local changelogButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_changelog' ), function() ScreenManager.switch( 'changelog' ) end )
         buttonList:addChild( changelogButton )
 
-        local exitGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        exitGameButton:init( Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
+        local exitGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
         buttonList:addChild( exitGameButton )
     end
 

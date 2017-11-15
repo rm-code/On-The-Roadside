@@ -14,88 +14,74 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local UITextButton = {}
+local UITextButton = UIElement:subclass( 'UITextButton' )
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function UITextButton.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UITextButton' )
+function UITextButton:initialize( ox, oy, rx, ry, w, h, text, callback, alignMode, active )
+    UIElement.initialize( self, ox, oy, rx, ry, w, h )
+    self.text = text
+    self.callback = callback
+    self.alignMode = alignMode or 'center'
+    self.active = active or true
+end
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
 
-    local text
-    local callback
-    local alignMode
-    local active
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    local function selectColor()
-        if active then
-            if love.mouse.isVisible() and self:isMouseOver() then
-                return 'ui_button_hot'
-            elseif self:hasFocus() then
-                return 'ui_button_focus'
-            end
-            return 'ui_button'
-        elseif not active then
-            if love.mouse.isVisible() and self:isMouseOver() then
-                return 'ui_button_inactive_hot'
-            elseif self:hasFocus() then
-                return 'ui_button_inactive_focus'
-            end
-            return 'ui_button_inactive'
+local function selectColor( self )
+    if self.active then
+        if love.mouse.isVisible() and self:isMouseOver() then
+            return 'ui_button_hot'
+        elseif self:hasFocus() then
+            return 'ui_button_focus'
         end
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init( ntext, ncallback, nalignMode )
-        text = ntext
-        callback = ncallback
-        alignMode = nalignMode or 'center'
-        active = true
-    end
-
-    function self:draw()
-        local tw, th = TexturePacks.getTileDimensions()
-        TexturePacks.setColor( selectColor() )
-        love.graphics.print( text, self.ax * tw + TexturePacks.getFont():align( alignMode, text, self.w * tw ), self.ay * th )
-        TexturePacks.resetColor()
-    end
-
-    function self:activate()
-        if not active then
-            return
+        return 'ui_button'
+    elseif not self.active then
+        if love.mouse.isVisible() and self:isMouseOver() then
+            return 'ui_button_inactive_hot'
+        elseif self:hasFocus() then
+            return 'ui_button_inactive_focus'
         end
-        callback()
+        return 'ui_button_inactive'
     end
+end
 
-    function self:command( cmd )
-        if cmd == 'activate' then
-            self:activate()
-        end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function UITextButton:draw()
+    local tw, th = TexturePacks.getTileDimensions()
+    TexturePacks.setColor( selectColor( self ))
+    love.graphics.print( self.text, self.ax * tw + TexturePacks.getFont():align( self.alignMode, self.text, self.w * tw ), self.ay * th )
+    TexturePacks.resetColor()
+end
+
+function UITextButton:activate()
+    if not self.active then
+        return
     end
+    self.callback()
+end
 
-    function self:mousereleased( _, _, _, _ )
-        if self:isMouseOver() then
-            self:activate()
-        end
+function UITextButton:command( cmd )
+    if cmd == 'activate' then
+        self:activate()
     end
+end
 
-    function self:setActive( nactive )
-        active = nactive
+function UITextButton:mousereleased( _, _, _, _ )
+    if self:isMouseOver() then
+        self:activate()
     end
+end
 
-    return self
+function UITextButton:setActive( nactive )
+    self.active = nactive
 end
 
 return UITextButton

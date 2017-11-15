@@ -15,114 +15,93 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local UIScrollArea = {}
+local UIScrollArea = UIElement:subclass( 'UIScrollArea' )
 
-function UIScrollArea.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIScrollArea' )
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+local function createScrollbar( self, height )
+    self.scrollable = true
 
-    local text
-    local offset
-    local scrollAreaHeight
+    -- The height of the scroll content in grid space.
+    local contentHeight = height / TexturePacks.getFont():getGlyphHeight()
 
-    local scrollable
+    -- The max offset is calculated by taking the height of the scroll area
+    -- the text height (transformed to grid space). This will stop the scroll
+    -- offset as soon as the last line hits the bottom of the scroll area.
+    self.scrollAreaHeight = contentHeight - self.h
 
-    local upButton
-    local downButton
-    local scrollbar
+    -- The up button is placed in the top right corner of the scroll area.
+    self.upButton = UIButton( self.ax, self.ay, self.w-1, 0, 1, 1, 'ui_scroll_area_up', function() self:scroll(-1) end )
+    self:addChild( self.upButton )
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+    self.downButton = UIButton( self.ax, self.ay, self.w-1, self.h-1, 1, 1, 'ui_scroll_area_down', function() self:scroll(1) end )
+    self:addChild( self.downButton )
 
-    local function createScrollbar( height )
-        scrollable = true
+    -- Scroll bar is positioned between the buttons.
+    self.scrollbar = UIScrollbar( self.ax, self.ay, self.w-1, 1, 1, self.h-2, self.h, contentHeight, self.scrollAreaHeight, function( noffset ) self:scroll( noffset ) end )
+    self:addChild( self.scrollbar )
+end
 
-        -- The height of the scroll content in grid space.
-        local contentHeight = height / TexturePacks.getFont():getGlyphHeight()
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        -- The max offset is calculated by taking the height of the scroll area
-        -- the text height (transformed to grid space). This will stop the scroll
-        -- offset as soon as the last line hits the bottom of the scroll area.
-        scrollAreaHeight = contentHeight - self.h
+function UIScrollArea:initialize( ox, oy, rx, ry, w, h, text, textHeight )
+    UIElement.initialize( self, ox, oy, rx, ry, w, h )
 
-        -- The up button is placed in the top right corner of the scroll area.
-        upButton = UIButton.new( self.ax, self.ay, self.w-1, 0, 1, 1 )
-        upButton:init( 'ui_scroll_area_up', function() self:scroll(-1) end )
-        self:addChild( upButton )
+    self.offset = 0
+    self:setText( text, textHeight )
+end
 
-        downButton = UIButton.new( self.ax, self.ay, self.w-1, self.h-1, 1, 1 )
-        downButton:init( 'ui_scroll_area_down', function() self:scroll(1) end )
-        self:addChild( downButton )
+function UIScrollArea:draw()
+    local tw, th = TexturePacks.getTileDimensions()
 
-        -- Scroll bar is positioned between the buttons.
-        scrollbar = UIScrollbar.new( self.ax, self.ay, self.w-1, 1, 1, self.h-2, 'ui_scroll_area_down' )
-        scrollbar:init( self.h, contentHeight, scrollAreaHeight, function( noffset ) self:scroll( noffset ) end )
-        self:addChild( scrollbar )
+    love.graphics.setScissor( self.ax * tw, self.ay * th, self.w * tw, self.h * th )
+    love.graphics.draw( self.text, self.ax * tw, (self.ay-self.offset) * th )
+    love.graphics.setScissor()
+
+    if self.scrollable then
+        self.upButton:draw()
+        self.downButton:draw()
+        self.scrollbar:draw()
+    end
+end
+
+function UIScrollArea:scroll( dir )
+    if not self.scrollable then
+        return
     end
 
-    -- ------------------------------------------------
-    -- Public Method
-    -- ------------------------------------------------
+    self.offset = self.offset + dir
+    self.offset = math.max( 0, math.min( self.offset, self.scrollAreaHeight ))
+    self.scrollbar:scroll( self.offset )
+end
 
-    function self:init( ntext, nheight )
-        offset = 0
-        self:setText( ntext, nheight )
+function UIScrollArea:setText( ntext, nheight )
+    self.text = ntext
+
+    local _, gh = TexturePacks.getGlyphDimensions()
+    if math.floor( nheight / gh ) > self.h then
+        createScrollbar( self, nheight )
+    else
+        self.scrollable = false
+    end
+end
+
+function UIScrollArea:mousepressed( mx, my )
+    if not self.scrollable then
+        return
     end
 
-    function self:draw()
-        local tw, th = TexturePacks.getTileDimensions()
-
-        love.graphics.setScissor( self.ax * tw, self.ay * th, self.w * tw, self.h * th )
-        love.graphics.draw( text, self.ax * tw, (self.ay-offset) * th )
-        love.graphics.setScissor()
-
-        if scrollable then
-            upButton:draw()
-            downButton:draw()
-            scrollbar:draw()
-        end
+    if self.upButton:isMouseOver() then
+        self.upButton:activate()
+    elseif self.downButton:isMouseOver() then
+        self.downButton:activate()
+    elseif self.scrollbar:isMouseOver() then
+        self.scrollbar:mousepressed( mx, my )
     end
-
-    function self:scroll( dir )
-        if not scrollable then
-            return
-        end
-
-        offset = offset + dir
-        offset = math.max( 0, math.min( offset, scrollAreaHeight ))
-        scrollbar:scroll( offset )
-    end
-
-    function self:setText( ntext, nheight )
-        text = ntext
-
-        local _, gh = TexturePacks.getGlyphDimensions()
-        if math.floor( nheight / gh ) > self.h then
-            createScrollbar( nheight )
-        else
-            scrollable = false
-        end
-    end
-
-    function self:mousepressed( mx, my )
-        if not scrollable then
-            return
-        end
-
-        if upButton:isMouseOver() then
-            upButton:activate()
-        elseif downButton:isMouseOver() then
-            downButton:activate()
-        elseif scrollbar:isMouseOver() then
-            scrollbar:mousepressed( mx, my )
-        end
-    end
-
-    return self
 end
 
 return UIScrollArea

@@ -49,7 +49,7 @@ function IngameCombatMenu.new()
     -- Generates the outlines for this screen.
     --
     local function generateOutlines()
-        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         -- Horizontal borders.
         for ox = 0, UI_GRID_WIDTH-1 do
@@ -75,22 +75,18 @@ function IngameCombatMenu.new()
     local function createButtons()
         local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        buttonList = UIVerticalList.new( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        buttonList = UIVerticalList( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        local saveGameButton = UITextButton.new( lx, ly, 0, 3, UI_GRID_WIDTH, 1 )
-        saveGameButton:init( Translator.getText( 'ui_ingame_save_game' ), saveGame )
+        local saveGameButton = UITextButton( lx, ly, 0, 3, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_save_game' ), saveGame )
         buttonList:addChild( saveGameButton )
 
-        local openHelpButton = UITextButton.new( lx, ly, 0, 4, UI_GRID_WIDTH, 1 )
-        openHelpButton:init( Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
+        local openHelpButton = UITextButton( lx, ly, 0, 4, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
         buttonList:addChild( openHelpButton )
 
-        local exitButton = UITextButton.new( lx, ly, 0, 5, UI_GRID_WIDTH, 1 )
-        exitButton:init( Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local exitButton = UITextButton( lx, ly, 0, 5, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
         buttonList:addChild( exitButton )
 
-        local resumeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
-        resumeButton:init( Translator.getText( 'ui_ingame_resume' ), function() ScreenManager.pop() end )
+        local resumeButton = UITextButton( lx, ly, 0, 6, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_resume' ), function() ScreenManager.pop() end )
         buttonList:addChild( resumeButton )
     end
 
@@ -104,7 +100,7 @@ function IngameCombatMenu.new()
         tw, th = TexturePacks.getTileDimensions()
         x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         generateOutlines()
 

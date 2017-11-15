@@ -89,9 +89,7 @@ function SavegameScreen.new()
         local function callback()
             ScreenManager.switch( 'mainmenu' )
         end
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( Translator.getText( 'ui_back' ), callback )
-        return button
+        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_back' ), callback )
     end
 
     local function createSaveGameEntry( lx, ly, index, item, folder )
@@ -105,10 +103,7 @@ function SavegameScreen.new()
             end
         end
 
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( str, callback )
-        button:setActive( version == getVersion() )
-        return button
+        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, str, callback, 'center', version == getVersion() )
     end
 
 
@@ -116,7 +111,7 @@ function SavegameScreen.new()
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = BUTTON_LIST_Y
 
-        buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         -- Create entries for last five savegames.
         local items = love.filesystem.getDirectoryItems( SaveHandler.getSaveFolder() )

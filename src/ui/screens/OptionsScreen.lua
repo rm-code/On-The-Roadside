@@ -155,9 +155,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        field:init( Translator.getText( 'ui_lang' ), listOfValues, callback, default )
-        return field
+        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_lang' ), listOfValues, callback, default )
     end
 
     ---
@@ -190,9 +188,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        field:init( Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
-        return field
+        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
     end
 
     ---
@@ -227,9 +223,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        local field = UISelectField.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        field:init( Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
-        return field
+        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
     end
 
     ---
@@ -246,9 +240,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UITextButton.
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( Translator.getText( 'ui_apply' ), callback )
-        return button
+        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_apply' ), callback )
     end
 
     ---
@@ -265,9 +257,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UITextButton.
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( Translator.getText( 'ui_back' ), callback )
-        return button
+        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_back' ), callback )
     end
 
     ---
@@ -277,7 +267,7 @@ function OptionsScreen.new()
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = BUTTON_LIST_Y
 
-        buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         -- Create the UIElements and add them to the list.
         buttonList:addChild(    createLanguageOption( lx, ly, 0 ))

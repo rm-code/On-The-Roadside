@@ -13,7 +13,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local UIScrollbar = {}
+local UIScrollbar = UIElement:subclass( 'UIScrollbar' )
 
 -- ------------------------------------------------
 -- Constants
@@ -21,107 +21,75 @@ local UIScrollbar = {}
 
 local MIN_CURSOR_HEIGHT = 1
 
+
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function UIScrollbar.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIScrollbar' )
+local function calculateViewportContentRatio( viewportHeight, contentHeight )
+    return viewportHeight / contentHeight
+end
 
-    -- ------------------------------------------------
-    -- Private attributes
-    -- ------------------------------------------------
+local function calculateCursorHeight( height, viewportContentRatio )
+    return math.min( math.max( height * viewportContentRatio, MIN_CURSOR_HEIGHT ), height )
+end
 
-    local tileset = TexturePacks.getTileset()
-    local cursor  = TexturePacks.getSprite( 'ui_scrollbar_cursor' )
-    local element = TexturePacks.getSprite( 'ui_scrollbar_element' )
+local function calculateCursorPosition( self, offset )
+    return ( offset / self.maxOffset ) * self.scrollableHeight
+end
 
-    local viewportHeight
-    local contentHeight
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    local viewportContentRatio
+function UIScrollbar:initialize( px, py, x, y, w, h, viewportHeight, contentHeight, maxOffset, callback )
+    UIElement.initialize( self, px, py, x, y, w, h )
 
-    local cursorHeight
-    local barScrollableHeight
-    local cursorPosition
+    self.cursor  = TexturePacks.getSprite( 'ui_scrollbar_cursor' )
+    self.element = TexturePacks.getSprite( 'ui_scrollbar_element' )
 
-    local maxOffset
+    -- The ratio between the viewport and the content to display.
+    local viewportContentRatio = calculateViewportContentRatio( viewportHeight, contentHeight )
 
-    local callback
+    self.maxOffset = maxOffset
+    self.cursorHeight = calculateCursorHeight( self.h, viewportContentRatio )
+    self.scrollableHeight = self.h - self.cursorHeight
+    self.cursorPosition = calculateCursorPosition( self, 0 )
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+    self.callback = callback
+end
 
-    local function calculateViewportContentRatio()
-        return viewportHeight / contentHeight
+function UIScrollbar:draw()
+    local tw, th = TexturePacks.getTileDimensions()
+
+    -- Draw the bar.
+    for oy = 0, self.h-1 do
+        TexturePacks.setColor( 'ui_scrollbar_element' )
+        love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), self.element, self.ax * tw, (self.ay+oy) * th )
     end
 
-    local function calculateCursorHeight()
-        return math.min( math.max( self.h * viewportContentRatio, MIN_CURSOR_HEIGHT ), self.h )
+    -- Draw the cursor.
+    for oy = 0, self.cursorHeight-1 do
+        TexturePacks.setColor( 'ui_scrollbar_cursor' )
+        love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), self.cursor, self.ax * tw, math.ceil((self.ay+oy+self.cursorPosition) * th ))
     end
 
-    local function calculateCursorPosition( offset )
-        return (offset / maxOffset) * barScrollableHeight
+    TexturePacks.resetColor()
+end
+
+---
+-- @tparam number offset The offset of the scroll content [-n, 0].
+--
+function UIScrollbar:scroll( offset )
+    self.cursorPosition = calculateCursorPosition( self, offset )
+end
+
+function UIScrollbar:mousepressed( _, my )
+    if my < self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
+        self.callback( -4 )
+    elseif my > self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
+        self.callback( 4 )
     end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    ---
-    -- @tparam number maxOffset The maximum offset the scroll content can have.
-    --
-    function self:init( nviewportHeight, ncontentHeight, nmaxOffset, ncallback )
-        -- Initialise variables.
-        viewportHeight = nviewportHeight
-        contentHeight = ncontentHeight
-        maxOffset = nmaxOffset
-        callback = ncallback
-
-        -- The ratio between the viewport and the content to display.
-        viewportContentRatio = calculateViewportContentRatio()
-
-        cursorHeight = calculateCursorHeight()
-        barScrollableHeight = self.h - cursorHeight
-
-        cursorPosition = calculateCursorPosition( 0 )
-    end
-
-    function self:draw()
-        local tw, th = TexturePacks.getTileDimensions()
-
-        -- Draw the bar.
-        for oy = 0, self.h-1 do
-            TexturePacks.setColor( 'ui_scrollbar_element' )
-            love.graphics.draw( tileset:getSpritesheet(), element, self.ax * tw, (self.ay+oy) * th )
-        end
-
-        -- Draw the cursor.
-        for oy = 0, cursorHeight-1 do
-            TexturePacks.setColor( 'ui_scrollbar_cursor' )
-            love.graphics.draw( tileset:getSpritesheet(), cursor, self.ax * tw, math.ceil((self.ay+oy+cursorPosition) * th ))
-        end
-
-        TexturePacks.resetColor()
-    end
-
-    ---
-    -- @tparam number offset The offset of the scroll content [-n, 0].
-    --
-    function self:scroll( offset )
-        cursorPosition = calculateCursorPosition( offset )
-    end
-
-    function self:mousepressed( _, my )
-        if my < self.ay+cursorPosition+(cursorHeight*0.5) then
-            callback( -4 )
-        elseif my > self.ay+cursorPosition+(cursorHeight*0.5) then
-            callback( 4 )
-        end
-    end
-
-    return self
 end
 
 return UIScrollbar

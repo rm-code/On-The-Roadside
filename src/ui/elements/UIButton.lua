@@ -13,34 +13,24 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local UIButton = {}
+local UIButton = UIElement:subclass( 'UIButton' )
 
-function UIButton.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIButton' )
+function UIButton:initialize( px, py, x, y, w, h, tileID, ncallback )
+    UIElement.initialize( self, px, py, x, y, w, h )
 
-    local tileset
-    local icon
-    local callback
+    self.icon = TexturePacks.getSprite( tileID )
+    self.callback = ncallback
+end
 
-    function self:init( tileID, ncallback )
-        tileset = TexturePacks.getTileset()
-        icon = TexturePacks.getSprite( tileID )
+function UIButton:draw()
+    local tw, th = TexturePacks.getTileDimensions()
+    TexturePacks.setColor( self:isMouseOver() and 'ui_button_hot' or 'ui_button' )
+    love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), self.icon, self.ax * tw, self.ay * th )
+    TexturePacks.resetColor()
+end
 
-        callback = ncallback
-    end
-
-    function self:draw()
-        local tw, th = TexturePacks.getTileDimensions()
-        TexturePacks.setColor( self:isMouseOver() and 'ui_button_hot' or 'ui_button' )
-        love.graphics.draw( tileset:getSpritesheet(), icon, self.ax * tw, self.ay * th )
-        TexturePacks.resetColor()
-    end
-
-    function self:activate()
-        callback()
-    end
-
-    return self
+function UIButton:activate()
+    self.callback()
 end
 
 return UIButton

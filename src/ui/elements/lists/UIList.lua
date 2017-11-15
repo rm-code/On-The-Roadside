@@ -12,88 +12,77 @@ local UIElement = require( 'src.ui.elements.UIElement' )
 -- Module
 -- ------------------------------------------------
 
-local UIList = {}
+local UIList = UIElement:subclass( 'UIList' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
-function UIList.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIList' )
+function UIList:initialize( ox, oy, rx, ry, w, h )
+  UIElement.initialize( self, ox, oy, rx, ry, w, h )
+  self.cursor = 1
+end
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
-
-    local cursor = 1
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:prev()
-        if self.children[cursor] then
-            self.children[cursor]:setFocus( false )
-            cursor = cursor <= 1 and #self.children or cursor - 1
-        else
-            cursor = 1
-        end
-        self.children[cursor]:setFocus( true )
+function UIList:prev()
+    if self.children[self.cursor] then
+        self.children[self.cursor]:setFocus( false )
+        self.cursor = self.cursor <= 1 and #self.children or self.cursor - 1
+    else
+        self.cursor = 1
     end
+    self.children[self.cursor]:setFocus( true )
+end
 
-    function self:next()
-        if self.children[cursor] then
-            self.children[cursor]:setFocus( false )
-            cursor = cursor >= #self.children and 1 or cursor + 1
-        else
-            cursor = 1
-        end
-        self.children[cursor]:setFocus( true )
+function UIList:next()
+    if self.children[self.cursor] then
+        self.children[self.cursor]:setFocus( false )
+        self.cursor = self.cursor >= #self.children and 1 or self.cursor + 1
+    else
+        self.cursor = 1
     end
+    self.children[self.cursor]:setFocus( true )
+end
 
-    function self:mousereleased( mx, my, button, isTouch )
-        if love.mouse.isVisible() and self:getActiveElement() then
-            self:getActiveElement():mousereleased( mx, my, button, isTouch )
-        end
+function UIList:mousereleased( mx, my, button, isTouch )
+    if love.mouse.isVisible() and self:getActiveElement() then
+        self:getActiveElement():mousereleased( mx, my, button, isTouch )
     end
+end
 
-    function self:activateMouse()
-        love.mouse.setVisible( true )
-    end
+function UIList:activateMouse()
+    love.mouse.setVisible( true )
+end
 
-    function self:deactivateMouse()
-        love.mouse.setVisible( false )
-    end
+function UIList:deactivateMouse()
+    love.mouse.setVisible( false )
+end
 
-    function self:mousemoved()
-        self:activateMouse()
-    end
+function UIList:mousemoved()
+    self:activateMouse()
+end
 
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
 
-    function self:getActiveElement()
-        return self.children[cursor]
-    end
+function UIList:getActiveElement()
+    return self.children[self.cursor]
+end
 
-    function self:getCursor()
-        return cursor
-    end
+function UIList:getCursor()
+    return self.cursor
+end
 
-    function self:getElementCount()
-        return #self.children
-    end
+function UIList:getElementCount()
+    return #self.children
+end
 
-    -- ------------------------------------------------
-    -- Setters
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
 
-    function self:setCursor( ncursor )
-        cursor = ncursor
-    end
-
-    return self
+function UIList:setCursor( ncursor )
+    self.cursor = ncursor
 end
 
 return UIList
