@@ -9,6 +9,7 @@ globals = {
 }
 
 exclude_files = {
+    './lib/*',
     './lua_install/*'
 }
 
