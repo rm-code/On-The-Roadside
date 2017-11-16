@@ -26,7 +26,7 @@
 -- @module ScreenManager
 --
 local ScreenManager = {
-    _VERSION     = '2.1.0',
+    _VERSION     = '2.1.1',
     _DESCRIPTION = 'Screen/State Management for the LÖVE framework',
     _URL         = 'https://github.com/rm-code/screenmanager/',
 }
@@ -126,11 +126,10 @@ end
 -- @see push, pop, switch
 --
 function ScreenManager.performChanges()
-    if #changes == 0 then
-        return
-    end
+    for i=1, #changes do
+        local change = changes[i]
+        changes[i] = nil
 
-    for _, change in ipairs( changes ) do
         if change.action == 'pop' then
             pop()
         elseif change.action == 'switch' then
@@ -140,8 +139,6 @@ function ScreenManager.performChanges()
             push( change.screen, change.args )
         end
     end
-
-    changes = {}
 end
 
 ---
