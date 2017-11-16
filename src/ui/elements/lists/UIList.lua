@@ -43,9 +43,9 @@ function UIList:next()
     self.children[self.cursor]:setFocus( true )
 end
 
-function UIList:mousereleased( mx, my, button, isTouch )
+function UIList:mousereleased( _, _, _, _ )
     if love.mouse.isVisible() and self:getActiveElement() then
-        self:getActiveElement():mousereleased( mx, my, button, isTouch )
+        self:getActiveElement():command( 'activate' )
     end
 end
 
