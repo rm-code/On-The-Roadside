@@ -198,9 +198,10 @@ function ChangelogScreen.new()
     --
     local function createButtons()
         local lx, ly = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        buttonList = UIVerticalList( lx, ly + SCROLLAREA_GRID_HEIGHT + 2, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
+        lx, ly = lx, ly + SCROLLAREA_GRID_HEIGHT
+        buttonList = UIVerticalList( lx, ly, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
 
-        local closeButton = UIButton( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_back' ))
+        local closeButton = UIButton( lx, ly, 0, 0, SCROLLAREA_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_back' ))
         buttonList:addChild( closeButton )
     end
 

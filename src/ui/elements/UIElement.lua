@@ -105,6 +105,22 @@ function UIElement:isMouseOver()
 end
 
 ---
+-- Returns the UIElement's width.
+-- @treturn number The width.
+--
+function UIElement:getWidth()
+    return self.w
+end
+
+---
+-- Returns the UIElement's height.
+-- @treturn number The height.
+--
+function UIElement:getHeight()
+    return self.h
+end
+
+---
 -- Sets the focus for this UIElement. Focus should be used as a way to
 -- mark UIElements which should receive keypresses and are the "current"
 -- point of focus for the player.

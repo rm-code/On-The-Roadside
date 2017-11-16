@@ -75,18 +75,18 @@ function IngameCombatMenu.new()
     local function createButtons()
         local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        buttonList = UIVerticalList( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        local saveGameButton = UIButton( lx, ly, 0, 3, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
+        local saveGameButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
         buttonList:addChild( saveGameButton )
 
-        local openHelpButton = UIButton( lx, ly, 0, 4, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
+        local openHelpButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
         buttonList:addChild( openHelpButton )
 
-        local exitButton = UIButton( lx, ly, 0, 5, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
+        local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
         buttonList:addChild( exitButton )
 
-        local resumeButton = UIButton( lx, ly, 0, 6, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
+        local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
         buttonList:addChild( resumeButton )
     end
 

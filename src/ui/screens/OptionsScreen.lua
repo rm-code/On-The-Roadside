@@ -131,10 +131,9 @@ function OptionsScreen.new()
     -- language settings.
     -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
-    -- @tparam  number        index The index the UISelectField will have in the UIList.
     -- @treturn UISelectField       The newly created UISelectField.
     --
-    local function createLanguageOption( lx, ly, index )
+    local function createLanguageOption( lx, ly )
         -- The list of values to display.
         local listOfValues = {
             { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' }
@@ -155,7 +154,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_lang' ), listOfValues, callback, default )
+        return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_lang' ), listOfValues, callback, default )
     end
 
     ---
@@ -163,10 +162,9 @@ function OptionsScreen.new()
     -- fullscreen settings.
     -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
-    -- @tparam  number        index The index the UISelectField will have in the UIList.
     -- @treturn UISelectField       The newly created UISelectField.
     --
-    local function createFullscreenOption( lx, ly, index )
+    local function createFullscreenOption( lx, ly )
         -- The list of values to display.
         local listOfValues = {
             { displayTextID = Translator.getText( 'ui_on' ), value = true },
@@ -188,7 +186,7 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
+        return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_fullscreen' ), listOfValues, callback, default )
     end
 
     ---
@@ -196,10 +194,9 @@ function OptionsScreen.new()
     -- fullscreen settings.
     -- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
-    -- @tparam  number        index The index the UISelectField will have in the UIList.
     -- @treturn UISelectField       The newly created UISelectField.
     --
-    local function createTexturePackOption( lx, ly, index )
+    local function createTexturePackOption( lx, ly )
         -- The list of values to display. We populate it with the TexturePacks
         -- we found in the game's directory.
         local listOfValues = {}
@@ -223,41 +220,39 @@ function OptionsScreen.new()
         end
 
         -- Create the UISelectField.
-        return UISelectField( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
+        return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
     end
 
     ---
     -- Creates a button which allows the user to apply the new settings.
     -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
-    -- @tparam  number       index The index the UISelectField will have in the UIList.
     -- @treturn UIButton           The newly created UIButton.
     --
-    local function createApplyButton( lx, ly, index )
+    local function createApplyButton( lx, ly )
         -- The function to call when the button is activated.
         local function callback()
             applySettings()
         end
 
         -- Create the UIButton.
-        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_apply' ))
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_apply' ))
     end
 
     ---
     -- Creates a button which allows the user to return to the main menu.
     -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
-    -- @tparam  number       index The index the UISelectField will have in the UIList.
     -- @treturn UIButton           The newly created UIButton.
     --
-    local function createBackButton( lx, ly, index )
+    local function createBackButton( lx, ly )
         -- The function to call when the button is activated.
         local function callback()
             close()
         end
 
         -- Create the UIButton.
-        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
     end
 
     ---
@@ -270,11 +265,11 @@ function OptionsScreen.new()
         buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         -- Create the UIElements and add them to the list.
-        buttonList:addChild(    createLanguageOption( lx, ly, 0 ))
-        buttonList:addChild(  createFullscreenOption( lx, ly, 1 ))
-        buttonList:addChild( createTexturePackOption( lx, ly, 2 ))
-        buttonList:addChild(       createApplyButton( lx, ly, 3 ))
-        buttonList:addChild(        createBackButton( lx, ly, 4 ))
+        buttonList:addChild(    createLanguageOption( lx, ly ))
+        buttonList:addChild(  createFullscreenOption( lx, ly ))
+        buttonList:addChild( createTexturePackOption( lx, ly ))
+        buttonList:addChild(       createApplyButton( lx, ly ))
+        buttonList:addChild(        createBackButton( lx, ly ))
     end
 
     -- ------------------------------------------------

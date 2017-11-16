@@ -85,11 +85,11 @@ function SavegameScreen.new()
         love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
     end
 
-    local function createBackButton( lx, ly, index )
+    local function createBackButton( lx, ly )
         local function callback()
             ScreenManager.switch( 'mainmenu' )
         end
-        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
     end
 
     local function createSaveGameEntry( lx, ly, index, item, folder )
@@ -103,7 +103,7 @@ function SavegameScreen.new()
             end
         end
 
-        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, str, 'center', version == getVersion() )
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, str, 'center', version == getVersion() )
     end
 
 
@@ -125,7 +125,7 @@ function SavegameScreen.new()
             end
         end
 
-        buttonList:addChild( createBackButton( lx, ly, counter+2 ))
+        buttonList:addChild( createBackButton( lx, ly ))
     end
 
 
