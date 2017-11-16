@@ -33,10 +33,12 @@ local function createScrollbar( self, height )
     self.scrollAreaHeight = contentHeight - self.h
 
     -- The up button is placed in the top right corner of the scroll area.
-    self.upButton = UIButton( self.ax, self.ay, self.w-1, 0, 1, 1, 'ui_scroll_area_up', function() self:scroll(-1) end )
+    self.upButton = UIButton( self.ax, self.ay, self.w-1, 0, 1, 1, function() self:scroll(-1) end )
+    self.upButton:setIcon( 'ui_scroll_area_up' )
     self:addChild( self.upButton )
 
-    self.downButton = UIButton( self.ax, self.ay, self.w-1, self.h-1, 1, 1, 'ui_scroll_area_down', function() self:scroll(1) end )
+    self.downButton = UIButton( self.ax, self.ay, self.w-1, self.h-1, 1, 1, function() self:scroll(1) end )
+    self.downButton:setIcon( 'ui_scroll_area_down' )
     self:addChild( self.downButton )
 
     -- Scroll bar is positioned between the buttons.

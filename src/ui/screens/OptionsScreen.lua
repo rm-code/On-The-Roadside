@@ -14,7 +14,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local UISelectField = require( 'src.ui.elements.UISelectField' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Settings = require( 'src.Settings' )
@@ -231,7 +231,7 @@ function OptionsScreen.new()
     -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
     -- @tparam  number       index The index the UISelectField will have in the UIList.
-    -- @treturn UITextButton       The newly created UITextButton.
+    -- @treturn UIButton           The newly created UIButton.
     --
     local function createApplyButton( lx, ly, index )
         -- The function to call when the button is activated.
@@ -239,8 +239,8 @@ function OptionsScreen.new()
             applySettings()
         end
 
-        -- Create the UITextButton.
-        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_apply' ), callback )
+        -- Create the UIButton.
+        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_apply' ))
     end
 
     ---
@@ -248,7 +248,7 @@ function OptionsScreen.new()
     -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
     -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
     -- @tparam  number       index The index the UISelectField will have in the UIList.
-    -- @treturn UITextButton       The newly created UITextButton.
+    -- @treturn UIButton           The newly created UIButton.
     --
     local function createBackButton( lx, ly, index )
         -- The function to call when the button is activated.
@@ -256,8 +256,8 @@ function OptionsScreen.new()
             close()
         end
 
-        -- Create the UITextButton.
-        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_back' ), callback )
+        -- Create the UIButton.
+        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
     end
 
     ---

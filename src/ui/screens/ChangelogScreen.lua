@@ -13,7 +13,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
@@ -200,7 +200,7 @@ function ChangelogScreen.new()
         local lx, ly = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
         buttonList = UIVerticalList( lx, ly + SCROLLAREA_GRID_HEIGHT + 2, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
 
-        local closeButton = UITextButton( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1, Translator.getText( 'ui_back' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local closeButton = UIButton( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_back' ))
         buttonList:addChild( closeButton )
     end
 

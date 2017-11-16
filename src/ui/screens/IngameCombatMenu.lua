@@ -5,7 +5,7 @@ local Translator = require( 'src.util.Translator' );
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -77,16 +77,16 @@ function IngameCombatMenu.new()
 
         buttonList = UIVerticalList( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        local saveGameButton = UITextButton( lx, ly, 0, 3, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_save_game' ), saveGame )
+        local saveGameButton = UIButton( lx, ly, 0, 3, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
         buttonList:addChild( saveGameButton )
 
-        local openHelpButton = UITextButton( lx, ly, 0, 4, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
+        local openHelpButton = UIButton( lx, ly, 0, 4, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
         buttonList:addChild( openHelpButton )
 
-        local exitButton = UITextButton( lx, ly, 0, 5, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local exitButton = UIButton( lx, ly, 0, 5, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
         buttonList:addChild( exitButton )
 
-        local resumeButton = UITextButton( lx, ly, 0, 6, UI_GRID_WIDTH, 1, Translator.getText( 'ui_ingame_resume' ), function() ScreenManager.pop() end )
+        local resumeButton = UIButton( lx, ly, 0, 6, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
         buttonList:addChild( resumeButton )
     end
 

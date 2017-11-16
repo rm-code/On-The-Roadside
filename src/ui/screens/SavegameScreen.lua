@@ -9,7 +9,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local SaveHandler = require( 'src.SaveHandler' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
@@ -89,7 +89,7 @@ function SavegameScreen.new()
         local function callback()
             ScreenManager.switch( 'mainmenu' )
         end
-        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_back' ), callback )
+        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
     end
 
     local function createSaveGameEntry( lx, ly, index, item, folder )
@@ -103,7 +103,7 @@ function SavegameScreen.new()
             end
         end
 
-        return UITextButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, str, callback, 'center', version == getVersion() )
+        return UIButton( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1, callback, str, 'center', version == getVersion() )
     end
 
 

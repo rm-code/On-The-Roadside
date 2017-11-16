@@ -1,6 +1,6 @@
 local Screen = require( 'lib.screenmanager.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local UIHorizontalList = require( 'src.ui.elements.lists.UIHorizontalList' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
@@ -110,19 +110,19 @@ function SplashScreen.new()
 
         buttonList = UIHorizontalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
-        local newGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
+        local newGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'gamescreen' ) end, Translator.getText( 'ui_main_menu_new_game' ))
         buttonList:addChild( newGameButton )
 
-        local loadPreviousGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
+        local loadPreviousGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'loadgame' ) end, Translator.getText( 'ui_main_menu_load_game' ))
         buttonList:addChild( loadPreviousGameButton )
 
-        local openOptionsButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
+        local openOptionsButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'options' ) end, Translator.getText( 'ui_main_menu_options' ))
         buttonList:addChild( openOptionsButton )
 
-        local changelogButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_changelog' ), function() ScreenManager.switch( 'changelog' ) end )
+        local changelogButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'changelog' ) end, Translator.getText( 'ui_main_menu_changelog' ))
         buttonList:addChild( changelogButton )
 
-        local exitGameButton = UITextButton( lx, ly, 0, 0, 10, 1, Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
+        local exitGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() love.event.quit() end, Translator.getText( 'ui_main_menu_exit' ))
         buttonList:addChild( exitGameButton )
     end
 

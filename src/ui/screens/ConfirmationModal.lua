@@ -13,7 +13,7 @@ local Translator = require( 'src.util.Translator' );
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIHorizontalList = require( 'src.ui.elements.lists.UIHorizontalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -82,16 +82,14 @@ function ConfirmationModal.new()
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = y + UI_GRID_HEIGHT - 2
 
-        buttonList = UIHorizontalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIHorizontalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         local buttonWidth = math.floor( BUTTON_LIST_WIDTH * 0.5 )
 
-        local yesButton = UITextButton.new( lx, ly, 0, 0, buttonWidth, 1 )
-        yesButton:init( Translator.getText( 'ui_yes' ), trueCallback )
+        local yesButton = UIButton( lx, ly, 0, 0, buttonWidth, 1, trueCallback, Translator.getText( 'ui_yes' ))
         buttonList:addChild( yesButton )
 
-        local noButton = UITextButton.new( lx, ly, 0, 0, buttonWidth, 1 )
-        noButton:init( Translator.getText( 'ui_no' ), falseCallback )
+        local noButton = UIButton( lx, ly, 0, 0, buttonWidth, 1, falseCallback, Translator.getText( 'ui_no' ))
         buttonList:addChild( noButton )
     end
 
