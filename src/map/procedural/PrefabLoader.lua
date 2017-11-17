@@ -54,7 +54,7 @@ local function loadPrefabTemplates( sourceFolder )
         table.insert( prefabs[template.size], template )
 
         count = count + 1
-        Log.debug( string.format( '  %3d. %s -> %s (%s)', count, item, template.name, type ))
+        Log.debug( string.format( '  %3d. %16s -> %16s (%s)', count, item, template.id, template.size ))
     end
 end
 
