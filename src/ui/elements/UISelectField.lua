@@ -16,7 +16,20 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UISelectField = UIElement:subclass( 'UISelectField' )
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
+-- ------------------------------------------------
+
+local function selectColor( self )
+    if love.mouse.isVisible() and self:isMouseOver() then
+        return 'ui_select_field_hot'
+    elseif self:hasFocus() then
+        return 'ui_select_field_hot'
+    end
+    return 'ui_select_field'
+end
+
+-- ------------------------------------------------
+-- Public Methods
 -- ------------------------------------------------
 
 function UISelectField:initialize( px, py, x, y, w, h, nlabel, nlistOfValues, ncallback, default )
@@ -32,7 +45,7 @@ function UISelectField:draw()
     local tw, th = TexturePacks.getTileDimensions()
 
     -- Draw the label on the left side of the SelectField.
-    TexturePacks.setColor( self:hasFocus() and 'ui_select_field_hot' or 'ui_select_field' )
+    TexturePacks.setColor( selectColor( self ))
     love.graphics.print( self.label, self.ax * tw, self.ay * th )
 
     -- Draw the current value on right side of the SelectField.
