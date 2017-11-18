@@ -98,7 +98,6 @@ local function addWeaponInformation( self, text, item, tw, th )
         local ammo = item:getMagazine():getCaliber()
         text:add({ self.typeColor, 'Ammo:' }, COLUMN_1 * tw, 4 * th )
         text:add({ self.valueColor, ammo },    COLUMN_2 * tw, 4 * th )
-        love.graphics.print( 'Ammo: ' .. item:getMagazine():getCaliber(), (self.x + self.w * 0.5) * tw, (self.y + 2) * th )
     end
 
     text:add({ self.typeColor, 'MODE' },    WEAPON_COLUMN_MODE    * tw, 6 * th )
