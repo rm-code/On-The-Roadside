@@ -170,7 +170,7 @@ function UIItemStats:setItem( item )
     addDescriptionArea( self, item )
 end
 
-function UIItemStats:command( cmd )
+function UIItemStats:command( cmd, ... )
     if not self:isMouseOver() or not self.description then
         return
     end
@@ -179,25 +179,11 @@ function UIItemStats:command( cmd )
         self.description:scroll( -1 )
     elseif cmd == 'down' then
         self.description:scroll( 1 )
+    elseif cmd == 'activate' then
+        self.description:command( cmd )
+    elseif cmd == 'scroll' then
+        self.description:scroll( ... )
     end
-end
-
-function UIItemStats:mousepressed( mx, my )
-    if not self:isMouseOver() or not self.description then
-        return
-    end
-
-    if self.description:isMouseOver() then
-        self.description:mousepressed( mx, my )
-    end
-end
-
-function UIItemStats:wheelmoved( _, dy )
-    if not self:isMouseOver() or not self.description then
-        return
-    end
-
-    self.description:scroll( dy )
 end
 
 return UIItemStats

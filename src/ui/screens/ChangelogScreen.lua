@@ -250,22 +250,15 @@ function ChangelogScreen.new()
     end
 
     function self:mousepressed( _, _ )
-        local gx, gy = GridHelper.getMouseGridPosition()
         if scrollarea:isMouseOver() then
-            scrollarea:mousepressed( gx, gy )
+            scrollarea:command( 'activate' )
+        elseif buttonList:isMouseOver() then
+            buttonList:command( 'activate' )
         end
     end
 
     function self:wheelmoved( _, dy )
-        scrollarea:scroll( dy )
-    end
-
-    function self:mousereleased()
-        buttonList:mousereleased()
-    end
-
-    function self:mousemoved()
-        buttonList:mousemoved()
+        scrollarea:command( 'scroll', dy )
     end
 
     function self:resize( _, _ )

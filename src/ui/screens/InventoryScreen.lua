@@ -367,14 +367,10 @@ function InventoryScreen.new()
     end
 
     function self:mousepressed( _, _, button )
-        local gx, gy = GridHelper.getMouseGridPosition()
-
         if button == 2 then
             selectItem()
         end
         drag( button )
-
-        itemStats:mousepressed( gx, gy, button )
     end
 
     function self:mousereleased( _, _, _ )
@@ -387,10 +383,12 @@ function InventoryScreen.new()
 
         -- Refresh lists in case volumes have changed.
         refreshLists()
+
+        itemStats:command( 'activate' )
     end
 
-    function self:wheelmoved( dx, dy )
-        itemStats:wheelmoved( dx, dy )
+    function self:wheelmoved( _, dy )
+        itemStats:command( 'scroll', dy )
     end
 
     -- ------------------------------------------------

@@ -73,10 +73,8 @@ end
 
 function UIVerticalList:command( cmd )
     if cmd == 'up' then
-        self:deactivateMouse()
         self:prev()
     elseif cmd == 'down' then
-        self:deactivateMouse()
         self:next()
     elseif self:getActiveElement() then
         self:getActiveElement():command( cmd )

@@ -333,14 +333,7 @@ function OptionsScreen.new()
     -- Handle mousereleased events.
     --
     function self:mousereleased()
-        buttonList:mousereleased()
-    end
-
-    ---
-    -- Handle mousemoved events.
-    --
-    function self:mousemoved()
-        buttonList:mousemoved()
+        buttonList:command( 'activate' )
     end
 
     ---

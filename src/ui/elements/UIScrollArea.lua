@@ -92,17 +92,21 @@ function UIScrollArea:setText( ntext, nheight )
     end
 end
 
-function UIScrollArea:mousepressed( mx, my )
+function UIScrollArea:command( cmd, ... )
     if not self.scrollable then
         return
     end
 
+    if cmd == 'scroll' then
+        self:scroll( ... )
+    end
+
     if self.upButton:isMouseOver() then
-        self.upButton:activate()
+        self.upButton:command( cmd )
     elseif self.downButton:isMouseOver() then
-        self.downButton:activate()
+        self.downButton:command( cmd )
     elseif self.scrollbar:isMouseOver() then
-        self.scrollbar:mousepressed( mx, my )
+        self.scrollbar:command( cmd )
     end
 end
 

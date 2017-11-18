@@ -133,12 +133,8 @@ function IngameCombatMenu.new()
         end
     end
 
-    function self:mousemoved()
-        buttonList:mousemoved();
-    end
-
     function self:mousereleased()
-        buttonList:mousereleased();
+        buttonList:command( 'activate' )
     end
 
     function self:resize( _, _ )

@@ -169,12 +169,11 @@ function SavegameScreen.new()
         end
     end
 
+    ---
+    -- Handle mousereleased events.
+    --
     function self:mousereleased()
-        buttonList:mousereleased()
-    end
-
-    function self:mousemoved()
-        buttonList:mousemoved()
+        buttonList:command( 'activate' )
     end
 
     function self:resize( _, _ )

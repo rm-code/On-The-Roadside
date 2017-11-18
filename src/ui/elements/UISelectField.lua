@@ -74,13 +74,9 @@ end
 function UISelectField:command( cmd )
     if cmd == 'left' then
         self:prev()
-    elseif cmd == 'right' then
+    elseif cmd == 'right' or cmd == 'activate' then
         self:next()
     end
-end
-
-function UISelectField:mousereleased( _, _, _, _ )
-    self:next()
 end
 
 return UISelectField

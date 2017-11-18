@@ -8,6 +8,7 @@
 
 local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
@@ -84,11 +85,14 @@ function UIScrollbar:scroll( offset )
     self.cursorPosition = calculateCursorPosition( self, offset )
 end
 
-function UIScrollbar:mousepressed( _, my )
-    if my < self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
-        self.callback( -4 )
-    elseif my > self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
-        self.callback( 4 )
+function UIScrollbar:command( cmd )
+    if cmd == 'activate' then
+        local _, gy = GridHelper.getMouseGridPosition()
+        if gy < self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
+            self.callback( -4 )
+        elseif gy > self.ay + self.cursorPosition + (self.cursorHeight * 0.5) then
+            self.callback( 4 )
+        end
     end
 end
 

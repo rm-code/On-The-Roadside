@@ -43,24 +43,6 @@ function UIList:next()
     self.children[self.cursor]:setFocus( true )
 end
 
-function UIList:mousereleased( _, _, _, _ )
-    if love.mouse.isVisible() and self:getActiveElement() then
-        self:getActiveElement():command( 'activate' )
-    end
-end
-
-function UIList:activateMouse()
-    love.mouse.setVisible( true )
-end
-
-function UIList:deactivateMouse()
-    love.mouse.setVisible( false )
-end
-
-function UIList:mousemoved()
-    self:activateMouse()
-end
-
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
