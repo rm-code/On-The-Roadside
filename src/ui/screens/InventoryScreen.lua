@@ -344,8 +344,6 @@ function InventoryScreen.new()
     -- This method is called when the inventory screen is closed.
     --
     function self:close()
-        love.mouse.setVisible( false )
-
         -- Drop any item that is currently dragged.
         if dragboard:hasDragContext() then
             dragboard:drop()
