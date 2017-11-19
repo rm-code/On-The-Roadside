@@ -69,7 +69,8 @@ function love.load( args )
         gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
         loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
-        confirm     = require( 'src.ui.screens.ConfirmationModal' )
+        confirm     = require( 'src.ui.screens.ConfirmationModal' ),
+        inputdialog = require( 'src.ui.screens.InputDialog'       )
     }
 
     ScreenManager.init( screens, 'bootloading' )
@@ -101,6 +102,10 @@ end
 
 function love.resize( w, h )
     ScreenManager.resize( w, h )
+end
+
+function love.textinput( text )
+    ScreenManager.textinput( text )
 end
 
 function love.mousepressed( mx, my, button, isTouch )

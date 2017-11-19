@@ -33,4 +33,15 @@ function Util.swap( a, b )
     return b, a
 end
 
+---
+-- Pads a string to the right.
+-- @tparam  string str    The string to right-pad.
+-- @tparam  number length The required length of the string.
+-- @tparam  string char   The char to use for padding.
+-- @treturn string        The right padded string.
+--
+function Util.rightPadString( str, length, char )
+    return str .. char:rep( length - #str )
+end
+
 return Util;

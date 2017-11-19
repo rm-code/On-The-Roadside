@@ -12,6 +12,7 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -97,7 +98,12 @@ function SavegameScreen.new()
     local function createSaveGameEntry( lx, ly, index, item, folder )
         local version = SaveHandler.loadVersion( folder )
 
-        local str = string.format( '%2d. %s (Version: %s)', index, os.date( '%d.%m.%Y - %X', item ), version )
+        -- Generate the string for the savegame button showing the name of the saves,
+        -- the version of the game at which they were created and their creation date.
+        local str = string.format( '%2d. %s', index, item )
+        str = Util.rightPadString( str, 36, ' ')
+        str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getLastModified( folder )))
+
         local function callback()
             if version == getVersion() then
                 local save = SaveHandler.load( folder )

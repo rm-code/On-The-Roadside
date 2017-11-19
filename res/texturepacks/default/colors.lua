@@ -110,6 +110,7 @@ return {
     ['ui_outlines'] = COLORS.DB15,
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
+    ['ui_text_dark'] = COLORS.DB25,
 
     ['ui_help_section'] = COLORS.DB24,
 

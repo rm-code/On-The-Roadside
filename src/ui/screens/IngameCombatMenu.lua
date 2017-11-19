@@ -71,8 +71,16 @@ function IngameCombatMenu.new()
     end
 
     local function saveGame()
-        SaveHandler.save( game:serialize() );
-        ScreenManager.pop();
+        local function confirmationCallback( name )
+            SaveHandler.save( game:serialize(), name )
+            ScreenManager.pop() -- Close input dialog.
+            ScreenManager.pop() -- Close ingame combat menu.
+        end
+
+        -- Generate date as a default save name.
+        local date = os.date( '%d-%m-%Y_%H%M%S', os.time() )
+
+        ScreenManager.push( 'inputdialog', Translator.getText( 'ui_ingame_input_save_name' ), date, confirmationCallback )
     end
 
     local function createButtons()

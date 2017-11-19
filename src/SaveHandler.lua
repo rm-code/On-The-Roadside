@@ -90,15 +90,16 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
-function SaveHandler.save( t )
+function SaveHandler.save( t, name )
+    Log.print( 'Created savegame: ' .. name, 'SaveHandler' )
+
     -- Create the saves folder it doesn't exist already.
     if not love.filesystem.exists( SAVE_FOLDER ) then
         love.filesystem.createDirectory( SAVE_FOLDER )
     end
 
-    -- Create a folder with the timestamp for this specific savegame.
-    local timestamp = os.time()
-    local folder = SAVE_FOLDER .. '/' .. timestamp
+    -- Create a folder with the name for this specific savegame.
+    local folder = SAVE_FOLDER .. '/' .. name
     love.filesystem.createDirectory( folder )
 
     createVersionFile( folder, getVersion() )
