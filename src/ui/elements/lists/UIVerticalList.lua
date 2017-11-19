@@ -33,7 +33,7 @@ end
 --
 function UIVerticalList:addChild( child )
     self.h = self.h + child.h
-    UIList.super.addChild( self, child )
+    UIVerticalList.super.addChild( self, child )
 end
 
 function UIVerticalList:update()
