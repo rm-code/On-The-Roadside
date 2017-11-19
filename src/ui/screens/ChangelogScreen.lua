@@ -15,6 +15,7 @@ local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -84,6 +85,8 @@ function ChangelogScreen.new()
     local footer
 
     local scrollarea
+
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -217,6 +220,9 @@ function ChangelogScreen.new()
 
         createButtons()
 
+        container = UIContainer()
+        container:register( buttonList )
+
         local ox, oy = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
         scrollarea = UIScrollArea( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT, text, textHeight )
 
@@ -225,31 +231,37 @@ function ChangelogScreen.new()
 
     function self:update()
         font = TexturePacks.getFont()
-        buttonList:update()
+        container:update()
     end
 
     function self:draw()
         font:use()
         scrollarea:draw()
-        buttonList:draw()
+        container:draw()
         footer:draw()
     end
 
     function self:keypressed( scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'escape' then
             ScreenManager.switch( 'mainmenu' )
         end
 
         if scancode == 'up' then
-            buttonList:command( 'up' )
+            container:command( 'up' )
         elseif scancode == 'down' then
-            buttonList:command( 'down' )
+            container:command( 'down' )
         elseif scancode == 'return' then
-            buttonList:command( 'activate' )
+            container:command( 'activate' )
         end
     end
 
-    function self:mousepressed( _, _ )
+    function self:mousemoved()
+        love.mouse.setVisible( true )
+    end
+
+    function self:mousereleased( _, _ )
         if scrollarea:isMouseOver() then
             scrollarea:command( 'activate' )
         elseif buttonList:isMouseOver() then

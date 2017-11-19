@@ -67,4 +67,9 @@ function UIList:setCursor( ncursor )
     self.cursor = ncursor
 end
 
+function UIList:setFocus( focus )
+    UIList.super.setFocus( self, focus )
+    self.children[self.cursor]:setFocus( focus )
+end
+
 return UIList

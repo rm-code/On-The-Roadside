@@ -28,17 +28,19 @@ function UIHorizontalList:update()
 
         -- Render list items at their correct offset and reset focus.
         elements[i]:setRelativePosition( (i-1) * itemWidth, 0 )
-        elements[i]:setFocus( false )
-
-        -- Check for mouse focus if the mouse cursor is active.
-        if love.mouse.isVisible() and elements[i]:isMouseOver() then
-            self:setCursor( i )
-        end
     end
 
-    -- Set the focus to the element at the current cursor position.
-    local cursor = self:getCursor()
-    elements[cursor]:setFocus( true )
+    if not love.mouse.isVisible() then
+        return
+    end
+
+    for i = 1, #elements do
+        elements[i]:setFocus( false )
+        if elements[i]:isMouseOver() then
+            elements[i]:setFocus( true )
+            self.cursor = i
+        end
+    end
 end
 
 function UIHorizontalList:draw()

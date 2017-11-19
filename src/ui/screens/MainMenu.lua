@@ -6,6 +6,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -60,6 +61,7 @@ function SplashScreen.new()
     local buttonList
     local debug
     local footer
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -131,8 +133,13 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     function self:init()
+        love.mouse.setVisible( false )
+
         createTitle()
         createButtons()
+
+        container = UIContainer()
+        container:register( buttonList )
 
         footer = UICopyrightFooter.new()
 
@@ -150,7 +157,7 @@ function SplashScreen.new()
 
         drawTitle()
 
-        buttonList:draw()
+        container:draw()
 
         drawDebugInfo()
 
@@ -158,16 +165,18 @@ function SplashScreen.new()
     end
 
     function self:update()
-        buttonList:update()
+        container:update()
     end
 
     function self:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'left' then
-            buttonList:command( 'left' )
+            container:command( 'left' )
         elseif scancode == 'right' then
-            buttonList:command( 'right' )
+            container:command( 'right' )
         elseif scancode == 'return' then
-            buttonList:command( 'activate' )
+            container:command( 'activate' )
         end
 
         if scancode == 'f1' then
@@ -175,8 +184,12 @@ function SplashScreen.new()
         end
     end
 
+    function self:mousemoved()
+        love.mouse.setVisible( true )
+    end
+
     function self:mousereleased()
-        buttonList:command( 'activate' )
+        container:command( 'activate' )
     end
 
     function self:resize( _, _ )

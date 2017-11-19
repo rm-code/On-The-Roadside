@@ -11,6 +11,7 @@ local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -54,6 +55,7 @@ function SavegameScreen.new()
     local buttonList
     local font
     local footer
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -139,6 +141,9 @@ function SavegameScreen.new()
         createTitle()
         createButtons()
 
+        container = UIContainer()
+        container:register( buttonList )
+
         footer = UICopyrightFooter.new()
     end
 
@@ -150,30 +155,37 @@ function SavegameScreen.new()
     function self:draw()
         font:use()
         drawTitle()
-        buttonList:draw()
+
+        container:draw()
 
         footer:draw()
     end
 
     function self:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'escape' then
             ScreenManager.switch( 'mainmenu' )
         end
 
         if scancode == 'up' then
-            buttonList:command( 'up' )
+            container:command( 'up' )
         elseif scancode == 'down' then
-            buttonList:command( 'down' )
+            container:command( 'down' )
         elseif scancode == 'return' then
-            buttonList:command( 'activate' )
+            container:command( 'activate' )
         end
+    end
+
+    function self:mousemoved()
+        love.mouse.setVisible( true )
     end
 
     ---
     -- Handle mousereleased events.
     --
     function self:mousereleased()
-        buttonList:command( 'activate' )
+        container:command( 'activate' )
     end
 
     function self:resize( _, _ )

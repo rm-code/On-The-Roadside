@@ -18,6 +18,7 @@ local UIButton = require( 'src.ui.elements.UIButton' )
 local UISelectField = require( 'src.ui.elements.UISelectField' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Settings = require( 'src.Settings' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -61,6 +62,7 @@ function OptionsScreen.new()
     local buttonList
     local font
     local footer
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -286,6 +288,9 @@ function OptionsScreen.new()
         createTitle()
         createUIList()
 
+        container = UIContainer()
+        container:register( buttonList )
+
         footer = UICopyrightFooter.new()
     end
 
@@ -303,7 +308,8 @@ function OptionsScreen.new()
     function self:draw()
         font:use()
         drawTitle()
-        buttonList:draw()
+
+        container:draw()
 
         footer:draw()
     end
@@ -312,28 +318,34 @@ function OptionsScreen.new()
     -- Handle keypressed events.
     --
     function self:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'escape' then
             close()
         end
 
         if scancode == 'up' then
-            buttonList:command( 'up' )
+            container:command( 'up' )
         elseif scancode == 'down' then
-            buttonList:command( 'down' )
+            container:command( 'down' )
         elseif scancode == 'left' then
-            buttonList:command( 'left' )
+            container:command( 'left' )
         elseif scancode == 'right' then
-            buttonList:command( 'right' )
+            container:command( 'right' )
         elseif scancode == 'return' then
-            buttonList:command( 'activate' )
+            container:command( 'activate' )
         end
+    end
+
+    function self:mousemoved()
+        love.mouse.setVisible( true )
     end
 
     ---
     -- Handle mousereleased events.
     --
     function self:mousereleased()
-        buttonList:command( 'activate' )
+        container:command( 'activate' )
     end
 
     ---

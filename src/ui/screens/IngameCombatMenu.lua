@@ -8,6 +8,7 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -40,6 +41,8 @@ function IngameCombatMenu.new()
     local outlines
     local x, y
     local tw, th
+
+    local container
 
     -- ------------------------------------------------
     -- Private Methods
@@ -104,28 +107,33 @@ function IngameCombatMenu.new()
 
         generateOutlines()
 
-        createButtons();
+        createButtons()
+
+        container = UIContainer()
+        container:register( buttonList )
     end
 
     function self:draw()
         background:draw()
         outlines:draw()
 
-        buttonList:draw();
+        container:draw()
         love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), (x+1) * tw, (y+1) * th, (UI_GRID_WIDTH - 2) * tw, 'center' )
     end
 
     function self:update()
-        buttonList:update();
+        container:update()
     end
 
     function self:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'up' then
-            buttonList:command( 'up' )
+            container:command( 'up' )
         elseif scancode == 'down' then
-            buttonList:command( 'down' )
+            container:command( 'down' )
         elseif scancode == 'return' then
-            buttonList:command( 'activate' )
+            container:command( 'activate' )
         end
 
         if scancode == 'escape' then
@@ -134,7 +142,11 @@ function IngameCombatMenu.new()
     end
 
     function self:mousereleased()
-        buttonList:command( 'activate' )
+        container:command( 'activate' )
+    end
+
+    function self:mousemoved()
+        love.mouse.setVisible( true )
     end
 
     function self:resize( _, _ )
