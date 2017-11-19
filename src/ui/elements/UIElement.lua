@@ -105,6 +105,14 @@ function UIElement:isMouseOver()
 end
 
 ---
+-- Updates this UIElement's width.
+-- @tparam number The new width.
+--
+function UIElement:setWidth( width )
+    self.w = width
+end
+
+---
 -- Returns the UIElement's width.
 -- @treturn number The width.
 --

@@ -23,6 +23,9 @@ function UIHorizontalList:update()
     local itemWidth = math.floor( self.w / #elements )
 
     for i = 1, #elements do
+        -- Update the elements width based on the list#s width.
+        elements[i]:setWidth( itemWidth )
+
         -- Render list items at their correct offset and reset focus.
         elements[i]:setRelativePosition( (i-1) * itemWidth, 0 )
         elements[i]:setFocus( false )
