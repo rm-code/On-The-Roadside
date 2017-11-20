@@ -9,6 +9,7 @@
 
 local Log = require( 'src.util.Log' )
 local Bitser = require( 'lib.Bitser' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -34,10 +35,6 @@ local prefabs = {}
 -- Private Functions
 -- ------------------------------------------------
 
-local function getExtension( item )
-  return item:match( '^.+(%..+)$' )
-end
-
 ---
 -- Loads a prefab template.
 -- @tparam  string  src The path to load the template from.
@@ -55,7 +52,7 @@ end
 local function loadPrefabTemplates( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
-        if getExtension( item ) == FILE_EXTENSION then
+        if Util.getFileExtension( item ) == FILE_EXTENSION then
             local template = load( sourceFolder .. item )
             table.insert( prefabs[template.size], template )
 

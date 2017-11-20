@@ -40,4 +40,13 @@ function Util.rightPadString( str, length, char )
     return str .. char:rep( length - #str )
 end
 
+---
+-- Returns the file extension of a file.
+-- @tparam  string item The file name.
+-- @treturn string      The file extension.
+--
+function Util.getFileExtension( item )
+    return item:match( '^.+(%..+)$' )
+end
+
 return Util;

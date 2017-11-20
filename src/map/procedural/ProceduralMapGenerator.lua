@@ -14,6 +14,7 @@ local ParcelGrid = require( 'src.map.procedural.ParcelGrid' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local Bitser = require( 'lib.Bitser' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -27,6 +28,8 @@ local ProceduralMapGenerator = {}
 
 local LAYOUTS_SOURCE_FOLDER = 'res/data/procgen/layouts/'
 local LAYOUTS_MODS_FOLDER = 'mods/maps/layouts/'
+
+local FILE_EXTENSION = '.layout'
 
 local PARCEL_SIZE = require( 'src.constants.PARCEL_SIZE' )
 
@@ -47,10 +50,14 @@ local layouts = {}
 local function loadLayoutTemplates( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
-        layouts[#layouts + 1] = Bitser.loadLoveFile( sourceFolder .. item )
+        if Util.getFileExtension( item ) == FILE_EXTENSION then
+            layouts[#layouts + 1] = Bitser.loadLoveFile( sourceFolder .. item )
 
-        count = count + 1
-        Log.debug( string.format( '  %3d. %s', count, item ))
+            count = count + 1
+            Log.print( string.format( '  %3d. %s', count, item ), 'ProceduralMapGenerator')
+        else
+            Log.debug( string.format( 'Ignoring invalid file type: %s', item ), 'ProceduralMapGenerator' )
+        end
     end
 end
 
@@ -59,10 +66,10 @@ end
 -- ------------------------------------------------
 
 function ProceduralMapGenerator.load()
-    Log.debug( 'Loading vanilla layouts:' )
+    Log.print( 'Loading vanilla layouts:', 'ProceduralMapGenerator' )
     loadLayoutTemplates( LAYOUTS_SOURCE_FOLDER )
 
-    Log.debug( 'Loading external layouts:' )
+    Log.print( 'Loading external layouts:', 'ProceduralMapGenerator' )
     loadLayoutTemplates( LAYOUTS_MODS_FOLDER )
 end
 
