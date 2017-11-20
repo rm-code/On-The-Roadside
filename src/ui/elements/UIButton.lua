@@ -93,8 +93,8 @@ function UIButton:setText( text, alignMode )
     self.alignMode = alignMode
 end
 
-function UIButton:setIcon( id )
-    self.icon = TexturePacks.getSprite( id )
+function UIButton:setIcon( id, alt )
+    self.icon = TexturePacks.getSprite( id, alt )
 end
 
 function UIButton:setActive( active )
