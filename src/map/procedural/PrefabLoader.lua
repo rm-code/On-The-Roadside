@@ -22,6 +22,7 @@ local PrefabLoader = {}
 
 local PREFAB_SOURCE_FOLDER = 'res/data/procgen/prefabs/'
 local PREFAB_MOD_FOLDER    = 'mods/maps/prefabs/'
+local FILE_EXTENSION       = '.prefab'
 
 -- ------------------------------------------------
 -- Private Variables
@@ -32,6 +33,10 @@ local prefabs = {}
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
+
+local function getExtension( item )
+  return item:match( '^.+(%..+)$' )
+end
 
 ---
 -- Loads a prefab template.
@@ -50,11 +55,15 @@ end
 local function loadPrefabTemplates( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
-        local template = load( sourceFolder .. item )
-        table.insert( prefabs[template.size], template )
+        if getExtension( item ) == FILE_EXTENSION then
+            local template = load( sourceFolder .. item )
+            table.insert( prefabs[template.size], template )
 
-        count = count + 1
-        Log.debug( string.format( '  %3d. %16s -> %16s (%s)', count, item, template.id, template.size ))
+            count = count + 1
+            Log.print( string.format( '  %3d. %16s -> %16s (%s)', count, item, template.id, template.size ), 'PrefabLoader' )
+        else
+            Log.debug( string.format( 'Ignoring invalid file type: %s', item ), 'PrefabLoader' )
+        end
     end
 end
 
@@ -66,8 +75,6 @@ end
 -- Loads all prefab templates the game can find.
 --
 function PrefabLoader.load()
-    Log.debug( 'Loading parcel prefabs:' )
-
     -- Init prefab tables.
     prefabs.XS = {}
     prefabs.S  = {}
@@ -75,7 +82,9 @@ function PrefabLoader.load()
     prefabs.L  = {}
     prefabs.XL = {}
 
+    Log.print( 'Loading vanilla parcel prefabs:', 'PrefabLoader' )
     loadPrefabTemplates( PREFAB_SOURCE_FOLDER )
+    Log.print( 'Loading external parcel prefabs:', 'PrefabLoader' )
     loadPrefabTemplates( PREFAB_MOD_FOLDER )
 end
 
