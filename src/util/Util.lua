@@ -49,4 +49,15 @@ function Util.getFileExtension( item )
     return item:match( '^.+(%..+)$' )
 end
 
+---
+-- Clamps a value to a certain range.
+-- @param min (number) The minimum value to clamp to.
+-- @param val (number) The value to clamp.
+-- @param max (number) The maximum value to clamp to.
+-- @return    (number) The clamped value.
+--
+function Util.clamp( min, val, max )
+    return math.max( min, math.min( val, max ));
+end
+
 return Util;

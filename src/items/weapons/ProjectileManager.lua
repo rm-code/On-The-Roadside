@@ -1,6 +1,7 @@
 local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -47,17 +48,6 @@ local function hitTile( index, remove, tile, projectile )
 end
 
 ---
--- Clamps a value to a certain range.
--- @param min (number) The minimum value to clamp to.
--- @param val (number) The value to clamp.
--- @param max (number) The maximum value to clamp to.
--- @return    (number) The clamped value.
---
-local function clamp( min, val, max )
-    return math.max( min, math.min( val, max ));
-end
-
----
 -- Reduces the energy of the projectile with slightly randomized values.
 -- @params energy    (number) The current energy.
 -- @params reduction (number) The reduction that should be applied.
@@ -65,7 +55,7 @@ end
 --
 local function reduceProjectileEnergy( energy, reduction )
     reduction = love.math.random( reduction - 10, reduction + 10 );
-    reduction = clamp( 1, reduction, 100 );
+    reduction = Util.clamp( 1, reduction, 100 )
     return energy - reduction;
 end
 
