@@ -29,10 +29,6 @@ function Util.getTilesInCircle( map, centerTile, radius )
     return list;
 end
 
-function Util.swap( a, b )
-    return b, a
-end
-
 ---
 -- Pads a string to the right.
 -- @tparam  string str    The string to right-pad.
