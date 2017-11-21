@@ -188,7 +188,7 @@ function ProceduralMapGenerator.new()
     --
     local function spawnFoliage()
         parcelGrid:iterate( function( parcel, x, y )
-            if parcel:getType() ~= 'foliage' then
+            if parcel:getType() ~= 'FOLIAGE' then
                 return
             end
 

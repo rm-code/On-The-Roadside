@@ -168,7 +168,8 @@ return {
     -- MAP EDITOR
     -- ==============================
 
-    ['parcel_xs'] = COLORS.DB09,
+    ['parcel_foliage'] = COLORS.DB10,
+    ['parcel_xs'] = COLORS.DB15,
     ['parcel_s'] = COLORS.DB08,
     ['parcel_m'] = COLORS.DB05,
     ['parcel_l'] = COLORS.DB27,
