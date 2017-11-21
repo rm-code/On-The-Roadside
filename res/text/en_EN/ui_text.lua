@@ -31,6 +31,8 @@ locale.strings = {
     ['ui_apply'] = "Apply",
     ['ui_unsaved_changes'] = "There are unsaved changes. Are you sure you want to quit?",
     ['ui_applied_settings'] = "Your settings have been updated.",
+    ['ui_settings_ingame_editor'] = "Activate Map Editor:",
+    ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
 
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",

@@ -90,6 +90,10 @@ function Settings.getFullscreen()
     return settings.general.fullscreen
 end
 
+function Settings.getIngameEditor()
+    return settings.general.mapeditor
+end
+
 function Settings.getLocale()
     return settings.general.locale
 end
@@ -105,6 +109,10 @@ end
 
 function Settings.setFullscreen( nfullscreen )
     settings.general.fullscreen = changeValue( settings.general.fullscreen, nfullscreen )
+end
+
+function Settings.setIngameEditor( mapeditor )
+    settings.general.mapeditor = changeValue( settings.general.mapeditor, mapeditor )
 end
 
 function Settings.setLocale( nlocale )

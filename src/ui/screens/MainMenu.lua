@@ -7,6 +7,7 @@ local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -121,8 +122,11 @@ function SplashScreen.new()
         local openOptionsButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'options' ) end, Translator.getText( 'ui_main_menu_options' ))
         buttonList:addChild( openOptionsButton )
 
-        local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
-        buttonList:addChild( mapEditorButton )
+        -- Only show map editor if it has been activated in the options.
+        if Settings.getIngameEditor() then
+            local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
+            buttonList:addChild( mapEditorButton )
+        end
 
         local changelogButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'changelog' ) end, Translator.getText( 'ui_main_menu_changelog' ))
         buttonList:addChild( changelogButton )
