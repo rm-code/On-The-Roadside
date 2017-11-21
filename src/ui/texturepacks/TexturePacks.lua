@@ -26,6 +26,15 @@ local INFO_FILE_NAME = 'info'
 local SPRITE_DEFINITIONS = 'sprites'
 local COLOR_DEFINITIONS  = 'colors'
 
+local DEFAULT = {
+    NAME = 'default',
+    INFO = 'info.lua',
+    COLORS = 'colors.lua',
+    SPRITES = 'sprites.lua',
+    IMAGEFONT = 'imagefont.png',
+    SPRITESHEET = 'spritesheet.png',
+}
+
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
@@ -123,6 +132,38 @@ local function loadPacks( sourceFolder )
     end
 end
 
+---
+-- Copies a file from the source folder to the target folder. Throws an error
+-- if the file can't be written to the target folder.
+-- @tparam string source The directory to load the file from.
+-- @tparam string target The directory to save the file to.
+-- @tparam string name   The file's name.
+--
+local function copyFile( source, target, name )
+    assert( love.filesystem.write( target .. name, love.filesystem.read( source .. name )))
+end
+
+---
+-- Copies the default texture pack to the mods folder in the user's save directory.
+--
+local function copyDefaultTexturePack()
+    -- Abort if the texture pack exists already.
+    if love.filesystem.isDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME ) then
+        return
+    end
+
+    love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME )
+
+    local source =     TEXTURE_PACK_FOLDER .. DEFAULT.NAME .. '/'
+    local target = MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME .. '/'
+
+    copyFile( source, target, DEFAULT.INFO )
+    copyFile( source, target, DEFAULT.COLORS )
+    copyFile( source, target, DEFAULT.SPRITES )
+    copyFile( source, target, DEFAULT.IMAGEFONT )
+    copyFile( source, target, DEFAULT.SPRITESHEET )
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -138,6 +179,9 @@ function TexturePacks.load()
 
     Log.debug( "Load External Texture Packs:" )
     loadPacks( MOD_TEXTURE_PACK_FOLDER )
+
+    Log.debug( "Copying default texture pack to mod folder!" )
+    copyDefaultTexturePack()
 end
 
 -- ------------------------------------------------
