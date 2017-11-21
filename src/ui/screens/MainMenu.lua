@@ -189,7 +189,7 @@ function SplashScreen.new()
     end
 
     function self:mousereleased()
-        container:command( 'activate' )
+        container:mousecommand( 'activate' )
     end
 
     function self:resize( _, _ )

@@ -299,7 +299,7 @@ function OptionsScreen.new()
     --
     function self:update()
         font = TexturePacks.getFont()
-        buttonList:update()
+        container:update()
     end
 
     ---
@@ -345,7 +345,7 @@ function OptionsScreen.new()
     -- Handle mousereleased events.
     --
     function self:mousereleased()
-        container:command( 'activate' )
+        container:mousecommand( 'activate' )
     end
 
     ---

@@ -65,6 +65,8 @@ function UIContainer:update()
         return
     end
 
+    self.current = nil
+
     for i = 1, #self.list do
         self.list[i]:setFocus( false )
         if self.list[i]:isMouseOver() then
@@ -94,6 +96,18 @@ end
 -- @tparam string cmd The command to forward.
 --
 function UIContainer:command( cmd )
+    if self.current then
+        self.list[self.current]:command( cmd )
+    else
+        self:next()
+    end
+end
+
+---
+-- Fowards a command to the currently focused UIElement.
+-- @tparam string cmd The command to forward.
+--
+function UIContainer:mousecommand( cmd )
     if not self.current then
         return
     end

@@ -155,7 +155,7 @@ function SavegameScreen.new()
 
     function self:update()
         font = TexturePacks.getFont()
-        buttonList:update()
+        container:update()
     end
 
     function self:draw()
@@ -191,7 +191,7 @@ function SavegameScreen.new()
     -- Handle mousereleased events.
     --
     function self:mousereleased()
-        container:command( 'activate' )
+        container:mousecommand( 'activate' )
     end
 
     function self:resize( _, _ )
