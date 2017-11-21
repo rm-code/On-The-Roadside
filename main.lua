@@ -70,6 +70,7 @@ function love.load( args )
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
         loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
         confirm     = require( 'src.ui.screens.ConfirmationModal' ),
+        information = require( 'src.ui.screens.InformationModal'  ),
         inputdialog = require( 'src.ui.screens.InputDialog'       ),
         maptest          = require( 'src.ui.screens.MapTest'                ),
         mapeditor        = require( 'src.ui.screens.MapEditor'              ),

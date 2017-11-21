@@ -126,6 +126,7 @@ function OptionsScreen.new()
         Translator.init( Settings.getLocale() )
         TexturePacks.setCurrent( Settings.getTexturepack() )
         love.window.setFullscreen( Settings.getFullscreen() )
+        ScreenManager.push( 'information', Translator.getText( 'ui_applied_settings' ))
     end
 
     ---

@@ -27,8 +27,10 @@ locale.strings = {
     ['ui_off'] = "Off",
     ['ui_yes'] = "Yes",
     ['ui_no'] = "No",
+    ['ui_ok'] = "Ok",
     ['ui_apply'] = "Apply",
     ['ui_unsaved_changes'] = "There are unsaved changes. Are you sure you want to quit?",
+    ['ui_applied_settings'] = "Your settings have been updated.",
 
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",
