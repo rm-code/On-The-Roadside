@@ -50,6 +50,8 @@ return {
     ['tile_soil']        = COLORS.DB03,
     ['tile_water']       = COLORS.DB16,
     ['tile_woodenfloor'] = COLORS.DB03,
+    ['tile_carpet']      = COLORS.DB27,
+    ['tile_floortiles']  = COLORS.DB22,
 
     -- ==============================
     -- WORLD OBJECTS
@@ -62,6 +64,8 @@ return {
     ['worldobject_tree']    = COLORS.DB12,
     ['worldobject_wall']    = COLORS.DB23,
     ['worldobject_window']  = COLORS.DB19,
+    ['worldobject_toilet']  = COLORS.DB20,
+    ['worldobject_shower']  = COLORS.DB16,
 
     -- ==============================
     -- CHARACTERS

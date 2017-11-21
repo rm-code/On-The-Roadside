@@ -10,6 +10,8 @@ return {
     ['tile_soil']        =  45,
     ['tile_water']       = 248,
     ['tile_woodenfloor'] = 173,
+    ['tile_carpet']      = 179,
+    ['tile_floortiles']  = 251,
 
     -- ==============================
     -- WORLD OBJECTS
@@ -22,6 +24,8 @@ return {
     ['worldobject_tree']    =   7,
     ['worldobject_wall']    =  36,
     ['worldobject_window']  = 177,
+    ['worldobject_toilet']  = 226,
+    ['worldobject_shower']  = 127,
 
     -- ==============================
     -- Items

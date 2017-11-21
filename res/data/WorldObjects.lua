@@ -18,6 +18,40 @@ return {
         }
     },
     {
+        id = 'worldobject_toilet',
+        size = 15,
+        hp = 65,
+        interactionCost = {
+            stand  = 5,
+            crouch = 6,
+            prone  = 7,
+        },
+        energyReduction = 30,
+        destructible = true,
+        climbable = true,
+        blocksVision = false,
+        drops = {
+            { id = 'misc_ceramic_shard', tries = 10, chance = 20 }
+        }
+    },
+    {
+        id = 'worldobject_shower',
+        size = 15,
+        hp = 35,
+        interactionCost = {
+            stand  = 5,
+            crouch = 6,
+            prone  = 7,
+        },
+        energyReduction = 30,
+        destructible = true,
+        climbable = true,
+        blocksVision = false,
+        drops = {
+            { id = 'misc_ceramic_shard', tries = 10, chance = 20 }
+        }
+    },
+    {
         id = 'worldobject_crate',
         size = 50,
         hp = 110,
