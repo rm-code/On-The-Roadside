@@ -104,7 +104,7 @@ function MapEditor.new()
     function self:receive( event, ... )
         if event == 'LOAD_LAYOUT' then
             local newLayout = ...
-            canvas:setLayout( newLayout )
+            canvas:setGrid( newLayout )
         end
     end
 
