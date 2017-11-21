@@ -208,6 +208,25 @@ function ProceduralMapGenerator.new()
     end
 
     ---
+    -- Spawns roads in designated parcels.
+    -- TODO Replace with prefab based system.
+    --
+    local function spawnRoads()
+        parcelGrid:iterate( function( parcel, x, y )
+            if parcel:getType() ~= 'ROAD' then
+                return
+            end
+
+            local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
+            for w = 1, PARCEL_SIZE.WIDTH do
+                for h = 1, PARCEL_SIZE.HEIGHT do
+                    tileGrid[tx + w][ty + h] = createTile( tx + w, ty + h, 'tile_asphalt' )
+                end
+            end
+        end)
+    end
+
+    ---
     -- Creates an empty tile grid.
     -- @tparam number w The width of the grid in parcels.
     -- @tparam number h The height of the grid in parcels.
@@ -270,6 +289,7 @@ function ProceduralMapGenerator.new()
 
         parcelGrid:createNeighbours()
 
+        spawnRoads()
         spawnFoliage()
 
         createSpawnPoints()

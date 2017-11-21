@@ -169,6 +169,7 @@ return {
     -- ==============================
 
     ['parcel_foliage'] = COLORS.DB10,
+    ['parcel_road'] = COLORS.DB22,
     ['parcel_xs'] = COLORS.DB15,
     ['parcel_s'] = COLORS.DB08,
     ['parcel_m'] = COLORS.DB05,

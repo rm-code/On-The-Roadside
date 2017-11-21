@@ -28,6 +28,7 @@ local MAX_MAP_HEIGHT = 16
 
 local COLORS = {
     FOLIAGE = 'parcel_foliage',
+    ROAD = 'parcel_road',
     XS = 'parcel_xs',
     S  = 'parcel_s',
     M  = 'parcel_m',
