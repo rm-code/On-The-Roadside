@@ -126,7 +126,7 @@ local function loadPacks( sourceFolder )
                 end
 
                 count = count + 1
-                Log.debug( string.format( '  %3d. %s', count, name ))
+                Log.print( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
             end
         end
     end
@@ -169,7 +169,7 @@ end
 -- ------------------------------------------------
 
 function TexturePacks.load()
-    Log.debug( "Load Default Texture Packs:" )
+    Log.print( "Load Default Texture Packs:", 'TexturePacks' )
     loadPacks( TEXTURE_PACK_FOLDER )
 
     -- Creates the mods folder if it doesn't exist.
@@ -177,7 +177,7 @@ function TexturePacks.load()
         love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER )
     end
 
-    Log.debug( "Load External Texture Packs:" )
+    Log.print( "Load External Texture Packs:", 'TexturePacks' )
     loadPacks( MOD_TEXTURE_PACK_FOLDER )
 
     Log.debug( "Copying default texture pack to mod folder!" )
