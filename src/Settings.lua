@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Bitser = require( 'lib.Bitser' )
+local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
@@ -67,7 +67,7 @@ end
 --
 function Settings.save()
     changed = false
-    Bitser.dumpLoveFile( FILE_NAME, settings )
+    Compressor.save( settings, FILE_NAME )
 end
 
 ---
@@ -79,7 +79,7 @@ function Settings.load()
         create()
     end
 
-    settings = Bitser.loadLoveFile( FILE_NAME )
+    settings = Compressor.load( FILE_NAME )
 end
 
 -- ------------------------------------------------

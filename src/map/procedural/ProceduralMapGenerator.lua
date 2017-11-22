@@ -13,8 +13,8 @@ local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ParcelGrid = require( 'src.map.procedural.ParcelGrid' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
-local Bitser = require( 'lib.Bitser' )
 local Util = require( 'src.util.Util' )
+local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
@@ -51,7 +51,7 @@ local function loadLayoutTemplates( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
         if Util.getFileExtension( item ) == FILE_EXTENSION then
-            layouts[#layouts + 1] = Bitser.loadLoveFile( sourceFolder .. item )
+            layouts[#layouts + 1] = Compressor.load( sourceFolder .. item )
 
             count = count + 1
             Log.print( string.format( '  %3d. %s', count, item ), 'ProceduralMapGenerator')

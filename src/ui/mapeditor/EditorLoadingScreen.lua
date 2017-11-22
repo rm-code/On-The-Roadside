@@ -14,7 +14,7 @@ local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
-local Bitser = require( 'lib.Bitser' )
+local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
@@ -77,7 +77,7 @@ function EditorLoadingScreen.new()
 
     local function createListEntry( lx, ly, item, folder )
         local function callback()
-            ScreenManager.publish( 'LOAD_LAYOUT', Bitser.loadLoveFile( folder .. item ))
+            ScreenManager.publish( 'LOAD_LAYOUT', Compressor.load( folder .. item ))
             ScreenManager.pop()
             ScreenManager.pop()
         end

@@ -8,8 +8,8 @@
 -- ------------------------------------------------
 
 local Log = require( 'src.util.Log' )
-local Bitser = require( 'lib.Bitser' )
 local Util = require( 'src.util.Util' )
+local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
@@ -42,7 +42,7 @@ local prefabs = {}
 -- @treturn table       The loaded prefabTemplate (only if successful).
 --
 local function load( src )
-    return Bitser.loadLoveFile( src )
+    return Compressor.load( src )
 end
 
 ---

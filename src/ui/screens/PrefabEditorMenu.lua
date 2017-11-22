@@ -14,7 +14,7 @@ local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
-local Bitser = require( 'lib.Bitser' )
+local Compressor = require( 'src.util.Compressor' )
 local Log = require( 'src.util.Log' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 
@@ -89,7 +89,7 @@ function PrefabEditorMenu.new()
             local t = canvas:serialize()
             t.id = name
 
-            Bitser.dumpLoveFile( SAVE_DIR .. name .. FILE_EXTENSION, t )
+            Compressor.save( t, SAVE_DIR .. name .. FILE_EXTENSION )
             ScreenManager.pop()
         end
 
