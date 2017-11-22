@@ -5,7 +5,7 @@ return {
     ['tile_empty']       =   1,
     ['tile_asphalt']     =  47,
     ['tile_deep_water']  = 248,
-    ['tile_grass']       =  45,
+    ['tile_grass']       =  40,
     ['tile_gravel']      = 250,
     ['tile_soil']        =  45,
     ['tile_water']       = 248,
