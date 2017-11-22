@@ -68,8 +68,10 @@ function MapTest.new()
         camera:update( dt )
     end
 
-    function self:keypressed()
-        ScreenManager.pop()
+    function self:keypressed( _, scancode )
+        if scancode == 'escape' then
+            ScreenManager.pop()
+        end
     end
 
     return self
