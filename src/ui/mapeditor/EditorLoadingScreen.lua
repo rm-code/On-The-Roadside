@@ -15,6 +15,8 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local Compressor = require( 'src.util.Compressor' )
+local Util = require( 'src.util.Util' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -30,6 +32,11 @@ local UI_GRID_WIDTH  = 20
 local UI_GRID_HEIGHT = 20
 
 local BUTTON_LIST_VERTICAL_OFFSET = 1
+
+local FILE_EXTENSIONS = {
+    PREFAB = '.prefab',
+    LAYOUT = '.layout'
+}
 
 -- ------------------------------------------------
 -- Constructor
@@ -75,6 +82,18 @@ function EditorLoadingScreen.new()
         outlines:refresh()
     end
 
+    local function isValidFile( path )
+        if not love.filesystem.isFile( path ) then
+            return
+        end
+
+        local extension = Util.getFileExtension( path )
+        if extension == FILE_EXTENSIONS.LAYOUT or extension == FILE_EXTENSIONS.PREFAB then
+            return true
+        end
+        Log.warn( string.format( 'Ignoring invalid file extension: "%s".', extension ), 'EditorLoadingScreen' )
+    end
+
     local function createListEntry( lx, ly, item, folder )
         local function callback()
             ScreenManager.publish( 'LOAD_LAYOUT', Compressor.load( folder .. item ))
@@ -93,7 +112,7 @@ function EditorLoadingScreen.new()
         -- Create entries for last five savegames.
         local items = love.filesystem.getDirectoryItems( directory )
         for i = 1, #items do
-            if love.filesystem.isFile( directory .. items[i] ) then
+            if isValidFile( directory .. items[i] ) then
                 buttonList:addChild( createListEntry( lx, ly, items[i], directory ))
             end
         end
