@@ -119,19 +119,19 @@ local function loadPacks( sourceFolder )
             if success then
                 local name = tpack:getName()
 
-                if texturePacks[name] then
-                    Log.warn( string.format( 'A texture pack with the id "%s" already exists and will be overwritten', name ), 'TexturePacks' )
-                end
+                if not texturePacks[name] then
+                    -- Register new texture pack and make it the current one if
+                    -- there isn't a current one already.
+                    texturePacks[name] = tpack
+                    if not current then
+                        current = name
+                    end
 
-                -- Register new texture pack and make it the current one if
-                -- there isn't a current one already.
-                texturePacks[name] = tpack
-                if not current then
-                    current = name
+                    count = count + 1
+                    Log.print( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
+                else
+                    Log.warn( string.format( 'A texture pack with the id "%s" already exists. The duplicate will be ignored.', name ), 'TexturePacks' )
                 end
-
-                count = count + 1
-                Log.print( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
             end
         end
     end
