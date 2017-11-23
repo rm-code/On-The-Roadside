@@ -87,7 +87,7 @@ function InputDialog.new()
 
         text = ntext
         entry = template or ''
-        deleteAll = template and true
+        deleteAll = template and true or false
 
         confirmCallback = nconfirmCallback
 

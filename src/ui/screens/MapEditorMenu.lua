@@ -89,7 +89,7 @@ function MapEditorMenu.new()
             ScreenManager.pop()
         end
 
-        ScreenManager.push( 'inputdialog', Translator.getText( 'ui_mapeditor_enter_name' ), '', confirmCallback )
+        ScreenManager.push( 'inputdialog', Translator.getText( 'ui_mapeditor_enter_name' ), false, confirmCallback )
     end
 
     local function loadPrefab()
