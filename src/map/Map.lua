@@ -90,20 +90,14 @@ function Map.new()
             local x = love.math.random( 1, width )
             local y = love.math.random( 1, height )
 
-            if faction ~= 'allied' then
-                local tile = self:getTileAt( x, y )
-                if tile:isPassable() and not tile:isOccupied() then
+            local tile = self:getTileAt( x, y )
+            for _, spawn in ipairs( spawnpoints[faction] ) do
+                if tile == spawn and tile:isPassable() and not tile:isOccupied() then
                     return tile
-                end
-            else
-                local tile = self:getTileAt( x, y );
-                for _, spawn in ipairs( spawnpoints[faction] ) do
-                    if tile == spawn and tile:isPassable() and not tile:isOccupied() then
-                        return tile;
-                    end
                 end
             end
         end
+        error( string.format( 'Can not find a valid spawnpoint at position!' ))
     end
 
     ---

@@ -93,7 +93,9 @@ function ProceduralMapGenerator.new()
 
     -- Spawnpoints.
     local spawnpoints = {
-        allied = {}
+        allied = {},
+        neutral = {},
+        enemy = {}
     }
 
     -- ------------------------------------------------
@@ -250,21 +252,24 @@ function ProceduralMapGenerator.new()
     -- TODO Proper implementation.
     --
     local function createSpawnPoints( spawns )
-        if not spawns then
-            for w = 0, PARCEL_SIZE.WIDTH-1 do
-                for h = 0, PARCEL_SIZE.HEIGHT-1 do
-                    spawnpoints.allied[#spawnpoints.allied + 1] = tileGrid[1+w][1+h]
-                end
+        for type, definitions in pairs( spawns ) do
+
+            local target
+            if type == 'SPAWNS_FRIENDLY' then
+                target = 'allied'
+            elseif type == 'SPAWNS_NEUTRAL' then
+                target = 'neutral'
+            elseif type == 'SPAWNS_ENEMY' then
+                target = 'enemy'
             end
-            return
-        end
 
-        for _, definition in ipairs( spawns ) do
-            local x, y = definition.x * PARCEL_SIZE.WIDTH, definition.y * PARCEL_SIZE.HEIGHT
+            for _, definition in ipairs( definitions ) do
+                local x, y = (definition.x-1) * PARCEL_SIZE.WIDTH, (definition.y-1) * PARCEL_SIZE.HEIGHT
 
-            for w = 0, PARCEL_SIZE.WIDTH-1 do
-                for h = 0, PARCEL_SIZE.HEIGHT-1 do
-                    spawnpoints.allied[#spawnpoints.allied + 1] = tileGrid[x+w][y+h]
+                for w = 1, PARCEL_SIZE.WIDTH do
+                    for h = 1, PARCEL_SIZE.HEIGHT do
+                        spawnpoints[target][#spawnpoints[target] + 1] = tileGrid[x+w][y+h]
+                    end
                 end
             end
         end
@@ -291,8 +296,7 @@ function ProceduralMapGenerator.new()
 
         spawnRoads()
         spawnFoliage()
-
-        createSpawnPoints()
+        createSpawnPoints( layout.spawns )
     end
 
     function self:getSpawnpoints()
