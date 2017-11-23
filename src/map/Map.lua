@@ -83,18 +83,17 @@ function Map.new()
 
     ---
     -- Randomly searches for a tile on which a player could be spawned.
-    -- @treturn Tile A tile suitable for spawning.
+    -- @tparam  string faction The faction id to spawn a character for.
+    -- @treturn Tile           A tile suitable for spawning.
     --
     function self:findSpawnPoint( faction )
         for _ = 1, 2000 do
-            local x = love.math.random( 1, width )
-            local y = love.math.random( 1, height )
+            local index = love.math.random( #spawnpoints[faction] )
+            local spawn = spawnpoints[faction][index]
 
-            local tile = self:getTileAt( x, y )
-            for _, spawn in ipairs( spawnpoints[faction] ) do
-                if tile == spawn and tile:isPassable() and not tile:isOccupied() then
-                    return tile
-                end
+            local tile = self:getTileAt( spawn.x, spawn.y )
+            if tile:isPassable() and not tile:isOccupied() then
+                return tile
             end
         end
         error( string.format( 'Can not find a valid spawnpoint at position!' ))

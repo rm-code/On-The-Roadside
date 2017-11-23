@@ -268,7 +268,7 @@ function ProceduralMapGenerator.new()
 
                 for w = 1, PARCEL_SIZE.WIDTH do
                     for h = 1, PARCEL_SIZE.HEIGHT do
-                        spawnpoints[target][#spawnpoints[target] + 1] = tileGrid[x+w][y+h]
+                        spawnpoints[target][#spawnpoints[target] + 1] = { x = x+w, y = y+h }
                     end
                 end
             end
