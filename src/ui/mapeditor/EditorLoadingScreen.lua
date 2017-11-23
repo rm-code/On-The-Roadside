@@ -15,6 +15,7 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local Compressor = require( 'src.util.Compressor' )
+local Translator = require( 'src.util.Translator' )
 local Util = require( 'src.util.Util' )
 local Log = require( 'src.util.Log' )
 
@@ -116,6 +117,9 @@ function EditorLoadingScreen.new()
                 buttonList:addChild( createListEntry( lx, ly, items[i], directory ))
             end
         end
+
+        local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_back' ))
+        buttonList:addChild( resumeButton )
 
         buttonList:setFocus( true )
     end
