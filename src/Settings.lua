@@ -23,6 +23,7 @@ local DEFAULT_SETTINGS = {
     general = {
         fullscreen = true,
         locale = 'en_EN',
+        mapeditor = false,
         texturepack = 'default'
     }
 }
