@@ -20,8 +20,8 @@ local LayoutCanvas = Class( 'LayoutCanvas' )
 -- Constants
 -- ------------------------------------------------
 
-local MIN_MAP_WIDTH  =  3
-local MIN_MAP_HEIGHT =  3
+local MIN_MAP_WIDTH  =  6
+local MIN_MAP_HEIGHT =  6
 
 local MAX_MAP_WIDTH  = 16
 local MAX_MAP_HEIGHT = 16
