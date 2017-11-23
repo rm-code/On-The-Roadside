@@ -40,7 +40,7 @@ function ThrownProjectileQueue.new( character, tx, ty, th )
     ---
     -- Generates projectiles based on the weapons firing mode. The value is
     -- limited by the amount of rounds in the weapon's magazine. For each
-    -- projectile an angle of derivation is calculated before it is placed in
+    -- projectile an angle of deviation is calculated before it is placed in
     -- the queue.
     --
     function self:init()

@@ -472,7 +472,7 @@
     - Disable camera tracking for AI controlled characters
 - FOV isn't drawn for AI controlled factions
 - Tweaked shot calculations
-    - Uses the maximum angle for a shot's derivation correctly now
+    - Uses the maximum angle for a shot's deviation correctly now
     - Randomly varies the projectile's traveling distance
 - Improved line of sight drawing
     - Line of sight is now generated in real time between the active character and the mouse cursor
