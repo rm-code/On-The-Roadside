@@ -172,13 +172,17 @@ return {
     -- MAP EDITOR
     -- ==============================
 
-    ['parcel_foliage'] = COLORS.DB10,
+    ['parcel_spawns_friendly'] = COLORS.DB09,
+    ['parcel_spawns_neutral'] = COLORS.DB08,
+    ['parcel_spawns_enemy'] = COLORS.DB27,
+
+    ['parcel_foliage'] = COLORS.DB11,
     ['parcel_road'] = COLORS.DB22,
     ['parcel_xs'] = COLORS.DB15,
     ['parcel_s'] = COLORS.DB08,
     ['parcel_m'] = COLORS.DB05,
-    ['parcel_l'] = COLORS.DB27,
-    ['parcel_xl'] = COLORS.DB25,
+    ['parcel_l'] = COLORS.DB26,
+    ['parcel_xl'] = COLORS.DB02,
     ['ingame_editor_grid_lines'] = COLORS.DB14,
 
     -- ==============================

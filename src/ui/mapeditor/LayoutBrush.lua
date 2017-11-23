@@ -38,10 +38,16 @@ function LayoutBrush:draw()
 end
 
 function LayoutBrush:use( canvas )
+    local type = 'prefab'
+
+    if self.template.TYPE == 'SPAWNS_FRIENDLY' or self.template.TYPE == 'SPAWNS_NEUTRAL' or self.template.TYPE == 'SPAWNS_ENEMY' then
+        type = 'spawns'
+    end
+
     if self.mode == 'draw' then
-        canvas:place( self.x, self.y, self.template )
+        canvas:place( self.x, self.y, type, self.template )
     elseif self.mode == 'erase' then
-        canvas:erase( self.x, self.y )
+        canvas:erase( self.x, self.y, type )
     end
 end
 
