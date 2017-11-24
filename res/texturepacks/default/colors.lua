@@ -50,6 +50,8 @@ return {
     ['tile_soil']        = COLORS.DB03,
     ['tile_water']       = COLORS.DB16,
     ['tile_woodenfloor'] = COLORS.DB03,
+    ['tile_carpet']      = COLORS.DB27,
+    ['tile_floortiles']  = COLORS.DB22,
 
     -- ==============================
     -- WORLD OBJECTS
@@ -62,6 +64,8 @@ return {
     ['worldobject_tree']    = COLORS.DB12,
     ['worldobject_wall']    = COLORS.DB23,
     ['worldobject_window']  = COLORS.DB19,
+    ['worldobject_toilet']  = COLORS.DB20,
+    ['worldobject_shower']  = COLORS.DB16,
 
     -- ==============================
     -- CHARACTERS
@@ -110,6 +114,7 @@ return {
     ['ui_outlines'] = COLORS.DB15,
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
+    ['ui_text_dark'] = COLORS.DB25,
 
     ['ui_help_section'] = COLORS.DB24,
 
@@ -162,6 +167,23 @@ return {
     ['ui_changelog_fixes'] = COLORS.DB16,
     ['ui_changelog_other'] = COLORS.DB16,
     ['ui_changelog_text'] = COLORS.DB25,
+
+    -- ==============================
+    -- MAP EDITOR
+    -- ==============================
+
+    ['parcel_spawns_friendly'] = COLORS.DB09,
+    ['parcel_spawns_neutral'] = COLORS.DB08,
+    ['parcel_spawns_enemy'] = COLORS.DB27,
+
+    ['parcel_foliage'] = COLORS.DB11,
+    ['parcel_road'] = COLORS.DB22,
+    ['parcel_xs'] = COLORS.DB15,
+    ['parcel_s'] = COLORS.DB08,
+    ['parcel_m'] = COLORS.DB05,
+    ['parcel_l'] = COLORS.DB26,
+    ['parcel_xl'] = COLORS.DB02,
+    ['ingame_editor_grid_lines'] = COLORS.DB14,
 
     -- ==============================
     -- SYSTEM

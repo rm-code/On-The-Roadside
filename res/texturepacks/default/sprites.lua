@@ -5,11 +5,13 @@ return {
     ['tile_empty']       =   1,
     ['tile_asphalt']     =  47,
     ['tile_deep_water']  = 248,
-    ['tile_grass']       =  45,
+    ['tile_grass']       =  40,
     ['tile_gravel']      = 250,
     ['tile_soil']        =  45,
     ['tile_water']       = 248,
     ['tile_woodenfloor'] = 173,
+    ['tile_carpet']      = 179,
+    ['tile_floortiles']  = 251,
 
     -- ==============================
     -- WORLD OBJECTS
@@ -22,6 +24,8 @@ return {
     ['worldobject_tree']    =   7,
     ['worldobject_wall']    =  36,
     ['worldobject_window']  = 177,
+    ['worldobject_toilet']  = 226,
+    ['worldobject_shower']  = 127,
 
     -- ==============================
     -- Items
@@ -66,6 +70,14 @@ return {
     ['ui_scroll_area_down'] = 32,
     ['ui_scrollbar_cursor']  = 180,
     ['ui_scrollbar_element'] = 180,
+
+    -- ==============================
+    -- Prefab Editor
+    -- ==============================
+
+    ['prefab_editor_cursor_draw'] = 101,
+    ['prefab_editor_cursor_fill'] = 160,
+    ['prefab_editor_cursor_erase'] = 89,
 
     -- ==============================
     -- Creatures

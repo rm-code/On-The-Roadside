@@ -13,34 +13,92 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local UIButton = {}
+local UIButton = UIElement:subclass( 'UIButton' )
 
-function UIButton.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIButton' )
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
 
-    local tileset
-    local icon
-    local callback
+local function selectColor( self )
+    if self.active then
+        if love.mouse.isVisible() and self:isMouseOver() then
+            return 'ui_button_hot'
+        elseif self:hasFocus() then
+            return 'ui_button_focus'
+        end
+        return 'ui_button'
+    elseif not self.active then
+        if love.mouse.isVisible() and self:isMouseOver() then
+            return 'ui_button_inactive_hot'
+        elseif self:hasFocus() then
+            return 'ui_button_inactive_focus'
+        end
+        return 'ui_button_inactive'
+    end
+end
 
-    function self:init( tileID, ncallback )
-        tileset = TexturePacks.getTileset()
-        icon = TexturePacks.getSprite( tileID )
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        callback = ncallback
+function UIButton:initialize( px, py, x, y, w, h, callback, text, alignMode, active )
+    UIElement.initialize( self, px, py, x, y, w, h )
+
+    self.callback = callback
+    self.text = text
+    self.alignMode = alignMode or 'center'
+    self.active = active or true
+end
+
+function UIButton:draw()
+    local tw, th = TexturePacks.getTileDimensions()
+
+    TexturePacks.setColor( selectColor( self ))
+    -- Draw icon.
+    if self.icon then
+        love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), self.icon, self.ax * tw, self.ay * th )
     end
 
-    function self:draw()
-        local tw, th = TexturePacks.getTileDimensions()
-        TexturePacks.setColor( self:isMouseOver() and 'ui_button_hot' or 'ui_button' )
-        love.graphics.draw( tileset:getSpritesheet(), icon, self.ax * tw, self.ay * th )
-        TexturePacks.resetColor()
+    -- Draw text.
+    if self.text then
+        -- If we have an icon we start the text with an offset to the right.
+        if self.icon then
+            local x = self.ax + 2
+            local w = TexturePacks.getFont():align( self.alignMode, self.text, (self.w-2) * tw )
+            love.graphics.print( self.text, x * tw + w, self.ay * th )
+        else
+            local w = TexturePacks.getFont():align( self.alignMode, self.text, self.w * tw )
+            love.graphics.print( self.text, self.ax * tw + w, self.ay * th )
+        end
     end
+    TexturePacks.resetColor()
+end
 
-    function self:activate()
-        callback()
+function UIButton:activate()
+    self.callback()
+end
+
+function UIButton:command( cmd )
+    if cmd == 'activate' then
+        self:activate()
     end
+end
 
-    return self
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+function UIButton:setText( text, alignMode )
+    self.text = text
+    self.alignMode = alignMode
+end
+
+function UIButton:setIcon( id, alt )
+    self.icon = TexturePacks.getSprite( id, alt )
+end
+
+function UIButton:setActive( active )
+    self.active = active
 end
 
 return UIButton

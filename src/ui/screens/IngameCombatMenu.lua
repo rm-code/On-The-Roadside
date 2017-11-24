@@ -5,9 +5,10 @@ local Translator = require( 'src.util.Translator' );
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -41,6 +42,8 @@ function IngameCombatMenu.new()
     local x, y
     local tw, th
 
+    local container
+
     -- ------------------------------------------------
     -- Private Methods
     -- ------------------------------------------------
@@ -49,7 +52,7 @@ function IngameCombatMenu.new()
     -- Generates the outlines for this screen.
     --
     local function generateOutlines()
-        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         -- Horizontal borders.
         for ox = 0, UI_GRID_WIDTH-1 do
@@ -68,30 +71,34 @@ function IngameCombatMenu.new()
     end
 
     local function saveGame()
-        SaveHandler.save( game:serialize() );
-        ScreenManager.pop();
+        local function confirmationCallback( name )
+            SaveHandler.save( game:serialize(), name )
+            ScreenManager.pop() -- Close input dialog.
+            ScreenManager.pop() -- Close ingame combat menu.
+        end
+
+        -- Generate date as a default save name.
+        local date = os.date( '%d-%m-%Y_%H%M%S', os.time() )
+
+        ScreenManager.push( 'inputdialog', Translator.getText( 'ui_ingame_input_save_name' ), date, confirmationCallback )
     end
 
     local function createButtons()
         local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        buttonList = UIVerticalList.new( lx, ly, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        local saveGameButton = UITextButton.new( lx, ly, 0, 3, UI_GRID_WIDTH, 1 )
-        saveGameButton:init( Translator.getText( 'ui_ingame_save_game' ), saveGame )
+        local saveGameButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
         buttonList:addChild( saveGameButton )
 
-        local openHelpButton = UITextButton.new( lx, ly, 0, 4, UI_GRID_WIDTH, 1 )
-        openHelpButton:init( Translator.getText( 'ui_ingame_open_help' ), function() ScreenManager.push( 'help' ) end )
+        local openHelpButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
         buttonList:addChild( openHelpButton )
 
-        local exitButton = UITextButton.new( lx, ly, 0, 5, UI_GRID_WIDTH, 1 )
-        exitButton:init( Translator.getText( 'ui_ingame_exit' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
         buttonList:addChild( exitButton )
 
-        local closeButton = UITextButton.new( lx, ly, 0, 6, UI_GRID_WIDTH, 1 )
-        closeButton:init( Translator.getText( 'ui_ingame_close' ), function() ScreenManager.pop() end )
-        buttonList:addChild( closeButton )
+        local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
+        buttonList:addChild( resumeButton )
     end
 
     -- ------------------------------------------------
@@ -104,39 +111,50 @@ function IngameCombatMenu.new()
         tw, th = TexturePacks.getTileDimensions()
         x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         generateOutlines()
 
-        createButtons();
+        createButtons()
+
+        container = UIContainer()
+        container:register( buttonList )
     end
 
     function self:draw()
         background:draw()
         outlines:draw()
 
-        buttonList:draw();
+        container:draw()
         love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), (x+1) * tw, (y+1) * th, (UI_GRID_WIDTH - 2) * tw, 'center' )
     end
 
     function self:update()
-        buttonList:update();
+        container:update()
     end
 
     function self:keypressed( _, scancode )
-        buttonList:keypressed( _, scancode );
+        love.mouse.setVisible( false )
+
+        if scancode == 'up' then
+            container:command( 'up' )
+        elseif scancode == 'down' then
+            container:command( 'down' )
+        elseif scancode == 'return' then
+            container:command( 'activate' )
+        end
 
         if scancode == 'escape' then
             ScreenManager.pop();
         end
     end
 
-    function self:mousemoved()
-        buttonList:mousemoved();
+    function self:mousereleased()
+        container:command( 'activate' )
     end
 
-    function self:mousereleased()
-        buttonList:mousereleased();
+    function self:mousemoved()
+        love.mouse.setVisible( true )
     end
 
     function self:resize( _, _ )

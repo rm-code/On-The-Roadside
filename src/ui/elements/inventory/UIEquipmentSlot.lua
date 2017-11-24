@@ -14,91 +14,69 @@ local UILabel = require( 'src.ui.elements.UILabel' )
 -- Module
 -- ------------------------------------------------
 
-local UIEquipmentSlot = {}
+local UIEquipmentSlot = UIElement:subclass( 'UIElement' )
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
+-- ------------------------------------------------
+
+local function updateBackground( self )
+    if self.highlight then
+        self.background:setColor( 'ui_equipment_highlight' )
+    elseif self:isMouseOver() then
+        self.background:setColor( 'ui_equipment_mouseover' )
+    else
+        self.background:setColor( 'sys_background' )
+    end
+end
+
+local function updateLabel( self )
+    if self.slot:containsItem() then
+        self.label:setText( self.slot:getItem():getID() )
+        self.label:setColor( 'ui_equipment_item' )
+    else
+        self.label:setText( self.slot:getID() )
+        self.label:setColor( 'ui_equipment_empty' )
+        self.label:setUpper( true )
+    end
+end
+
+-- ------------------------------------------------
+-- Public Methods
 -- ------------------------------------------------
 
 ---
--- @tparam EquipmentSlot slot The equipment slot to use.
--- @tparam number        x    The x-offset at which to draw this ui-element.
--- @tparam number        y    The y-offset at which to draw this ui-element.
--- @tparam number        w    The width of this ui-element.
--- @tparam number        h    The height of this ui-element.
+-- Creates a new UIEquipmentList instance.
 --
-function UIEquipmentSlot.new( px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIEquipmentSlot' )
+function UIEquipmentSlot:initialize( px, py, x, y, w, h, slot )
+    UIElement.initialize( self, px, py, x, y, w, h )
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+    self.slot = slot
+    self.background = UIBackground( self.ax, self.ay, 0, 0, self.w, self.h )
+    self:addChild( self.background )
 
-    local background
-    local label
-    local slot
-    local highlight
+    self.label = UILabel( self.ax, self.ay, 0, 0, self.w, self.h )
+    self:addChild( self.label )
+end
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+function UIEquipmentSlot:draw()
+    updateBackground( self )
+    self.background:draw()
 
-    local function updateBackground()
-        if highlight then
-            background:setColor( 'ui_equipment_highlight' )
-        elseif self:isMouseOver() then
-            background:setColor( 'ui_equipment_mouseover' )
-        else
-            background:setColor( 'sys_background' )
-        end
+    updateLabel( self )
+    self.label:draw()
+end
+
+function UIEquipmentSlot:getSlot()
+    return self.slot
+end
+
+function UIEquipmentSlot:matchesType( item )
+    if not item then
+        self.highlight = false
+        return
     end
-
-    local function updateLabel()
-        if slot:containsItem() then
-            label:setText( slot:getItem():getID() )
-            label:setColor( 'ui_equipment_item' )
-        else
-            label:setText( slot:getID() )
-            label:setColor( 'ui_equipment_empty' )
-            label:setUpper( true )
-        end
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init( nslot )
-        slot = nslot
-
-        background = UIBackground.new( self.ax, self.ay, 0, 0, self.w, self.h )
-        self:addChild( background )
-
-        label = UILabel.new( self.ax, self.ay, 0, 0, self.w, self.h )
-        self:addChild( label )
-    end
-
-    function self:draw()
-        updateBackground()
-        background:draw()
-
-        updateLabel()
-        label:draw()
-    end
-
-    function self:getSlot()
-        return slot
-    end
-
-    function self:highlight( nitem )
-        if not nitem then
-            highlight = false
-            return
-        end
-        highlight = nitem:isSameType( slot:getItemType(), slot:getSubType() )
-    end
-
-    return self
+    self.highlight = item:isSameType( self.slot:getItemType(), self.slot:getSubType() )
 end
 
 return UIEquipmentSlot

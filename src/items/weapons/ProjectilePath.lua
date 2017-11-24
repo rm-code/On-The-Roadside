@@ -107,50 +107,50 @@ end
 -- @return      (number) The random angle.
 --
 local function getRandomAngle( range )
-    return love.math.random( range * 100 ) / 100;
+    return love.math.random( range * 100 ) / 100
 end
 
 ---
--- Calculates the maximum angle of derivation for the shot.
+-- Calculates the maximum angle of deviation for the shot.
 -- @param character (Character) The character shooting the weapon.
 -- @param weapon    (Weapon)    The used weapon.
 -- @param count     (number)    Determines how many projectiles have been fired already.
--- @return          (number)    The maximum range for the derivation.
+-- @return          (number)    The maximum range for the deviation.
 --
-local function calculateRangedMaximumDerivation( character, weapon, count )
+local function calculateRangedMaximumDeviation( character, weapon, count )
     local marksmanSkill  = floor( character:getAccuracy() )
     local weaponAccuracy = floor( weapon:getAccuracy() )
 
-    local derivation = 0;
+    local deviation = 0
     -- Random angle based on the character's accuracy skill.
-    derivation = derivation + MARKSMAN_SKILL_MODIFIERS[marksmanSkill];
+    deviation = deviation + MARKSMAN_SKILL_MODIFIERS[marksmanSkill]
     -- Random angle based on weapon's accuracy stat.
-    derivation = derivation + RANGED_WEAPON_MODIFIERS[weaponAccuracy];
+    deviation = deviation + RANGED_WEAPON_MODIFIERS[weaponAccuracy]
     -- Random angle based on how many bullets have been shot before.
-    derivation = derivation + RANGED_BURST_MODIFIERS[math.min( count, #RANGED_BURST_MODIFIERS )];
+    deviation = deviation + RANGED_BURST_MODIFIERS[math.min( count, #RANGED_BURST_MODIFIERS )]
 
     -- Stances influence the whole angle.
-    derivation = derivation * RANGED_STANCE_MODIFIER[character:getStance()];
+    deviation = deviation * RANGED_STANCE_MODIFIER[character:getStance()]
 
-    return math.max( derivation, 0 )
+    return math.max( deviation, 0 )
 end
 
 ---
--- Calculates the maximum angle of derivation for the shot.
+-- Calculates the maximum angle of deviation for the shot.
 -- @param character (Character) The character throwing the weapon.
--- @return  (number) The maximum range for the derivation.
+-- @return  (number) The maximum range for the deviation.
 --
-local function calculateThrownMaximumDerivation( character )
+local function calculateThrownMaximumDeviation( character )
     local throwingSkill = floor( character:getThrowingSkill() )
 
-    local derivation = 0;
+    local deviation = 0
     -- Random angle based on the character's accuracy skill.
-    derivation = derivation + THROWING_SKILL_MODIFIERS[throwingSkill];
+    deviation = deviation + THROWING_SKILL_MODIFIERS[throwingSkill]
 
     -- Stances influence the whole angle.
-    derivation = derivation * THROWN_STANCE_MODIFIERS[character:getStance()];
+    deviation = deviation * THROWN_STANCE_MODIFIERS[character:getStance()]
 
-    return derivation;
+    return deviation
 end
 
 ---
@@ -188,15 +188,15 @@ end
 -- @param character (Character) The character shooting the weapon.
 -- @param weapon    (Weapon)    The used weapon.
 -- @param count     (number)    Determines how many projectiles have been fired already.
--- @return          (number)    The maximum range for the derivation.
+-- @return          (number)    The maximum range for the deviation.
 --
-function ProjectilePath.getMaximumDerivation( character, weapon, count )
+function ProjectilePath.getMaximumDeviation( character, weapon, count )
     if weapon:getSubType() == WEAPON_TYPES.RANGED then
-        return calculateRangedMaximumDerivation( character, weapon, count );
+        return calculateRangedMaximumDeviation( character, weapon, count )
     elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
-        return calculateThrownMaximumDerivation( character );
+        return calculateThrownMaximumDeviation( character )
     else
-        error( string.format( 'Can\'t calculate a derivation for selected weapon type %s!', weapon:getSubType() ));
+        error( string.format( 'Can\'t calculate a deviation for selected weapon type %s!', weapon:getSubType() ))
     end
 end
 
@@ -211,15 +211,15 @@ end
 -- @return          (table)     A sequence containing all tiles of the projectile's path.
 --
 function ProjectilePath.calculate( character, tx, ty, th, weapon, count )
-    -- Calculate the angle of derivation.
-    local maxDerivation = ProjectilePath.getMaximumDerivation( character, weapon, count );
-    local actualDerivation = randomSign() * getRandomAngle( maxDerivation );
+    -- Calculate the angle of deviation.
+    local maxDeviation = ProjectilePath.getMaximumDeviation( character, weapon, count )
+    local actualDeviation = randomSign() * getRandomAngle( maxDeviation )
 
     -- Apply the angle to find the final target tile.
     local origin = character:getTile();
     local px, py = origin:getPosition();
 
-    local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDerivation, love.math.random( 90, 130 ) / 100 );
+    local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDeviation, love.math.random( 90, 130 ) / 100 )
     nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
 
     -- Determine the height falloff for the projectile.

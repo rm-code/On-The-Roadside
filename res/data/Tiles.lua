@@ -56,5 +56,23 @@ return {
             prone  = 2,
         },
         passable = true
+    },
+    {
+        id = 'tile_carpet',
+        movementCost = {
+            stand  = 1,
+            crouch = 1,
+            prone  = 2
+        },
+        passable = true
+    },
+    {
+        id = 'tile_floortiles',
+        movementCost = {
+            stand  = 1,
+            crouch = 1,
+            prone  = 2
+        },
+        passable = true
     }
 }

@@ -43,6 +43,8 @@ locale.strings = {
     ['misc_splintered_wood_desc'] = "A bunch of splintered wood. It doesn't look useful.",
     ['misc_glass_shard'] = "Shard of glass",
     ['misc_glass_shard_desc'] = "A shard of broken glass. It doesn't look useful.",
+    ['misc_ceramic_shard'] = "Shard of ceramic",
+    ['misc_ceramic_shard_desc'] = "A broken ceramic shard. It doesn't look useful.",
 }
 
 return locale;

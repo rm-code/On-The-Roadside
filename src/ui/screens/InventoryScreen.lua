@@ -12,10 +12,11 @@ local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIEquipmentList = require( 'src.ui.elements.inventory.UIEquipmentList' )
 local UIInventoryList = require( 'src.ui.elements.inventory.UIInventoryList' )
-local UITranslatedLabel = require( 'src.ui.elements.UITranslatedLabel' )
+local UILabel = require( 'src.ui.elements.UILabel' )
 local UIInventoryDragboard = require( 'src.ui.elements.inventory.UIInventoryDragboard' )
 local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -70,7 +71,7 @@ function InventoryScreen.new()
     -- Creates the outlines for the Inventory window.
     --
     local function generateOutlines()
-        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         -- Horizontal borders.
         for ox = 0, UI_GRID_WIDTH-1 do
@@ -127,14 +128,13 @@ function InventoryScreen.new()
         --  x-axis: Outline left => 1
         --  y-axis: Outline top + Header Text + Outline below Header => 3
         local ox, oy = 1, 3
-        lists.equipment = UIEquipmentList.new( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT )
-        lists.equipment:init( character )
+        lists.equipment = UIEquipmentList( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT, character )
 
         -- Offset calculations:
         --  x-axis: Outline left => 1
         --  y-axis: Outline top => 1
         local lx, ly = 1, 1
-        listLabels.equipment = UITranslatedLabel.new( x, y, lx, ly, EQUIPMENT_WIDTH, 1, 'inventory_equipment', 'ui_inventory_headers' )
+        listLabels.equipment = UILabel( x, y, lx, ly, EQUIPMENT_WIDTH, 1, Translator.getText( 'inventory_equipment' ), 'ui_inventory_headers' )
     end
 
     ---
@@ -149,8 +149,7 @@ function InventoryScreen.new()
         --      => 2 + COLUMN_WIDTH
         --  y-axis: Outline top + Header Text + Outline below Header => 3
         local ox, oy = 2 + COLUMN_WIDTH, 3
-        lists.characterInventory = UIInventoryList.new( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT )
-        lists.characterInventory:init( character:getInventory() )
+        lists.characterInventory = UIInventoryList( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT, character:getInventory() )
 
         -- Label coordinates relative to the screen's coordinates.
         --      x-axis: Outline left + Equipment Column + Equipment Column Outline
@@ -158,7 +157,7 @@ function InventoryScreen.new()
         --              => 2 + COLUMN_WIDTH
         --      y-axis: Outline top => 1
         local lx, ly = 2 + COLUMN_WIDTH, 1
-        listLabels.characterInventory = UITranslatedLabel.new( x, y, lx, ly, COLUMN_WIDTH, 1, 'inventory_character', 'ui_inventory_headers' )
+        listLabels.characterInventory = UILabel( x, y, lx, ly, COLUMN_WIDTH, 1, Translator.getText( 'inventory_character' ), 'ui_inventory_headers' )
     end
 
     ---
@@ -188,8 +187,7 @@ function InventoryScreen.new()
         --          => 3 + 2 * COLUMN_WIDTH
         --  y-axis: Outline top + Header Text + Outline below Header => 3
         local ox, oy = 3 + 2 * COLUMN_WIDTH, 3
-        lists.targetInventory = UIInventoryList.new( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT )
-        lists.targetInventory:init( inventory )
+        lists.targetInventory = UIInventoryList( x, y, ox, oy, COLUMN_WIDTH, COLUMN_HEIGHT, inventory )
 
         -- Offset calculations:
         --  x-axis: Outline left + Equipment Column + Equipment Column Outline
@@ -198,7 +196,7 @@ function InventoryScreen.new()
         --          => 3 + 2 * COLUMN_WIDTH
         --  y-axis: Outline top => 1
         local lx, ly = 3 + 2 * COLUMN_WIDTH, 1
-        listLabels.targetInventory = UITranslatedLabel.new( x, y, lx, ly, COLUMN_WIDTH, 1, id, 'ui_inventory_headers' )
+        listLabels.targetInventory = UILabel( x, y, lx, ly, COLUMN_WIDTH, 1, Translator.getText( id ), 'ui_inventory_headers' )
     end
 
     ---
@@ -304,7 +302,7 @@ function InventoryScreen.new()
         x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         -- General UI Elements.
-        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
         generateOutlines()
 
         -- UI inventory lists.
@@ -317,7 +315,7 @@ function InventoryScreen.new()
         --      y-axis: Outline top + Header + Outl ine Header
         --              + Outline below equipment + EQUIPMENT_HEIGHT
         --              => EQUIPMENT_HEIGHT+4
-        itemStats = UIItemStats.new( x, y, 1, EQUIPMENT_HEIGHT+4, ITEM_STATS_WIDTH, ITEM_STATS_HEIGHT )
+        itemStats = UIItemStats( x, y, 1, EQUIPMENT_HEIGHT+4, ITEM_STATS_WIDTH, ITEM_STATS_HEIGHT )
     end
 
     ---
@@ -346,8 +344,6 @@ function InventoryScreen.new()
     -- This method is called when the inventory screen is closed.
     --
     function self:close()
-        love.mouse.setVisible( false )
-
         -- Drop any item that is currently dragged.
         if dragboard:hasDragContext() then
             dragboard:drop()
@@ -358,23 +354,23 @@ function InventoryScreen.new()
     -- Input Callbacks
     -- ------------------------------------------------
 
-    function self:keypressed( key )
+    function self:keypressed( key, scancode )
         if key == 'escape' or key == 'i' then
             ScreenManager.pop()
         end
 
-        itemStats:keypressed( key )
+        if scancode == 'up' then
+            itemStats:command( 'up' )
+        elseif scancode == 'down' then
+            itemStats:command( 'down' )
+        end
     end
 
     function self:mousepressed( _, _, button )
-        local gx, gy = GridHelper.getMouseGridPosition()
-
         if button == 2 then
             selectItem()
         end
         drag( button )
-
-        itemStats:mousepressed( gx, gy, button )
     end
 
     function self:mousereleased( _, _, _ )
@@ -387,10 +383,12 @@ function InventoryScreen.new()
 
         -- Refresh lists in case volumes have changed.
         refreshLists()
+
+        itemStats:command( 'activate' )
     end
 
-    function self:wheelmoved( dx, dy )
-        itemStats:wheelmoved( dx, dy )
+    function self:wheelmoved( _, dy )
+        itemStats:command( 'scroll', dy )
     end
 
     -- ------------------------------------------------

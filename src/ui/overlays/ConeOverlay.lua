@@ -82,12 +82,12 @@ function ConeOverlay.new( game, pulser, camera )
             return
         end
 
-        -- Use the number of attacks to predict the derivation for burst attacks correctly.
+        -- Use the number of attacks to predict the deviation for burst attacks correctly.
         local count = weapon:getSubType() == WEAPON_TYPES.RANGED and weapon:getAttacks() or 1;
 
-        -- Calculate the derivation.
+        -- Calculate the deviation.
         local character = game:getCurrentCharacter()
-        local derivation = ProjectilePath.getMaximumDerivation( character, weapon, count )
+        local deviation = ProjectilePath.getMaximumDeviation( character, weapon, count )
         local origin = character:getTile()
         local px, py = origin:getPosition()
         local tx, ty = target:getPosition()
@@ -151,7 +151,7 @@ function ConeOverlay.new( game, pulser, camera )
 
             -- Shoot multiple rays from the negative to the positive maxima for the
             -- weapon's "spread" angle.
-            for angle = -derivation, derivation, 0.2 do
+            for angle = -deviation, deviation, 0.2 do
                 local nx, ny = VectorMath.rotate( px, py, tx, ty, angle )
                 status = 1
                 Bresenham.line( px, py, nx, ny, callback )

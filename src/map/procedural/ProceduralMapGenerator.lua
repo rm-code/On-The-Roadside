@@ -13,6 +13,8 @@ local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ParcelGrid = require( 'src.map.procedural.ParcelGrid' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
+local Util = require( 'src.util.Util' )
+local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
@@ -25,6 +27,9 @@ local ProceduralMapGenerator = {}
 -- ------------------------------------------------
 
 local LAYOUTS_SOURCE_FOLDER = 'res/data/procgen/layouts/'
+local LAYOUTS_MODS_FOLDER = 'mods/maps/layouts/'
+
+local FILE_EXTENSION = '.layout'
 
 local PARCEL_SIZE = require( 'src.constants.PARCEL_SIZE' )
 
@@ -45,12 +50,14 @@ local layouts = {}
 local function loadLayoutTemplates( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
-        local path = sourceFolder .. item
-        local layout = love.filesystem.load( path )
-        layouts[#layouts + 1] = layout()
+        if Util.getFileExtension( item ) == FILE_EXTENSION then
+            layouts[#layouts + 1] = Compressor.load( sourceFolder .. item )
 
-        count = count + 1
-        Log.debug( string.format( '  %3d. %s', count, item ))
+            count = count + 1
+            Log.print( string.format( '  %3d. %s', count, item ), 'ProceduralMapGenerator')
+        else
+            Log.debug( string.format( 'Ignoring invalid file type: %s', item ), 'ProceduralMapGenerator' )
+        end
     end
 end
 
@@ -59,8 +66,11 @@ end
 -- ------------------------------------------------
 
 function ProceduralMapGenerator.load()
-    Log.debug( 'Loading parcel layouts:' )
+    Log.print( 'Loading vanilla layouts:', 'ProceduralMapGenerator' )
     loadLayoutTemplates( LAYOUTS_SOURCE_FOLDER )
+
+    Log.print( 'Loading external layouts:', 'ProceduralMapGenerator' )
+    loadLayoutTemplates( LAYOUTS_MODS_FOLDER )
 end
 
 -- ------------------------------------------------
@@ -83,7 +93,9 @@ function ProceduralMapGenerator.new()
 
     -- Spawnpoints.
     local spawnpoints = {
-        allied = {}
+        allied = {},
+        neutral = {},
+        enemy = {}
     }
 
     -- ------------------------------------------------
@@ -109,21 +121,20 @@ function ProceduralMapGenerator.new()
     -- @tparam number rotate The rotation to apply to the prefab before placing it.
     --
     local function placePrefab( prefab, px, py, rotate )
-        local tiles = prefab:getTiles()
-        local objects = prefab:getObjects()
+        local tiles = prefab.grid
 
         if rotate then
             tiles = ArrayRotation.rotate( tiles, rotate )
-            objects = ArrayRotation.rotate( objects, rotate )
         end
 
         for tx = 1, #tiles do
             for ty = 1, #tiles[tx] do
-                tileGrid[tx + px][ty + py] = createTile( tx + px, ty + py, tiles[tx][ty] )
+                if tiles[tx][ty].tile then
+                    tileGrid[tx + px][ty + py] = createTile( tx + px, ty + py, tiles[tx][ty].tile )
+                end
 
-                -- The object grid can contain empty tiles.
-                if objects[tx][ty] then
-                    tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( objects[tx][ty] ))
+                if tiles[tx][ty].worldObject then
+                    tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
                 end
             end
         end
@@ -159,15 +170,13 @@ function ProceduralMapGenerator.new()
             Log.debug( string.format( 'Placing %s parcels.', type ), 'ProceduralMapGenerator' )
 
             for _, definition in ipairs( definitions ) do
-                parcelGrid:addParcels( definition.x, definition.y, definition.w, definition.h, type )
+                -- Start coordinates at 0,0.
+                local x, y, w, h = definition.x-1, definition.y-1, definition.w, definition.h
+                parcelGrid:addParcels( x, y, w, h, type )
 
                 local prefab = PrefabLoader.getPrefab( type )
                 if prefab then
                     local rotation = rotateParcels( definition.w, definition.h )
-
-                    -- Get parcel coordinates.
-                    local x = definition.x
-                    local y = definition.y
 
                     -- Place tiles and worldobjects.
                     placePrefab( prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
@@ -181,7 +190,7 @@ function ProceduralMapGenerator.new()
     --
     local function spawnFoliage()
         parcelGrid:iterate( function( parcel, x, y )
-            if parcel:getType() ~= 'foliage' then
+            if parcel:getType() ~= 'FOLIAGE' then
                 return
             end
 
@@ -195,6 +204,25 @@ function ProceduralMapGenerator.new()
                     if love.math.random() < n/10 then
                         tileGrid[tx + w][ty + h]:addWorldObject( WorldObjectFactory.create( 'worldobject_tree' ))
                     end
+                end
+            end
+        end)
+    end
+
+    ---
+    -- Spawns roads in designated parcels.
+    -- TODO Replace with prefab based system.
+    --
+    local function spawnRoads()
+        parcelGrid:iterate( function( parcel, x, y )
+            if parcel:getType() ~= 'ROAD' then
+                return
+            end
+
+            local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
+            for w = 1, PARCEL_SIZE.WIDTH do
+                for h = 1, PARCEL_SIZE.HEIGHT do
+                    tileGrid[tx + w][ty + h] = createTile( tx + w, ty + h, 'tile_asphalt' )
                 end
             end
         end)
@@ -216,7 +244,7 @@ function ProceduralMapGenerator.new()
                 tiles[x][y] = createTile( x, y, id )
             end
         end
-        return tiles
+        return tiles, w * PARCEL_SIZE.WIDTH, h * PARCEL_SIZE.HEIGHT
     end
 
     ---
@@ -224,12 +252,24 @@ function ProceduralMapGenerator.new()
     -- TODO Proper implementation.
     --
     local function createSpawnPoints( spawns )
-        for _, definition in ipairs( spawns ) do
-            local x, y = definition.x * PARCEL_SIZE.WIDTH, definition.y * PARCEL_SIZE.HEIGHT
+        for type, definitions in pairs( spawns ) do
 
-            for w = 0, PARCEL_SIZE.WIDTH-1 do
-                for h = 0, PARCEL_SIZE.HEIGHT-1 do
-                    spawnpoints.allied[#spawnpoints.allied + 1] = tileGrid[x+w][y+h]
+            local target
+            if type == 'SPAWNS_FRIENDLY' then
+                target = 'allied'
+            elseif type == 'SPAWNS_NEUTRAL' then
+                target = 'neutral'
+            elseif type == 'SPAWNS_ENEMY' then
+                target = 'enemy'
+            end
+
+            for _, definition in ipairs( definitions ) do
+                local x, y = (definition.x-1) * PARCEL_SIZE.WIDTH, (definition.y-1) * PARCEL_SIZE.HEIGHT
+
+                for w = 1, PARCEL_SIZE.WIDTH do
+                    for h = 1, PARCEL_SIZE.HEIGHT do
+                        spawnpoints[target][#spawnpoints[target] + 1] = { x = x+w, y = y+h }
+                    end
                 end
             end
         end
@@ -239,25 +279,24 @@ function ProceduralMapGenerator.new()
     -- Public Methods
     -- ------------------------------------------------
 
-    function self:init()
-        -- Select random layout.
-        local layout = layouts[love.math.random( #layouts )]
+    function self:init( nlayout )
+        -- Use specific layout or select a random one.
+        local layout = nlayout or layouts[love.math.random( #layouts )]
 
         -- Generate empty parcel grid.
         parcelGrid = ParcelGrid.new()
-        parcelGrid:init( layout.dimensions.width, layout.dimensions.height )
+        parcelGrid:init( layout.mapwidth, layout.mapheight )
 
         -- Generate empty tile grid.
-        width, height = layout.dimensions.width, layout.dimensions.height
-        tileGrid = createTileGrid( width, height )
+        tileGrid, width, height = createTileGrid( layout.mapwidth, layout.mapheight )
 
-        fillParcels( layout.parcels )
+        fillParcels( layout.prefabs )
 
         parcelGrid:createNeighbours()
 
+        spawnRoads()
         spawnFoliage()
-
-        createSpawnPoints( layout.parcels.spawns )
+        createSpawnPoints( layout.spawns )
     end
 
     function self:getSpawnpoints()
@@ -269,7 +308,7 @@ function ProceduralMapGenerator.new()
     end
 
     function self:getTileGridDimensions()
-        return width * PARCEL_SIZE.WIDTH, height * PARCEL_SIZE.HEIGHT
+        return width, height
     end
 
     return self

@@ -37,5 +37,18 @@ return {
         tags = {
             'misc'
         }
+    },
+    {
+        id         = "misc_ceramic_shard",
+        idDesc     = "misc_ceramic_shard_desc",
+        itemType   = "Miscellaneous",
+        weight     = 0.6,
+        volume     = 0.5,
+        equippable = false,
+        stackable  = true,
+        permanent  = false,
+        tags = {
+            'misc'
+        }
     }
 }

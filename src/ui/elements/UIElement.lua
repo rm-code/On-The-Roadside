@@ -7,17 +7,17 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Observable = require( 'src.util.Observable' )
+local Class = require( 'lib.Middleclass' )
 local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local UIElement = {}
+local UIElement = Class( 'UIElement' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
 ---
@@ -33,20 +33,10 @@ local UIElement = {}
 -- @tparam number w  The width of this element.
 -- @tparam number h  The height of this element.
 --
-function UIElement.new( ox, oy, rx, ry, w, h )
-    local self = Observable.new():addInstance( 'UIElement' )
-
-    local focus = false
-
-    -- ------------------------------------------------
-    -- Public Attributes
-    --
-    -- These should never be accessed directly from
-    -- outside of this class or any subclasses. Use
-    -- setters and getters for that purpose!
-    -- ------------------------------------------------
-
+function UIElement:initialize( ox, oy, rx, ry, w, h )
     self.children = {}
+
+    self.focus = false
 
     -- Origin (parent coordinates).
     self.ox = ox
@@ -63,83 +53,97 @@ function UIElement.new( ox, oy, rx, ry, w, h )
     -- Dimensions.
     self.w  = w
     self.h  = h
+end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:addChild( child )
-        if not child:instanceOf( 'UIElement' ) then
-            error( 'Children of a UIElement must be derived from the UIElement class themselves.' )
-        end
-        self.children[#self.children + 1] = child
+function UIElement:addChild( child )
+    if not child:isInstanceOf( UIElement ) then
+        error( 'Children of a UIElement must be derived from the UIElement class themselves.' )
     end
+    self.children[#self.children + 1] = child
+end
 
-    function self:clearChildren()
-        self.children = {}
+---
+-- Sets the origin for this UIElement and updates the absolute position
+-- accordingly.
+-- @tparam number nx The new origin along the x-axis.
+-- @tparam number ny The new origin along the y-axis.
+--
+function UIElement:setOrigin( nx, ny )
+    self.ox = nx
+    self.oy = ny
+    self.ax = self.ox + self.rx
+    self.ay = self.oy + self.ry
+
+    for i = 1, #self.children do
+        self.children[i]:setOrigin( self.ax, self.ay )
     end
+end
 
-    ---
-    -- Sets the origin for this UIElement and updates the absolute position
-    -- accordingly.
-    -- @tparam number nx The new origin along the x-axis.
-    -- @tparam number ny The new origin along the y-axis.
-    --
-    function self:setOrigin( nx, ny )
-        self.ox = nx
-        self.oy = ny
-        self.ax = self.ox + self.rx
-        self.ay = self.oy + self.ry
+---
+-- Sets the relative position for this UIElement and updates its absolute
+-- position accordingly.
+-- @tparam number rx The relative coordinate along the x-axis.
+-- @tparam number ry The relative coordinate along the y-axis.
+--
+function UIElement:setRelativePosition( nx, ny )
+    self.rx = nx
+    self.ry = ny
+    self.ax = self.ox + self.rx
+    self.ay = self.oy + self.ry
+end
 
-        for i = 1, #self.children do
-            self.children[i]:setOrigin( self.ax, self.ay )
-        end
-    end
+---
+-- Checks wether or not the mouse cursor is over this element.
+-- @treturn boolean True if the mouse is within this element's bounds.
+--
+function UIElement:isMouseOver()
+    local gx, gy = GridHelper.getMouseGridPosition()
+    return  gx >= self.ox + self.rx
+        and gx <  self.ox + self.rx + self.w
+        and gy >= self.oy + self.ry
+        and gy <  self.oy + self.ry + self.h
+end
 
-    ---
-    -- Sets the relative position for this UIElement and updates its absolute
-    -- position accordingly.
-    -- @tparam number rx The relative coordinate along the x-axis.
-    -- @tparam number ry The relative coordinate along the y-axis.
-    --
-    function self:setRelativePosition( nx, ny )
-        self.rx = nx
-        self.ry = ny
-        self.ax = self.ox + self.rx
-        self.ay = self.oy + self.ry
-    end
+---
+-- Updates this UIElement's width.
+-- @tparam number The new width.
+--
+function UIElement:setWidth( width )
+    self.w = width
+end
 
-    ---
-    -- Checks wether or not the mouse cursor is over this element.
-    -- @treturn boolean True if the mouse is within this element's bounds.
-    --
-    function self:isMouseOver()
-        local gx, gy = GridHelper.getMouseGridPosition()
-        return  gx >= self.ox + self.rx
-            and gx <  self.ox + self.rx + self.w
-            and gy >= self.oy + self.ry
-            and gy <  self.oy + self.ry + self.h
-    end
+---
+-- Returns the UIElement's width.
+-- @treturn number The width.
+--
+function UIElement:getWidth()
+    return self.w
+end
 
-    ---
-    -- Sets the focus for this UIElement. Focus should be used as a way to
-    -- mark UIElements which should receive keypresses and are the "current"
-    -- point of focus for the player.
-    -- @tparam boolean nfocus The new focus value.
-    --
-    function self:setFocus( nfocus )
-        focus = nfocus
-    end
+---
+-- Returns the UIElement's height.
+-- @treturn number The height.
+--
+function UIElement:getHeight()
+    return self.h
+end
 
-    ---
-    -- Checks wether this UIElement has focus or not.
-    -- @treturn boolean True if the element has focus.
-    --
-    function self:hasFocus()
-        return focus
-    end
+---
+-- Sets the focus for this UIElement. Focus should be used as a way to
+-- mark UIElements which should receive keypresses and are the "current"
+-- point of focus for the player.
+-- @tparam boolean nfocus The new focus value.
+--
+function UIElement:setFocus( nfocus )
+    self.focus = nfocus
+end
 
-    return self
+---
+-- Checks wether this UIElement has focus or not.
+-- @treturn boolean True if the element has focus.
+--
+function UIElement:hasFocus()
+    return self.focus
 end
 
 return UIElement

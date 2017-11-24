@@ -1,11 +1,13 @@
 local Screen = require( 'lib.screenmanager.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local UIHorizontalList = require( 'src.ui.elements.lists.UIHorizontalList' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -42,7 +44,7 @@ local TITLE_STRING = {
     "  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:",
 }
 
-local BUTTON_LIST_WIDTH = 40
+local BUTTON_LIST_WIDTH = 60
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
@@ -60,6 +62,7 @@ function SplashScreen.new()
     local buttonList
     local debug
     local footer
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -108,26 +111,27 @@ function SplashScreen.new()
         local _, sh = GridHelper.getScreenGridDimensions()
         local ly = sh - BUTTON_LIST_Y
 
-        buttonList = UIHorizontalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIHorizontalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
-        local newGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        newGameButton:init( Translator.getText( 'ui_main_menu_new_game' ), function() ScreenManager.switch( 'gamescreen' ) end )
+        local newGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'gamescreen' ) end, Translator.getText( 'ui_main_menu_new_game' ))
         buttonList:addChild( newGameButton )
 
-        local loadPreviousGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        loadPreviousGameButton:init( Translator.getText( 'ui_main_menu_load_game' ), function() ScreenManager.switch( 'loadgame' ) end )
+        local loadPreviousGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'loadgame' ) end, Translator.getText( 'ui_main_menu_load_game' ))
         buttonList:addChild( loadPreviousGameButton )
 
-        local openOptionsButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        openOptionsButton:init( Translator.getText( 'ui_main_menu_options' ), function() ScreenManager.switch( 'options' ) end )
+        local openOptionsButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'options' ) end, Translator.getText( 'ui_main_menu_options' ))
         buttonList:addChild( openOptionsButton )
 
-        local changelogButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        changelogButton:init( Translator.getText( 'ui_main_menu_changelog' ), function() ScreenManager.switch( 'changelog' ) end )
+        -- Only show map editor if it has been activated in the options.
+        if Settings.getIngameEditor() then
+            local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
+            buttonList:addChild( mapEditorButton )
+        end
+
+        local changelogButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'changelog' ) end, Translator.getText( 'ui_main_menu_changelog' ))
         buttonList:addChild( changelogButton )
 
-        local exitGameButton = UITextButton.new( lx, ly, 0, 0, 10, 1 )
-        exitGameButton:init( Translator.getText( 'ui_main_menu_exit' ), function() love.event.quit() end )
+        local exitGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() love.event.quit() end, Translator.getText( 'ui_main_menu_exit' ))
         buttonList:addChild( exitGameButton )
     end
 
@@ -136,8 +140,13 @@ function SplashScreen.new()
     -- ------------------------------------------------
 
     function self:init()
+        love.mouse.setVisible( false )
+
         createTitle()
         createButtons()
+
+        container = UIContainer()
+        container:register( buttonList )
 
         footer = UICopyrightFooter.new()
 
@@ -155,7 +164,7 @@ function SplashScreen.new()
 
         drawTitle()
 
-        buttonList:draw()
+        container:draw()
 
         drawDebugInfo()
 
@@ -163,11 +172,19 @@ function SplashScreen.new()
     end
 
     function self:update()
-        buttonList:update()
+        container:update()
     end
 
     function self:keypressed( _, scancode )
-        buttonList:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
+        if scancode == 'left' then
+            container:command( 'left' )
+        elseif scancode == 'right' then
+            container:command( 'right' )
+        elseif scancode == 'return' then
+            container:command( 'activate' )
+        end
 
         if scancode == 'f1' then
             debug = not debug
@@ -175,11 +192,11 @@ function SplashScreen.new()
     end
 
     function self:mousemoved()
-        buttonList:mousemoved()
+        love.mouse.setVisible( true )
     end
 
     function self:mousereleased()
-        buttonList:mousereleased()
+        container:mousecommand( 'activate' )
     end
 
     function self:resize( _, _ )

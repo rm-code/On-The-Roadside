@@ -8,7 +8,9 @@ locale.strings = {
     ['tile_soil'] = 'Soil',
     ['tile_water'] = 'Water',
     ['tile_gravel'] = 'Gravel',
-    ['tile_woodenfloor'] = 'Wooden Floor'
+    ['tile_woodenfloor'] = 'Wooden Floor',
+    ['tile_carpet'] = 'Carpet',
+    ['tile_floortiles'] = 'Tiles',
 }
 
 return locale;

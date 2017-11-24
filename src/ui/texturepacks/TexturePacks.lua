@@ -21,10 +21,19 @@ local TexturePacks = {}
 -- ------------------------------------------------
 
 local TEXTURE_PACK_FOLDER     = 'res/texturepacks/'
-local MOD_TEXTURE_PACK_FOLDER = 'mod/texturepacks/'
+local MOD_TEXTURE_PACK_FOLDER = 'mods/texturepacks/'
 local INFO_FILE_NAME = 'info'
 local SPRITE_DEFINITIONS = 'sprites'
 local COLOR_DEFINITIONS  = 'colors'
+
+local DEFAULT = {
+    NAME = 'default',
+    INFO = 'info.lua',
+    COLORS = 'colors.lua',
+    SPRITES = 'sprites.lua',
+    IMAGEFONT = 'imagefont.png',
+    SPRITESHEET = 'spritesheet.png',
+}
 
 -- ------------------------------------------------
 -- Private Variables
@@ -109,18 +118,55 @@ local function loadPacks( sourceFolder )
 
             if success then
                 local name = tpack:getName()
-                -- Register new texture pack and make it the current one if
-                -- there isn't a current one already.
-                texturePacks[name] = tpack
-                if not current then
-                    current = name
-                end
 
-                count = count + 1
-                Log.debug( string.format( '  %3d. %s', count, name ))
+                if not texturePacks[name] then
+                    -- Register new texture pack and make it the current one if
+                    -- there isn't a current one already.
+                    texturePacks[name] = tpack
+                    if not current then
+                        current = name
+                    end
+
+                    count = count + 1
+                    Log.print( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
+                else
+                    Log.warn( string.format( 'A texture pack with the id "%s" already exists. The duplicate will be ignored.', name ), 'TexturePacks' )
+                end
             end
         end
     end
+end
+
+---
+-- Copies a file from the source folder to the target folder. Throws an error
+-- if the file can't be written to the target folder.
+-- @tparam string source The directory to load the file from.
+-- @tparam string target The directory to save the file to.
+-- @tparam string name   The file's name.
+--
+local function copyFile( source, target, name )
+    assert( love.filesystem.write( target .. name, love.filesystem.read( source .. name )))
+end
+
+---
+-- Copies the default texture pack to the mods folder in the user's save directory.
+--
+local function copyDefaultTexturePack()
+    -- Abort if the texture pack exists already.
+    if love.filesystem.isDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME ) then
+        return
+    end
+
+    love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME )
+
+    local source =     TEXTURE_PACK_FOLDER .. DEFAULT.NAME .. '/'
+    local target = MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME .. '/'
+
+    copyFile( source, target, DEFAULT.INFO )
+    copyFile( source, target, DEFAULT.COLORS )
+    copyFile( source, target, DEFAULT.SPRITES )
+    copyFile( source, target, DEFAULT.IMAGEFONT )
+    copyFile( source, target, DEFAULT.SPRITESHEET )
 end
 
 -- ------------------------------------------------
@@ -128,7 +174,7 @@ end
 -- ------------------------------------------------
 
 function TexturePacks.load()
-    Log.debug( "Load Default Texture Packs:" )
+    Log.print( "Load Default Texture Packs:", 'TexturePacks' )
     loadPacks( TEXTURE_PACK_FOLDER )
 
     -- Creates the mods folder if it doesn't exist.
@@ -136,8 +182,11 @@ function TexturePacks.load()
         love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER )
     end
 
-    Log.debug( "Load External Texture Packs:" )
+    Log.print( "Load External Texture Packs:", 'TexturePacks' )
     loadPacks( MOD_TEXTURE_PACK_FOLDER )
+
+    Log.debug( "Copying default texture pack to mod folder!" )
+    copyDefaultTexturePack()
 end
 
 -- ------------------------------------------------

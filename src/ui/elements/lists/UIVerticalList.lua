@@ -12,58 +12,69 @@ local UIList = require( 'src.ui.elements.lists.UIList' )
 -- Module
 -- ------------------------------------------------
 
-local UIVerticalList = {}
+local UIVerticalList = UIList:subclass( 'UIVerticalList' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
-function UIVerticalList.new( px, py, x, y, w, h )
-    local self = UIList.new( px, py, x, y, w, h ):addInstance( 'UIVerticalList' )
+---
+-- Creates a new instance of UIVerticalList.
+--
+function UIVerticalList:initialize( ox, oy, rx, ry, w, h )
+    UIList.initialize( self, ox, oy, rx, ry, w, h )
+end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+----
+-- Adds a new child to the vertical list and updates the height information
+-- accordingly.
+-- @Override
+-- @tparam UIElement child The UIElement to add to the list.
+--
+function UIVerticalList:addChild( child )
+    self.h = self.h + child.h
+    UIVerticalList.super.addChild( self, child )
+end
 
-    function self:update()
-        if not love.mouse.isVisible() then
-            return
-        end
+function UIVerticalList:update()
+    local elements = self.children
+    local height = 0
 
-        -- Check if mouse is over any elements.
-        local elements = self.children
-        for i = 1, #elements do
-            elements[i]:setFocus( false )
-            if elements[i]:isMouseOver() then
-                self:setCursor( i )
-            end
-        end
-
-        -- Set the focus to the element at the current cursor position.
-        local cursor = self:getCursor()
-        elements[cursor]:setFocus( true )
+    for i = 1, #elements do
+        elements[i]:setRelativePosition( 0, self.ry + height )
+        height = height + elements[i]:getHeight()
     end
 
-    function self:draw()
-        local elements = self.children
-        for i = 1, #elements do
-            elements[i]:draw()
-        end
+    self.h = height
+
+    if not love.mouse.isVisible() then
+        return
     end
 
-    function self:keypressed( key, scancode )
-        if scancode == 'up' then
-            self:deactivateMouse()
-            self:prev()
-        elseif scancode == 'down' then
-            self:deactivateMouse()
-            self:next()
-        elseif self:getActiveElement() then
-            self:getActiveElement():keypressed( key, scancode )
+    for i = 1, #elements do
+        elements[i]:setFocus( false )
+        if elements[i]:isMouseOver() then
+            elements[i]:setFocus( true )
+            self.cursor = i
         end
     end
+end
 
-    return self
+function UIVerticalList:draw()
+    local elements = self.children
+    for i = 1, #elements do
+        elements[i]:draw()
+    end
+end
+
+function UIVerticalList:command( cmd )
+    if cmd == 'up' then
+        self:prev()
+    elseif cmd == 'down' then
+        self:next()
+    elseif self:getActiveElement() then
+        self:getActiveElement():command( cmd )
+    end
 end
 
 return UIVerticalList

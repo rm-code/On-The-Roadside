@@ -1,6 +1,5 @@
-local ScreenManager = require('lib.screenmanager.ScreenManager');
-local ProFi = require( 'lib.ProFi' );
-local Log = require( 'src.util.Log' );
+local ScreenManager = require('lib.screenmanager.ScreenManager')
+local Log = require( 'src.util.Log' )
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 local Letterbox = require( 'src.ui.overlays.Letterbox' )
 
@@ -8,12 +7,7 @@ local Letterbox = require( 'src.ui.overlays.Letterbox' )
 -- Local Variables
 -- ------------------------------------------------
 
--- TODO Remove profiling code.
-local profile = 0;
-local info;
-
 local debugGrid
-
 local letterbox
 
 -- ------------------------------------------------
@@ -30,7 +24,7 @@ local DEBUG_WINDOWED_FLAG   = '-w'
 -- ------------------------------------------------
 
 function love.load( args )
-    Log.init();
+    Log.init()
 
     for _, arg in pairs( args ) do
         if arg == DEBUG_OUTPUT_FLAG then
@@ -44,22 +38,22 @@ function love.load( args )
         end
     end
 
-    info = {};
-    info[#info + 1] = "===================";
-    info[#info + 1] = string.format( "Title: '%s'", getTitle() );
-    info[#info + 1] = string.format( "Version: %s", getVersion() );
-    info[#info + 1] = string.format( "LOVE Version: %d.%d.%d (%s)", love.getVersion() );
-    info[#info + 1] = string.format( "Resolution: %dx%d\n", love.graphics.getDimensions() );
+    local info = {}
+    info[#info + 1] = "==================="
+    info[#info + 1] = string.format( "Title: '%s'", getTitle() )
+    info[#info + 1] = string.format( "Version: %s", getVersion() )
+    info[#info + 1] = string.format( "LOVE Version: %d.%d.%d (%s)", love.getVersion() )
+    info[#info + 1] = string.format( "Resolution: %dx%d\n", love.graphics.getDimensions() )
 
-    info[#info + 1] = "---- RENDERER  ---- ";
+    info[#info + 1] = "---- RENDERER  ---- "
     local name, version, vendor, device = love.graphics.getRendererInfo()
-    info[#info + 1] = string.format( "Name: %s \n Version: %s \n Vendor: %s \n Device: %s\n", name, version, vendor, device );
-    info[#info + 1] = "-------------------";
+    info[#info + 1] = string.format( "Name: %s \n Version: %s \n Vendor: %s \n Device: %s\n", name, version, vendor, device )
+    info[#info + 1] = "-------------------"
     info[#info + 1] = os.date( "%d.%m.%Y %H:%M:%S", os.time() )
-    info[#info + 1] = "===================\n";
+    info[#info + 1] = "===================\n"
 
     for _, line in ipairs( info ) do
-        Log.print( line );
+        Log.print( line )
     end
 
     local screens = {
@@ -74,26 +68,25 @@ function love.load( args )
         health      = require( 'src.ui.screens.HealthScreen'      ),
         gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
-        loadgame    = require( 'src.ui.screens.SavegameScreen'    )
-    };
+        loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
+        confirm     = require( 'src.ui.screens.ConfirmationModal' ),
+        information = require( 'src.ui.screens.InformationModal'  ),
+        inputdialog = require( 'src.ui.screens.InputDialog'       ),
+        maptest          = require( 'src.ui.screens.MapTest'                ),
+        mapeditor        = require( 'src.ui.screens.MapEditor'              ),
+        mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'          ),
+        prefabeditor     = require( 'src.ui.screens.PrefabEditor'           ),
+        prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'       ),
+        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  )
+    }
 
-    ScreenManager.init( screens, 'bootloading' );
+    ScreenManager.init( screens, 'bootloading' )
 
     letterbox = Letterbox.new()
 end
 
 function love.draw()
-    if profile == 2 then
-        ProFi:start();
-    end
-
-    ScreenManager.draw();
-
-    if profile == 2 then
-        ProFi:stop();
-        ProFi:writeReport( string.format( '../profiling/draw_%d.txt', os.time( os.date( '*t' ))));
-        profile = 0;
-    end
+    ScreenManager.draw()
 
     if debugGrid then
         DebugGrid.draw()
@@ -103,51 +96,39 @@ function love.draw()
 end
 
 function love.update(dt)
-    if profile == 1 then
-        ProFi:start();
-    end
-
-    ScreenManager.update(dt);
-
-    if profile == 1 then
-        ProFi:stop();
-        local success = ProFi:writeReport( string.format( '../profiling/update_%d.txt', os.time( os.date( '*t' ))));
-        profile = success and 2 or 0;
-    end
+    ScreenManager.update(dt)
 end
 
 function love.quit(q)
-    ScreenManager.quit(q);
+    ScreenManager.quit(q)
 end
 
 function love.keypressed( key, scancode, isrepeat )
-    ScreenManager.keypressed( key, scancode, isrepeat );
-
-    if scancode == '0' then
-        profile = 1;
-    elseif scancode == 'f2' then
-        Log.setDebugActive( not Log.getDebugActive() );
-    end
+    ScreenManager.keypressed( key, scancode, isrepeat )
 end
 
 function love.resize( w, h )
-    ScreenManager.resize( w, h );
+    ScreenManager.resize( w, h )
+end
+
+function love.textinput( text )
+    ScreenManager.textinput( text )
 end
 
 function love.mousepressed( mx, my, button, isTouch )
-    ScreenManager.mousepressed( mx, my, button, isTouch );
+    ScreenManager.mousepressed( mx, my, button, isTouch )
 end
 
 function love.mousereleased( mx, my, button, isTouch )
-    ScreenManager.mousereleased( mx, my, button, isTouch );
+    ScreenManager.mousereleased( mx, my, button, isTouch )
 end
 
 function love.mousefocus( f )
-    ScreenManager.mousefocus( f );
+    ScreenManager.mousefocus( f )
 end
 
 function love.mousemoved( x, y, dx, dy, isTouch )
-    ScreenManager.mousemoved( x, y, dx, dy, isTouch );
+    ScreenManager.mousemoved( x, y, dx, dy, isTouch )
 end
 
 function love.wheelmoved( dx, dy )
@@ -155,9 +136,9 @@ function love.wheelmoved( dx, dy )
 end
 
 function love.errhand( msg )
-    msg = tostring( msg );
+    msg = tostring( msg )
 
-    Log.error(( debug.traceback( tostring( msg ), 3 ):gsub( "\n[^\n]+$", "" )));
+    Log.error(( debug.traceback( tostring( msg ), 3 ):gsub( "\n[^\n]+$", "" )))
 
     if not love.window or not love.graphics or not love.event then
         return

@@ -1,3 +1,28 @@
+# Version 0.12.0.1207 - 2017-11-24
+
+## Additions
+- Added input dialog which allows custom savegame names
+- Added ingame map editor which allows to create layouts and prefabs which are used by the procedural map generator (can be activated in the options menu)
+- Added new map layouts
+- Added new prefabs
+
+## Fixes
+- Fixed text content of UISelectField not matching the width of the actual UIElement
+- Fixed window flickering for a moment on game start
+- Fixed overlapping buttons on horizontal ui lists
+
+## Other Changes
+- Settings can now be saved to disk
+    - Adjusted the options menu to apply changed settings only when the user clicks on apply. It will also warn the user if there are unsaved changes upon closing the screen.
+- Renamed button "Close" to "Resume" on Ingame-Menu
+- Changed path for external texturepacks to "mods/texturepacks"
+- The default texture pack is now copied to the mods folder on game start
+- Update sprite definition for tile_grass
+- Optimized search for valid spawnpoints (with the old method it could take up to a few hundred tries to spawn a character - now it takes only 3 on average)
+
+
+
+
 # Version 0.11.1.1132 - 2017-11-08
 
 ## Fixes
@@ -472,7 +497,7 @@
     - Disable camera tracking for AI controlled characters
 - FOV isn't drawn for AI controlled factions
 - Tweaked shot calculations
-    - Uses the maximum angle for a shot's derivation correctly now
+    - Uses the maximum angle for a shot's deviation correctly now
     - Randomly varies the projectile's traveling distance
 - Improved line of sight drawing
     - Line of sight is now generated in real time between the active character and the mouse cursor

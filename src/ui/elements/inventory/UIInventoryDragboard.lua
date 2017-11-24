@@ -35,7 +35,7 @@ function UIInventoryDragboard.new()
     -- Private Attributes
     -- ------------------------------------------------
 
-    local background = UIBackground.new( 0, 0, 0, 0, ITEM_WIDTH, 1 )
+    local background = UIBackground( 0, 0, 0, 0, ITEM_WIDTH, 1 )
     local dragContext
 
     -- ------------------------------------------------
@@ -43,7 +43,8 @@ function UIInventoryDragboard.new()
     -- ------------------------------------------------
 
     local function returnItemToOrigin( item, origin )
-        if origin:instanceOf( 'EquipmentSlot' ) then
+        -- TODO Hack to bridge gap between middleclass and old oop.
+        if origin.instanceOf and origin:instanceOf( 'EquipmentSlot' ) then
             origin:addItem( item )
         else
             origin:drop( item );

@@ -73,4 +73,12 @@ function TileFactory.create( x, y, id )
     return Tile.new( x, y, template )
 end
 
+---
+-- Returns the table containing all the tile templates.
+-- @treturn table A table containing all templates indexed by their id.
+--
+function TileFactory.getTemplates()
+    return tiles
+end
+
 return TileFactory

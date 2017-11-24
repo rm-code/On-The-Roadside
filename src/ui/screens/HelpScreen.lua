@@ -117,7 +117,7 @@ function HelpScreen.new()
     -- Generates the outlines for this screen.
     --
     local function generateOutlines()
-        outlines = UIOutlines.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         -- Horizontal borders.
         for ox = 0, UI_GRID_WIDTH-1 do
@@ -142,7 +142,7 @@ function HelpScreen.new()
     function self:init()
         x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        background = UIBackground.new( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
         generateOutlines()
 

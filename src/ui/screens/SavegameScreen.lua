@@ -9,8 +9,10 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local SaveHandler = require( 'src.SaveHandler' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -54,6 +56,7 @@ function SavegameScreen.new()
     local buttonList
     local font
     local footer
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -85,19 +88,22 @@ function SavegameScreen.new()
         love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
     end
 
-    local function createBackButton( lx, ly, index )
+    local function createBackButton( lx, ly )
         local function callback()
             ScreenManager.switch( 'mainmenu' )
         end
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( Translator.getText( 'ui_back' ), callback )
-        return button
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
     end
 
     local function createSaveGameEntry( lx, ly, index, item, folder )
         local version = SaveHandler.loadVersion( folder )
 
-        local str = string.format( '%2d. %s (Version: %s)', index, os.date( '%d.%m.%Y - %X', item ), version )
+        -- Generate the string for the savegame button showing the name of the saves,
+        -- the version of the game at which they were created and their creation date.
+        local str = string.format( '%2d. %s', index, item )
+        str = Util.rightPadString( str, 36, ' ')
+        str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getLastModified( folder )))
+
         local function callback()
             if version == getVersion() then
                 local save = SaveHandler.load( folder )
@@ -105,10 +111,7 @@ function SavegameScreen.new()
             end
         end
 
-        local button = UITextButton.new( lx, ly, 0, index, BUTTON_LIST_WIDTH, 1 )
-        button:init( str, callback )
-        button:setActive( version == getVersion() )
-        return button
+        return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, str, 'center', version == getVersion() )
     end
 
 
@@ -116,7 +119,7 @@ function SavegameScreen.new()
         local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
         local ly = BUTTON_LIST_Y
 
-        buttonList = UIVerticalList.new( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+        buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
         -- Create entries for last five savegames.
         local items = love.filesystem.getDirectoryItems( SaveHandler.getSaveFolder() )
@@ -130,7 +133,7 @@ function SavegameScreen.new()
             end
         end
 
-        buttonList:addChild( createBackButton( lx, ly, counter+2 ))
+        buttonList:addChild( createBackButton( lx, ly ))
     end
 
 
@@ -144,35 +147,51 @@ function SavegameScreen.new()
         createTitle()
         createButtons()
 
+        container = UIContainer()
+        container:register( buttonList )
+
         footer = UICopyrightFooter.new()
     end
 
     function self:update()
         font = TexturePacks.getFont()
-        buttonList:update()
+        container:update()
     end
 
     function self:draw()
         font:use()
         drawTitle()
-        buttonList:draw()
+
+        container:draw()
 
         footer:draw()
     end
 
-    function self:keypressed( key, scancode )
+    function self:keypressed( _, scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'escape' then
             ScreenManager.switch( 'mainmenu' )
         end
-        buttonList:keypressed( key, scancode )
-    end
 
-    function self:mousereleased()
-        buttonList:mousereleased()
+        if scancode == 'up' then
+            container:command( 'up' )
+        elseif scancode == 'down' then
+            container:command( 'down' )
+        elseif scancode == 'return' then
+            container:command( 'activate' )
+        end
     end
 
     function self:mousemoved()
-        buttonList:mousemoved()
+        love.mouse.setVisible( true )
+    end
+
+    ---
+    -- Handle mousereleased events.
+    --
+    function self:mousereleased()
+        container:mousecommand( 'activate' )
     end
 
     function self:resize( _, _ )

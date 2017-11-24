@@ -8,91 +8,81 @@
 
 local UIElement = require( 'src.ui.elements.UIElement' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
-local UITranslatedLabel = require( 'src.ui.elements.UITranslatedLabel' )
 local UILabel = require( 'src.ui.elements.UILabel' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local UIInventoryItem = {}
+local UIInventoryItem = UIElement:subclass( 'UIInventoryItem' )
 
-function UIInventoryItem.new( item, px, py, x, y, w, h )
-    local self = UIElement.new( px, py, x, y, w, h ):addInstance( 'UIInventoryItem' )
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+local function updateBackground( self )
+    if self:isMouseOver() then
+        self.background:setColor( 'ui_equipment_mouseover' )
+    else
+        self.background:setColor( 'sys_background' )
+    end
+end
 
-    local background
-    local label
-    local amount
+local function createInfo( self )
+    local count = 1
+    if self.item:instanceOf( 'ItemStack' ) and self.item:getItemCount() > 1 then
+        count = self.item:getItemCount()
+    end
+    self.amount = UILabel( self.ax, self.ay, self.w-2, 0, self.w, 1, count, 'ui_equipment_item' )
+    self:addChild( self.amount )
+end
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    local function updateBackground()
-        if self:isMouseOver() then
-            background:setColor( 'ui_equipment_mouseover' )
+function UIInventoryItem:initialize( ox, oy, rx, ry, w, h, item )
+    UIElement.initialize( self, ox, oy, rx, ry, w, h )
+
+    self.item = item
+
+    self.background = UIBackground( self.ax, self.ay, 0, 0, self.w, self.h )
+    self:addChild( self.background )
+
+    self.label = UILabel( self.ax, self.ay, 0, 0, self.w, 1, Translator.getText( self.item:getID() ), 'ui_equipment_item' )
+    self:addChild( self.label )
+
+    createInfo( self )
+end
+
+function UIInventoryItem:draw()
+    updateBackground( self )
+    self.background:draw()
+
+    self.label:draw()
+    self.amount:draw()
+end
+
+function UIInventoryItem:drag( rmb, fullstack )
+    if self.item:instanceOf( 'ItemStack' ) and rmb then
+        if self.item:getItemCount() == 1 then
+            return self.item
         else
-            background:setColor( 'sys_background' )
+            return self.item:split()
         end
+    elseif self.item:instanceOf( 'ItemStack' ) and not fullstack then
+        return self.item:getItem()
     end
+    return self.item
+end
 
-    local function createInfo()
-        local count = 1
-        if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
-            count = item:getItemCount()
-        end
-        amount = UILabel.new( self.ax, self.ay, self.w-2, 0, self.w, 1, count, 'ui_equipment_item' )
-        self:addChild( amount )
-    end
+function UIInventoryItem:getItem()
+    return self.item
+end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init()
-        background = UIBackground.new( self.ax, self.ay, 0, 0, self.w, self.h )
-        self:addChild( background )
-
-        label = UITranslatedLabel.new( self.ax, self.ay, 0, 0, self.w, 1, item:getID(), 'ui_equipment_item' )
-        self:addChild( label )
-
-        createInfo()
-    end
-
-    function self:draw()
-        updateBackground()
-        background:draw()
-
-        label:draw()
-        amount:draw()
-    end
-
-    function self:drag( rmb, fullstack )
-        if item:instanceOf( 'ItemStack' ) and rmb then
-            if item:getItemCount() == 1 then
-                return item
-            else
-                return item:split()
-            end
-        elseif item:instanceOf( 'ItemStack' ) and not fullstack then
-            return item:getItem()
-        end
-        return item
-    end
-
-    function self:getItem()
-        return item
-    end
-
-    function self:hasItem()
-        return item ~= nil
-    end
-
-    return self
+function UIInventoryItem:hasItem()
+    return self.item ~= nil
 end
 
 return UIInventoryItem

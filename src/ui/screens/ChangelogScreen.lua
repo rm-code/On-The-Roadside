@@ -13,8 +13,9 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UITextButton = require( 'src.ui.elements.UITextButton' )
+local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
@@ -84,6 +85,8 @@ function ChangelogScreen.new()
     local footer
 
     local scrollarea
+
+    local container
 
     -- ------------------------------------------------
     -- Private Functions
@@ -198,10 +201,10 @@ function ChangelogScreen.new()
     --
     local function createButtons()
         local lx, ly = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        buttonList = UIVerticalList.new( lx, ly + SCROLLAREA_GRID_HEIGHT + 2, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
+        lx, ly = lx, ly + SCROLLAREA_GRID_HEIGHT
+        buttonList = UIVerticalList( lx, ly, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
 
-        local closeButton = UITextButton.new( lx, ly + SCROLLAREA_GRID_HEIGHT, 0, 0, SCROLLAREA_GRID_WIDTH, 1 )
-        closeButton:init( Translator.getText( 'ui_back' ), function() ScreenManager.switch( 'mainmenu' ) end )
+        local closeButton = UIButton( lx, ly, 0, 0, SCROLLAREA_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_back' ))
         buttonList:addChild( closeButton )
     end
 
@@ -217,49 +220,57 @@ function ChangelogScreen.new()
 
         createButtons()
 
+        container = UIContainer()
+        container:register( buttonList )
+
         local ox, oy = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        scrollarea = UIScrollArea.new( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
-        scrollarea:init( text, textHeight )
+        scrollarea = UIScrollArea( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT, text, textHeight )
 
         footer = UICopyrightFooter.new()
     end
 
     function self:update()
         font = TexturePacks.getFont()
-        buttonList:update()
+        container:update()
     end
 
     function self:draw()
         font:use()
         scrollarea:draw()
-        buttonList:draw()
+        container:draw()
         footer:draw()
     end
 
-    function self:keypressed( key, scancode )
+    function self:keypressed( scancode )
+        love.mouse.setVisible( false )
+
         if scancode == 'escape' then
             ScreenManager.switch( 'mainmenu' )
         end
-        buttonList:keypressed( key, scancode )
+
+        if scancode == 'up' then
+            container:command( 'up' )
+        elseif scancode == 'down' then
+            container:command( 'down' )
+        elseif scancode == 'return' then
+            container:command( 'activate' )
+        end
     end
 
-    function self:mousepressed( _, _ )
-        local gx, gy = GridHelper.getMouseGridPosition()
+    function self:mousemoved()
+        love.mouse.setVisible( true )
+    end
+
+    function self:mousereleased( _, _ )
         if scrollarea:isMouseOver() then
-            scrollarea:mousepressed( gx, gy )
+            scrollarea:command( 'activate' )
+        elseif buttonList:isMouseOver() then
+            buttonList:command( 'activate' )
         end
     end
 
     function self:wheelmoved( _, dy )
-        scrollarea:scroll( dy )
-    end
-
-    function self:mousereleased()
-        buttonList:mousereleased()
-    end
-
-    function self:mousemoved()
-        buttonList:mousemoved()
+        scrollarea:command( 'scroll', dy )
     end
 
     function self:resize( _, _ )
