@@ -125,7 +125,7 @@ end
 -- @treturn Body              A shiny new Body.
 --
 local function assembleBody( creatureID, template, layout )
-    local body = Body.new( template )
+    local body = Body( template.id, template.bloodVolume, template.tags, template.size )
     local equipment = Equipment.new();
     local inventory = Inventory.new( template.defaultCarryWeight, template.defaultCarryVolume )
 
