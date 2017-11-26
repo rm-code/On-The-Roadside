@@ -119,21 +119,22 @@ end
 ---
 -- Assembles a body from the different body parts and connections found in the
 -- body template.
--- @param cid    (string) The body id of the creature to create.
--- @param layout (table)  A table containing the nodes and edges of the body graph.
--- @return       (Body)   A shiny new Body.
+-- @tparam  string creatureID The body id of the creature to create.
+-- @tparam  table  template   A table containing the definitions for this creature's body parts.
+-- @tparam  table  layout     A table containing the nodes and edges of the body layout's graph.
+-- @treturn Body              A shiny new Body.
 --
-local function assembleBody( cid, layout )
-    local body = Body.new( templates[cid] );
+local function assembleBody( creatureID, template, layout )
+    local body = Body.new( template )
     local equipment = Equipment.new();
-    local inventory = Inventory.new( templates[cid].defaultCarryWeight, templates[cid].defaultCarryVolume );
+    local inventory = Inventory.new( template.defaultCarryWeight, template.defaultCarryVolume )
 
     equipment:observe( inventory );
 
     -- The index is the number used inside of the graph whereas the id determines
     -- which type of object to create for this node.
     for index, id in ipairs( layout.nodes ) do
-        createBodyPart( cid, body, equipment, index, id );
+        createBodyPart( creatureID, body, equipment, index, id )
     end
 
     -- Connect the bodyparts.
@@ -168,9 +169,12 @@ end
 -- @return   (Body)   The newly created Body.
 --
 function BodyFactory.create( id )
-    local template = layouts[id];
-    assert( template, string.format( 'Requested body template (%s) doesn\'t exist!', id ));
-    return assembleBody( id, template );
+    local layout, template = layouts[id], templates[id]
+
+    assert( layout, string.format( 'Requested body layout (%s) doesn\'t exist!', id ))
+    assert( template, string.format( 'Requested body template (%s) doesn\'t exist!', id ))
+
+    return assembleBody( id, template, layout )
 end
 
 function BodyFactory.load( savedbody )
