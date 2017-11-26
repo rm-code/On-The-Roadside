@@ -8,7 +8,7 @@ file = {
     exclude = {
         'lib',
         'res',
-        'spc'
+        'tests'
     }
 }
 dir = '../docs'
