@@ -40,7 +40,6 @@ return {
     -- ==============================
     -- TILES
     -- ==============================
-    ['tile_unexplored']  = COLORS.DB00,
     ['tile_unseen']      = COLORS.DB01,
 
     ['tile_asphalt']     = COLORS.DB25,

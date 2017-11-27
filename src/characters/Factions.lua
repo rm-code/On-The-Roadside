@@ -78,16 +78,12 @@ function Factions.new( map )
     function self:nextFaction()
         active:getObject():deactivate();
 
-        map:updateExplorationInfo( active:getObject():getType() );
-
         while active do
             active = active:getNext() or root;
             local faction = active:getObject();
             faction:activate();
 
             if faction:hasLivingCharacters() then
-                map:updateExplorationInfo( faction:getType() );
-
                 local current = faction:getCurrentCharacter();
                 if current:isDead() then
                     return self:getFaction():nextCharacter();

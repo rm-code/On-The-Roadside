@@ -62,13 +62,6 @@ function MapLoader.new()
                 recreatedTile:getInventory():loadItems( tile.inventory )
             end
 
-            -- Set the exploration info of each faction for this tile.
-            if tile.explored then
-                for i, v in pairs( tile.explored ) do
-                    recreatedTile:setExplored( i, v )
-                end
-            end
-
             -- Store tile in the table.
             loadedTiles[tile.x] = loadedTiles[tile.x] or {}
             loadedTiles[tile.x][tile.y] = recreatedTile

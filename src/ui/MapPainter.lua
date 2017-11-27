@@ -71,14 +71,9 @@ end
 -- @treturn table               A table containing RGBA values.
 --
 local function selectTileColor( tile, faction )
-    -- If there is a faction we check which tiles are explored and which tiles
-    -- are currently seen.
+    -- If there is a faction we check which tiles are currently seen and highlight
+    -- the active character.
     if faction then
-        -- Hide unexplored tiles.
-        if not tile:isExplored( faction:getType() ) then
-            return TexturePacks.getColor( 'tile_unexplored' )
-        end
-
         -- Dim tiles hidden from the player.
         if not faction:canSee( tile ) then
             return TexturePacks.getColor( 'tile_unseen' )
@@ -202,8 +197,7 @@ function MapPainter:update()
 end
 
 ---
--- Sets the faction which is used for checking which parts of the map are visible
--- and explored.
+-- Sets the faction which is used for checking which parts of the map are visible.
 -- @tparam Faction faction The faction to use.
 --
 function MapPainter:setActiveFaction( faction )

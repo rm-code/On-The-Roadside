@@ -3,7 +3,6 @@ locale.identifier = 'en_EN';
 
 locale.strings = {
     ['ui_tile'] = "Tile: ",
-    ['ui_tile_unexplored'] = "Unexplored",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
     ['ui_mode'] = "Mode: ",

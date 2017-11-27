@@ -48,11 +48,9 @@ function UserInterface.new( game, camera )
         love.graphics.print( Translator.getText( 'ui_tile' ), x, y );
 
         local sw = font:measureWidth( Translator.getText( 'ui_tile' ))
-        if not tile:isExplored( factions:getFaction():getType() ) then
-            love.graphics.print( Translator.getText( 'ui_tile_unexplored' ), x + sw, y );
-        elseif tile:hasWorldObject() then
+        if tile:hasWorldObject() then
             love.graphics.print( Translator.getText( tile:getWorldObject():getID() ), x + sw, y );
-        elseif tile:isExplored( factions:getFaction():getType() ) then
+        else
             love.graphics.print( Translator.getText( tile:getID() ), x + sw, y );
         end
     end
