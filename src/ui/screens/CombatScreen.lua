@@ -39,8 +39,7 @@ function CombatScreen.new()
         combatState = CombatState.new()
         combatState:init( playerFaction, savegame )
 
-        mapPainter = MapPainter.new()
-        mapPainter:init( combatState:getMap(), combatState:getFactions() )
+        mapPainter = MapPainter( combatState:getMap() )
 
         local mw, mh = combatState:getMap():getDimensions()
         camera = CameraHandler.new( mw, mh, tw, th )
@@ -64,6 +63,7 @@ function CombatScreen.new()
         end
 
         combatState:update( dt )
+        mapPainter:setActiveFaction( combatState:getPlayerFaction() )
         mapPainter:update( dt )
         overlayPainter:update( dt )
         userInterface:update( dt )

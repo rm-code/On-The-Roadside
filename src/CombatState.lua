@@ -181,6 +181,10 @@ function CombatState.new()
         return stateManager:getState()
     end
 
+    function self:getPlayerFaction()
+        return factions:getPlayerFaction()
+    end
+
     function self:getCurrentCharacter()
         return factions:getFaction():getCurrentCharacter();
     end
