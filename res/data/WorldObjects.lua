@@ -79,6 +79,7 @@ return {
         openable = true,
         blocksVision = true,
         blocksPathfinding = false,
+        group = "DOOR",
         drops = {
             { id = 'misc_nail', tries = 10, chance = 20 },
             { id = 'misc_splintered_wood', tries = 3, chance = 40 }
@@ -98,6 +99,8 @@ return {
         climbable = true,
         blocksVision = false,
         blocksPathfinding = false,
+        group = "FENCE",
+        connections = { "DOOR", "FENCE", "WALL" },
         drops = {
             { id = 'misc_nail', tries = 10, chance = 20 },
             { id = 'misc_splintered_wood', tries = 3, chance = 40 }
@@ -117,6 +120,7 @@ return {
         openable = true,
         blocksVision = false,
         blocksPathfinding = false,
+        group = "FENCE",
         drops = {
             { id = 'misc_nail', tries = 10, chance = 20 },
             { id = 'misc_splintered_wood', tries = 3, chance = 40 }
@@ -165,7 +169,9 @@ return {
         size = 100,
         destructible = false,
         blocksVision = true,
-        blocksPathfinding = true
+        blocksPathfinding = true,
+        group = "WALL",
+        connections = { "DOOR", "WALL", "WINDOW" }
     },
     {
         id = 'worldobject_window',
@@ -176,6 +182,7 @@ return {
         debrisID = 'worldobject_lowwall',
         blocksVision = false,
         blocksPathfinding = true,
+        group = "WINDOW",
         drops = {
             { id = 'misc_glass_shard', tries = 6, chance = 20 }
         }

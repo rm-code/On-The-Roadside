@@ -18,14 +18,39 @@ return {
     -- ==============================
     ['worldobject_chair']   = 111,
     ['worldobject_crate']   = 247,
-    ['worldobject_fence']   =  62,
     ['worldobject_lowwall'] =  62,
     ['worldobject_table']   = 211,
     ['worldobject_tree']    =   7,
-    ['worldobject_wall']    =  36,
     ['worldobject_window']  = 177,
     ['worldobject_toilet']  = 226,
     ['worldobject_shower']  = 127,
+
+    -- Connected world objects.
+    ['worldobject_wall'] = 207,
+    ['worldobject_wall_vertical'] = 187,
+    ['worldobject_wall_horizontal'] = 206,
+    ['worldobject_wall_ne'] = 201,
+    ['worldobject_wall_nw'] = 189,
+    ['worldobject_wall_se'] = 202,
+    ['worldobject_wall_sw'] = 188,
+    ['worldobject_wall_nes'] = 205,
+    ['worldobject_wall_new'] = 203,
+    ['worldobject_wall_nws'] = 186,
+    ['worldobject_wall_sew'] = 204,
+    ['worldobject_wall_news'] = 207,
+
+    ['worldobject_fence'] = 198,
+    ['worldobject_fence_vertical'] = 180,
+    ['worldobject_fence_horizontal'] = 197,
+    ['worldobject_fence_ne'] = 193,
+    ['worldobject_fence_nw'] = 218,
+    ['worldobject_fence_se'] = 219,
+    ['worldobject_fence_sw'] = 192,
+    ['worldobject_fence_nes'] = 196,
+    ['worldobject_fence_new'] = 194,
+    ['worldobject_fence_nws'] = 181,
+    ['worldobject_fence_sew'] = 195,
+    ['worldobject_fence_news'] = 198,
 
     -- ==============================
     -- Items

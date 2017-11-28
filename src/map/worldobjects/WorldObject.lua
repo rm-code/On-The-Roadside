@@ -35,6 +35,9 @@ function WorldObject.new( template )
     local container = template.container;
     local drops = template.drops;
 
+    local group = template.group
+    local connections = template.connections
+
     local hp = template.hp;
     local passable = template.passable or false;
     local blocksVision = template.blocksVision;
@@ -171,6 +174,22 @@ function WorldObject.new( template )
     --
     function self:isDestroyed()
         return destructible and hp <= 0 or false;
+    end
+
+    ---
+    -- Gets the WorldObject's group.
+    -- @treturn string The group.
+    --
+    function self:getGroup()
+        return group
+    end
+
+    ---
+    -- Gets the WorldObject's connections.
+    -- @treturn table The connections.
+    --
+    function self:getConnections()
+        return connections
     end
 
     ---
