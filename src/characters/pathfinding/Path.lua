@@ -38,11 +38,11 @@ function Path.new()
             local success = character:enqueueAction( Open.new( character, tile ));
             -- Don't create a walk action if the tile is the last one in the path.
             if index ~= 1 then
-                success = character:enqueueAction( Walk.new( character, tile ));
+                success = character:enqueueAction( Walk( character, tile ))
             end
             return success;
         end
-        return character:enqueueAction( Walk.new( character, tile ));
+        return character:enqueueAction( Walk( character, tile ))
     end
 
     -- ------------------------------------------------
@@ -97,7 +97,7 @@ function Path.new()
                     character:enqueueAction( OpenInventory.new( character, tile ));
                 end
             else
-                success = character:enqueueAction( Walk.new( character, tile ));
+                success = character:enqueueAction( Walk( character, tile ))
             end
 
             -- Stop adding actions if the previous one wasn't added correctly.
