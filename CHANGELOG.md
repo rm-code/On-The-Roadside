@@ -1,3 +1,12 @@
+# Version 0.12.2.1222 - 2017-11-29
+
+## Fixes
+- Fixed outdated save game versions crashing the game
+- Fixed buttons not being set to inactive state correctly
+
+
+
+
 # Version 0.12.1.1218 - 2017-11-29
 
 ## Fixes
