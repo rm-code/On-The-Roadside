@@ -1,3 +1,11 @@
+# Version 0.12.1.1218 - 2017-11-29
+
+## Fixes
+- Fixed reload action taking non-ammunition items to fill magazines
+
+
+
+
 # Version 0.12.0.1207 - 2017-11-24
 
 ## Additions

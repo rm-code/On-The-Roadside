@@ -12,7 +12,7 @@ function RangedWeapon.new( template )
 
     local rpm = template.rpm or 60;
     local firingDelay = 1 / ( rpm / 60 );
-    local magazine = Magazine.new( template.caliber, template.magSize );
+    local magazine = Magazine( template.caliber, template.magSize )
     local range = template.range;
 
     -- ------------------------------------------------
