@@ -69,7 +69,7 @@ function UserInterface.new( game, camera )
                 local magazine = weapon:getMagazine()
                 local total = inventory:countItems( ITEM_TYPES.AMMO, magazine:getCaliber() )
 
-                local text = string.format( ' %d/%d (%d)', magazine:getRounds(), magazine:getCapacity(), total )
+                local text = string.format( ' %d/%d (%d)', magazine:getNumberOfRounds(), magazine:getCapacity(), total )
                 love.graphics.print( Translator.getText( 'ui_ammo' ), tw, love.graphics.getHeight() - th * 3 )
                 love.graphics.print( text, tw + font:measureWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - th * 3 )
             end

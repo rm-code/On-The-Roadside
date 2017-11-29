@@ -75,7 +75,7 @@ function ProjectileQueue.new( character, tx, ty, th )
     -- the queue.
     --
     function self:init()
-        shots = math.min( weapon:getMagazine():getRounds(), weapon:getAttacks() );
+        shots = math.min( weapon:getMagazine():getNumberOfRounds(), weapon:getAttacks() );
         for i = 1, shots do
             ammoQueue:enqueue( weapon:getMagazine():getRound( i ));
         end
