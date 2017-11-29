@@ -19,7 +19,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' );
 -- Constructor
 -- ------------------------------------------------
 
-function Factions.new( map )
+function Factions.new()
     local self = Object.new():addInstance( 'Factions' );
 
     -- ------------------------------------------------
