@@ -41,13 +41,13 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function UIButton:initialize( px, py, x, y, w, h, callback, text, alignMode, active )
+function UIButton:initialize( px, py, x, y, w, h, callback, text, alignMode )
     UIElement.initialize( self, px, py, x, y, w, h )
 
     self.callback = callback
     self.text = text
     self.alignMode = alignMode or 'center'
-    self.active = active or true
+    self.active = true
 end
 
 function UIButton:draw()
