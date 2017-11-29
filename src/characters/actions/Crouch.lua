@@ -1,22 +1,41 @@
-local Action = require('src.characters.actions.Action');
+---
+-- This Action is used to change a character's stance to a crouch.
+-- @module Crouch
+--
 
-local Crouch = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Action = require( 'src.characters.actions.Action' )
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local Crouch = Action:subclass( 'Crouch' )
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
 
 local STANCES = require( 'src.constants.STANCES' )
 
-function Crouch.new( character )
-    local self = Action.new( 1, character:getTile() ):addInstance( 'Crouch' );
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:perform()
-        if character:getStance() == STANCES.CROUCH then
-            return false;
-        end
-
-        character:setStance( STANCES.CROUCH );
-        return true;
-    end
-
-    return self;
+function Crouch:initialize( character )
+    Action.initialize( self, character, character:getTile(), 1 )
 end
 
-return Crouch;
+function Crouch:perform()
+    if self.character:getStance() == STANCES.CROUCH then
+        return false
+    end
+
+    self.character:setStance( STANCES.CROUCH )
+    return true
+end
+
+return Crouch

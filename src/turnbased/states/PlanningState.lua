@@ -54,15 +54,15 @@ function PlanningState.new( stateManager )
             character:getWeapon():selectPrevFiringMode();
         elseif scancode == 'c' then
             character:clearActions();
-            character:enqueueAction( Crouch.new( character ));
+            character:enqueueAction( Crouch( character ))
             stateManager:push( 'execution', factions, character );
         elseif scancode == 's' then
             character:clearActions();
-            character:enqueueAction( StandUp.new( character ));
+            character:enqueueAction( StandUp( character ))
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'p' then
             character:clearActions();
-            character:enqueueAction( LieDown.new( character ));
+            character:enqueueAction( LieDown( character ))
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'r' then
             character:clearActions();

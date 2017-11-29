@@ -1,22 +1,41 @@
-local Action = require('src.characters.actions.Action');
+---
+-- This Action is used to change the character to a prone stance.
+-- @module LieDown
+--
 
-local LieDown = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Action = require( 'src.characters.actions.Action' )
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local LieDown = Action:subclass( 'LieDown' )
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
 
 local STANCES = require( 'src.constants.STANCES' )
 
-function LieDown.new( character )
-    local self = Action.new( 1, character:getTile() ):addInstance( 'LieDown' );
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:perform()
-        if character:getStance() == STANCES.PRONE then
-            return false;
-        end
-
-        character:setStance( STANCES.PRONE );
-        return true;
-    end
-
-    return self;
+function LieDown:initialize( character )
+    Action.initialize( self, character, character:getTile(), 1 )
 end
 
-return LieDown;
+function LieDown:perform()
+    if self.character:getStance() == STANCES.PRONE then
+        return false
+    end
+
+    self.character:setStance( STANCES.PRONE )
+    return true
+end
+
+return LieDown
