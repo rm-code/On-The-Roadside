@@ -31,6 +31,13 @@ function Compressor.load( path )
 
     -- Decompress and return the loaded lua file.
     local rawstring = love.math.decompress( compressedData, 'lz4' )
+
+    -- Print a warning if it can't be loaded and return false.
+    local result, error = load( rawstring )
+    if not result then
+        return result, error
+    end
+
     return load( rawstring )()
 end
 

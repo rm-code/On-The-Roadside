@@ -63,7 +63,12 @@ function SaveHandler.load( path )
 end
 
 function SaveHandler.loadVersion( path )
-    return Compressor.load( path .. '/' .. VERSION_FILE ).version
+    local result, error = Compressor.load( path .. '/' .. VERSION_FILE )
+    if not result then
+        Log.warn( error, 'SaveHandler' )
+        return '<undefined>'
+    end
+    return result.version
 end
 
 function SaveHandler.getSaveFolder()
