@@ -65,7 +65,7 @@ function InteractionInput.new()
             end
 
             if target:getWorldObject():isContainer() then
-                character:enqueueAction( OpenInventory.new( character, target ));
+                character:enqueueAction( OpenInventory( character, target ))
                 return true;
             end
             return false;
@@ -74,14 +74,14 @@ function InteractionInput.new()
         -- Handle interactions with other characters.
         if target:isOccupied() then
             if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-                character:enqueueAction( OpenInventory.new( character, target ));
+                character:enqueueAction( OpenInventory( character, target ))
                 return true;
             end
             return false;
         end
 
         -- Allow interaction with empty adjacent tiles.
-        character:enqueueAction( OpenInventory.new( character, target ))
+        character:enqueueAction( OpenInventory( character, target ))
         return true;
     end
 

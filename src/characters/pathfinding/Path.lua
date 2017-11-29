@@ -94,7 +94,7 @@ function Path.new()
                 end
 
                 if worldObject:isContainer() then
-                    character:enqueueAction( OpenInventory.new( character, tile ));
+                    character:enqueueAction( OpenInventory( character, tile ))
                 end
             else
                 success = character:enqueueAction( Walk( character, tile ))

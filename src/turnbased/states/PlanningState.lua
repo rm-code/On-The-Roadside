@@ -96,7 +96,7 @@ function PlanningState.new( stateManager )
             inputStateHandler:switch( 'movement' );
             factions:nextFaction();
         elseif scancode == 'i' then
-            character:enqueueAction( OpenInventory.new( character, character:getTile() ));
+            character:enqueueAction( OpenInventory( character, character:getTile() ))
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'h' then
             ScreenManager.push( 'health', character );
