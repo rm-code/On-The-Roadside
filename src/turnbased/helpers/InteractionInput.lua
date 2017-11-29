@@ -31,7 +31,7 @@ function InteractionInput.new()
         if target:isPassable() then
             character:enqueueAction( Close( character, target ))
         else
-            character:enqueueAction( Open.new( character, target ));
+            character:enqueueAction( Open( character, target ))
         end
     end
 
