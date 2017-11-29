@@ -7,8 +7,10 @@ function Reload.new( character )
     local self = Action.new( 5, character:getTile() ):addInstance( 'Reload' );
 
     local function reload( weapon, inventory, item )
-        weapon:getMagazine():addRound( item );
-        inventory:removeItem( item );
+        if item:instanceOf( 'Ammunition' ) and item:getCaliber() == weapon:getMagazine():getCaliber() then
+            weapon:getMagazine():addRound( item )
+            inventory:removeItem( item )
+        end
     end
 
     function self:perform()
@@ -26,14 +28,17 @@ function Reload.new( character )
 
         local inventory = character:getInventory();
         for _, item in pairs( inventory:getItems() ) do
-            if item:instanceOf( 'Ammunition' ) and item:getCaliber() == weapon:getMagazine():getCaliber() then
-                reload( weapon, inventory, item );
-            elseif item:instanceOf( 'ItemStack' ) then
+            if item:instanceOf( 'ItemStack' ) then
                 for _, sitem in pairs( item:getItems() ) do
-                    reload( weapon, inventory, sitem );
+                    reload( weapon, inventory, sitem )
                     if weapon:getMagazine():isFull() then
-                        break;
+                        return true
                     end
+                end
+            elseif item:instanceOf( 'Item' ) then
+                reload( weapon, inventory, item )
+                if weapon:getMagazine():isFull() then
+                    return true
                 end
             end
         end
