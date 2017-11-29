@@ -10,7 +10,7 @@ function BTThrowingAttack.new()
     function self:traverse( ... )
         local blackboard, character = ...;
 
-        local success = character:enqueueAction( ThrowingAttack.new( character, blackboard.target ));
+        local success = character:enqueueAction( ThrowingAttack( character, blackboard.target ))
         if success then
             -- Store weapon id for the rearm action.
             blackboard.weaponID = character:getWeapon():getID();

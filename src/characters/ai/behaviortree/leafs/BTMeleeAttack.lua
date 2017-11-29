@@ -10,7 +10,7 @@ function BTMeleeAttack.new()
     function self:traverse( ... )
         local blackboard, character = ...;
 
-        local success = character:enqueueAction( MeleeAttack.new( character, blackboard.target ));
+        local success = character:enqueueAction( MeleeAttack( character, blackboard.target ))
         if success then
             Log.debug( 'Character attacks target', 'BTMeleeAttack' );
             return true;

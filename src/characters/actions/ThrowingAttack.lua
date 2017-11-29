@@ -1,34 +1,48 @@
-local Action = require('src.characters.actions.Action');
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' );
-local Bresenham = require( 'lib.Bresenham' );
+---
+-- @module ThrowingAttack
+--
 
-local ThrowingAttack = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function ThrowingAttack.new( character, target )
-    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'ThrowingAttack' );
+local Action = require( 'src.characters.actions.Action' )
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
+local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' )
+local Bresenham = require( 'lib.Bresenham' )
 
-    function self:perform()
-        -- Pick the actual target based on the weapon's range attribute.
-        local ox, oy = character:getTile():getPosition();
-        local tx, ty = target:getPosition();
-        local th = target:getHeight()
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local ax, ay
-        Bresenham.line( ox, oy, tx, ty, function( cx, cy, count )
-            if count > character:getWeapon():getRange() then
-                return false;
-            end
-            ax, ay = cx, cy
-            return true;
-        end);
+local ThrowingAttack = Action:subclass( 'ThrowingAttack' )
 
-        local package = ThrownProjectileQueue.new( character, ax, ay, th )
-        ProjectileManager.register( package );
-        return true;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    return self;
+function ThrowingAttack:initialize( character, target )
+    Action.initialize( self, character, target, character:getWeapon():getAttackCost() )
 end
 
-return ThrowingAttack;
+function ThrowingAttack:perform()
+    -- Pick the actual target based on the weapon's range attribute.
+    local ox, oy = self.character:getTile():getPosition()
+    local tx, ty = self.target:getPosition()
+    local th = self.target:getHeight()
+
+    local ax, ay
+    Bresenham.line( ox, oy, tx, ty, function( cx, cy, count )
+        if count > self.character:getWeapon():getRange() then
+            return false
+        end
+        ax, ay = cx, cy
+        return true
+    end)
+
+    local package = ThrownProjectileQueue.new( self.character, ax, ay, th )
+    ProjectileManager.register( package )
+    return true
+end
+
+return ThrowingAttack

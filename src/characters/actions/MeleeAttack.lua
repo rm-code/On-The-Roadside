@@ -1,23 +1,38 @@
-local Action = require('src.characters.actions.Action');
-local Messenger = require( 'src.Messenger' );
+---
+-- @module MeleeAttack
+--
 
-local MeleeAttack = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function MeleeAttack.new( character, target )
-    local self = Action.new( character:getWeapon():getAttackCost(), target ):addInstance( 'MeleeAttack' );
+local Action = require( 'src.characters.actions.Action' )
+local Messenger = require( 'src.Messenger' )
 
-    function self:perform()
-        if not target:isAdjacent( character:getTile() ) then
-            return false;
-        end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local weapon = character:getWeapon();
-        Messenger.publish( 'SOUND_ATTACK', weapon );
-        target:hit( weapon:getDamage(), weapon:getDamageType() );
-        return true;
-    end
+local MeleeAttack = Action:subclass( 'MeleeAttack' )
 
-    return self;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function MeleeAttack:initialize( character, target )
+    Action.initialize( self, character, target, character:getWeapon():getAttackCost() )
 end
 
-return MeleeAttack;
+function MeleeAttack:perform()
+    if not self.target:isAdjacent( self.character:getTile() ) then
+        return false
+    end
+
+    local weapon = self.character:getWeapon()
+    self.target:hit( weapon:getDamage(), weapon:getDamageType() )
+
+    Messenger.publish( 'SOUND_ATTACK', weapon )
+    return true
+end
+
+return MeleeAttack

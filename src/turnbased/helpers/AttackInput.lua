@@ -44,12 +44,12 @@ function AttackInput.new()
 
         -- Handle Melee weapons.
         if weapon:getSubType() == WEAPON_TYPES.MELEE then
-            character:enqueueAction( MeleeAttack.new( character, target ));
+            character:enqueueAction( MeleeAttack( character, target ))
         end
 
         -- Handle Thrown weapons.
         if weapon:getSubType() == WEAPON_TYPES.THROWN then
-            character:enqueueAction( ThrowingAttack.new( character, target ));
+            character:enqueueAction( ThrowingAttack( character, target ))
             character:enqueueAction( Rearm.new( character, weapon:getID() ));
         end
 
