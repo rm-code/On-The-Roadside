@@ -29,7 +29,7 @@ function InteractionInput.new()
     --
     local function handleDoors( target, character )
         if target:isPassable() then
-            character:enqueueAction( Close.new( character, target ));
+            character:enqueueAction( Close( character, target ))
         else
             character:enqueueAction( Open.new( character, target ));
         end
