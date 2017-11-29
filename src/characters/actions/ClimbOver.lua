@@ -1,25 +1,42 @@
-local Action = require( 'src.characters.actions.Action' );
-local Messenger = require( 'src.Messenger' );
+---
+-- This Action is used when a character tries to climb over a wall or any other
+-- climbable object. It removes the Character from the current Tile and places
+-- it on the target Tile on top of the WorldObject.
+-- @module ClimbOver
+--
 
-local ClimbOver = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function ClimbOver.new( character, target )
-    local self = Action.new( target:getWorldObject():getInteractionCost( character:getStance() ), target ):addInstance( 'ClimbOver' );
+local Action = require( 'src.characters.actions.Action' )
+local Messenger = require( 'src.Messenger' )
 
-    function self:perform()
-        local current = character:getTile();
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        assert( target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' );
+local ClimbOver = Action:subclass( 'ClimbOver' )
 
-        current:removeCharacter();
-        target:setCharacter( character );
-        character:setTile( target );
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-        Messenger.publish( 'SOUND_CLIMB' );
-        return true;
-    end
-
-    return self;
+function ClimbOver:initialize( character, target )
+    Action.initialize( self, character, target, target:getWorldObject():getInteractionCost( character:getStance() ))
 end
 
-return ClimbOver;
+function ClimbOver:perform()
+    local current = self.character:getTile()
+
+    assert( self.target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' )
+
+    current:removeCharacter()
+    self.target:setCharacter( self.character )
+    self.character:setTile( self.target )
+
+    Messenger.publish( 'SOUND_CLIMB' )
+    return true
+end
+
+return ClimbOver
