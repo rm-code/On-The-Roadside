@@ -1,6 +1,6 @@
 local Log = require( 'src.util.Log' );
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
-local Attack = require( 'src.characters.actions.Attack' );
+local RangedAttack = require( 'src.characters.actions.RangedAttack' )
 
 local BTAttackTarget = {};
 
@@ -10,7 +10,7 @@ function BTAttackTarget.new()
     function self:traverse( ... )
         local blackboard, character = ...;
 
-        local success = character:enqueueAction( Attack.new( character, blackboard.target ));
+        local success = character:enqueueAction( RangedAttack( character, blackboard.target ))
         if success then
             Log.debug( 'Character attacks target', 'BTAttackTarget' );
             return true;

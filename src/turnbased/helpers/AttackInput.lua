@@ -1,5 +1,5 @@
 local State = require( 'src.turnbased.states.State' );
-local Attack = require( 'src.characters.actions.Attack' );
+local RangedAttack = require( 'src.characters.actions.RangedAttack' );
 local MeleeAttack = require( 'src.characters.actions.MeleeAttack' );
 local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
 local Rearm = require( 'src.characters.actions.Rearm' );
@@ -55,7 +55,7 @@ function AttackInput.new()
 
         -- Handle Ranged weapons.
         if weapon:getSubType() == WEAPON_TYPES.RANGED then
-            character:enqueueAction( Attack.new( character, target ));
+            character:enqueueAction( RangedAttack( character, target ))
         end
 
         return true;
