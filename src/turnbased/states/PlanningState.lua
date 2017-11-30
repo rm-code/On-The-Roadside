@@ -66,7 +66,7 @@ function PlanningState.new( stateManager )
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'r' then
             character:clearActions();
-            character:enqueueAction( Reload.new( character ));
+            character:enqueueAction( Reload( character ))
             stateManager:push( 'execution', factions, character );
         elseif scancode == 'a' then
             -- Make attack mode toggleable.
