@@ -172,7 +172,7 @@ function ProceduralMapGenerator.new()
             for _, definition in ipairs( definitions ) do
                 -- Start coordinates at 0,0.
                 local x, y, w, h = definition.x-1, definition.y-1, definition.w, definition.h
-                parcelGrid:addParcels( x, y, w, h, type )
+                parcelGrid:addPrefab( x, y, w, h, type )
 
                 local prefab = PrefabLoader.getPrefab( type )
                 if prefab then
@@ -284,8 +284,7 @@ function ProceduralMapGenerator.new()
         local layout = nlayout or layouts[love.math.random( #layouts )]
 
         -- Generate empty parcel grid.
-        parcelGrid = ParcelGrid.new()
-        parcelGrid:init( layout.mapwidth, layout.mapheight )
+        parcelGrid = ParcelGrid( layout.mapwidth, layout.mapheight )
 
         -- Generate empty tile grid.
         tileGrid, width, height = createTileGrid( layout.mapwidth, layout.mapheight )
