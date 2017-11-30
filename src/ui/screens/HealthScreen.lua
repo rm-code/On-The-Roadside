@@ -88,13 +88,13 @@ function HealthScreen.new()
                 if bodyPart:isDestroyed() then
                     TexturePacks.setColor( 'ui_health_destroyed_limb' )
                     status = 'DED'
-                elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.2 then
+                elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.2 then
                     TexturePacks.setColor( 'ui_health_badly_damaged_limb' )
                     status = 'OUCH'
-                elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.4 then
+                elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.4 then
                     TexturePacks.setColor( 'ui_health_damaged_limb' )
                     status = 'MEH'
-                elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
+                elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.7 then
                     TexturePacks.setColor( 'ui_health_ok_limb' )
                     status = 'OK'
                 else
@@ -110,9 +110,9 @@ function HealthScreen.new()
                         TexturePacks.setColor( 'ui_health_bleeding_fine' )
                     elseif bodyPart:getBloodLoss() / 1.0 < 0.4 then
                         TexturePacks.setColor( 'ui_health_bleeding_ok' )
-                    elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 0.7 then
+                    elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.7 then
                         TexturePacks.setColor( 'ui_health_bleeding' )
-                    elseif bodyPart:getHealth() / bodyPart:getMaxHealth() < 1.0 then
+                    elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 1.0 then
                         TexturePacks.setColor( 'ui_health_bleeding_bad' )
                     end
                     love.graphics.printf( str, (x+1) * tw, (y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'center' )
