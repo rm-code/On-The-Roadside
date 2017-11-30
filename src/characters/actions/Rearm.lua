@@ -1,46 +1,75 @@
-local Action = require('src.characters.actions.Action');
+---
+-- This Action tries to re-equip the same weapon type the character had
+-- previously equipped.
+-- @module Rearm
+--
 
-local Rearm = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Rearm.new( character, weaponID )
-    local self = Action.new( 0, character:getTile() ):addInstance( 'Rearm' );
+local Action = require( 'src.characters.actions.Action' )
 
-    function self:perform()
-        local inventory = character:getInventory();
-        local weapon;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        for _, item in pairs( inventory:getItems() ) do
-            if item:instanceOf( 'Weapon' ) and item:getID() == weaponID then
-                weapon = item;
-                break;
-            elseif item:instanceOf( 'ItemStack' ) then
-                for _, sitem in pairs( item:getItems() ) do
-                    if sitem:instanceOf( 'Weapon' ) and sitem:getID() == weaponID then
-                        weapon = sitem;
-                        break;
-                    end
+local Rearm = Action:subclass( 'Rearm' )
+
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
+
+---
+-- Searches through the character's inventory and returns an item that fits
+-- the searched weaponID.
+-- @tparam  Inventory inventory The inventory to search through.
+-- @tparam  string    weaponID  The item id to search for.
+-- @treturn Item                The item matching the searched id (or nil).
+--
+local function findItem( inventory, weaponID )
+    for _, item in pairs( inventory:getItems() ) do
+        if item:instanceOf( 'Weapon' ) and item:getID() == weaponID then
+            return item
+        elseif item:instanceOf( 'ItemStack' ) then
+            for _, sitem in pairs( item:getItems() ) do
+                if sitem:instanceOf( 'Weapon' ) and sitem:getID() == weaponID then
+                    return sitem
                 end
             end
         end
-
-        if not weapon then
-            return false;
-        end
-
-        -- Remove item from backpack and add it to the equipment slot.
-        local equipment = character:getEquipment();
-        for _, slot in pairs( equipment:getSlots() ) do
-            if weapon:isSameType( slot:getItemType(), slot:getSubType() ) then
-                equipment:addItem( slot, weapon );
-                inventory:removeItem( weapon );
-                return true;
-            end
-        end
-
-        return false;
     end
-
-    return self;
 end
 
-return Rearm;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function Rearm:initialize( character, weaponID )
+    Action.initialize( self, character, character:getTile(), 0 )
+
+    self.weaponID = weaponID
+end
+
+function Rearm:perform()
+    local weapon = findItem( self.character:getInventory(), self.weaponID )
+
+    -- Quit early if we haven't found a valid weapon.
+    if not weapon then
+        return false
+    end
+
+    -- Remove item from backpack and add it to the equipment slot.
+    local equipment = self.character:getEquipment()
+    for _, slot in pairs( equipment:getSlots() ) do
+        if weapon:isSameType( slot:getItemType(), slot:getSubType() ) then
+            equipment:addItem( slot, weapon )
+            self.character:getInventory():removeItem( weapon )
+            return true
+        end
+    end
+
+    return false
+end
+
+return Rearm

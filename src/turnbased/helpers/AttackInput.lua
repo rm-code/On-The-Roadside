@@ -50,7 +50,7 @@ function AttackInput.new()
         -- Handle Thrown weapons.
         if weapon:getSubType() == WEAPON_TYPES.THROWN then
             character:enqueueAction( ThrowingAttack( character, target ))
-            character:enqueueAction( Rearm.new( character, weapon:getID() ));
+            character:enqueueAction( Rearm( character, weapon:getID() ))
         end
 
         -- Handle Ranged weapons.

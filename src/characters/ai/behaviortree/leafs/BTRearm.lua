@@ -10,7 +10,7 @@ function BTRearm.new()
     function self:traverse( ... )
         local blackboard, character = ...;
 
-        local success = character:enqueueAction( Rearm.new( character, blackboard.weaponID ));
+        local success = character:enqueueAction( Rearm( character, blackboard.weaponID ))
         if success then
             Log.debug( 'Equipping throwing weapon ' .. blackboard.weaponID, 'BTRearm' );
             return true;
