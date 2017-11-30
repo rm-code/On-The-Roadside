@@ -115,9 +115,11 @@ function Translator.getText( id )
         -- If the id also doesn't exist in the default locale return an error string.
         if not locales[defaultLocale][id] then
             Log.warn( string.format( MISSING_ID_ERROR, id ), 'Translator' );
+            locales[locale][id] = string.format( MISSING_ID_ERROR, id )
             return string.format( MISSING_ID_ERROR, id );
         end
 
+        locales[locale][id] = locales[defaultLocale][id]
         return locales[defaultLocale][id];
     end
 
