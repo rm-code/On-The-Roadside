@@ -66,7 +66,7 @@ end
 function ParcelGrid:addPrefab( x, y, w, h, type )
     for px = 0, w-1 do
         for py = 0, h-1 do
-            self.parcels[px+x][py+y] = Parcel( type )
+            self.parcels[px+x][py+y]:setType( type )
         end
     end
 end

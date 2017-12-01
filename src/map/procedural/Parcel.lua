@@ -66,4 +66,12 @@ function Parcel:setNeighbours( neighbours )
     self.neighbours = neighbours
 end
 
+---
+-- Sets the type of this parcel.
+-- @tparam string type The new type to use.
+--
+function Parcel:setType( type )
+    self.type = type
+end
+
 return Parcel
