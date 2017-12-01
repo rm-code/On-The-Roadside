@@ -36,7 +36,7 @@ local function createGrid( w, h )
     for x = 0, w-1 do
         for y = 0, h-1 do
             parcels[x] = parcels[x] or {}
-            parcels[x][y] = Parcel.new( 'empty' )
+            parcels[x][y] = Parcel( 'empty' )
         end
     end
     return parcels
@@ -66,7 +66,7 @@ end
 function ParcelGrid:addPrefab( x, y, w, h, type )
     for px = 0, w-1 do
         for py = 0, h-1 do
-            self.parcels[px+x][py+y] = Parcel.new( type )
+            self.parcels[px+x][py+y] = Parcel( type )
         end
     end
 end

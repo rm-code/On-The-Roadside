@@ -8,42 +8,62 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Object = require( 'src.Object' )
+local Class = require( 'lib.Middleclass' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Parcel = {}
+local Parcel = Class( 'Parcel' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
-function Parcel.new( type )
-    local self = Object.new():addInstance( 'Parcel' )
+---
+-- Initializes the Parcel instance.
+-- @tparam string type The type of Parcel to spawn.
+--
+function Parcel:initialize( type )
+    self.type = type
+end
 
-    local neighbours
-
-    function self:setNeighbours( nneighbours )
-        neighbours = nneighbours
-    end
-
-    function self:getType()
-        return type
-    end
-
-    function self:getNeighbourCount()
-        local count = 0
-        for _, neighbour in pairs( neighbours ) do
-            if neighbour and neighbour:getType() == type then
-                count = count + 1
-            end
+---
+-- Counts the neighbours of the same type around this parcel.
+-- @treturn number The number of neighbours with the same type.
+--
+function Parcel:countNeighbours()
+    local count = 0
+    for _, neighbour in pairs( self.neighbours ) do
+        if neighbour and neighbour:getType() == self.type then
+            count = count + 1
         end
-        return count
     end
+    return count
+end
 
-    return self
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns this parcel's type.
+-- @treturn string The parcel's type.
+--
+function Parcel:getType()
+    return self.type
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+---
+-- Sets the neighbours for this parcel.
+-- @tparam table neighbours The neighbouring parcels.
+--
+function Parcel:setNeighbours( neighbours )
+    self.neighbours = neighbours
 end
 
 return Parcel

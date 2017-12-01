@@ -194,7 +194,7 @@ function ProceduralMapGenerator.new()
                 return
             end
 
-            local n = parcel:getNeighbourCount()
+            local n = parcel:countNeighbours()
 
             local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
             for w = 1, PARCEL_SIZE.WIDTH do
