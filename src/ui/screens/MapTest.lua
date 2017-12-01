@@ -26,8 +26,7 @@ function MapTest.new()
     local camera
 
     local function createMap()
-        local generator = ProceduralMapGenerator.new()
-        generator:init( layout )
+        local generator = ProceduralMapGenerator( layout )
 
         local tiles = generator:getTiles()
         mw, mh = generator:getTileGridDimensions()

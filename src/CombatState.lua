@@ -61,8 +61,7 @@ function CombatState.new()
     end
 
     local function createMap()
-        local generator = ProceduralMapGenerator.new()
-        generator:init()
+        local generator = ProceduralMapGenerator()
 
         local tiles = generator:getTiles()
         local mw, mh = generator:getTileGridDimensions()
