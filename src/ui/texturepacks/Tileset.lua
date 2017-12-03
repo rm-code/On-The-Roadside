@@ -61,8 +61,20 @@ function Tileset.new( source, infos, twidth, theight )
     -- Getters
     -- ------------------------------------------------
 
-    function self:getSprite( id, alt )
-        return alt and sprites[infos[id][alt]] or sprites[infos[id]]
+    ---
+    -- Returns a quad which maps to a sprite on the tileset based on the id.
+    -- By default an id points to a number which in turn points to a quad in
+    -- the tileset.
+    -- If the subid parameter is not nil the id should point to a table which
+    -- contains a list of subids which point to quad numbers. This can be used
+    -- to have different sprites based on the state of an object or to draw
+    -- connected tiles.
+    -- @tparam string id    The id to search for in the infos table.
+    -- @tparam string subid The subid to search for in the infos table (optional)
+    --
+    function self:getSprite( id, subid )
+        local quadIndex = subid and infos[id][subid] or infos[id]
+        return sprites[quadIndex]
     end
 
     function self:getSpritesheet()

@@ -47,27 +47,30 @@ local COLORS = {
 }
 
 local CONNECTION_BITMASK = {
-    [0]  = '',
+    [0]  = 'default',
 
-    [1]  = '_vertical',
-    [4]  = '_vertical',
-    [2]  = '_horizontal',
-    [8]  = '_horizontal',
+    -- Straight connections-
+    [1]  = 'vertical', -- North
+    [4]  = 'vertical', -- South
+    [5]  = 'vertical', -- North South
+    [2]  = 'horizontal', -- East
+    [8]  = 'horizontal', -- West
+    [10] = 'horizontal', -- East West
 
-    [5]  = '_vertical', -- North South
-    [10] = '_horizontal', -- East West
+    -- Corners.
+    [3]  = 'ne',
+    [9]  = 'nw',
+    [6]  = 'se',
+    [12] = 'sw',
 
-    [3]  = '_ne',
-    [9]  = '_nw',
-    [6]  = '_se',
-    [12] = '_sw',
+    -- T Intersection
+    [7]  = 'nes',
+    [11] = 'new',
+    [13] = 'nws',
+    [14] = 'sew',
 
-    [7]  = '_nes',
-    [11] = '_new',
-    [13] = '_nws',
-    [14] = '_sew',
-
-    [15] = '_news',
+    -- + Intersection
+    [15] = 'news',
 }
 
 -- ------------------------------------------------
@@ -180,7 +183,7 @@ local function selectWorldObjectSprite( worldObject, tile )
                        checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
                        checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
                        checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
-        return TexturePacks.getSprite( worldObject:getID() .. CONNECTION_BITMASK[result] )
+        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
     end
 
     return TexturePacks.getSprite( worldObject:getID() )
