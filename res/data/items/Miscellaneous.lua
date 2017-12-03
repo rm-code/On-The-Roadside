@@ -7,10 +7,7 @@ return {
         volume     = 0.1,
         equippable = false,
         stackable  = true,
-        permanent  = false,
-        tags = {
-            'misc'
-        }
+        permanent  = false
     },
     {
         id         = "misc_splintered_wood",
@@ -20,10 +17,7 @@ return {
         volume     = 2.0,
         equippable = false,
         stackable  = true,
-        permanent  = false,
-        tags = {
-            'misc'
-        }
+        permanent  = false
     },
     {
         id         = "misc_glass_shard",
@@ -33,10 +27,7 @@ return {
         volume     = 0.5,
         equippable = false,
         stackable  = true,
-        permanent  = false,
-        tags = {
-            'misc'
-        }
+        permanent  = false
     },
     {
         id         = "misc_ceramic_shard",
@@ -46,9 +37,6 @@ return {
         volume     = 0.5,
         equippable = false,
         stackable  = true,
-        permanent  = false,
-        tags = {
-            'misc'
-        }
+        permanent  = false
     }
 }
