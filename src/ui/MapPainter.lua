@@ -147,7 +147,7 @@ end
 local function checkConnection( connections, neighbour, value )
     if neighbour and neighbour:hasWorldObject() then
         local group = neighbour:getWorldObject():getGroup()
-        if neighbour:getWorldObject():getGroup() then
+        if group then
             for i = 1, #connections do
                 if connections[i] == group then
                     return value
