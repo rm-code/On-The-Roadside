@@ -18,7 +18,6 @@ return {
     -- ==============================
     ['worldobject_chair']   = 111,
     ['worldobject_crate']   = 247,
-    ['worldobject_lowwall'] =  62,
     ['worldobject_table']   = 211,
     ['worldobject_tree']    =   7,
     ['worldobject_window']  = 177,
@@ -42,6 +41,21 @@ return {
     },
 
     ['worldobject_fence'] = {
+        default = 198,
+        vertical = 180,
+        horizontal = 197,
+        ne = 193,
+        nw = 218,
+        se = 219,
+        sw = 192,
+        nes = 196,
+        new = 194,
+        nws = 181,
+        sew = 195,
+        news = 198,
+    },
+
+    ['worldobject_lowwall'] = {
         default = 198,
         vertical = 180,
         horizontal = 197,

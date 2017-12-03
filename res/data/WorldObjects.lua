@@ -137,7 +137,9 @@ return {
         destructible = false,
         climbable = true,
         blocksVision = true,
-        blocksPathfinding = false
+        blocksPathfinding = false,
+        group = "WALL",
+        connections = { "DOOR", "FENCE", "WALL" }
     },
     {
         id = 'worldobject_table',
