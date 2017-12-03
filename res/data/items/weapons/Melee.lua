@@ -8,6 +8,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Melee",
         damage     = 18,
         reloadable = false,
@@ -27,9 +30,6 @@ return {
                 attacks    = 1,
                 damageType = 'piercing'
             }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -41,6 +41,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Melee",
         damage     = 24,
         reloadable = false,
@@ -53,9 +56,6 @@ return {
                 attacks    = 1,
                 damageType = 'bludgeoning'
             }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -67,6 +67,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = true,
+        tags = {
+            'humanoid'
+        },
         subType    = "Melee",
         damage     = 14,
         reloadable = false,
@@ -79,9 +82,6 @@ return {
                 attacks = 1,
                 damageType = 'piercing'
             }
-        },
-        tags = {
-            'creature'
         }
     }
 }
