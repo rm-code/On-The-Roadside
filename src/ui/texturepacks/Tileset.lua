@@ -73,8 +73,25 @@ function Tileset.new( source, infos, twidth, theight )
     -- @tparam string subid The subid to search for in the infos table (optional)
     --
     function self:getSprite( id, subid )
-        local quadIndex = subid and infos[id][subid] or infos[id]
-        return sprites[quadIndex]
+        local definition = infos[id]
+        if not definition then
+            error( string.format( 'Can not find a sprite definition for [%s].', id ))
+        end
+
+        if subid then
+            if type( definition ) ~= 'table' then
+                error( string.format( 'Tried to get a sub-sprite [%s] from a non-table defintion [%s].', subid, id ))
+            end
+
+            local index = definition[subid]
+            if not index then
+                error( string.format( 'Can not find a sub-sprite definition for [%s][%s].', id, subid ))
+            end
+
+            return sprites[index]
+        end
+
+        return sprites[definition]
     end
 
     function self:getSpritesheet()
