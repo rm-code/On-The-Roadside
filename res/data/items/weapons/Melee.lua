@@ -68,7 +68,7 @@ return {
         stackable  = false,
         permanent  = true,
         tags = {
-            'humanoid'
+            'creature'
         },
         subType    = "Melee",
         damage     = 14,
