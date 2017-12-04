@@ -32,6 +32,7 @@ function Tile.new( x, y, template )
     local id = template.id;
     local movementCost = template.movementCost;
     local passable = template.passable;
+    local spawn = template.spawn
 
     local spriteID;
     local dirty;
@@ -256,6 +257,14 @@ function Tile.new( x, y, template )
             return worldObject:isPassable();
         end
         return passable;
+    end
+
+    ---
+    -- Determines wether the tile is valid for spawning.
+    -- @treturn boolean True if the tile is valid for spawning.
+    --
+    function self:isSpawn()
+        return spawn
     end
 
     -- ------------------------------------------------

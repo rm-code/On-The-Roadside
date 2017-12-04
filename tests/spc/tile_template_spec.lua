@@ -13,21 +13,23 @@ describe( 'Tile template spec', function()
         end
     end)
 
-    it( 'makes sure all passable tiles have movement costs', function()
+    it( 'makes sure all passable tiles have their necessary fields', function()
         for _, template in ipairs( templates ) do
             if template.passable then
                 assert.not_nil( template.movementCost,        template.id )
                 assert.not_nil( template.movementCost.stand,  template.id .. ' => stand'  )
                 assert.not_nil( template.movementCost.crouch, template.id .. ' => crouch'  )
                 assert.not_nil( template.movementCost.prone,  template.id .. ' => prone'  )
+                assert.not_nil( template.spawn, template.id )
             end
         end
     end)
 
-    it( 'makes sure all impassable tiles have no movement costs', function()
+    it( 'makes sure all impassable tiles have their necessary fields', function()
         for _, template in ipairs( templates ) do
             if not template.passable then
-                assert.is_nil( template.movementCost,        template.id )
+                assert.is_nil( template.movementCost, template.id )
+                assert.is_nil( template.spawn, template.id )
             end
         end
     end)

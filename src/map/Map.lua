@@ -92,7 +92,7 @@ function Map.new()
             local spawn = spawnpoints[faction][index]
 
             local tile = self:getTileAt( spawn.x, spawn.y )
-            if tile:isPassable() and not tile:isOccupied() then
+            if tile:isSpawn() and tile:isPassable() and not tile:isOccupied() then
                 return tile
             end
         end
