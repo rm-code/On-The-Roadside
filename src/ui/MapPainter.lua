@@ -119,7 +119,8 @@ local function selectTileColor( tile, faction )
     end
 
     if not tile:getInventory():isEmpty() then
-        return TexturePacks.getColor( 'items' )
+        local items = tile:getInventory():getItems()
+        return TexturePacks.getColor( items[1]:getID() )
     end
 
     if tile:hasWorldObject() then
@@ -201,7 +202,8 @@ local function selectTileSprite( tile, faction )
     end
 
     if not tile:getInventory():isEmpty() then
-        return TexturePacks.getSprite( 'items' )
+        local items = tile:getInventory():getItems()
+        return TexturePacks.getSprite( items[1]:getID() )
     end
 
     if tile:hasWorldObject() then

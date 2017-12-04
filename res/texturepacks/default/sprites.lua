@@ -73,12 +73,41 @@ return {
     -- ==============================
     -- Items
     -- ==============================
-    ['items'] = 34,
 
-    ['weapon_m67_grenade'] =  8,
-    ['weapon_shuriken']    = 16,
-
+    -- Ammunition
+    ['5.45x39mm'] = 174,
     ['12_gauge'] = 8,
+    ['OG-7V'] = 95,
+
+    -- Armor
+    ['footwear_combat_boots'] = 92,
+    ['headgear_pasgt_helmet'] = 92,
+    ['jacket_pasgt_vest'] = 92,
+    ['trousers_jeans'] = 92,
+    ['thick_fur'] = 92,
+
+    -- Containers
+    ['bag_small_backpack'] = 234,
+
+    -- Miscellaneous
+    ['misc_nail'] = 97,
+    ['misc_splintered_wood'] = 97,
+    ['misc_glass_shard'] = 97,
+    ['misc_ceramic_shard'] = 97,
+
+    -- Melee
+    ['weapon_knife'] = 60,
+    ['weapon_tonfa'] = 48,
+    ['weapon_bite'] = 126,
+
+    -- Ranged
+    ['weapon_aks74'] = 42,
+    ['weapon_benelli_m4'] = 42,
+    ['weapon_rpg7'] = 41,
+
+    -- Thrown
+    ['weapon_m67_grenade'] = 8,
+    ['weapon_shuriken'] = 16,
 
     -- ==============================
     -- WORLD OBJECTS (OPENABLE)

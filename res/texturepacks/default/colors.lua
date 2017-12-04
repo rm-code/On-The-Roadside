@@ -79,7 +79,41 @@ return {
     -- ==============================
     -- ITEMS
     -- ==============================
-    ['items'] = COLORS.DB16,
+
+    -- Ammunition
+    ['5.45x39mm'] = COLORS.DB06,
+    ['12_gauge'] = COLORS.DB06,
+    ['OG-7V'] = COLORS.DB06,
+
+    -- Armor
+    ['footwear_combat_boots'] = COLORS.DB05,
+    ['headgear_pasgt_helmet'] = COLORS.DB05,
+    ['jacket_pasgt_vest'] = COLORS.DB05,
+    ['trousers_jeans'] = COLORS.DB05,
+    ['thick_fur'] = COLORS.DB05,
+
+    -- Containers
+    ['bag_small_backpack'] = COLORS.DB17,
+
+    -- Miscellaneous
+    ['misc_nail'] = COLORS.DB16,
+    ['misc_splintered_wood'] = COLORS.DB16,
+    ['misc_glass_shard'] = COLORS.DB16,
+    ['misc_ceramic_shard'] = COLORS.DB16,
+
+    -- Melee
+    ['weapon_knife'] = COLORS.DB08,
+    ['weapon_tonfa'] = COLORS.DB08,
+    ['weapon_bite'] = COLORS.DB08,
+
+    -- Ranged
+    ['weapon_aks74'] = COLORS.DB08,
+    ['weapon_benelli_m4'] = COLORS.DB08,
+    ['weapon_rpg7'] = COLORS.DB08,
+
+    -- Thrown
+    ['weapon_m67_grenade'] = COLORS.DB08,
+    ['weapon_shuriken'] = COLORS.DB08,
 
     -- ==============================
     -- WORLD OBJECTS (OPENABLE)
