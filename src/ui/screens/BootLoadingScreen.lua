@@ -8,7 +8,7 @@
 -- ------------------------------------------------
 
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local Log = require( 'src.util.Log' )
 local Translator = require( 'src.util.Translator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -27,46 +27,39 @@ local Settings = require( 'src.Settings' )
 -- Module
 -- ------------------------------------------------
 
-local BootLoadingScreen = {}
+local BootLoadingScreen = Screen:subclass( 'BootLoadingScreen' )
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function BootLoadingScreen.new()
-    local self = Screen.new()
+function BootLoadingScreen:initialize()
+    local startTime = love.timer.getTime()
 
-    function self:init()
-        local startTime = love.timer.getTime()
+    TexturePacks.load()
 
-        TexturePacks.load()
+    ItemFactory.loadTemplates()
+    TileFactory.loadTemplates()
+    BodyFactory.loadTemplates()
+    WorldObjectFactory.loadTemplates()
+    BehaviorTreeFactory.loadTemplates()
+    SoundManager.loadResources()
 
-        ItemFactory.loadTemplates()
-        TileFactory.loadTemplates()
-        BodyFactory.loadTemplates()
-        WorldObjectFactory.loadTemplates()
-        BehaviorTreeFactory.loadTemplates()
-        SoundManager.loadResources()
+    CharacterFactory.init()
 
-        CharacterFactory.init()
+    ProceduralMapGenerator.load()
+    PrefabLoader.load()
 
-        ProceduralMapGenerator.load()
-        PrefabLoader.load()
+    Settings.load()
 
-        -- Load settings.
-        Settings.load()
+    Translator.init( Settings.getLocale() )
+    TexturePacks.setCurrent( Settings.getTexturepack() )
+    love.window.setFullscreen( Settings.getFullscreen() )
 
-        Translator.init( Settings.getLocale() )
-        TexturePacks.setCurrent( Settings.getTexturepack() )
-        love.window.setFullscreen( Settings.getFullscreen() )
+    local endTime = love.timer.getTime()
+    Log.debug( string.format( 'Loading game resources took %.3f seconds!', endTime - startTime ), 'BootLoadingScreen' )
 
-        local endTime = love.timer.getTime()
-        Log.debug( string.format( 'Loading game resources took %.3f seconds!', endTime - startTime ), 'BootLoadingScreen' )
-
-        ScreenManager.switch( 'mainmenu' )
-    end
-
-    return self
+    ScreenManager.switch( 'mainmenu' )
 end
 
 return BootLoadingScreen
