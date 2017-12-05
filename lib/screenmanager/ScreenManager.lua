@@ -26,7 +26,7 @@
 -- @module ScreenManager
 --
 local ScreenManager = {
-    _VERSION     = '2.1.1',
+    _VERSION     = '2.1.1 (modified)',
     _DESCRIPTION = 'Screen/State Management for the LÖVE framework',
     _URL         = 'https://github.com/rm-code/screenmanager/',
 }
@@ -92,10 +92,8 @@ local function push( screen, args )
     end
 
     -- Push the new screen onto the stack.
-    stack[#stack + 1] = screens[screen].new()
-
-    -- Create the new screen and initialise it.
-    stack[#stack]:init( unpack( args ) )
+    stack[#stack + 1] = screens[screen]( unpack( args ))
+    ScreenManager.peek():setActive( true )
 end
 
 ---
