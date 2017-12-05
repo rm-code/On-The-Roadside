@@ -1,5 +1,5 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
@@ -10,7 +10,7 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local HelpScreen = {}
+local HelpScreen = Screen:subclass( 'HelpScreen' )
 
 -- ------------------------------------------------
 -- Constants
@@ -69,112 +69,94 @@ local HELP_TEXT = {
 }
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function HelpScreen.new()
-    local self = Screen.new()
+---
+-- Wraps the text into a Text object.
+-- @treturn Text The text object.
+--
+local function assembleText()
+    local text = love.graphics.newText( TexturePacks.getFont():get() )
+    local tw, th = TexturePacks.getTileDimensions()
+    local offset = 0
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+    -- Draw sections first.
+    for i = 1, #HELP_TEXT do
+        text:addf({ TexturePacks.getColor( HELP_TEXT[i].color ), HELP_TEXT[i].text }, (UI_GRID_WIDTH-2) * tw, 'left', 0, offset * th )
+        offset = offset + 1
 
-    local x, y
-    local header
-    local background
-    local outlines
-    local text
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Wraps the text into a Text object.
-    --
-    local function assembleText()
-        text = love.graphics.newText( TexturePacks.getFont():get() )
-
-        local tw, th = TexturePacks.getTileDimensions()
-        local offset = 0
-
-        -- Draw sections first.
-        for i = 1, #HELP_TEXT do
-            text:addf({ TexturePacks.getColor( HELP_TEXT[i].color ), HELP_TEXT[i].text }, (UI_GRID_WIDTH-2) * tw, 'left', 0, offset * th )
+        -- Draw sub items with a slight offset to the right.
+        for j = 1, #HELP_TEXT[i].children do
             offset = offset + 1
-
-            -- Draw sub items with a slight offset to the right.
-            for j = 1, #HELP_TEXT[i].children do
-                offset = offset + 1
-                text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
-            end
-
-            offset = offset + 2
-        end
-    end
-
-    ---
-    -- Generates the outlines for this screen.
-    --
-    local function generateOutlines()
-        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        -- Horizontal borders.
-        for ox = 0, UI_GRID_WIDTH-1 do
-            outlines:add( ox, 0                ) -- Top
-            outlines:add( ox, 2                ) -- Header
-            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
+            text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
         end
 
-        -- Vertical outlines.
-        for oy = 0, UI_GRID_HEIGHT-1 do
-            outlines:add( 0,               oy ) -- Left
-            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
-        end
-
-        outlines:refresh()
+        offset = offset + 2
     end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+    return text
+end
 
-    function self:init()
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+---
+-- Generates the outlines for this screen.
+-- @tparam  number     x The origin of the screen along the x-axis.
+-- @tparam  number     y The origin of the screen along the y-axis.
+-- @treturn UIOutlines   The newly created UIOutlines instance.
+--
+local function generateOutlines( x, y )
+    local outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        generateOutlines()
-
-        assembleText()
-
-        header = love.graphics.newText( TexturePacks.getFont():get(), Translator.getText( 'ui_help_header' ))
+    -- Horizontal borders.
+    for ox = 0, UI_GRID_WIDTH-1 do
+        outlines:add( ox, 0                ) -- Top
+        outlines:add( ox, 2                ) -- Header
+        outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
     end
 
-    function self:draw()
-        background:draw()
-        outlines:draw()
-
-        local tw, th = TexturePacks.getTileDimensions()
-        TexturePacks.setColor( 'ui_text' )
-        love.graphics.draw( header, (x+1) * tw, (y+1) * th )
-        love.graphics.draw( text, (x+1) * tw, (y+3) * th )
-        TexturePacks.resetColor()
+    -- Vertical outlines.
+    for oy = 0, UI_GRID_HEIGHT-1 do
+        outlines:add( 0,               oy ) -- Left
+        outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
     end
 
-    function self:keypressed( key )
-        if key == 'escape' then
-            ScreenManager.pop()
-        end
-    end
+    outlines:refresh()
+    return outlines
+end
 
-    function self:resize( _, _ )
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-        background:setOrigin( x, y )
-        outlines:setOrigin( x, y )
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    return self
+function HelpScreen:initialize()
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.outlines = generateOutlines( self.x, self.y )
+    self.text = assembleText()
+    self.header = love.graphics.newText( TexturePacks.getFont():get(), Translator.getText( 'ui_help_header' ))
+end
+
+function HelpScreen:draw()
+    self.background:draw()
+    self.outlines:draw()
+
+    local tw, th = TexturePacks.getTileDimensions()
+    TexturePacks.setColor( 'ui_text' )
+    love.graphics.draw( self.header, (self.x+1) * tw, (self.y+1) * th )
+    love.graphics.draw( self.text,   (self.x+1) * tw, (self.y+3) * th )
+    TexturePacks.resetColor()
+end
+
+function HelpScreen:keypressed( key )
+    if key == 'escape' then
+        ScreenManager.pop()
+    end
+end
+
+function HelpScreen:resize( _, _ )
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background:setOrigin( self.x, self.y )
+    self.outlines:setOrigin( self.x, self.y )
 end
 
 return HelpScreen
