@@ -144,6 +144,7 @@ function InputDialog.new()
         if scancode == 'backspace' then
             if deleteAll then
                 entry = ''
+                deleteAll = false
             else
                 entry = entry:sub( 1, #entry-1 )
             end
