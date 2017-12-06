@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
@@ -19,7 +19,7 @@ local UIContainer = require( 'src.ui.elements.UIContainer' )
 -- Module
 -- ------------------------------------------------
 
-local MapEditor = {}
+local MapEditor = Screen:subclass( 'MapEditor' )
 
 -- ------------------------------------------------
 -- Constants
@@ -43,142 +43,121 @@ local PREFAB_SIZES = {
 }
 
 -- ------------------------------------------------
--- Constructor
+-- Private Functions
 -- ------------------------------------------------
 
-function MapEditor.new()
-    local self = Screen.new()
+local function createPrefabSelector( brush )
+    local lx, ly = 1, 1
 
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
+    local prefabSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
-    local camera
-
-    local prefabSelector
-
-    local canvas
-    local brush
-
-    local uiContainer
-
-    -- ------------------------------------------------
-    -- Private Functions
-    -- ------------------------------------------------
-
-    local function createPrefabSelector()
-        local lx, ly = 1, 1
-
-        prefabSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
-
-        local counter = 0
-        for _, template in pairs( PREFAB_SIZES ) do
-            local function callback()
-                brush:setTemplate( template )
-            end
-
-            local str = string.format( '%2s (%sx%s)', template.TYPE, template.PARCEL_WIDTH, template.PARCEL_HEIGHT )
-            local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, str, 'left' )
-            prefabSelector:addChild( tmp )
-
-            counter = counter + 1
+    local counter = 0
+    for _, template in pairs( PREFAB_SIZES ) do
+        local function callback()
+            brush:setTemplate( template )
         end
+
+        local str = string.format( '%2s (%sx%s)', template.TYPE, template.PARCEL_WIDTH, template.PARCEL_HEIGHT )
+        local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, str, 'left' )
+        prefabSelector:addChild( tmp )
+
+        counter = counter + 1
     end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+    return prefabSelector
+end
 
-    function self:init()
-        love.filesystem.createDirectory( MAP_LAYOUT_DIRECTORY )
-        love.mouse.setVisible( true )
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        canvas = LayoutCanvas()
-        brush = LayoutBrush( PREFAB_SIZES[1] )
+function MapEditor:initialize()
+    love.filesystem.createDirectory( MAP_LAYOUT_DIRECTORY )
+    love.mouse.setVisible( true )
 
-        createPrefabSelector()
+    self.canvas = LayoutCanvas()
+    self.brush = LayoutBrush( PREFAB_SIZES[1] )
 
-        camera = CameraHandler.new( canvas:getWidth(), canvas:getHeight(), 16, 16 )
+    self.prefabSelector = createPrefabSelector( self.brush )
 
-        uiContainer = UIContainer()
-        uiContainer:register( prefabSelector )
+    self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), 16, 16 )
+
+    self.uiContainer = UIContainer()
+    self.uiContainer:register( self.prefabSelector )
+end
+
+function MapEditor:receive( event, ... )
+    if event == 'LOAD_LAYOUT' then
+        local newLayout = ...
+        self.canvas:setGrid( newLayout )
+    end
+end
+
+function MapEditor:draw()
+    if not self:isActive() then
+        return
     end
 
-    function self:receive( event, ... )
-        if event == 'LOAD_LAYOUT' then
-            local newLayout = ...
-            canvas:setGrid( newLayout )
-        end
+    self.uiContainer:draw()
+
+    self.camera:attach()
+    self.canvas:draw()
+    self.brush:draw()
+    self.camera:detach()
+end
+
+function MapEditor:update( dt )
+    if not self:isActive() then
+        return
     end
 
-    function self:draw()
-        if not self:isActive() then
-            return
-        end
+    self.camera:update( dt )
+    self.brush:setPosition( self.camera:getMouseWorldGridPosition() )
+    self.uiContainer:update()
+end
 
-        uiContainer:draw()
+function MapEditor:mousemoved()
+    love.mouse.setVisible( true )
+end
 
-        camera:attach()
-        canvas:draw()
-        brush:draw()
-        camera:detach()
+function MapEditor:mousepressed()
+    self.brush:use( self.canvas )
+    self.uiContainer:command( 'activate' )
+end
+
+function MapEditor:keypressed( _, scancode )
+    if scancode == 'escape' then
+        ScreenManager.push( 'mapeditormenu', self.canvas )
     end
 
-    function self:update( dt )
-        if not self:isActive() then
-            return
-        end
-
-        camera:update( dt )
-        brush:setPosition( camera:getMouseWorldGridPosition() )
-        uiContainer:update()
+    if scancode == 'tab' then
+        self.uiContainer:next()
     end
 
-    function self:mousemoved()
-        love.mouse.setVisible( true )
+    if scancode == 'd' then
+        self.brush:setMode( 'draw' )
+    elseif scancode == 'e' then
+        self.brush:setMode( 'erase' )
     end
 
-    function self:mousepressed()
-        brush:use( canvas )
-        uiContainer:command( 'activate' )
+    if scancode == 'up' then
+        self.uiContainer:command( 'up' )
+    elseif scancode == 'down' then
+        self.uiContainer:command( 'down' )
+    elseif scancode == 'return' then
+        self.uiContainer:command( 'activate' )
     end
 
-    function self:keypressed( _, scancode )
-        if scancode == 'escape' then
-            ScreenManager.push( 'mapeditormenu', canvas )
-        end
-
-        if scancode == 'tab' then
-            uiContainer:next()
-        end
-
-        if scancode == 'd' then
-            brush:setMode( 'draw' )
-        elseif scancode == 'e' then
-            brush:setMode( 'erase' )
-        end
-
-        if scancode == 'up' then
-            uiContainer:command( 'up' )
-        elseif scancode == 'down' then
-            uiContainer:command( 'down' )
-        elseif scancode == 'return' then
-            uiContainer:command( 'activate' )
-        end
-
-        if scancode == 'w' then
-            canvas:resize( 0, -1 )
-        elseif scancode == 's' then
-            canvas:resize( 0, 1 )
-        end
-        if scancode == 'a' then
-            canvas:resize( -1, 0 )
-        elseif scancode == 'd' then
-            canvas:resize( 1, 0 )
-        end
+    if scancode == 'w' then
+        self.canvas:resize( 0, -1 )
+    elseif scancode == 's' then
+        self.canvas:resize( 0, 1 )
     end
-
-    return self
+    if scancode == 'a' then
+        self.canvas:resize( -1, 0 )
+    elseif scancode == 'd' then
+        self.canvas:resize( 1, 0 )
+    end
 end
 
 return MapEditor
