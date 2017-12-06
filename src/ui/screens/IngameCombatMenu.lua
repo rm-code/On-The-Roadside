@@ -1,7 +1,15 @@
-local Screen = require( 'lib.screenmanager.Screen' );
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local SaveHandler = require( 'src.SaveHandler' );
-local Translator = require( 'src.util.Translator' );
+---
+-- @module IngameCombatMenu
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Screen = require( 'src.ui.screens.Screen' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
+local SaveHandler = require( 'src.SaveHandler' )
+local Translator = require( 'src.util.Translator' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
@@ -14,7 +22,7 @@ local UIContainer = require( 'src.ui.elements.UIContainer' )
 -- Module
 -- ------------------------------------------------
 
-local IngameCombatMenu = {}
+local IngameCombatMenu = Screen:subclass( 'IngameCombatMenu' )
 
 -- ------------------------------------------------
 -- Constants
@@ -24,53 +32,39 @@ local UI_GRID_WIDTH  = 14
 local UI_GRID_HEIGHT = 8
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function IngameCombatMenu.new()
-    local self = Screen.new();
+---
+-- Generates the outlines for this screen.
+-- @tparam  number     x The origin of the screen along the x-axis.
+-- @tparam  number     y The origin of the screen along the y-axis.
+-- @treturn UIOutlines   The newly created UIOutlines instance.
+--
+local function generateOutlines( x, y )
+    local outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
-
-    local game;
-    local buttonList;
-
-    local background
-    local outlines
-    local x, y
-    local tw, th
-
-    local container
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Generates the outlines for this screen.
-    --
-    local function generateOutlines()
-        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        -- Horizontal borders.
-        for ox = 0, UI_GRID_WIDTH-1 do
-            outlines:add( ox, 0                ) -- Top
-            outlines:add( ox, 2                ) -- Header
-            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
-        end
-
-        -- Vertical outlines.
-        for oy = 0, UI_GRID_HEIGHT-1 do
-            outlines:add( 0,               oy ) -- Left
-            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
-        end
-
-        outlines:refresh()
+    -- Horizontal borders.
+    for ox = 0, UI_GRID_WIDTH-1 do
+        outlines:add( ox, 0                ) -- Top
+        outlines:add( ox, 2                ) -- Header
+        outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
     end
 
+    -- Vertical outlines.
+    for oy = 0, UI_GRID_HEIGHT-1 do
+        outlines:add( 0,               oy ) -- Left
+        outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
+    end
+
+    outlines:refresh()
+    return outlines
+end
+
+local function createSaveGameButton( lx, ly, game )
+    -- Create the callback for the save button.
     local function saveGame()
+        -- Create the callback for the confirmation dialog.
         local function confirmationCallback( name )
             SaveHandler.save( game:serialize(), name )
             ScreenManager.pop() -- Close input dialog.
@@ -83,88 +77,83 @@ function IngameCombatMenu.new()
         ScreenManager.push( 'inputdialog', Translator.getText( 'ui_ingame_input_save_name' ), date, confirmationCallback )
     end
 
-    local function createButtons()
-        local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
+end
 
-        buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+local function createButtons( game )
+    local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    local buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-        local saveGameButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
-        buttonList:addChild( saveGameButton )
+    local saveGameButton = createSaveGameButton( lx, ly, game )
+    buttonList:addChild( saveGameButton )
 
-        local openHelpButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
-        buttonList:addChild( openHelpButton )
+    local openHelpButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
+    buttonList:addChild( openHelpButton )
 
-        local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
-        buttonList:addChild( exitButton )
+    local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
+    buttonList:addChild( exitButton )
 
-        local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
-        buttonList:addChild( resumeButton )
+    local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_ingame_resume' ))
+    buttonList:addChild( resumeButton )
+
+    return buttonList
+end
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function IngameCombatMenu:initialize( game )
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.outlines = generateOutlines( self.x, self.y )
+    self.buttonList = createButtons( game )
+    self.container = UIContainer()
+    self.container:register( self.buttonList )
+end
+
+function IngameCombatMenu:draw()
+    self.background:draw()
+    self.outlines:draw()
+
+    self.container:draw()
+    local tw, th = TexturePacks.getTileDimensions()
+    love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), (self.x+1) * tw, (self.y+1) * th, (UI_GRID_WIDTH - 2) * tw, 'center' )
+end
+
+function IngameCombatMenu:update()
+    self.container:update()
+end
+
+function IngameCombatMenu:keypressed( _, scancode )
+    love.mouse.setVisible( false )
+
+    if scancode == 'up' then
+        self.container:command( 'up' )
+    elseif scancode == 'down' then
+        self.container:command( 'down' )
+    elseif scancode == 'return' then
+        self.container:command( 'activate' )
     end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init( ngame )
-        game = ngame;
-
-        tw, th = TexturePacks.getTileDimensions()
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        generateOutlines()
-
-        createButtons()
-
-        container = UIContainer()
-        container:register( buttonList )
+    if scancode == 'escape' then
+        ScreenManager.pop()
     end
+end
 
-    function self:draw()
-        background:draw()
-        outlines:draw()
+function IngameCombatMenu:mousereleased()
+    self.container:command( 'activate' )
+end
 
-        container:draw()
-        love.graphics.printf( Translator.getText( 'ui_ingame_paused' ), (x+1) * tw, (y+1) * th, (UI_GRID_WIDTH - 2) * tw, 'center' )
-    end
+function IngameCombatMenu:mousemoved()
+    love.mouse.setVisible( true )
+end
 
-    function self:update()
-        container:update()
-    end
-
-    function self:keypressed( _, scancode )
-        love.mouse.setVisible( false )
-
-        if scancode == 'up' then
-            container:command( 'up' )
-        elseif scancode == 'down' then
-            container:command( 'down' )
-        elseif scancode == 'return' then
-            container:command( 'activate' )
-        end
-
-        if scancode == 'escape' then
-            ScreenManager.pop();
-        end
-    end
-
-    function self:mousereleased()
-        container:command( 'activate' )
-    end
-
-    function self:mousemoved()
-        love.mouse.setVisible( true )
-    end
-
-    function self:resize( _, _ )
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-        background:setOrigin( x, y )
-        outlines:setOrigin( x, y )
-        buttonList:setOrigin( x, y )
-    end
-
-    return self;
+function IngameCombatMenu:resize( _, _ )
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background:setOrigin( self.x, self.y )
+    self.outlines:setOrigin( self.x, self.y )
+    self.buttonList:setOrigin( self.x, self.y )
 end
 
 return IngameCombatMenu
