@@ -188,10 +188,6 @@ return {
     ['ui_health_damaged_limb']       = COLORS.DB05,
     ['ui_health_ok_limb']            = COLORS.DB08,
     ['ui_health_fine_limb']          = COLORS.DB10,
-    ['ui_health_bleeding_bad']       = COLORS.DB27,
-    ['ui_health_bleeding']           = COLORS.DB05,
-    ['ui_health_bleeding_ok']        = COLORS.DB08,
-    ['ui_health_bleeding_fine']      = COLORS.DB10,
 
     -- Changelog Menu
     ['ui_changelog_version'] = COLORS.DB05,

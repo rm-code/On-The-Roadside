@@ -12,6 +12,9 @@ locale.strings = {
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",
     ['ui_healthscreen_name'] = "Name: ",
+    ['ui_healthscreen_limb'] = "Limb",
+    ['ui_healthscreen_bleeding'] = "Bleeding",
+    ['ui_healthscreen_status'] = "Status",
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New",

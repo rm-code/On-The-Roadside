@@ -83,6 +83,50 @@ local function getHealthIndicator( bodyPart )
     return HEALTH[index].text, HEALTH[index].color
 end
 
+---
+-- Draws the section headers for limbs.
+-- @tparam number ox The health screen's origin along the x-axis.
+-- @tparam number oy The health screen's origin along the y-axis.
+-- @tparam number tw The tile width.
+-- @tparam number th The tile height.
+--
+local function drawSectionHeaders( ox, oy, tw, th )
+    local x, y = (ox + 1) * tw, (oy + 3) * th
+    local width = (UI_GRID_WIDTH - 2) * tw
+
+    love.graphics.printf( Translator.getText( 'ui_healthscreen_limb' ), x, y, width, 'left' )
+    love.graphics.printf( Translator.getText( 'ui_healthscreen_bleeding' ), x, y, width, 'center' )
+    love.graphics.printf( Translator.getText( 'ui_healthscreen_status' ), x, y, width, 'right' )
+end
+
+---
+-- Draws the status of one limb.
+-- @tparam number   ox       The health screen's origin along the x-axis.
+-- @tparam number   oy       The health screen's origin along the y-axis.
+-- @tparam number   tw       The tile width.
+-- @tparam number   th       The tile height.
+-- @tparam number   offset   The vertical line offset for this body part.
+-- @tparam BodyPart bodyPart The body part to draw the status for.
+--
+local function drawLimbStatus( ox, oy, tw, th, offset, bodyPart )
+    local x, y = (ox + 1) * tw, (oy + offset + 4) * th
+    local width = (UI_GRID_WIDTH - 2) * tw
+
+    local status, color = getHealthIndicator( bodyPart )
+    TexturePacks.setColor( color )
+
+    -- Limb name.
+    love.graphics.printf( Translator.getText( bodyPart:getID() ), x, y, width, 'left' )
+
+    -- Bleeding indicator.
+    if bodyPart:isBleeding() then
+        love.graphics.printf( string.format( '%1.2f', bodyPart:getBloodLoss() ), x, y, width, 'center' )
+    end
+
+    -- Limb status.
+    love.graphics.printf( status, x, y, width, 'right' )
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -91,7 +135,8 @@ function HealthScreen:initialize( character )
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
     self.character = character
-    self.characterType = character:getBody():getID()
+    self.body = character:getBody()
+    self.characterType = self.body:getID()
 
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
@@ -103,33 +148,6 @@ function HealthScreen:draw()
     self.outlines:draw()
 
     local tw, th = TexturePacks.getTileDimensions()
-    local counter = 3
-    for _, bodyPart in pairs( self.character:getBody():getBodyParts() ) do
-        if bodyPart:isEntryNode() then
-            counter = counter + 1
-
-            local status, color = getHealthIndicator( bodyPart )
-            TexturePacks.setColor( color )
-
-            love.graphics.print( Translator.getText( bodyPart:getID() ), (self.x+1) * tw, (self.y+counter) * th )
-            love.graphics.printf( status, (self.x+1) * tw, (self.y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'right' )
-
-            if bodyPart:isBleeding() then
-                local str = string.format( 'Bleeding %1.2f', bodyPart:getBloodLoss() )
-                if bodyPart:getBloodLoss() / 1.0 < 0.2 then
-                    TexturePacks.setColor( 'ui_health_bleeding_fine' )
-                elseif bodyPart:getBloodLoss() / 1.0 < 0.4 then
-                    TexturePacks.setColor( 'ui_health_bleeding_ok' )
-                elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.7 then
-                    TexturePacks.setColor( 'ui_health_bleeding' )
-                elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 1.0 then
-                    TexturePacks.setColor( 'ui_health_bleeding_bad' )
-                end
-                love.graphics.printf( str, (self.x+1) * tw, (self.y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'center' )
-            end
-        end
-    end
-
     TexturePacks.setColor( 'ui_text' )
 
     -- Draw character type.
@@ -140,6 +158,16 @@ function HealthScreen:draw()
     if self.character:getName() then
         local name = Translator.getText( 'ui_healthscreen_name' ) .. self.character:getName()
         love.graphics.print( name, (self.x+2) * tw + TexturePacks.getFont():measureWidth( type ), (self.y+1) * th )
+    end
+
+    drawSectionHeaders( self.x, self.y, tw, th )
+
+    local counter = 0
+    for _, bodyPart in pairs( self.body:getBodyParts() ) do
+        if bodyPart:isEntryNode() then
+            counter = counter + 1
+            drawLimbStatus( self.x, self.y, tw, th, counter, self.body, bodyPart )
+        end
     end
 
     TexturePacks.resetColor()
