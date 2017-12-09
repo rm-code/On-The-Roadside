@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
@@ -23,7 +23,7 @@ local Log = require( 'src.util.Log' )
 -- Module
 -- ------------------------------------------------
 
-local EditorLoadingScreen = {}
+local EditorLoadingScreen = Screen:subclass( 'EditorLoadingScreen' )
 
 -- ------------------------------------------------
 -- Constants
@@ -40,146 +40,128 @@ local FILE_EXTENSIONS = {
 }
 
 -- ------------------------------------------------
--- Constructor
+-- Private Functions
 -- ------------------------------------------------
 
-function EditorLoadingScreen.new()
-    local self = Screen.new()
+---
+-- Generates the outlines for this screen.
+-- @tparam  number     x The origin of the screen along the x-axis.
+-- @tparam  number     y The origin of the screen along the y-axis.
+-- @treturn UIOutlines   The newly created UIOutlines instance.
+--
+local function generateOutlines( x, y )
+    local outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
-
-    local buttonList
-
-    local background
-    local outlines
-    local x, y
-
-    local uiContainer
-
-    -- ------------------------------------------------
-    -- Private Functions
-    -- ------------------------------------------------
-
-    ---
-    -- Generates the outlines for this screen.
-    --
-    local function generateOutlines()
-        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        -- Horizontal borders.
-        for ox = 0, UI_GRID_WIDTH-1 do
-            outlines:add( ox, 0                ) -- Top
-            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
-        end
-
-        -- Vertical outlines.
-        for oy = 0, UI_GRID_HEIGHT-1 do
-            outlines:add( 0,               oy ) -- Left
-            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
-        end
-
-        outlines:refresh()
+    -- Horizontal borders.
+    for ox = 0, UI_GRID_WIDTH-1 do
+        outlines:add( ox, 0                ) -- Top
+        outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
     end
 
-    local function isValidFile( path )
-        if not love.filesystem.isFile( path ) then
-            return
-        end
-
-        local extension = Util.getFileExtension( path )
-        if extension == FILE_EXTENSIONS.LAYOUT or extension == FILE_EXTENSIONS.PREFAB then
-            return true
-        end
-        Log.warn( string.format( 'Ignoring invalid file extension: "%s".', extension ), 'EditorLoadingScreen' )
+    -- Vertical outlines.
+    for oy = 0, UI_GRID_HEIGHT-1 do
+        outlines:add( 0,               oy ) -- Left
+        outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
     end
 
-    local function createListEntry( lx, ly, item, folder )
-        local function callback()
-            ScreenManager.publish( 'LOAD_LAYOUT', Compressor.load( folder .. item ))
-            ScreenManager.pop()
-            ScreenManager.pop()
-        end
+    outlines:refresh()
+    return outlines
+end
 
-        return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, callback, item )
+local function isValidFile( path )
+    if not love.filesystem.isFile( path ) then
+        return
     end
 
-    local function createButtons( directory )
-        local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    local extension = Util.getFileExtension( path )
+    if extension == FILE_EXTENSIONS.LAYOUT or extension == FILE_EXTENSIONS.PREFAB then
+        return true
+    end
+    Log.warn( string.format( 'Ignoring invalid file extension: "%s".', extension ), 'EditorLoadingScreen' )
+end
 
-        buttonList = UIVerticalList( lx, ly, 0, BUTTON_LIST_VERTICAL_OFFSET, UI_GRID_WIDTH, 1 )
-
-        -- Create entries for last five savegames.
-        local items = love.filesystem.getDirectoryItems( directory )
-        for i = 1, #items do
-            if isValidFile( directory .. items[i] ) then
-                buttonList:addChild( createListEntry( lx, ly, items[i], directory ))
-            end
-        end
-
-        local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_back' ))
-        buttonList:addChild( resumeButton )
-
-        buttonList:setFocus( true )
+local function createListEntry( lx, ly, item, folder )
+    local function callback()
+        ScreenManager.publish( 'LOAD_LAYOUT', Compressor.load( folder .. item ))
+        ScreenManager.pop()
+        ScreenManager.pop()
     end
 
+    return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, callback, item )
+end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+local function createButtons( directory )
+    local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    local buttonList = UIVerticalList( lx, ly, 0, BUTTON_LIST_VERTICAL_OFFSET, UI_GRID_WIDTH, 1 )
 
-    function self:init( directory )
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        generateOutlines()
-        createButtons( directory )
-
-        uiContainer = UIContainer()
-        uiContainer:register( buttonList )
-    end
-
-    function self:update()
-        uiContainer:update()
-    end
-
-    function self:draw()
-        background:draw()
-        outlines:draw()
-        uiContainer:draw()
-    end
-
-    function self:keypressed( _, scancode )
-        if scancode == 'escape' then
-            ScreenManager.pop()
-        end
-
-        if scancode == 'up' then
-            uiContainer:command( 'up' )
-        elseif scancode == 'down' then
-            uiContainer:command( 'down' )
-        elseif scancode == 'return' then
-            uiContainer:command( 'activate' )
+    -- Create entries for last five savegames.
+    local items = love.filesystem.getDirectoryItems( directory )
+    for i = 1, #items do
+        if isValidFile( directory .. items[i] ) then
+            buttonList:addChild( createListEntry( lx, ly, items[i], directory ))
         end
     end
 
-    function self:mousemoved()
-        love.mouse.setVisible( true )
+    local resumeButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.pop() end, Translator.getText( 'ui_back' ))
+    buttonList:addChild( resumeButton )
+
+    buttonList:setFocus( true )
+    return buttonList
+end
+
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function EditorLoadingScreen:initialize( directory )
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+    self.outlines = generateOutlines( self.x, self.y )
+    self.buttonList = createButtons( directory )
+
+    self.uiContainer = UIContainer()
+    self.uiContainer:register( self.buttonList )
+end
+
+function EditorLoadingScreen:update()
+    self.uiContainer:update()
+end
+
+function EditorLoadingScreen:draw()
+    self.background:draw()
+    self.outlines:draw()
+    self.uiContainer:draw()
+end
+
+function EditorLoadingScreen:keypressed( _, scancode )
+    if scancode == 'escape' then
+        ScreenManager.pop()
     end
 
-    function self:mousereleased()
-        uiContainer:command( 'activate' )
+    if scancode == 'up' then
+        self.uiContainer:command( 'up' )
+    elseif scancode == 'down' then
+        self.uiContainer:command( 'down' )
+    elseif scancode == 'return' then
+        self.uiContainer:command( 'activate' )
     end
+end
 
-    function self:resize( _, _ )
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-        background:setOrigin( x, y )
-        outlines:setOrigin( x, y )
-        buttonList:setOrigin( x, y )
-    end
+function EditorLoadingScreen:mousemoved()
+    love.mouse.setVisible( true )
+end
 
-    return self
+function EditorLoadingScreen:mousereleased()
+    self.uiContainer:command( 'activate' )
+end
+
+function EditorLoadingScreen:resize( _, _ )
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background:setOrigin( self.x, self.y )
+    self.outlines:setOrigin( self.x, self.y )
+    self.buttonList:setOrigin( self.x, self.y )
 end
 
 return EditorLoadingScreen
