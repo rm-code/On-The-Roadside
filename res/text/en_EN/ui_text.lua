@@ -10,8 +10,8 @@ locale.strings = {
     ['ui_lose'] = "Your team is dead. You lose!\n\nPress any key to continue...",
 
     -- Health screen
-    ['ui_character_type'] = "Type: ",
-    ['ui_character_name'] = "Name: ",
+    ['ui_healthscreen_type'] = "Type: ",
+    ['ui_healthscreen_name'] = "Name: ",
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New",

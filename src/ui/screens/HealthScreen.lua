@@ -133,12 +133,12 @@ function HealthScreen:draw()
     TexturePacks.setColor( 'ui_text' )
 
     -- Draw character type.
-    local type = Translator.getText( 'ui_character_type' ) .. Translator.getText( self.characterType )
+    local type = Translator.getText( 'ui_healthscreen_type' ) .. Translator.getText( self.characterType )
     love.graphics.print( type, (self.x+1) * tw, (self.y+1) * th )
 
     -- Draw character name.
     if self.character:getName() then
-        local name = Translator.getText( 'ui_character_name' ) .. self.character:getName()
+        local name = Translator.getText( 'ui_healthscreen_name' ) .. self.character:getName()
         love.graphics.print( name, (self.x+2) * tw + TexturePacks.getFont():measureWidth( type ), (self.y+1) * th )
     end
 
