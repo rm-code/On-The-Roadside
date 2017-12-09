@@ -166,7 +166,7 @@ function HealthScreen:draw()
     for _, bodyPart in pairs( self.body:getBodyParts() ) do
         if bodyPart:isEntryNode() then
             counter = counter + 1
-            drawLimbStatus( self.x, self.y, tw, th, counter, self.body, bodyPart )
+            drawLimbStatus( self.x, self.y, tw, th, counter, bodyPart )
         end
     end
 
