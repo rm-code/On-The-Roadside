@@ -27,6 +27,15 @@ local HealthScreen = Screen:subclass( 'HealthScreen' )
 local UI_GRID_WIDTH  = 30
 local UI_GRID_HEIGHT = 16
 
+local HEALTH = {
+    { color = 'ui_health_destroyed_limb',     text = '.....' },
+    { color = 'ui_health_badly_damaged_limb', text = '|....' },
+    { color = 'ui_health_damaged_limb',       text = '||...' },
+    { color = 'ui_health_damaged_limb',       text = '|||..' },
+    { color = 'ui_health_ok_limb',            text = '||||.' },
+    { color = 'ui_health_fine_limb',          text = '|||||' },
+}
+
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
@@ -57,6 +66,23 @@ local function generateOutlines( x, y )
     return outlines
 end
 
+---
+-- Takes the health of a limb, compares it to its maximum health and returns
+-- a health indicator as well as a fitting color based on the ratio.
+-- @tparam BodyPart bodyPart The body part to get the health indicator for.
+-- @treturn string The string indicating the body part's health.
+-- @treturn table  A table containing the color to use for this health indicator.
+--
+local function getHealthIndicator( bodyPart )
+    -- Take the ratio of the current health vs maximum health. Multiply it by
+    -- 10 so we can floor it to the next integer, then half it (because our
+    -- indicators use 5 strokes to show 100% so each stroke == 20% health).
+    -- The +1 is needed because the table index starts at 1 so at 0 health we
+    -- need to get the first entry in the table.
+    local index = math.floor( math.floor(( bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() ) * 10 ) * 0.5 ) + 1
+    return HEALTH[index].text, HEALTH[index].color
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -81,23 +107,10 @@ function HealthScreen:draw()
     for _, bodyPart in pairs( self.character:getBody():getBodyParts() ) do
         if bodyPart:isEntryNode() then
             counter = counter + 1
-            local status
-            if bodyPart:isDestroyed() then
-                TexturePacks.setColor( 'ui_health_destroyed_limb' )
-                status = 'DED'
-            elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.2 then
-                TexturePacks.setColor( 'ui_health_badly_damaged_limb' )
-                status = 'OUCH'
-            elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.4 then
-                TexturePacks.setColor( 'ui_health_damaged_limb' )
-                status = 'MEH'
-            elseif bodyPart:getCurrentHealth() / bodyPart:getMaximumHealth() < 0.7 then
-                TexturePacks.setColor( 'ui_health_ok_limb' )
-                status = 'OK'
-            else
-                TexturePacks.setColor( 'ui_health_fine_limb' )
-                status = 'FINE'
-            end
+
+            local status, color = getHealthIndicator( bodyPart )
+            TexturePacks.setColor( color )
+
             love.graphics.print( Translator.getText( bodyPart:getID() ), (self.x+1) * tw, (self.y+counter) * th )
             love.graphics.printf( status, (self.x+1) * tw, (self.y+counter) * th, ( UI_GRID_WIDTH - 2 ) * tw, 'right' )
 
