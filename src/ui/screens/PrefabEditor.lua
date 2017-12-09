@@ -113,6 +113,10 @@ function PrefabEditor:receive( event, ... )
 end
 
 function PrefabEditor:draw()
+    if not self:isActive() then
+        return
+    end
+
     self.tileSelector:draw()
     self.objectSelector:draw()
 
@@ -131,6 +135,10 @@ function PrefabEditor:draw()
 end
 
 function PrefabEditor:update( dt )
+    if not self:isActive() then
+        return
+    end
+
     self.camera:update( dt )
 
     self.uiContainer:update()
