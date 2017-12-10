@@ -3,6 +3,7 @@ local Object = require('src.Object');
 local Node = require('src.util.Node');
 local Messenger = require( 'src.Messenger' );
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
+local Character = require( 'src.characters.Character' )
 
 -- ------------------------------------------------
 -- Module
@@ -147,7 +148,7 @@ function Faction.new( type, controlledByAi )
     -- @param character (Character) The character to select.
     --
     function self:selectCharacter( character )
-        assert( character:instanceOf( 'Character' ), 'Expected object of type Character!' );
+        assert( character:isInstanceOf( Character ), 'Expected object of type Character!' )
         local node = root;
         while node do
             if node:getObject() == character and not node:getObject():isDead() then
