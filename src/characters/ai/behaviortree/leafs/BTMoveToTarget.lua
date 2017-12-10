@@ -10,7 +10,7 @@ function BTMoveToTarget.new()
     local path;
 
     local function generatePath( target, character )
-        if target and not target:isOccupied() then
+        if target and target:isPassable() and not target:isOccupied() then
             path = PathFinder.generatePath( character, target, true );
         end
     end

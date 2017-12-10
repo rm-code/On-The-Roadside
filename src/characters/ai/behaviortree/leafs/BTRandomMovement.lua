@@ -8,7 +8,7 @@ function BTRandomMovement.new()
     local self = BTLeaf.new():addInstance( 'BTRandomMovement' );
 
     local function generatePath( target, character )
-        if target and not target:isOccupied() then
+        if target and target:isPassable() and not target:isOccupied() then
             return PathFinder.generatePath( character, target, true );
         end
     end
