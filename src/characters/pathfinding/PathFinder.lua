@@ -100,12 +100,12 @@ end
 -- @param return (boolean) Wether the tile is in the list or not.
 --
 local function isInList( list, tile )
-    for _, node in ipairs( list ) do
-        if node.tile == tile then
-            return node;
+    for i = 1, #list do
+        if list[i].tile == tile then
+            return list[i]
         end
     end
-    return false;
+    return false
 end
 
 ---
