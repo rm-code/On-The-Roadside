@@ -19,7 +19,6 @@ local PathFinder = {}
 -- ------------------------------------------------
 
 local DIRECTION = require( 'src.constants.DIRECTION' )
-local MAX_TILES = 300
 local SQRT = math.sqrt( 2 )
 
 -- ------------------------------------------------
@@ -202,14 +201,12 @@ end
 -- @return          (Path)      A Path object containing tiles to form a path.
 --
 function PathFinder.generatePath( character, target )
-    local counter = 0
     local closedList = {}
     local openList = {
         { tile = character:getTile(), direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     }
 
     while #openList > 0 do
-        counter = counter + 1
         local current, index = getNextTile( openList )
 
         -- Update lists.
@@ -219,8 +216,6 @@ function PathFinder.generatePath( character, target )
         -- Stop if we have found the target.
         if current.tile == target then
             return finalizePath( current, character )
-        elseif counter > MAX_TILES then
-            return -- Abort if we haven't found the tile after searching for a while.
         end
 
         -- Look for the next tile.
