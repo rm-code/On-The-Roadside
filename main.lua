@@ -77,7 +77,9 @@ function love.load( args )
         mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'          ),
         prefabeditor     = require( 'src.ui.screens.PrefabEditor'           ),
         prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'       ),
-        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  )
+        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  ),
+        keybindingeditor = require( 'src.ui.screens.KeybindingScreen' ),
+        keybindingmodal = require( 'src.ui.screens.KeybindingModal' ),
     }
 
     ScreenManager.init( screens, 'bootloading' )

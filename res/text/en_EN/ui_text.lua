@@ -35,6 +35,24 @@ locale.strings = {
     ['ui_applied_settings'] = "Your settings have been updated.",
     ['ui_settings_ingame_editor'] = "Activate Map Editor:",
     ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
+    ['ui_keybindings'] = "Edit Keybindings",
+
+    -- Keybindings
+    ['action_stand'] = "Stand",
+    ['action_crouch'] = "Crouch",
+    ['action_prone'] = "Prone",
+    ['action_reload_weapon'] = "Reload Weapon",
+    ['next_weapon_mode'] = "Next weapon mode",
+    ['prev_weapon_mode'] = "Previous weapon mode",
+    ['movement_mode'] = "Move",
+    ['attack_mode'] = "Attack",
+    ['interaction_mode'] = "Interact",
+    ['next_character'] = "Next character",
+    ['prev_character'] = "Previous character",
+    ['end_turn'] = "End turn",
+    ['open_inventory_screen'] = "Open inventory screen",
+    ['open_health_screen'] = "Open health screen",
+    ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
 
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",

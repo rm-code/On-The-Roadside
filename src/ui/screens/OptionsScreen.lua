@@ -247,6 +247,22 @@ local function createTexturePackOption( lx, ly )
 end
 
 ---
+-- Creates a UISelectField which allows the user to switch to the keybinding screen.
+-- @tparam  number   lx The parent's absolute coordinates along the x-axis.
+-- @tparam  number   ly The parent's absolute coordinates along the y-axis.
+-- @treturn UIButton    The newly created UIButton.
+--
+local function createKeybindingOption( lx, ly )
+    -- The function to call when the button is activated.
+    local function callback()
+        ScreenManager.switch( 'keybindingeditor' )
+    end
+
+    -- Create the UIButton.
+    return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_keybindings' ))
+end
+
+---
 -- Creates a button which allows the user to apply the new settings.
 -- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
 -- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
@@ -291,6 +307,7 @@ local function createUIList()
     buttonList:addChild(   createFullscreenOption( lx, ly ))
     buttonList:addChild( createIngameEditorOption( lx, ly ))
     buttonList:addChild(  createTexturePackOption( lx, ly ))
+    buttonList:addChild(   createKeybindingOption( lx, ly ))
     buttonList:addChild(        createApplyButton( lx, ly ))
     buttonList:addChild(         createBackButton( lx, ly ))
 

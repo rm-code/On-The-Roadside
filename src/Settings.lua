@@ -115,6 +115,7 @@ function Settings.getKeybinding( saction )
             return love.keyboard.getKeyFromScancode( scancode )
         end
     end
+    return 'unassigned'
 end
 
 function Settings.getLocale()
@@ -167,6 +168,16 @@ end
 
 function Settings.setTexturepack( ntexturepack )
     settings.general.texturepack = ntexturepack
+end
+
+function Settings.setKeybinding( scancode, saction )
+    for oldscancode, action in pairs( settings.controls ) do
+        if action == saction then
+            settings.controls[oldscancode] = nil
+            settings.controls[scancode] = action
+            return
+        end
+    end
 end
 
 return Settings
