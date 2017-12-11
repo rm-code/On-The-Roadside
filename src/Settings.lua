@@ -134,8 +134,14 @@ end
 function Settings.hasChanged()
     local oldSettings = Compressor.load( FILE_NAME )
     for section, content in pairs( oldSettings ) do
-        for key, value in pairs( content ) do
-            if settings[section][key] ~= value then
+        if type( content ) == 'table' then
+            for key, value in pairs( content ) do
+                if settings[section][key] ~= value then
+                    return true
+                end
+            end
+        else
+            if settings[section] ~= content then
                 return true
             end
         end
