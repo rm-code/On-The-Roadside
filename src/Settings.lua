@@ -7,6 +7,7 @@
 -- ------------------------------------------------
 
 local Compressor = require( 'src.util.Compressor' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -20,6 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
+    version = 1,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -79,6 +81,9 @@ end
 function Settings.load()
     -- Create settings file if it doesn't exist yet.
     if not love.filesystem.isFile( FILE_NAME ) then
+        create()
+    elseif Compressor.load( FILE_NAME ).version ~= DEFAULT_SETTINGS.version then
+        Log.warn( 'Detected outdated settings file => Replacing with default settings!', 'Settings' )
         create()
     end
 
