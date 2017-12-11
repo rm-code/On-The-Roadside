@@ -118,6 +118,14 @@ function Settings.getIngameEditor()
     return settings.general.mapeditor
 end
 
+function Settings.getKeybinding( saction )
+    for scancode, action in pairs( settings.controls ) do
+        if action == saction then
+            return love.keyboard.getKeyFromScancode( scancode )
+        end
+    end
+end
+
 function Settings.getLocale()
     return settings.general.locale
 end

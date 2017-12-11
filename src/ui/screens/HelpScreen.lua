@@ -5,6 +5,7 @@ local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local Translator = require( 'src.util.Translator' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -25,45 +26,38 @@ local HELP_TEXT = {
         color = 'ui_help_section',
         children = {
             'NOTE: Characters can also be selected by right-clicking on them!',
-            'backspace - Select previous character',
-            'space     - Select next character',
-            'return    - End turn',
-            'i         - Open inventory',
-            'h         - Open health panel'
+            { 'prev_character',        'Select previous character' },
+            { 'next_character',        'Select next character'     },
+            { 'end_turn',              'End turn'                  },
+            { 'open_inventory_screen', 'Open inventory'            },
+            { 'open_health_screen',    'Open health panel'         }
         }
     },
     {
         text = 'WEAPONS',
         color = 'ui_help_section',
         children = {
-            'left  - select previous firing mode',
-            'right - select next firing mode',
-            'r - reload current weapon'
+            { 'next_weapon_mode',     'Select previous firing mode' },
+            { 'prev_weapon_mode',     'Select next firing mode'     },
+            { 'action_reload_weapon', 'Reload current weapon'       }
         }
     },
     {
         text = 'STANCES',
         color = 'ui_help_section',
         children = {
-            's - change stance to Stand',
-            'c - change stance to Crouch',
-            'p - change stance to Prone'
+            { 'action_stand',  'Change stance to Stand'  },
+            { 'action_crouch', 'Change stance to Crouch' },
+            { 'action_prone',  'Change stance to Prone'  }
         }
     },
     {
         text = 'INPUT',
         color = 'ui_help_section',
         children = {
-            'a - Switch to Attack Mode',
-            'm - Switch to Movement Mode',
-            'e - Switch to Interaction Mode (e.g. to open barrels or doors)'
-        }
-    },
-    {
-        text = 'MISC',
-        color = 'ui_help_section',
-        children = {
-            'f - Switch between windowed and fullscreen modes'
+            { 'attack_mode',      'Switch to Attack Mode'                                      },
+            { 'movement_mode',    'Switch to Movement Mode'                                    },
+            { 'interaction_mode', 'Switch to Interaction Mode (e.g. to open barrels or doors)' }
         }
     }
 }
@@ -89,7 +83,12 @@ local function assembleText()
         -- Draw sub items with a slight offset to the right.
         for j = 1, #HELP_TEXT[i].children do
             offset = offset + 1
-            text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
+            if type( HELP_TEXT[i].children[j] ) == 'table' then
+                text:addf( Settings.getKeybinding( HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
+                text:addf( HELP_TEXT[i].children[j][2], (UI_GRID_WIDTH-2) * tw, 'left', 10*tw, offset * th )
+            else
+                text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
+            end
         end
 
         offset = offset + 2
