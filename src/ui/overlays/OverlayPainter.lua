@@ -15,6 +15,10 @@ local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
 local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
 local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
+local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
+local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
 
 -- ------------------------------------------------
 -- Module
@@ -61,11 +65,11 @@ function OverlayPainter.new( game, camera )
         love.graphics.rectangle( 'fill', cx, cy, tw, th )
 
         local id
-        if game:getState():getInputMode():instanceOf( 'MovementInput' ) then
+        if game:getState():getInputMode():isInstanceOf( MovementInput ) then
             id = 'ui_mouse_pointer_movement'
-        elseif game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+        elseif game:getState():getInputMode():isInstanceOf( AttackInput ) then
             id = 'ui_mouse_pointer_attack'
-        elseif game:getState():getInputMode():instanceOf( 'InteractionInput' ) then
+        elseif game:getState():getInputMode():isInstanceOf( InteractionInput ) then
             id = 'ui_mouse_pointer_interact'
         end
 
@@ -102,7 +106,7 @@ function OverlayPainter.new( game, camera )
     -- @tparam number dt The time since the last frame.
     --
     function self:update( dt )
-        if not game:getState():instanceOf( 'ExecutionState' ) then
+        if not game:getState():isInstanceOf( ExecutionState ) then
             coneOverlay:generate()
         end
 
@@ -116,7 +120,7 @@ function OverlayPainter.new( game, camera )
     function self:draw()
         local character = game:getCurrentCharacter()
         if  not character:getFaction():isAIControlled()
-        and not game:getState():instanceOf( 'ExecutionState' ) then
+        and not game:getState():isInstanceOf( ExecutionState ) then
             pathOverlay:draw()
             drawMouseCursor()
             coneOverlay:draw()

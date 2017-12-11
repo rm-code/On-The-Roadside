@@ -1,67 +1,81 @@
-local State = require( 'src.turnbased.states.State' );
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
-local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
-local Log = require( 'src.util.Log' );
+---
+-- @module ExecutionState
+--
 
-local ExecutionState = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-local AI_DELAY     = 0;
-local PLAYER_DELAY = 0.15;
+local Class = require( 'lib.Middleclass' )
+local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
+local ExplosionManager = require( 'src.items.weapons.ExplosionManager' )
+local Log = require( 'src.util.Log' )
 
-function ExecutionState.new( stateManager )
-    local self = State.new():addInstance( 'ExecutionState' );
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    local character;
-    local actionTimer = 0;
-    local delay;
-    local factions;
+local ExecutionState = Class( 'ExecutionState' )
 
-    function self:enter( nfactions, ncharacter )
-        factions = nfactions;
-        character = ncharacter;
-        delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY;
-    end
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
 
-    function self:update( dt )
-        if not ProjectileManager.isDone() then
-            ProjectileManager.update( dt );
-            return;
-        end
+local AI_DELAY     = 0
+local PLAYER_DELAY = 0.15
 
-        if not ExplosionManager.isDone() then
-            ExplosionManager.update( dt );
-            return;
-        end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        if character:isDead() then
-            Log.debug( string.format( 'Character (%s) is dead. Stopping execution', tostring( character )), 'ExecutionState' );
-            stateManager:pop();
-            return;
-        end
-
-        if actionTimer > delay then
-            if character:hasEnqueuedAction() then
-                character:performAction();
-
-                if factions:getPlayerFaction():canSee( character:getTile() ) then
-                    delay = PLAYER_DELAY;
-                else
-                    delay = AI_DELAY;
-                end
-
-                actionTimer = 0;
-            else
-                stateManager:pop();
-            end
-        end
-        actionTimer = actionTimer + dt;
-    end
-
-    function self:blocksInput()
-        return true;
-    end
-
-    return self;
+function ExecutionState:initialize( stateManager )
+    self.stateManager = stateManager
+    self.actionTimer = 0
 end
 
-return ExecutionState;
+function ExecutionState:enter( factions, character )
+    self.factions  = factions
+    self.character = character
+    self.delay     = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY
+end
+
+function ExecutionState:update( dt )
+    if not ProjectileManager.isDone() then
+        ProjectileManager.update( dt )
+        return
+    end
+
+    if not ExplosionManager.isDone() then
+        ExplosionManager.update( dt )
+        return
+    end
+
+    if self.character:isDead() then
+        Log.debug( string.format( 'Character (%s) is dead. Stopping execution', tostring( self.character )), 'ExecutionState' )
+        self.stateManager:pop()
+        return
+    end
+
+    if self.actionTimer > self.delay then
+        if self.character:hasEnqueuedAction() then
+            self.character:performAction()
+
+            if self.factions:getPlayerFaction():canSee( self.character:getTile() ) then
+                self.delay = PLAYER_DELAY
+            else
+                self.delay = AI_DELAY
+            end
+
+            self.actionTimer = 0
+        else
+            self.stateManager:pop()
+        end
+    end
+    self.actionTimer = self.actionTimer + dt
+end
+
+function ExecutionState:blocksInput()
+    return true
+end
+
+return ExecutionState

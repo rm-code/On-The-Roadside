@@ -12,6 +12,7 @@ local Bresenham      = require( 'lib.Bresenham' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
 local VectorMath     = require( 'src.util.VectorMath' )
 local TexturePacks   = require( 'src.ui.texturepacks.TexturePacks' )
+local AttackInput    = require( 'src.turnbased.helpers.AttackInput' )
 
 -- ------------------------------------------------
 -- Module
@@ -62,7 +63,7 @@ function ConeOverlay.new( game, pulser, camera )
 
     function self:generate()
         -- Exit early if we aren't in the attack input mode.
-        if not game:getState():getInputMode():instanceOf( 'AttackInput' ) then
+        if not game:getState():getInputMode():isInstanceOf( AttackInput ) then
             return
         end
 

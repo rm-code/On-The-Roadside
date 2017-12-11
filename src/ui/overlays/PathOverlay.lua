@@ -9,6 +9,7 @@
 
 local Object = require( 'src.Object' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
 
 -- ------------------------------------------------
 -- Module
@@ -57,7 +58,7 @@ function PathOverlay.new( game, pulser )
         local tw, th = TexturePacks.getTileDimensions()
         local character = game:getCurrentCharacter()
         local mode = game:getState():getInputMode()
-        if mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
+        if mode:isInstanceOf( MovementInput ) and mode:hasPath() then
             local total = character:getActionPoints()
             local ap = total
             mode:getPath():iterate( function( tile )

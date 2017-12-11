@@ -1,6 +1,10 @@
 local Log = require( 'src.util.Log' );
 local Translator = require( 'src.util.Translator' );
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
+local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
+local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
 
 -- ------------------------------------------------
 -- Module
@@ -91,7 +95,7 @@ function UserInterface.new( game, camera )
         love.graphics.print( apString, tw, love.graphics.getHeight() - th * 5 )
 
         -- Hide the cost display during the turn's execution.
-        if game:getState():instanceOf( 'ExecutionState' ) then
+        if game:getState():isInstanceOf( ExecutionState ) then
             return;
         end
 
@@ -100,11 +104,11 @@ function UserInterface.new( game, camera )
         local cost;
 
         if tile then
-            if mode:instanceOf( 'AttackInput' ) then
+            if mode:isInstanceOf( AttackInput ) then
                 cost = mode:getPredictedAPCost( character );
-            elseif mode:instanceOf( 'InteractionInput' ) then
+            elseif mode:isInstanceOf( InteractionInput ) then
                 cost = mode:getPredictedAPCost( tile, character );
-            elseif mode:instanceOf( 'MovementInput' ) and mode:hasPath() then
+            elseif mode:isInstanceOf( MovementInput ) and mode:hasPath() then
                 cost = mode:getPredictedAPCost();
             end
         end

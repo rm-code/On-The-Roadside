@@ -14,7 +14,7 @@ local Factions = require( 'src.characters.Factions' );
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
-local StateManager = require( 'src.turnbased.states.StateManager' )
+local StateManager = require( 'src.turnbased.StateManager' )
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 local Faction = require( 'src.characters.Faction' )
 
@@ -106,7 +106,7 @@ function CombatState.new()
             end)
         end)
 
-        stateManager = StateManager.new( states )
+        stateManager = StateManager( states )
         stateManager:push( 'planning', factions )
 
         sadisticAIDirector = SadisticAIDirector.new( factions, stateManager )
