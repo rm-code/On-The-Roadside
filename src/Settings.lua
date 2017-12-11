@@ -25,6 +25,22 @@ local DEFAULT_SETTINGS = {
         locale = 'en_EN',
         mapeditor = false,
         texturepack = 'default'
+    },
+    controls = {
+        ['x']      = 'action_stand',
+        ['c']      = 'action_crouch',
+        ['v']      = 'action_prone',
+        ['r']      = 'action_reload_weapon',
+        ['.']      = 'next_weapon_mode',
+        [',']      = 'prev_weapon_mode',
+        ['1']      = 'movement_mode',
+        ['2']      = 'attack_mode',
+        ['3']      = 'interaction_mode',
+        ['tab']    = 'next_character',
+        ['lshift'] = 'prev_character',
+        ['return'] = 'end_turn',
+        ['i']      = 'open_inventory_screen',
+        ['h']      = 'open_health_screen',
     }
 }
 
@@ -81,6 +97,13 @@ function Settings.load()
     end
 
     settings = Compressor.load( FILE_NAME )
+end
+
+---
+-- Maps a scancode to a control action.
+--
+function Settings.mapInput( scancode )
+    return settings.controls[scancode]
 end
 
 -- ------------------------------------------------

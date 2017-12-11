@@ -24,6 +24,91 @@ local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
 local PlanningState = Class( 'PlanningState' )
 
 -- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
+
+local function handleCharacterActions( input, character )
+    local action
+    if input == 'action_crouch' then
+        action = Crouch( character )
+    elseif input == 'action_stand' then
+        action = StandUp( character )
+    elseif input == 'action_prone' then
+        action = LieDown( character )
+    elseif input == 'action_reload_weapon' then
+        action = Reload( character )
+    else
+        return false
+    end
+
+    character:clearActions()
+    character:enqueueAction( action )
+    return true
+end
+
+local function handleInputSelectionActions( input, inputStateHandler, character )
+    if input == 'attack_mode' then
+        if inputStateHandler:getState():isInstanceOf( AttackInput ) then
+            inputStateHandler:switch( 'movement' )
+        else
+            inputStateHandler:switch( 'attack' )
+        end
+    elseif input == 'interaction_mode' then
+        if inputStateHandler:getState():isInstanceOf( InteractionInput ) then
+            inputStateHandler:switch( 'movement' )
+        else
+            inputStateHandler:switch( 'interaction' )
+        end
+    elseif input == 'movement_mode' then
+        inputStateHandler:switch( 'movement' )
+    else
+        return false
+    end
+
+    character:clearActions()
+    return true
+end
+
+local function handleOtherActions( input, stateManager, inputStateHandler, factions, character )
+    if input == 'next_character' then
+        inputStateHandler:switch( 'movement' )
+        factions:getFaction():nextCharacter()
+        return true
+    elseif input == 'prev_character' then
+        inputStateHandler:switch( 'movement' )
+        factions:getFaction():prevCharacter()
+        return true
+    end
+
+    if input == 'end_turn' then
+        inputStateHandler:switch( 'movement' )
+        factions:nextFaction()
+        return true
+    end
+
+    if input == 'open_inventory_screen' then
+        character:enqueueAction( OpenInventory( character, character:getTile() ))
+        stateManager:push( 'execution', factions, character )
+        return true
+    elseif input == 'open_health_screen' then
+        ScreenManager.push( 'health', character )
+        return true
+    end
+
+    if not character:getWeapon() then
+        return false
+    end
+
+    if input == 'next_weapon_mode' then
+        character:getWeapon():selectNextFiringMode()
+    elseif input == 'prev_weapon_mode' then
+        character:getWeapon():selectPrevFiringMode()
+    end
+
+    return true
+end
+
+-- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
@@ -54,71 +139,23 @@ function PlanningState:update()
     end
 end
 
--- TODO Refactor input handling.
-function PlanningState:keypressed( _, scancode, _ )
+function PlanningState:input( input )
     local character = self.factions:getFaction():getCurrentCharacter()
     if character:isDead() then
         return
     end
 
-    if scancode == 'right' then
-        if not character:getWeapon() then
-            return
-        end
-        character:getWeapon():selectNextFiringMode()
-    elseif scancode == 'left' then
-        if not character:getWeapon() then
-            return
-        end
-        character:getWeapon():selectPrevFiringMode()
-    elseif scancode == 'c' then
-        character:clearActions()
-        character:enqueueAction( Crouch( character ))
+    if handleCharacterActions( input, character ) then
         self.stateManager:push( 'execution', self.factions, character )
-    elseif scancode == 's' then
-        character:clearActions()
-        character:enqueueAction( StandUp( character ))
-        self.stateManager:push( 'execution', self.factions, character )
-    elseif scancode == 'p' then
-        character:clearActions()
-        character:enqueueAction( LieDown( character ))
-        self.stateManager:push( 'execution', self.factions, character )
-    elseif scancode == 'r' then
-        character:clearActions()
-        character:enqueueAction( Reload( character ))
-        self.stateManager:push( 'execution', self.factions, character )
-    elseif scancode == 'a' then
-        -- Make attack mode toggleable.
-        character:clearActions()
-        if self.inputStateHandler:getState():isInstanceOf( AttackInput ) then
-            self.inputStateHandler:switch( 'movement' )
-        else
-            self.inputStateHandler:switch( 'attack' )
-        end
-    elseif scancode == 'e' then
-        character:clearActions()
-        if self.inputStateHandler:getState():isInstanceOf( InteractionInput ) then
-            self.inputStateHandler:switch( 'movement' )
-        else
-            self.inputStateHandler:switch( 'interaction' )
-        end
-    elseif scancode == 'm' then
-        character:clearActions()
-        self.inputStateHandler:switch( 'movement' )
-    elseif scancode == 'space' then
-        self.inputStateHandler:switch( 'movement' )
-        self.factions:getFaction():nextCharacter()
-    elseif scancode == 'backspace' then
-        self.inputStateHandler:switch( 'movement' )
-        self.factions:getFaction():prevCharacter()
-    elseif scancode == 'return' then
-        self.inputStateHandler:switch( 'movement' )
-        self.factions:nextFaction()
-    elseif scancode == 'i' then
-        character:enqueueAction( OpenInventory( character, character:getTile() ))
-        self.stateManager:push( 'execution', self.factions, character )
-    elseif scancode == 'h' then
-        ScreenManager.push( 'health', character )
+        return
+    end
+
+    if handleInputSelectionActions( input, self.inputStateHandler, character ) then
+        return
+    end
+
+    if handleOtherActions( input, self.stateManager, self.inputStateHandler, self.factions, character ) then
+        return
     end
 end
 

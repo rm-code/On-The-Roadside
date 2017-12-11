@@ -44,8 +44,8 @@ function StateManager:update( dt )
     self.stack[#self.stack]:update( dt )
 end
 
-function StateManager:keypressed( key, scancode, isrepeat )
-    self.stack[#self.stack]:keypressed( key, scancode, isrepeat )
+function StateManager:input( input )
+    self.stack[#self.stack]:input( input )
 end
 
 function StateManager:selectTile( tile, button )

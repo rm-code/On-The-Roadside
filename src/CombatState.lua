@@ -17,6 +17,7 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
 local StateManager = require( 'src.turnbased.StateManager' )
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 local Faction = require( 'src.characters.Faction' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -162,11 +163,11 @@ function CombatState.new()
         return factions;
     end
 
-    function self:keypressed( key, scancode, isrepeat )
+    function self:keypressed( _, scancode, _ )
         if factions:getFaction():isAIControlled() or stateManager:blocksInput() then
             return
         end
-        stateManager:keypressed( key, scancode, isrepeat )
+        stateManager:input( Settings.mapInput( scancode ))
     end
 
     function self:mousepressed( mx, my, button )
