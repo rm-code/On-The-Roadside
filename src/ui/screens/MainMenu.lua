@@ -136,7 +136,7 @@ function MainMenu:initialize()
     self.container = UIContainer()
     self.container:register( self.buttonList )
 
-    self.footer = UICopyrightFooter.new()
+    self.footer = UICopyrightFooter()
 
     -- Flush the LuaJIT cache to prevent memory leaks caused by cached
     -- upvalues and closures.

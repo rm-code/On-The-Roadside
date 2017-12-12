@@ -213,7 +213,7 @@ function ChangelogScreen:initialize()
     local ox, oy = GridHelper.centerElement( SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT )
     self.scrollarea = UIScrollArea( ox, oy, 0, 0, SCROLLAREA_GRID_WIDTH, SCROLLAREA_GRID_HEIGHT, self.text, self.textHeight )
 
-    self.footer = UICopyrightFooter.new()
+    self.footer = UICopyrightFooter()
 end
 
 function ChangelogScreen:update()

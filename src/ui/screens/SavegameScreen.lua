@@ -139,7 +139,7 @@ function SavegameScreen:initialize()
     self.container = UIContainer()
     self.container:register( self.buttonList )
 
-    self.footer = UICopyrightFooter.new()
+    self.footer = UICopyrightFooter()
 end
 
 function SavegameScreen:update()
