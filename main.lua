@@ -84,7 +84,7 @@ function love.load( args )
 
     ScreenManager.init( screens, 'bootloading' )
 
-    letterbox = Letterbox.new()
+    letterbox = Letterbox()
 end
 
 function love.draw()
