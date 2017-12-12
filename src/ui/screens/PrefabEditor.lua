@@ -13,7 +13,7 @@ local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
-local CameraHandler = require('src.ui.CameraHandler')
+local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
 local PrefabCanvas = require( 'src.ui.mapeditor.PrefabCanvas' )
 local PrefabBrush = require( 'src.ui.mapeditor.PrefabBrush' )
@@ -91,7 +91,7 @@ function PrefabEditor:initialize()
 
     self.canvas = PrefabCanvas( 'XS' )
 
-    self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+    self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
 
     self.tool = PrefabBrush()
 
@@ -168,19 +168,19 @@ function PrefabEditor:keypressed( _, scancode )
 
     if scancode == '1' then
         self.canvas:setSize( 'XS' )
-        self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     elseif scancode == '2' then
         self.canvas:setSize( 'S'  )
-        self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     elseif scancode == '3' then
         self.canvas:setSize( 'M'  )
-        self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     elseif scancode == '4' then
         self.canvas:setSize( 'L'  )
-        self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     elseif scancode == '5' then
         self.canvas:setSize( 'XL' )
-        self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
+        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     end
 
     if scancode == 'h' then

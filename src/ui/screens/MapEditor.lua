@@ -10,7 +10,7 @@ local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
-local CameraHandler = require('src.ui.CameraHandler')
+local Camera = require( 'src.ui.Camera' )
 local LayoutCanvas = require( 'src.ui.mapeditor.LayoutCanvas' )
 local LayoutBrush = require( 'src.ui.mapeditor.LayoutBrush' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
@@ -80,7 +80,7 @@ function MapEditor:initialize()
 
     self.prefabSelector = createPrefabSelector( self.brush )
 
-    self.camera = CameraHandler.new( self.canvas:getWidth(), self.canvas:getHeight(), 16, 16 )
+    self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), 16, 16 )
 
     self.uiContainer = UIContainer()
     self.uiContainer:register( self.prefabSelector )

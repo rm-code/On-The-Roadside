@@ -9,7 +9,7 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local MapPainter = require( 'src.ui.MapPainter' )
-local CameraHandler = require('src.ui.CameraHandler')
+local Camera = require( 'src.ui.Camera' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -48,7 +48,7 @@ function MapTest:initialize( layout )
 
     self.map, self.mw, self.mh = createMap( layout )
     self.mapPainter = MapPainter( self.map )
-    self.camera = CameraHandler.new( self.mw, self.mh, TexturePacks.getTileDimensions() )
+    self.camera = Camera( self.mw, self.mh, TexturePacks.getTileDimensions() )
 end
 
 function MapTest:draw()
