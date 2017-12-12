@@ -11,6 +11,7 @@ local UserInterface = require( 'src.ui.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -85,6 +86,11 @@ function CombatScreen:keypressed( key, scancode, isrepeat )
     end
 
     self.combatState:keypressed( key, scancode, isrepeat )
+    self.camera:input( Settings.mapInput( scancode ), true )
+end
+
+function CombatScreen:keyreleased( _, scancode )
+    self.camera:input( Settings.mapInput( scancode ), false )
 end
 
 function CombatScreen:mousepressed( _, _, button )

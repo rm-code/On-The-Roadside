@@ -52,6 +52,10 @@ locale.strings = {
     ['end_turn'] = "End turn",
     ['open_inventory_screen'] = "Open inventory screen",
     ['open_health_screen'] = "Open health screen",
+    ['pan_camera_left'] = "Move camera left",
+    ['pan_camera_right'] = "Move camera right",
+    ['pan_camera_up'] = "Move camera up",
+    ['pan_camera_down'] = "Move camera down",
     ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
 
     -- Map Editor

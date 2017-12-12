@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 1,
+    version = 2,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -43,6 +43,10 @@ local DEFAULT_SETTINGS = {
         ['return'] = 'end_turn',
         ['i']      = 'open_inventory_screen',
         ['h']      = 'open_health_screen',
+        ['left']   = 'pan_camera_left',
+        ['right']  = 'pan_camera_right',
+        ['up']     = 'pan_camera_up',
+        ['down']   = 'pan_camera_down'
     }
 }
 

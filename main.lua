@@ -109,6 +109,10 @@ function love.keypressed( key, scancode, isrepeat )
     ScreenManager.keypressed( key, scancode, isrepeat )
 end
 
+function love.keyreleased( key, scancode )
+    ScreenManager.keyreleased( key, scancode )
+end
+
 function love.resize( w, h )
     ScreenManager.resize( w, h )
 end

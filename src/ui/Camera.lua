@@ -98,24 +98,25 @@ end
 
 ---
 -- Scrolls the camera based on keyboard input.
--- @tparam  number tx The camera's current target position along the x-axis.
--- @tparam  number ty The camera's current target position along the y-axis.
--- @tparam  number mw The map's width.
--- @tparam  number mh The map's height.
--- @tparam  number tw The width of the tiles used for map drawing.
--- @tparam  number th The height of the tiles used for map drawing.
--- @treturn number    The new target position along the x-axis.
--- @treturn number    The new target position along the x-axis.
+-- @tparam  table  controls A table containing camera controls.
+-- @tparam  number tx       The camera's current target position along the x-axis.
+-- @tparam  number ty       The camera's current target position along the y-axis.
+-- @tparam  number mw       The map's width.
+-- @tparam  number mh       The map's height.
+-- @tparam  number tw       The width of the tiles used for map drawing.
+-- @tparam  number th       The height of the tiles used for map drawing.
+-- @treturn number          The new target position along the x-axis.
+-- @treturn number          The new target position along the x-axis.
 --
-local function handleKeyboardScrolling( tx, ty, mw, tw, mh, th )
-    if love.keyboard.isScancodeDown( 'left' ) then
+local function handleKeyboardScrolling( controls, tx, ty, mw, tw, mh, th )
+    if controls.pan_camera_left then
         return scroll( 'left', tx, ty, mw, tw, mh, th )
-    elseif love.keyboard.isScancodeDown( 'right' ) then
+    elseif controls.pan_camera_right then
         return scroll( 'right', tx, ty, mw, tw, mh, th )
     end
-    if love.keyboard.isScancodeDown( 'up' ) then
+    if controls.pan_camera_up then
         return scroll( 'up', tx, ty, mw, tw, mh, th )
-    elseif love.keyboard.isScancodeDown( 'down' ) then
+    elseif controls.pan_camera_down then
         return scroll( 'down', tx, ty, mw, tw, mh, th )
     end
 
@@ -136,6 +137,7 @@ end
 --
 function Camera:initialize( mw, mh, tw, th )
     self.centerX, self.centerY = love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5
+    self.controls = {}
 
     self.mw, self.mh, self.tw, self.th = mw, mh, tw, th
 
@@ -182,7 +184,7 @@ function Camera:update( dt )
     end
 
     self.tx, self.ty = handleMouseScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
-    self.tx, self.ty = handleKeyboardScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
+    self.tx, self.ty = handleKeyboardScrolling( self.controls, self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
 end
 
 ---
@@ -197,6 +199,18 @@ end
 --
 function Camera:unlock()
     self.locked = false
+end
+
+function Camera:input( action, pressed )
+    if action == 'pan_camera_left' then
+        self.controls[action] = pressed
+    elseif action == 'pan_camera_right' then
+        self.controls[action] = pressed
+    elseif action == 'pan_camera_up' then
+        self.controls[action] = pressed
+    elseif action == 'pan_camera_down' then
+        self.controls[action] = pressed
+    end
 end
 
 -- ------------------------------------------------
