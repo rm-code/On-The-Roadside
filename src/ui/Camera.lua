@@ -41,30 +41,85 @@ end
 
 ---
 -- Scrolls the camera if the mouse pointer reaches the edges of the screen.
+-- @tparam  string dir The direction in which to scroll the camera.
+-- @tparam  number tx  The camera's current target position along the x-axis.
+-- @tparam  number ty  The camera's current target position along the y-axis.
+-- @tparam  number mw  The map's width.
+-- @tparam  number mh  The map's height.
+-- @tparam  number tw  The width of the tiles used for map drawing.
+-- @tparam  number th  The height of the tiles used for map drawing.
+-- @treturn number     The new target position along the x-axis.
+-- @treturn number     The new target position along the x-axis.
+local function scroll( dir, tx, ty, mw, tw, mh, th )
+    if dir == 'left' then
+        tx = tx - SCROLL_SPEED
+    elseif dir == 'right' then
+        tx = tx + SCROLL_SPEED
+    end
+
+    if dir == 'up' then
+        ty = ty - SCROLL_SPEED
+    elseif dir == 'down' then
+        ty = ty + SCROLL_SPEED
+    end
+
+    -- Clamp the camera to the map dimensions.
+    return Util.clamp( 0, tx, mw * tw ), Util.clamp( 0, ty, mh * th )
+end
+
+---
+-- Checks if the mouse is close to the edges of the screens and scrolls the
+-- mouse accordingly.
 -- @tparam  number tx The camera's current target position along the x-axis.
 -- @tparam  number ty The camera's current target position along the y-axis.
 -- @tparam  number mw The map's width.
 -- @tparam  number mh The map's height.
 -- @tparam  number tw The width of the tiles used for map drawing.
 -- @tparam  number th The height of the tiles used for map drawing.
+-- @treturn number    The new target position along the x-axis.
+-- @treturn number    The new target position along the x-axis.
 --
-local function scroll( tx, ty, mw, tw, mh, th )
+local function handleMouseScrolling( tx, ty, mw, tw, mh, th )
     local mx, my = love.mouse.getPosition()
-
     if mx < SCROLL_MARGIN then
-        tx = tx - SCROLL_SPEED
+        return scroll( 'left', tx, ty, mw, tw, mh, th )
     elseif mx > love.graphics.getWidth() - SCROLL_MARGIN then
-        tx = tx + SCROLL_SPEED
+        return scroll( 'right', tx, ty, mw, tw, mh, th )
     end
 
     if my < SCROLL_MARGIN then
-        ty = ty - SCROLL_SPEED
+        return scroll( 'up', tx, ty, mw, tw, mh, th )
     elseif my > love.graphics.getHeight() - SCROLL_MARGIN then
-        ty = ty + SCROLL_SPEED
+        return scroll( 'down', tx, ty, mw, tw, mh, th )
     end
 
-    -- Clamp the camera to the map dimensions.
-    return Util.clamp( 0, tx, mw * tw ), Util.clamp( 0, ty, mh * th )
+    return tx, ty
+end
+
+---
+-- Scrolls the camera based on keyboard input.
+-- @tparam  number tx The camera's current target position along the x-axis.
+-- @tparam  number ty The camera's current target position along the y-axis.
+-- @tparam  number mw The map's width.
+-- @tparam  number mh The map's height.
+-- @tparam  number tw The width of the tiles used for map drawing.
+-- @tparam  number th The height of the tiles used for map drawing.
+-- @treturn number    The new target position along the x-axis.
+-- @treturn number    The new target position along the x-axis.
+--
+local function handleKeyboardScrolling( tx, ty, mw, tw, mh, th )
+    if love.keyboard.isScancodeDown( 'left' ) then
+        return scroll( 'left', tx, ty, mw, tw, mh, th )
+    elseif love.keyboard.isScancodeDown( 'right' ) then
+        return scroll( 'right', tx, ty, mw, tw, mh, th )
+    end
+    if love.keyboard.isScancodeDown( 'up' ) then
+        return scroll( 'up', tx, ty, mw, tw, mh, th )
+    elseif love.keyboard.isScancodeDown( 'down' ) then
+        return scroll( 'down', tx, ty, mw, tw, mh, th )
+    end
+
+    return tx, ty
 end
 
 -- ------------------------------------------------
@@ -118,12 +173,16 @@ end
 -- @see setTargetPosition
 --
 function Camera:update( dt )
-    if not self.locked then
-        self.tx, self.ty = scroll( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
-    end
-
     self.cx = math.floor( lerp( self.cx, math.floor( self.tx / self.tw ) * self.tw, dt * CAMERA_TRACKING_SPEED ))
     self.cy = math.floor( lerp( self.cy, math.floor( self.ty / self.th ) * self.th, dt * CAMERA_TRACKING_SPEED ))
+
+    -- If the camera is locked we don't check for any scrolling input.
+    if self.locked then
+        return
+    end
+
+    self.tx, self.ty = handleMouseScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
+    self.tx, self.ty = handleKeyboardScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
 end
 
 ---
