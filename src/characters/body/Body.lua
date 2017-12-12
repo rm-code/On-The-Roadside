@@ -41,7 +41,12 @@ local STATUS_EFFECTS = require( 'src.constants.STATUS_EFFECTS' )
 local function handleBleeding( self, bodyPart )
     if bodyPart:isBleeding() then
         self.curBloodVolume = self.curBloodVolume - bodyPart:getBloodLoss()
-        if self.curBloodVolume <= 0 then
+
+        -- Determine how much blood the body has left.
+        local ratio = self.curBloodVolume / self.maxBloodVolume
+
+        -- If the blood volume drops below 50% the creature dies.
+        if ratio < 0.5 then
             Log.debug( 'Character bleeds to death!', 'Body' )
             self.statusEffects:add({ STATUS_EFFECTS.DEAD })
         end
