@@ -21,12 +21,13 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 2,
+    version = 3,
     general = {
         fullscreen = true,
         locale = 'en_EN',
         mapeditor = false,
-        texturepack = 'default'
+        texturepack = 'default',
+        mousepanning = false
     },
     controls = {
         ['x']      = 'action_stand',
@@ -126,6 +127,9 @@ function Settings.getLocale()
     return settings.general.locale
 end
 
+function Settings.getMousePanning()
+    return settings.general.mousepanning
+end
 
 function Settings.getTexturepack()
     return settings.general.texturepack
@@ -168,6 +172,10 @@ end
 
 function Settings.setLocale( nlocale )
     settings.general.locale = nlocale
+end
+
+function Settings.setMousePanning( mousepanning )
+    settings.general.mousepanning = mousepanning
 end
 
 function Settings.setTexturepack( ntexturepack )

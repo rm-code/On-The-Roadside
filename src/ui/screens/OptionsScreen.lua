@@ -246,6 +246,39 @@ local function createTexturePackOption( lx, ly )
     return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_texturepack' ), listOfValues, callback, default )
 end
 
+
+---
+-- Creates a UISelectField which allows the user to activate mouse panning.
+-- @tparam  number        lx    The parent's absolute coordinates along the x-axis.
+-- @tparam  number        ly    The parent's absolute coordinates along the y-axis.
+-- @treturn UISelectField       The newly created UISelectField.
+--
+local function createMousePanningOption( lx, ly )
+    -- The list of values to display.
+    local listOfValues = {
+        { displayTextID = Translator.getText( 'ui_on' ), value = true },
+        { displayTextID = Translator.getText( 'ui_off' ), value = false }
+    }
+
+    -- The function to call when the value of the UISelectField changes.
+    local function callback( val )
+        Settings.setMousePanning( val )
+    end
+
+    -- Search the value corresponding to the currently selected option or
+    -- take the first one and make it the current display value.
+    local default = Settings.getMousePanning()
+    for i, option in ipairs( listOfValues ) do
+        if option.value == default then
+            default = i
+        end
+    end
+
+    -- Create the UISelectField.
+    return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_settings_mouse_panning' ), listOfValues, callback, default )
+end
+
+
 ---
 -- Creates a UISelectField which allows the user to switch to the keybinding screen.
 -- @tparam  number   lx The parent's absolute coordinates along the x-axis.
@@ -307,6 +340,7 @@ local function createUIList()
     buttonList:addChild(   createFullscreenOption( lx, ly ))
     buttonList:addChild( createIngameEditorOption( lx, ly ))
     buttonList:addChild(  createTexturePackOption( lx, ly ))
+    buttonList:addChild( createMousePanningOption( lx, ly ))
     buttonList:addChild(   createKeybindingOption( lx, ly ))
     buttonList:addChild(        createApplyButton( lx, ly ))
     buttonList:addChild(         createBackButton( lx, ly ))

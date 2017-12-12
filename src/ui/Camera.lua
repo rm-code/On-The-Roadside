@@ -9,6 +9,7 @@
 local Class = require( 'lib.Middleclass' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Util = require( 'src.util.Util' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -183,7 +184,10 @@ function Camera:update( dt )
         return
     end
 
-    self.tx, self.ty = handleMouseScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
+    if Settings.getMousePanning() then
+        self.tx, self.ty = handleMouseScrolling( self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
+    end
+
     self.tx, self.ty = handleKeyboardScrolling( self.controls, self.tx, self.ty, self.mw, self.tw, self.mh, self.th )
 end
 
