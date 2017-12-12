@@ -14,6 +14,7 @@ local GridHelper = require( 'src.util.GridHelper' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIButton = require( 'src.ui.elements.UIButton' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
@@ -154,6 +155,8 @@ function KeybindingScreen:initialize()
 
     self.container = UIContainer()
     self.container:register( self.buttonList )
+
+    self.footer = UICopyrightFooter()
 end
 
 ---
@@ -168,6 +171,7 @@ end
 --
 function KeybindingScreen:draw()
     self.container:draw()
+    self.footer:draw()
 end
 
 ---
