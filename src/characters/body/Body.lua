@@ -176,7 +176,7 @@ function Body:initialize( id, bloodVolume, tags, sizes )
     self.nodes = {}
     self.edges = {}
 
-    self.statusEffects = StatusEffects.new()
+    self.statusEffects = StatusEffects()
 end
 
 -- ------------------------------------------------
