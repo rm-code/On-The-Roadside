@@ -84,8 +84,8 @@ function CombatState.new()
         end
 
         factions = Factions.new( map );
-        factions:addFaction( Faction.new( FACTIONS.ENEMY,   true ))
-        factions:addFaction( Faction.new( FACTIONS.NEUTRAL, true ))
+        factions:addFaction( Faction( FACTIONS.ENEMY,   true ))
+        factions:addFaction( Faction( FACTIONS.NEUTRAL, true ))
         factions:addFaction( playerFaction )
 
         if savegame then

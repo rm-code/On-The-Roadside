@@ -30,7 +30,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- ------------------------------------------------
 
 function GameScreen:initialize( savegame )
-    local playerFaction = Faction.new( FACTIONS.ALLIED, false )
+    local playerFaction = Faction( FACTIONS.ALLIED, false )
 
     if savegame then
         playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
