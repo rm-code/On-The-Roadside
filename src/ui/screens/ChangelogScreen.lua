@@ -158,7 +158,9 @@ local function createSection( text, id, log, height )
         height = height + text:getHeight()
     end
 
-    return height + text:getHeight()
+    -- Add a single empty line to the end of the section.
+    local _, gh = TexturePacks.getGlyphDimensions()
+    return height + gh
 end
 
 ---
