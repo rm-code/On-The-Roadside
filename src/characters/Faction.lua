@@ -267,10 +267,10 @@ end
 -- @treturn Character The active Character.
 --
 function Faction:prevCharacter()
-    local previousCharacter = self.root:getObject()
-    while self.root do
-        self.root = self.root:getPrev() or self.last
-        local character = self.root:getObject()
+    local previousCharacter = self.active:getObject()
+    while self.active do
+        self.active = self.active:getPrev() or self.last
+        local character = self.active:getObject()
         if not character:isDead() then
             previousCharacter:activate()
             character:deactivate()
@@ -318,7 +318,7 @@ end
 -- @treturn Character The active character.
 --
 function Faction:getCurrentCharacter()
-    return self.root:getObject()
+    return self.active:getObject()
 end
 
 ---
