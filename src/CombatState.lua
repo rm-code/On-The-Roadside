@@ -131,7 +131,7 @@ function CombatState.new()
         end
         stateManager:update( dt )
 
-        if not factions:findFaction( FACTIONS.ALLIED ):hasLivingCharacters() then
+        if not factions:getPlayerFaction():hasLivingCharacters() then
             ScreenManager.pop()
             ScreenManager.push( 'gameover', factions:getPlayerFaction(), false )
         end
