@@ -84,20 +84,19 @@ local function calculateCost( tile, target, stance )
 end
 
 ---
--- Gets the next tile with the lowest cost from a list.
--- @param list (table)  The list to search through.
--- @return     (table)  The next tile in the list.
+-- Removes the node with the lowest cost from the open list and returns it.
+-- @treturn table The next node in the list.
 -- @return     (number) The index in the list.
 --
-local function getNextTile( list )
+local function getNextNode( openList )
     local index, cost
-    for i = 1, #list do
-        if not cost or cost > list[i].f then
-            cost = list[i].f
+    for i = 1, #openList do
+        if not cost or cost > openList[i].f then
+            cost = openList[i].f
             index = i
         end
     end
-    return list[index], index
+    return table.remove( openList, index )
 end
 
 ---
@@ -162,15 +161,6 @@ local function addToCLosedList( closedList, node )
 end
 
 ---
--- Removes a node from the open list.
--- @param openList (table)  The open list.
--- @param index    (number) The index of the node to remove.
---
-local function removeFromOpenList( openList, index )
-    table.remove( openList, index )
-end
-
----
 -- Traces the closed list from the target to the starting point by going to the
 -- parents of each tile in the list.
 -- @param endNode (node) The last node in the generated path.
@@ -208,11 +198,10 @@ function PathFinder.generatePath( start, target, stance )
     }
 
     while #openList > 0 do
-        local current, index = getNextTile( openList )
+        local current = getNextNode( openList )
 
         -- Update lists.
         addToCLosedList( closedList, current )
-        removeFromOpenList( openList, index )
 
         -- Stop if we have found the target.
         if current.tile == target then
