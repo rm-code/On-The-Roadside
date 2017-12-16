@@ -54,15 +54,15 @@ end
 
 ---
 -- Calculates the cost of moving to a tile.
--- @param tile      (Tile)      The tile to calculate a cost for.
--- @param target    (Tile)      The target tile of the path.
--- @param character (Character) The character to plot a path for.
--- @return     (number) The calculated movement cost.
+-- @tparam  Tile   tile   The tile to calculate a cost for.
+-- @tparam  Tile   target The target tile of the path.
+-- @tparam  string stance The stance of the creature to search a path for.
+-- @treturn number        The calculated movement cost.
 --
-local function calculateCost( tile, target, character )
+local function calculateCost( tile, target, stance )
     if tile:hasWorldObject() then
         local worldObject = tile:getWorldObject()
-        local interactionCost = worldObject:getInteractionCost( character:getStance() )
+        local interactionCost = worldObject:getInteractionCost( stance )
 
         -- We never move on the tile that the character wants to interact with.
         if tile == target then
@@ -71,7 +71,7 @@ local function calculateCost( tile, target, character )
 
         -- Open the object and walk on the tile.
         if worldObject:isOpenable() and not worldObject:isPassable() then
-            return interactionCost + tile:getMovementCost( character:getStance() )
+            return interactionCost + tile:getMovementCost( stance )
         end
 
         -- Climbing ignores the movement cost of the tile the world object is on.
@@ -80,7 +80,7 @@ local function calculateCost( tile, target, character )
         end
     end
 
-    return tile:getMovementCost( character:getStance() )
+    return tile:getMovementCost( stance )
 end
 
 ---
@@ -196,14 +196,15 @@ end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param character (Character) The character to plot a path for.
--- @param target    (Tile)      The target.
--- @return          (Path)      A Path object containing tiles to form a path.
+-- @tparam  Tile   start  The tile to start the pathfinding at.
+-- @tparam  Tile   target The target to search for.
+-- @tparam  string stance The stance of the creature to search a path for.
+-- @treturn Path          The path containing all tiles from the start to the target.
 --
-function PathFinder.generatePath( character, target )
+function PathFinder.generatePath( start, target, stance )
     local closedList = {}
     local openList = {
-        { tile = character:getTile(), direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
+        { tile = start, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     }
 
     while #openList > 0 do
@@ -215,14 +216,14 @@ function PathFinder.generatePath( character, target )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current, character )
+            return finalizePath( current, stance )
         end
 
         -- Look for the next tile.
         for direction, tile in pairs( current.tile:getNeighbours() ) do
             -- Check if the tile is valid to use in our path.
             if isValidTile( tile, closedList, target ) then
-                local cost = calculateCost( tile, target, character )
+                local cost = calculateCost( tile, target, stance )
                 local g = current.g + cost * getDirectionModifier( direction )
                 local f = g + calculateHeuristic( tile, target )
 

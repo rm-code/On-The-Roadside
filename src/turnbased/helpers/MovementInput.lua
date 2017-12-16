@@ -21,7 +21,7 @@ local MovementInput = Class( 'MovementInput' )
 
 local function generatePath( target, character )
     if target and target:isPassable() and not target:isOccupied() then
-        return PathFinder.generatePath( character, target, true )
+        return PathFinder.generatePath( character:getTile(), target, character:getStance() )
     end
 end
 -- ------------------------------------------------
