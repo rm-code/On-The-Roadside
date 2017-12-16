@@ -197,15 +197,18 @@ function PathFinder.generatePath( start, target, stance )
         { tile = start, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
     }
 
+    -- The currently evaluated node in the graph.
+    local current
+
     while #openList > 0 do
-        local current = getNextNode( openList )
+        current = getNextNode( openList )
 
         -- Update lists.
         addToCLosedList( closedList, current )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current, stance )
+            break;
         end
 
         -- Look for the next tile.
@@ -231,6 +234,8 @@ function PathFinder.generatePath( start, target, stance )
             end
         end
     end
+
+    return finalizePath( current, stance )
 end
 
 return PathFinder
