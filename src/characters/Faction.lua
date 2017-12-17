@@ -51,7 +51,7 @@ end
 -- @tparam Character character The character to add.
 --
 function Faction:addCharacter( character )
-    local node = Node.new( character )
+    local node = Node( character )
 
     -- Initialise root node.
     if not self.root then

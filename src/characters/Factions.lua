@@ -38,7 +38,7 @@ function Factions.new()
     -- @tparam Faction faction The faction to add.
     --
     function self:addFaction( faction )
-        local node = Node.new( faction )
+        local node = Node( faction )
 
         -- Initialise root node.
         if not root then
