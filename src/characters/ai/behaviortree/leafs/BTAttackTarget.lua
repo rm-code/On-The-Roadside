@@ -1,26 +1,36 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
+---
+-- @module BTAttackTarget
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 local RangedAttack = require( 'src.characters.actions.RangedAttack' )
 
-local BTAttackTarget = {};
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-function BTAttackTarget.new()
-    local self = BTLeaf.new():addInstance( 'BTAttackTarget' );
+local BTAttackTarget = BTLeaf:subclass( 'BTAttackTarget' )
 
-    function self:traverse( ... )
-        local blackboard, character = ...;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        local success = character:enqueueAction( RangedAttack( character, blackboard.target ))
-        if success then
-            Log.debug( 'Character attacks target', 'BTAttackTarget' );
-            return true;
-        end
+function BTAttackTarget:traverse( ... )
+    local blackboard, character = ...
 
-        Log.debug( 'Character can not attack target', 'BTAttackTarget' );
-        return false;
+    local success = character:enqueueAction( RangedAttack( character, blackboard.target ))
+    if success then
+        Log.debug( 'Character attacks target', 'BTAttackTarget' )
+        return true
     end
 
-    return self;
+    Log.debug( 'Character can not attack target', 'BTAttackTarget' )
+    return false
 end
 
-return BTAttackTarget;
+return BTAttackTarget
