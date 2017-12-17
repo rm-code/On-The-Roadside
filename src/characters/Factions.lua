@@ -119,7 +119,6 @@ function Factions.new()
     function self:receive( event, ... )
         if event == 'TILE_UPDATED' then
             local tile = ...;
-            assert( tile:instanceOf( 'Tile' ), 'Expected an object of type Tile.' );
             active:getObject():regenerateFOVSelectively( tile );
         end
     end
