@@ -24,7 +24,7 @@ local ProjectileQueue = {};
 function ProjectileQueue.new( character, tx, ty, th )
     local self = {};
 
-    local ammoQueue = Queue.new();
+    local ammoQueue = Queue()
     local shots;
     local projectiles = {};
     local index = 0;
@@ -87,7 +87,7 @@ function ProjectileQueue.new( character, tx, ty, th )
     --
     function self:update( dt )
         timer = timer - dt;
-        if timer <= 0 and not ammoQueue.isEmpty() then
+        if timer <= 0 and not ammoQueue:isEmpty() then
             spawnProjectile();
             timer = weapon:getFiringDelay();
         end

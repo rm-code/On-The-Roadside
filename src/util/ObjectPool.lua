@@ -6,7 +6,7 @@ local ObjectPool = {};
 function ObjectPool.new( class, type )
     local self = Object.new():addInstance( 'ObjectPool' );
 
-    local queue = Queue.new();
+    local queue = Queue()
 
     function self:request( ... )
         local object;

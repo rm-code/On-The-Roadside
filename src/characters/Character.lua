@@ -117,7 +117,7 @@ end
 
 function Character:initialize()
     self.actionPoints = DEFAULT_ACTION_POINTS
-    self.actions = Queue.new()
+    self.actions = Queue()
 
     self.fov = {}
     self.viewRange = 12
