@@ -1,20 +1,30 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
+---
+-- @module BTIsAdjacentToTarget
+--
 
-local BTIsAdjacentToTarget = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTIsAdjacentToTarget.new()
-    local self = BTLeaf.new():addInstance( 'BTIsAdjacentToTarget' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 
-    function self:traverse( ... )
-        local blackboard, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local result = character:getTile():isAdjacent( blackboard.target );
-        Log.debug( result, 'BTIsAdjacentToTarget' );
-        return result;
-    end
+local BTIsAdjacentToTarget = BTLeaf:subclass( 'BTIsAdjacentToTarget' )
 
-    return self;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTIsAdjacentToTarget:traverse( ... )
+    local blackboard, character = ...
+
+    local result = character:getTile():isAdjacent( blackboard.target )
+    Log.debug( result, 'BTIsAdjacentToTarget' )
+    return result
 end
 
-return BTIsAdjacentToTarget;
+return BTIsAdjacentToTarget
