@@ -1,15 +1,26 @@
-local Object = require( 'src.Object' );
+---
+-- The base class for all behavior tree leafs.
+-- @module BTLeaf
+--
 
-local BTLeaf = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTLeaf.new()
-    local self = Object.new():addInstance( 'BTLeaf' );
+local Class = require( 'lib.Middleclass' )
 
-    function self:traverse()
-        return true;
-    end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    return self;
+local BTLeaf = Class( 'BTLeaf' )
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTLeaf:traverse()
+    return true
 end
 
-return BTLeaf;
+return BTLeaf
