@@ -1,28 +1,38 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
+---
+-- @module BTCanReload
+--
 
-local BTCanReload = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTCanReload.new()
-    local self = BTLeaf.new():addInstance( 'BTCanReload' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 
-    function self:traverse( ... )
-        local _, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local weapon = character:getWeapon();
-        local inventory = character:getInventory();
-        for _, item in pairs( inventory:getItems() ) do
-            if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
-                Log.debug( 'Character can reload', 'BTCanReload' );
-                return true;
-            end
+local BTCanReload = BTLeaf:subclass( 'BTCanReload' )
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTCanReload:traverse( ... )
+    local _, character = ...
+
+    local weapon = character:getWeapon()
+    local inventory = character:getInventory()
+    for _, item in pairs( inventory:getItems() ) do
+        if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
+            Log.debug( 'Character can reload', 'BTCanReload' )
+            return true
         end
-
-        Log.debug( 'Character can not reload', 'BTCanReload' );
-        return false;
     end
 
-    return self;
+    Log.debug( 'Character can not reload', 'BTCanReload' )
+    return false
 end
 
-return BTCanReload;
+return BTCanReload
