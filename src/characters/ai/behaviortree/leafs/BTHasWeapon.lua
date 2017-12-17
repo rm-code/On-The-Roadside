@@ -1,20 +1,30 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
+---
+-- @module BTHasWeapon
+--
 
-local BTHasWeapon = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTHasWeapon.new()
-    local self = BTLeaf.new():addInstance( 'BTHasWeapon' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 
-    function self:traverse( ... )
-        local _, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local result = character:getWeapon() ~= nil;
-        Log.debug( result, 'BTHasWeapon' );
-        return result;
-    end
+local BTHasWeapon = BTLeaf:subclass( 'BTHasWeapon' )
 
-    return self;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTHasWeapon:traverse( ... )
+    local _, character = ...
+
+    local result = character:getWeapon() ~= nil
+    Log.debug( result, 'BTHasWeapon' )
+    return result
 end
 
-return BTHasWeapon;
+return BTHasWeapon
