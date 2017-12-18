@@ -1,31 +1,43 @@
-local Object = require( 'src.Object' );
+---
+-- @module BTComposite
+--
 
-local BTComposite = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTComposite.new()
-    local self = Object.new():addInstance( 'BTComposite' );
+local Class = require( 'lib.Middleclass' )
 
-    local children = {};
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:addNode( nnode, pos )
-        children[pos] = nnode;
-    end
+local BTComposite = Class( 'BTComposite' )
 
-    function self:traverse( ... )
-        for _, child in ipairs( children ) do
-            local success = child:traverse( ... );
-            if not success then
-                return false;
-            end
-        end
-        return true;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:getChildren()
-        return children;
-    end
-
-    return self;
+function BTComposite:initialize()
+    self.children = {}
 end
 
-return BTComposite;
+function BTComposite:addNode( nnode, pos )
+    self.children[pos] = nnode
+end
+
+function BTComposite:traverse( ... )
+    for _, child in ipairs( self.children ) do
+        local success = child:traverse( ... )
+        if not success then
+            return false
+        end
+    end
+    return true
+end
+
+function BTComposite:getChildren()
+    return self.children
+end
+
+return BTComposite
