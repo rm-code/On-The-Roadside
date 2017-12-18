@@ -1,38 +1,48 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
+---
+-- @module BTTakeItem
+--
 
-local BTTakeItem = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTTakeItem.new()
-    local self = BTLeaf.new():addInstance( 'BTTakeItem' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 
-    function self:traverse( ... )
-        local blackboard, character = ...;
-        local target = blackboard.target;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local pinventory = character:getInventory();
-        local tinventory = target:getInventory();
+local BTTakeItem = BTLeaf:subclass( 'BTTakeItem' )
 
-        local titems = tinventory:getItems();
-        Log.debug( 'Found items: ' .. #titems, 'BTTakeItem' );
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        for i = #titems, 1, -1 do
-            local item = titems[i];
+function BTTakeItem:traverse( ... )
+    local blackboard, character = ...
+    local target = blackboard.target
 
-            Log.debug( 'Items left: ' .. #titems, 'BTTakeItem' );
-            local success = pinventory:addItem( item );
-            if success then
-                tinventory:removeItem( item );
-                Log.debug( 'Took item ' .. item:getID(), 'BTTakeItem' );
-            else
-                Log.debug( 'Didn\'t take item ' .. item:getID(), 'BTTakeItem' );
-            end
+    local pinventory = character:getInventory()
+    local tinventory = target:getInventory()
+
+    local titems = tinventory:getItems()
+    Log.debug( 'Found items: ' .. #titems, 'BTTakeItem' )
+
+    for i = #titems, 1, -1 do
+        local item = titems[i]
+
+        Log.debug( 'Items left: ' .. #titems, 'BTTakeItem' )
+        local success = pinventory:addItem( item )
+        if success then
+            tinventory:removeItem( item )
+            Log.debug( 'Took item ' .. item:getID(), 'BTTakeItem' )
+        else
+            Log.debug( 'Didn\'t take item ' .. item:getID(), 'BTTakeItem' )
         end
-
-        return true;
     end
 
-    return self;
+    return true
 end
 
-return BTTakeItem;
+return BTTakeItem
