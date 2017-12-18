@@ -1,28 +1,38 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
-local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' );
+---
+-- @module BTThrowingAttack
+--
 
-local BTThrowingAttack = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTThrowingAttack.new()
-    local self = BTLeaf.new():addInstance( 'BTThrowingAttack' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
+local ThrowingAttack = require( 'src.characters.actions.ThrowingAttack' )
 
-    function self:traverse( ... )
-        local blackboard, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local success = character:enqueueAction( ThrowingAttack( character, blackboard.target ))
-        if success then
-            -- Store weapon id for the rearm action.
-            blackboard.weaponID = character:getWeapon():getID();
-            Log.debug( 'Character attacks target', 'BTThrowingAttack' );
-            return true;
-        end
+local BTThrowingAttack = BTLeaf:subclass( 'BTThrowingAttack' )
 
-        Log.debug( 'Character can not attack target', 'BTThrowingAttack' );
-        return false;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTThrowingAttack:traverse( ... )
+    local blackboard, character = ...
+
+    local success = character:enqueueAction( ThrowingAttack( character, blackboard.target ))
+    if success then
+        -- Store weapon id for the rearm action.
+        blackboard.weaponID = character:getWeapon():getID()
+        Log.debug( 'Character attacks target', 'BTThrowingAttack' )
+        return true
     end
 
-    return self;
+    Log.debug( 'Character can not attack target', 'BTThrowingAttack' )
+    return false
 end
 
-return BTThrowingAttack;
+return BTThrowingAttack
