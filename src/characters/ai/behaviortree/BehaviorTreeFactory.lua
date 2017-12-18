@@ -71,7 +71,7 @@ local function createTree( layout )
 
     for index, id in ipairs( layout.nodes ) do
         assert( BLUEPRINTS[id], string.format( 'Behavior blueprint %s does not exist!', id ));
-        nodes[index] = BLUEPRINTS[id].new();
+        nodes[index] = BLUEPRINTS[id]()
     end
 
     for _, edge in ipairs( layout.edges ) do
