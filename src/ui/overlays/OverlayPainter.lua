@@ -43,7 +43,7 @@ function OverlayPainter.new( game, camera )
     -- Private Attributes
     -- ------------------------------------------------
 
-    local particleLayer = ParticleLayer.new()
+    local particleLayer = ParticleLayer()
     local pulser = Pulser.new( 4, 80, 80 );
     local coneOverlay = ConeOverlay.new( game, pulser, camera )
     local pathOverlay = PathOverlay.new( game, pulser )
