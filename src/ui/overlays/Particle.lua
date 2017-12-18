@@ -1,37 +1,45 @@
-local Object = require( 'src.Object' );
+---
+-- @module Particle
+--
 
-local Particle = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Particle.new()
-    local self = Object.new():addInstance( 'Particle' );
+local Class = require( 'lib.Middleclass' )
 
-    local r, g, b, a, fade, sprite
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:update( dt )
-        a = a - dt * fade;
-    end
+local Particle = Class( 'Particle' )
 
-    function self:getColors()
-        return r, g, b, a;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:getAlpha()
-        return a;
-    end
-
-    function self:getSprite()
-        return sprite;
-    end
-
-    function self:setParameters( nr, ng, nb, na, nfade, nsprite )
-        r, g, b, a, fade, sprite = nr, ng, nb, na, nfade, nsprite
-    end
-
-    function self:clear()
-        r, g, b, a, fade, sprite = nil, nil, nil, nil, nil, nil
-    end
-
-    return self;
+function Particle:update( dt )
+    self.a = self.a - dt * self.fade
 end
 
-return Particle;
+function Particle:getColors()
+    return self.r, self.g, self.b, self.a
+end
+
+function Particle:getAlpha()
+    return self.a
+end
+
+function Particle:getSprite()
+    return self.sprite
+end
+
+function Particle:setParameters( r, g, b, a, fade, sprite )
+    self.r, self.g, self.b, self.a, self.fade, self.sprite = r, g, b, a, fade, sprite
+end
+
+function Particle:clear()
+    self.r, self.g, self.b, self.a, self.fade, self.sprite = nil, nil, nil, nil, nil, nil
+end
+
+return Particle

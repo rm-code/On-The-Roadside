@@ -3,7 +3,7 @@ local Queue = require( 'src.util.Queue' );
 
 local ObjectPool = {};
 
-function ObjectPool.new( class, type )
+function ObjectPool.new( class )
     local self = Object.new():addInstance( 'ObjectPool' );
 
     local queue = Queue()
@@ -12,7 +12,7 @@ function ObjectPool.new( class, type )
         local object;
 
         if queue:isEmpty() then
-            object = class.new();
+            object = class()
             queue:enqueue( object );
         end
 
@@ -22,18 +22,11 @@ function ObjectPool.new( class, type )
     end
 
     function self:deposit( object )
-        if type and object:instanceOf( type ) then
+        if object:isInstanceOf( class ) then
             object:clear();
             queue:enqueue( object );
         else
-            local list = "";
-            for i, v in pairs( object.__instances ) do
-                list = list .. v;
-                if i ~= #object.__instances then
-                    list = list .. ', ';
-                end
-            end
-            error( string.format( "Object (%s) isn't an instance of the class type required for this ObjectPool (%s).", list, type ));
+            error( string.format( "Object (%s) isn't an instance of the class type required for this ObjectPool (%s).", object, class ))
         end
     end
 

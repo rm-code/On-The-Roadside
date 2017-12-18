@@ -9,7 +9,7 @@ function ParticleLayer.new()
     local self = Object.new():addInstance( 'ParticleLayer' );
 
     local grid = {};
-    local particles = ObjectPool.new( Particle, 'Particle' );
+    local particles = ObjectPool.new( Particle )
 
     local function addParticleEffect( x, y, r, g, b, a, fade, sprite )
         grid[x] = grid[x] or {};
