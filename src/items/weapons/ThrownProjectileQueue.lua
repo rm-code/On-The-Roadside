@@ -51,7 +51,7 @@ function ThrownProjectileQueue.new( character, tx, ty, th )
         assert( success, "Couldn't remove the item from the character's equipment." );
 
         local tiles = ProjectilePath.calculate( character, tx, ty, th, weapon )
-        local projectile = Projectile.new( character, tiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() );
+        local projectile = Projectile( character, tiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() );
         index = index + 1;
         projectiles[index] = projectile;
 
