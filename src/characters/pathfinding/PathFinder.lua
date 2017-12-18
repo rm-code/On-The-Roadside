@@ -167,7 +167,7 @@ end
 -- @return        (Path) A path object containing tiles to form a path.
 --
 local function finalizePath( endNode )
-    local path = Path.new()
+    local path = Path()
     path:addNode( endNode.tile, endNode.actualCost )
 
     -- Build the rest of the path.
