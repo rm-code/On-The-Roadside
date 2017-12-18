@@ -66,7 +66,7 @@ local function markSeenTiles( cx, cy, counter, self, falloff )
     -- objects and allows smaller objects like low walls to cast a "shadow"
     -- in which smaller objects could be hidden.
     if  target:hasWorldObject()
-    and target:getWorldObject():blocksVision()
+    and target:getWorldObject():doesBlockVision()
     and height <= target:getWorldObject():getHeight() then
         return false
     end

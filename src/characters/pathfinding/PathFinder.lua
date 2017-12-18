@@ -141,12 +141,12 @@ local function isValidTile( tile, closedList, target )
         end
 
         -- Container objects are valid if they are the target of the path.
-        if worldObject:blocksPathfinding() and worldObject:isContainer() then
+        if worldObject:doesBlockPathfinding() and worldObject:isContainer() then
             return tile == target
         end
 
         -- Non-blocking world objects are valid too.
-        return not worldObject:blocksPathfinding()
+        return not worldObject:doesBlockPathfinding()
     end
     return tile:isPassable()
 end

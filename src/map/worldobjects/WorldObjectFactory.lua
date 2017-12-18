@@ -69,7 +69,7 @@ end
 function WorldObjectFactory.create( id )
     local template = worldobjects[id]
     assert( template, string.format( 'Requested worldobject id (%s) doesn\'t exist!', id ))
-    return WorldObject.new( template )
+    return WorldObject( template )
 end
 
 ---
