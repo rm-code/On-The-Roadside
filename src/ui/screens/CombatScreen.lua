@@ -26,8 +26,7 @@ local CombatScreen = Screen:subclass( 'CombatScreen' )
 function CombatScreen:initialize( playerFaction, savegame )
     love.mouse.setVisible( true )
 
-    self.combatState = CombatState.new()
-    self.combatState:init( playerFaction, savegame )
+    self.combatState = CombatState( playerFaction, savegame )
 
     self.mapPainter = MapPainter( self.combatState:getMap() )
 
