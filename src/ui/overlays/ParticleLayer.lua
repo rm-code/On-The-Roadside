@@ -1,7 +1,7 @@
 local Object = require( 'src.Object' );
 local Messenger = require( 'src.Messenger' );
 local Particle = require( 'src.ui.overlays.Particle' )
-local ObjectPool = require( 'src.util.ObjectPool' );
+local ObjectPool = require( 'src.util.ObjectPool' )
 
 local ParticleLayer = {};
 
@@ -9,7 +9,7 @@ function ParticleLayer.new()
     local self = Object.new():addInstance( 'ParticleLayer' );
 
     local grid = {};
-    local particles = ObjectPool.new( Particle )
+    local particles = ObjectPool( Particle )
 
     local function addParticleEffect( x, y, r, g, b, a, fade, sprite )
         grid[x] = grid[x] or {};
