@@ -127,7 +127,7 @@ end
 local function assembleBody( creatureID, template, layout )
     local body = Body( template.id, template.bloodVolume, template.tags, template.size )
     local equipment = Equipment.new();
-    local inventory = Inventory.new( template.defaultCarryWeight, template.defaultCarryVolume )
+    local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
 
     equipment:observe( inventory );
 

@@ -167,7 +167,7 @@ local function createTargetInventoryList(  x, y, character, target, lists, listL
     local id, inventory
 
     -- TODO How to handle base inventory?
-    if target:instanceOf( 'Inventory' ) then
+    if target:isInstanceOf( 'Inventory' ) then
         id, inventory = 'inventory_base', target
     elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
         id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()

@@ -42,7 +42,7 @@ function WorldObject:initialize( template )
     self.hp = template.hp
     self.passable = template.passable or false
     self.blocksVision = template.blocksVision
-    self.inventory = self.container and Inventory.new() or nil
+    self.inventory = self.container and Inventory() or nil
 end
 
 ---

@@ -45,7 +45,7 @@ function Tile:initialize( x, y, id, cost, passable, spawn )
     self.passable = passable
     self.spawn = spawn
 
-    self.inventory = Inventory.new( WEIGHT_LIMIT, VOLUME_LIMIT )
+    self.inventory = Inventory( WEIGHT_LIMIT, VOLUME_LIMIT )
 end
 
 ---
