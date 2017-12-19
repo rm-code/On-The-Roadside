@@ -42,7 +42,7 @@ function TexturePack.new()
 
         -- Generate font.
         local f = source.font
-        font = Font.new( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
+        font = Font( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
         glyphWidth, glyphHeight = f.glyphs.width, f.glyphs.height
 
         -- Generate tileset.
