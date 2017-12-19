@@ -47,8 +47,7 @@ function TexturePack.new()
 
         -- Generate tileset.
         local t = source.tileset
-        tileset = Tileset.new( path .. t.source, spriteInfos, t.tiles.width, t.tiles.height )
-        tileset:init()
+        tileset = Tileset( path .. t.source, spriteInfos, t.tiles.width, t.tiles.height )
 
         colors = colorInfos
     end
