@@ -72,7 +72,7 @@ function CombatState:initialize( playerFaction, savegame )
         self.map = createMap()
     end
 
-    self.factions = Factions.new( self.map )
+    self.factions = Factions()
     self.factions:addFaction( Faction( FACTIONS.ENEMY,   true ))
     self.factions:addFaction( Faction( FACTIONS.NEUTRAL, true ))
     self.factions:addFaction( playerFaction )

@@ -1,145 +1,148 @@
-local Object = require( 'src.Object' );
-local Node = require( 'src.util.Node' );
-local Messenger = require( 'src.Messenger' );
-local Log = require( 'src.util.Log' );
+---
+-- @module Factions
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Class = require( 'lib.Middleclass' )
+local Node = require( 'src.util.Node' )
+local Messenger = require( 'src.Messenger' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Factions = {};
+local Factions = Class( 'Factions' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local FACTIONS = require( 'src.constants.FACTIONS' );
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Functions
 -- ------------------------------------------------
 
-function Factions.new()
-    local self = Object.new():addInstance( 'Factions' );
+---
+-- Adds a new faction node to the linked list.
+-- @tparam Faction faction The faction to add.
+--
+function Factions:addFaction( faction )
+    local node = Node( faction )
 
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
-
-    local root;
-    local active;
-
-    -- ------------------------------------------------
-    -- Public Functions
-    -- ------------------------------------------------
-
-    ---
-    -- Adds a new faction node to the linked list.
-    -- @tparam Faction faction The faction to add.
-    --
-    function self:addFaction( faction )
-        local node = Node( faction )
-
-        -- Initialise root node.
-        if not root then
-            root = node
-            active = root
-            return active:getObject()
-        end
-
-        -- Doubly link the new node.
-        active:linkNext( node )
-        node:linkPrev( active )
-
-        -- Make it the active node.
-        active = node
-        return active:getObject()
+    -- Initialise root node.
+    if not self.root then
+        self.root = node
+        self.active = self.root
+        return self.active:getObject()
     end
 
-    ---
-    -- Find the faction object belonging to the specified identifier.
-    -- @param type (string)  The identifier to look for.
-    -- @return     (Faction) The faction.
-    --
-    function self:findFaction( type )
-        local node = root;
-        while node do
-            if node:getObject():getType() == type then
-                return node:getObject();
-            end
-            node = node:getNext();
-        end
-    end
+    -- Doubly link the new node.
+    self.active:linkNext( node )
+    node:linkPrev( self.active )
 
-    ---
-    -- Selects the next faction and returns the first valid character.
-    -- @return (Character) The selected Character.
-    --
-    function self:nextFaction()
-        active:getObject():deactivate();
-
-        while active do
-            active = active:getNext() or root;
-            local faction = active:getObject();
-            faction:activate();
-
-            if faction:hasLivingCharacters() then
-                local current = faction:getCurrentCharacter();
-                if current:isDead() then
-                    return self:getFaction():nextCharacter();
-                end
-                Messenger.publish( 'SWITCH_CHARACTERS', current );
-                return current;
-            end
-
-            Log.debug( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' );
-        end
-    end
-
-    ---
-    -- Iterates over all factions and passes them to the callback function.
-    -- @tparam function callback The callback to use on the factions.
-    --
-    function self:iterate( callback )
-        local node = root;
-        while node do
-            callback( node:getObject() )
-            node = node:getNext()
-        end
-    end
-
-    function self:serialize()
-        local t = {}
-        self:iterate( function( faction )
-            t[faction:getType()] = faction:serialize()
-        end)
-        return t;
-    end
-
-    function self:receive( event, ... )
-        if event == 'TILE_UPDATED' then
-            local tile = ...;
-            active:getObject():regenerateFOVSelectively( tile );
-        end
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    ---
-    -- Returns the currently active faction.
-    -- @return (Faction) The selected Faction.
-    --
-    function self:getFaction()
-        return active:getObject();
-    end
-
-    function self:getPlayerFaction()
-        return self:findFaction( FACTIONS.ALLIED )
-    end
-
-    return self;
+    -- Make it the active node.
+    self.active = node
+    return self.active:getObject()
 end
 
-return Factions;
+---
+-- Find the faction object belonging to the specified identifier.
+-- @tparam  string  type The identifier to look for.
+-- @treturn Faction      The faction.
+--
+function Factions:findFaction( type )
+    local node = self.root
+    while node do
+        if node:getObject():getType() == type then
+            return node:getObject()
+        end
+        node = node:getNext()
+    end
+end
+
+---
+-- Selects the next faction and returns the first valid character.
+-- @treturn Character The selected Character.
+--
+function Factions:nextFaction()
+    self.active:getObject():deactivate()
+
+    while self.active do
+        self.active = self.active:getNext() or self.root
+        local faction = self.active:getObject()
+        faction:activate()
+
+        if faction:hasLivingCharacters() then
+            local current = faction:getCurrentCharacter()
+            if current:isDead() then
+                return self:getFaction():nextCharacter()
+            end
+            Messenger.publish( 'SWITCH_CHARACTERS', current )
+            return current
+        end
+
+        Log.debug( string.format( 'All %s characters are dead.', faction:getType() ), 'Factions' )
+    end
+end
+
+---
+-- Iterates over all factions and passes them to the callback function.
+-- @tparam function callback The callback to use on the factions.
+--
+function Factions:iterate( callback )
+    local node = self.root
+    while node do
+        callback( node:getObject() )
+        node = node:getNext()
+    end
+end
+
+---
+-- Serializes the Factions object.
+-- @treturn table The serialized Factions object.
+--
+function Factions:serialize()
+    local t = {}
+    self:iterate( function( faction )
+        t[faction:getType()] = faction:serialize()
+    end)
+    return t
+end
+
+---
+-- Receives events.
+-- @tparam string  event The received event.
+-- @tparam varargs ...   Variable arguments.
+--
+function Factions:receive( event, ... )
+    if event == 'TILE_UPDATED' then
+        self.active:getObject():regenerateFOVSelectively( ... )
+    end
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns the currently active faction.
+-- @treturn Faction The selected Faction.
+--
+function Factions:getFaction()
+    return self.active:getObject()
+end
+
+---
+-- Returns the player's faction.
+-- @treturn Faction The player's Faction.
+--
+function Factions:getPlayerFaction()
+    return self:findFaction( FACTIONS.ALLIED )
+end
+
+return Factions
