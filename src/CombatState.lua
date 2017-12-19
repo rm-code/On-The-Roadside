@@ -99,7 +99,7 @@ function CombatState:initialize( playerFaction, savegame )
     self.stateManager = StateManager( self.states )
     self.stateManager:push( 'planning', self.factions )
 
-    self.sadisticAIDirector = SadisticAIDirector.new( self.factions, self.stateManager )
+    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager )
 
     ProjectileManager.init( self.map )
     ExplosionManager.init( self.map )
