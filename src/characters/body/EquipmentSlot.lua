@@ -1,60 +1,80 @@
-local Object = require( 'src.Object' );
+---
+-- @module EquipmentSlot
+--
 
-local EquipmentSlot = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function EquipmentSlot.new( index, template )
-    local self = Object.new():addInstance( 'EquipmentSlot' );
+local Class = require( 'lib.Middleclass' )
 
-    local item;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:getIndex()
-        return index;
-    end
+local EquipmentSlot = Class( 'EquipmentSlot' )
 
-    function self:getID()
-        return template.id;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:addItem( nitem )
-        assert( nitem:getItemType() == self:getItemType(), "Item types do not match." );
-        item = nitem;
-        return true;
-    end
-
-    function self:getItem()
-        return item;
-    end
-
-    function self:removeItem()
-        assert( item ~= nil, "Can't remove item from an empty slot." );
-        item = nil;
-    end
-
-    function self:getItemType()
-        return template.itemType;
-    end
-
-    function self:getSubType()
-        return template.subType;
-    end
-
-    function self:containsItem()
-        return item ~= nil;
-    end
-
-    function self:getSortOrder()
-        return template.sort;
-    end
-
-    function self:serialize()
-        local t = {};
-        if item then
-            t['item'] = item:serialize()
-        end
-        return t;
-    end
-
-    return self;
+function EquipmentSlot:initialize( index, id, itemType, subType, order )
+    self.index = index
+    self.id = id
+    self.itemType = itemType
+    self.subType = subType
+    self.order = order
 end
 
-return EquipmentSlot;
+function EquipmentSlot:addItem( item )
+    assert( item:getItemType() == self:getItemType(), "Item types do not match." )
+    self.item = item
+    return true
+end
+
+function EquipmentSlot:removeItem()
+    assert( self.item ~= nil, "Can't remove item from an empty slot." )
+    self.item = nil
+end
+
+function EquipmentSlot:serialize()
+    local t = {}
+    if self.item then
+        t['item'] = self.item:serialize()
+    end
+    return t
+end
+
+function EquipmentSlot:containsItem()
+    return self.item ~= nil
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+function EquipmentSlot:getID()
+    return self.id
+end
+
+function EquipmentSlot:getIndex()
+    return self.index
+end
+
+function EquipmentSlot:getItem()
+    return self.item
+end
+
+function EquipmentSlot:getItemType()
+    return self.itemType
+end
+
+function EquipmentSlot:getSubType()
+    return self.subType
+end
+
+function EquipmentSlot:getSortOrder()
+    return self.order
+end
+
+return EquipmentSlot

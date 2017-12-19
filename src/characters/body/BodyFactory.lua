@@ -110,7 +110,7 @@ end
 local function createBodyPart( cid, body, equipment, index, id )
     local template = templates[cid][id];
     if template.type == 'equipment' then
-        equipment:addSlot( EquipmentSlot.new( index, template ));
+        equipment:addSlot( EquipmentSlot( index, template.id, template.itemType, template.subType, template.sort ))
     else
         body:addBodyPart( BodyPart( index, template.id, template.type, template.health, template.effects ))
     end
