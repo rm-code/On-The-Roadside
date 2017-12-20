@@ -1,26 +1,41 @@
-local Weapon = require( 'src.items.weapons.Weapon' );
-local AmmunitionEffects = require( 'src.items.weapons.AmmunitionEffects' );
+---
+-- @module ThrownWeapon
+--
 
-local ThrownWeapon = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function ThrownWeapon.new( template )
-    local self = Weapon.new( template ):addInstance( 'ThrownWeapon' );
+local Weapon = require( 'src.items.weapons.Weapon' )
+local AmmunitionEffects = require( 'src.items.weapons.AmmunitionEffects' )
 
-    local effects = AmmunitionEffects.new( template.effects );
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:getDamageType()
-        return self:getAttackMode().damageType;
-    end
+local ThrownWeapon = Weapon:subclass( 'ThrownWeapon' )
 
-    function self:getEffects()
-        return effects;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:getRange()
-        return template.range;
-    end
+function ThrownWeapon:initialize( template )
+    Weapon.initialize( self, template )
 
-    return self;
+    self.effects = AmmunitionEffects.new( template.effects )
+    self.range = template.range
 end
 
-return ThrownWeapon;
+function ThrownWeapon:getDamageType()
+    return self:getAttackMode().damageType
+end
+
+function ThrownWeapon:getEffects()
+    return self.effects
+end
+
+function ThrownWeapon:getRange()
+    return self.range
+end
+
+return ThrownWeapon
