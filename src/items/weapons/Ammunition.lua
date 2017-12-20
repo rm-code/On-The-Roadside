@@ -1,27 +1,41 @@
-local Item = require( 'src.items.Item' );
-local AmmunitionEffects = require( 'src.items.weapons.AmmunitionEffects' );
+---
+-- @module Ammunition
+--
 
-local Ammunition = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Ammunition.new( template )
-    local self = Item.new( template ):addInstance( 'Ammunition' );
+local Item = require( 'src.items.Item' )
+local AmmunitionEffects = require( 'src.items.weapons.AmmunitionEffects' )
 
-    local effects = AmmunitionEffects.new( template.effects );
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:getDamageType()
-        return template.damageType;
-    end
+local Ammunition = Item:subclass( 'Ammunition' )
 
-    -- TODO: Add caliber to templates.
-    function self:getCaliber()
-        return template.id;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:getEffects()
-        return effects;
-    end
+function Ammunition:initialize( template )
+    Item.initialize( self, template )
 
-    return self;
+    self.damageType = template.damageType
+    self.effects = AmmunitionEffects.new( template.effects )
 end
 
-return Ammunition;
+function Ammunition:getDamageType()
+    return self.damageType
+end
+
+function Ammunition:getCaliber()
+    return self.id
+end
+
+function Ammunition:getEffects()
+    return self.effects
+end
+
+return Ammunition
