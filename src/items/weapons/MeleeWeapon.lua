@@ -1,15 +1,29 @@
-local Weapon = require( 'src.items.weapons.Weapon' );
+---
+-- @module MeleeWeapon
+--
 
-local MeleeWeapon = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function MeleeWeapon.new( template )
-    local self = Weapon.new( template ):addInstance( 'MeleeWeapon' );
+local Weapon = require( 'src.items.weapons.Weapon' )
 
-    function self:getDamageType()
-        return self:getAttackMode().damageType;
-    end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    return self;
+local MeleeWeapon = Weapon:subclass( 'MeleeWeapon' )
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function MeleeWeapon:initialize( template )
+    Weapon.initialize( self, template )
 end
 
-return MeleeWeapon;
+function MeleeWeapon:getDamageType()
+    return self:getAttackMode().damageType
+end
+
+return MeleeWeapon
