@@ -1,99 +1,102 @@
-local Item = require( 'src.items.Item' );
+---
+-- @module Weapon
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Item = require( 'src.items.Item' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Weapon = {};
+local Weapon = Item:subclass( 'Weapon' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
-function Weapon.new( template )
-    local self = Item.new( template ):addInstance( 'Weapon' );
+function Weapon:initialize( template )
+    Item.initialize( self, template )
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+    self.damage = template.damage
+    self.reloadable = template.reloadable
 
-    local damage = template.damage;
-    local modeIndex = 1;
-    local mode = template.mode[modeIndex];
+    self.modes = template.mode
+    self.mode = self.modes[1]
+    self.modeIndex = 1
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:selectNextFiringMode()
-        modeIndex = modeIndex + 1 > #template.mode and 1 or modeIndex + 1;
-        mode = template.mode[modeIndex];
-    end
-
-    function self:selectPrevFiringMode()
-        modeIndex = modeIndex - 1 < 1 and #template.mode or modeIndex - 1;
-        mode = template.mode[modeIndex];
-    end
-
-    function self:serialize()
-        local t = {
-            ['id'] = template.id,
-            ['itemType'] = template.itemType,
-            ['modeIndex'] = modeIndex
-        };
-        return t;
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    function self:getAccuracy()
-        return mode.accuracy;
-    end
-
-    function self:getAttackCost()
-        return mode.cost;
-    end
-
-    function self:getDamage()
-        return damage;
-    end
-
-    function self:getAttackMode()
-        return mode;
-    end
-
-    function self:getAttacks()
-        return mode.attacks;
-    end
-
-    function self:getAttackModeIndex()
-        return modeIndex;
-    end
-
-    function self:getSound()
-        return template.sound;
-    end
-
-    function self:isReloadable()
-        return template.reloadable;
-    end
-
-    function self:getModes()
-        return template.mode;
-    end
-
-    -- ------------------------------------------------
-    -- Setters
-    -- ------------------------------------------------
-
-    function self:setAttackMode( nmodeIndex )
-        modeIndex = nmodeIndex;
-        mode = template.mode[modeIndex];
-    end
-
-    return self;
+    self.sound = template.sound
 end
 
-return Weapon;
+function Weapon:selectNextFiringMode()
+    self.modeIndex = self.modeIndex + 1 > #self.modes and 1 or self.modeIndex + 1
+    self.mode = self.modes[self.modeIndex]
+end
+
+function Weapon:selectPrevFiringMode()
+    self.modeIndex = self.modeIndex - 1 < 1 and #self.modes or self.modeIndex - 1
+    self.mode = self.modes[self.modeIndex]
+end
+
+function Weapon:serialize()
+    local t = {
+        ['id'] = self.id,
+        ['itemType'] = self.itemType,
+        ['modeIndex'] = self.modeIndex
+    }
+    return t
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+function Weapon:getAccuracy()
+    return self.mode.accuracy
+end
+
+function Weapon:getAttackCost()
+    return self.mode.cost
+end
+
+function Weapon:getDamage()
+    return self.damage
+end
+
+function Weapon:getAttackMode()
+    return self.mode
+end
+
+function Weapon:getAttacks()
+    return self.mode.attacks
+end
+
+function Weapon:getAttackModeIndex()
+    return self.modeIndex
+end
+
+function Weapon:getSound()
+    return self.sound
+end
+
+function Weapon:isReloadable()
+    return self.reloadable
+end
+
+function Weapon:getModes()
+    return self.modes
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+function Weapon:setAttackMode( modeIndex )
+    self.modeIndex = modeIndex
+    self.mode = self.modes[self.modeIndex]
+end
+
+return Weapon
