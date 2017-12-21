@@ -29,8 +29,8 @@ local VERSION_FILE = 'version.data'
 
 ---
 -- Creates a file containing only the version string.
--- @string dir     The directory to store the version file in.
--- @table  version A table containing the version field.
+-- @tparam string dir     The directory to store the version file in.
+-- @tparam table  version A table containing the version field.
 --
 local function createVersionFile( dir, version )
     Compressor.save( version, dir .. '/' .. VERSION_FILE )
