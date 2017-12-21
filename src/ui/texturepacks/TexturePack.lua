@@ -17,7 +17,7 @@ local Tileset = require( 'src.ui.texturepacks.Tileset' )
 local TexturePack = Class( 'TexturePack' )
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
 function TexturePack:initialize( path, source, spriteInfos, colorInfos )
@@ -39,23 +39,23 @@ end
 -- Getters
 -- ------------------------------------------------
 
-function self:getName()
+function TexturePack:getName()
     return self.name
 end
 
-function self:getFont()
+function TexturePack:getFont()
     return self.font
 end
 
-function self:getGlyphDimensions()
+function TexturePack:getGlyphDimensions()
     return self.glyphWidth, self.glyphHeight
 end
 
-function self:getTileset()
+function TexturePack:getTileset()
     return self.tileset
 end
 
-function self:getColor( id )
+function TexturePack:getColor( id )
     return self.colors[id]
 end
 
