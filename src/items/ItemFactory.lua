@@ -91,9 +91,9 @@ function ItemFactory.createItem( id )
     local template = items[id]
     Log.debug( template.itemType .. ', ' .. tostring(template.subType), 'ItemFactory' )
     if template.itemType == ITEM_TYPES.WEAPON then
-        return ITEM_CLASSES[template.subType].new( template )
+        return ITEM_CLASSES[template.subType]( template )
     end
-    return ITEM_CLASSES[template.itemType].new( template )
+    return ITEM_CLASSES[template.itemType]( template )
 end
 
 ---
