@@ -23,18 +23,18 @@ function Observable:initialize()
     self.index = 1
 end
 
-function self:observe( observer )
+function Observable:observe( observer )
     assert( observer.receive, "Observer has to have a public receive method." )
     self.observers[self.index] = observer
     self.index = self.index + 1
     return self.index
 end
 
-function self:remove( index )
+function Observable:remove( index )
     self.observers[index] = nil
 end
 
-function self:publish( event, ... )
+function Observable:publish( event, ... )
     for _, observer in pairs( self.observers ) do
         observer:receive( event, ... )
     end
