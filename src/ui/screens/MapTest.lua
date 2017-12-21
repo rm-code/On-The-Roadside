@@ -31,8 +31,7 @@ local function createMap( layout )
     local tiles = generator:getTiles()
     local mw, mh = generator:getTileGridDimensions()
 
-    local map = Map.new()
-    map:init( tiles, mw, mh )
+    local map = Map( tiles, mw, mh )
     map:setSpawnpoints( generator:getSpawnpoints() )
 
     return map, mw, mh

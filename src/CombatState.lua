@@ -36,7 +36,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- ------------------------------------------------
 
 local function loadMap( savedMap )
-    local loader = MapLoader.new()
+    local loader = MapLoader()
     local tiles, mw, mh = loader:recreateMap( savedMap )
     return Map( tiles, mw, mh )
 end
