@@ -1,31 +1,43 @@
-local Object = require( 'src.Object' );
+---
+-- @module Observable
+--
 
-local Observable = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Observable.new()
-    local self = Object.new():addInstance( 'Observable' );
+local Class = require( 'lib.Middleclass' )
 
-    local observers = {};
-    local index = 1;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:observe( observer )
-        assert( observer.receive, "Observer has to have a public receive method." );
-        observers[index] = observer;
-        index = index;
-        return index;
-    end
+local Observable = Class( 'Observable' )
 
-    function self:remove( nindex )
-        observers[nindex] = nil;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:publish( event, ... )
-        for _, observer in pairs( observers ) do
-            observer:receive( event, ... );
-        end
-    end
-
-    return self;
+function Observable:initialize()
+    self.observers = {}
+    self.index = 1
 end
 
-return Observable;
+function self:observe( observer )
+    assert( observer.receive, "Observer has to have a public receive method." )
+    self.observers[self.index] = observer
+    self.index = self.index + 1
+    return self.index
+end
+
+function self:remove( index )
+    self.observers[index] = nil
+end
+
+function self:publish( event, ... )
+    for _, observer in pairs( self.observers ) do
+        observer:receive( event, ... )
+    end
+end
+
+return Observable
