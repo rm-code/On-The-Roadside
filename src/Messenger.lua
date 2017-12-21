@@ -46,7 +46,7 @@ end
 
 ---
 -- Removes a subscription based on its index.
--- @tparam number index The index of the subscription to remove.
+-- @tparam number nindex The index of the subscription to remove.
 --
 function Messenger.remove( nindex )
     subscriptions[nindex] = nil
