@@ -23,7 +23,7 @@ function Ammunition:initialize( template )
     Item.initialize( self, template )
 
     self.damageType = template.damageType
-    self.effects = AmmunitionEffects.new( template.effects )
+    self.effects = AmmunitionEffects( template.effects )
 end
 
 function Ammunition:getDamageType()

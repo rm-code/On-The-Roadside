@@ -22,7 +22,7 @@ local ThrownWeapon = Weapon:subclass( 'ThrownWeapon' )
 function ThrownWeapon:initialize( template )
     Weapon.initialize( self, template )
 
-    self.effects = AmmunitionEffects.new( template.effects )
+    self.effects = AmmunitionEffects( template.effects )
     self.range = template.range
 end
 
