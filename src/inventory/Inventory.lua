@@ -8,6 +8,7 @@
 
 local Class = require( 'lib.Middleclass' )
 local Log = require( 'src.util.Log' )
+local Item = require( 'src.items.Item' )
 local ItemStack = require( 'src.inventory.ItemStack' )
 local ItemFactory = require( 'src.items.ItemFactory' )
 
@@ -91,14 +92,14 @@ end
 local function addStackableItem( items, item, index )
     -- Check if we already have an item stack to add this item to.
     for _, stack in ipairs( items ) do
-        if stack:isInstanceOf( 'ItemStack' ) and stack:getID() == item:getID() then
+        if stack:isInstanceOf( ItemStack ) and stack:getID() == item:getID() then
             stack:addItem( item )
             return true
         end
     end
 
     -- If not we create a new stack.
-    local stack = ItemStack.new( item:getID() )
+    local stack = ItemStack( item:getID() )
     stack:addItem( item )
     table.insert( items, index, stack )
     return true
@@ -113,7 +114,7 @@ end
 local function removeItem( items, item )
     for i = 1, #items do
         -- Check if item is part of a stack.
-        if items[i]:isInstanceOf( 'ItemStack' ) then
+        if items[i]:isInstanceOf( ItemStack ) then
             local success = items[i]:removeItem( item )
             if success then
                 -- Remove the stack if it is empty.
@@ -138,7 +139,7 @@ end
 --
 local function removeItemStack( items, stack )
     for i = 1, #items do
-        if items[i]:isInstanceOf( 'ItemStack' ) and items[i] == stack then
+        if items[i]:isInstanceOf( ItemStack ) and items[i] == stack then
             table.remove( items, i )
             return true
         end
@@ -148,8 +149,8 @@ end
 
 -- TODO: proper documentation
 local function merge( self, stack, ostack )
-    assert( stack:isInstanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' )
-    assert( ostack:isInstanceOf( 'ItemStack' ), 'Expected parameter of type ItemStack.' )
+    assert( stack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
+    assert( ostack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
 
     for i = #ostack:getItems(), 1, -1 do
         local item = ostack:getItems()[i]
@@ -231,11 +232,11 @@ function Inventory:addItem( item, index )
         return false
     end
 
-    if item:isInstanceOf( 'ItemStack' ) then
+    if item:isInstanceOf( ItemStack ) then
         return addItemStack( self.items, item, index )
     end
 
-    if item:isInstanceOf( 'Item' ) then
+    if item:isInstanceOf( Item ) then
         if item:isStackable() then
             return addStackableItem( self.items, item, index )
         else
@@ -253,8 +254,8 @@ end
 function Inventory:insertItem( item, oitem )
     for i = 1, #self.items do
         if self.items[i] == oitem then
-            if oitem:isInstanceOf( 'ItemStack' ) and oitem:getID() == item:getID() then
-                if item:isInstanceOf( 'ItemStack' ) then
+            if oitem:isInstanceOf( ItemStack ) and oitem:getID() == item:getID() then
+                if item:isInstanceOf( ItemStack ) then
                     return merge( self, oitem, item )
                 end
             end
@@ -269,11 +270,11 @@ end
 -- @treturn boolean      True if the item was removed successfully.
 --
 function Inventory:removeItem( item )
-    if item:isInstanceOf( 'ItemStack' ) then
+    if item:isInstanceOf( ItemStack ) then
         return removeItemStack( self.items, item )
     end
 
-    if item:isInstanceOf( 'Item') then
+    if item:isInstanceOf( Item ) then
         return removeItem( self.items, item )
     end
 end
@@ -327,7 +328,7 @@ end
 function Inventory:getAndRemoveItem( type )
     for _, item in ipairs( self.items ) do
         if item:getItemType() == type then
-            if item:isInstanceOf( 'ItemStack' ) then
+            if item:isInstanceOf( ItemStack ) then
                 local i = item:getItem()
                 self:removeItem( i )
                 return i
@@ -353,7 +354,7 @@ function Inventory:countItems( type, id )
         -- Match items based on type and id.
         if item:getItemType() == type and item:getID() == id then
             -- Count items in stacks.
-            if item:isInstanceOf( 'ItemStack' ) then
+            if item:isInstanceOf( ItemStack ) then
                 count = count + item:getItemCount()
             else
                 count = count + 1
