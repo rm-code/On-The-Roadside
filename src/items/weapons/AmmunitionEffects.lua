@@ -1,67 +1,81 @@
-local Object = require( 'src.Object' );
+---
+-- @module AmmunitionEffects
+--
 
-local AmmunitionEffects = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function AmmunitionEffects.new( template )
-    local self = Object.new():addInstance( 'AmmunitionEffects' );
+local Class = require( 'lib.Middleclass' )
 
-    -- ------------------------------------------------
-    -- Explosive Ammunition
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:isExplosive()
-        return template.explosive;
-    end
+local AmmunitionEffects = Class( 'AmmunitionEffects' )
 
-    function self:getBlastRadius()
-        return template.explosive.blastRadius;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    -- ------------------------------------------------
-    -- Ammunition that spreads on shot
-    -- ------------------------------------------------
-
-    function self:spreadsOnShot()
-        return template.spreadsOnShot;
-    end
-
-    function self:getPellets()
-        return template.spreadsOnShot.pellets;
-    end
-
-    -- ------------------------------------------------
-    -- Ammunition with custom speed
-    -- ------------------------------------------------
-
-    function self:hasCustomSpeed()
-        return template.customSpeed;
-    end
-
-    function self:getCustomSpeed()
-        return template.customSpeed.speed;
-    end
-
-    function self:getSpeedIncrease()
-        return template.customSpeed.increase or 0;
-    end
-
-    function self:getFinalSpeed()
-        return template.customSpeed.final or template.customSpeed.speed;
-    end
-
-    -- ------------------------------------------------
-    -- Ammunition has custom sprite
-    -- ------------------------------------------------
-
-    function self:hasCustomSprite()
-        return template.customSprite;
-    end
-
-    function self:getCustomSprite()
-        return template.customSprite.sprite;
-    end
-
-    return self;
+function AmmunitionEffects:initialize( template )
+    self.template = template
 end
 
-return AmmunitionEffects;
+-- ------------------------------------------------
+-- Explosive Ammunition
+-- ------------------------------------------------
+
+function AmmunitionEffects:isExplosive()
+    return self.template.explosive
+end
+
+function AmmunitionEffects:getBlastRadius()
+    return self.template.explosive.blastRadius
+end
+
+-- ------------------------------------------------
+-- Ammunition that spreads on shot
+-- ------------------------------------------------
+
+function AmmunitionEffects:spreadsOnShot()
+    return self.template.spreadsOnShot
+end
+
+function AmmunitionEffects:getPellets()
+    return self.template.spreadsOnShot.pellets
+end
+
+-- ------------------------------------------------
+-- Ammunition with custom speed
+-- ------------------------------------------------
+
+function AmmunitionEffects:hasCustomSpeed()
+    return self.template.customSpeed
+end
+
+function AmmunitionEffects:getCustomSpeed()
+    return self.template.customSpeed.speed
+end
+
+function AmmunitionEffects:getSpeedIncrease()
+    return self.template.customSpeed.increase or 0
+end
+
+function AmmunitionEffects:getFinalSpeed()
+    return self.template.customSpeed.final or self.template.customSpeed.speed
+end
+
+-- ------------------------------------------------
+-- Ammunition has custom sprite
+-- ------------------------------------------------
+
+function AmmunitionEffects:hasCustomSprite()
+    return self.template.customSprite
+end
+
+function AmmunitionEffects:getCustomSprite()
+    return self.template.customSprite.sprite
+end
+
+return AmmunitionEffects
