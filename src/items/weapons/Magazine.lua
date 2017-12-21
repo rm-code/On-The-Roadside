@@ -9,6 +9,7 @@
 -- ------------------------------------------------
 
 local Class = require( 'lib.Middleclass' )
+local Ammunition = require( 'src.items.weapons.Ammunition' )
 
 -- ------------------------------------------------
 -- Module
@@ -37,7 +38,7 @@ end
 -- @tparam Ammunition round The round to add.
 --
 function Magazine:addRound( round )
-    assert( round:isInstanceOf( 'Ammunition' ), 'Expected an item of type Ammunition!' )
+    assert( round:isInstanceOf( Ammunition ), 'Expected an item of type Ammunition!' )
     self.rounds[#self.rounds + 1] = round
 end
 
