@@ -44,7 +44,7 @@ function OverlayPainter.new( game, camera )
     -- ------------------------------------------------
 
     local particleLayer = ParticleLayer()
-    local pulser = Pulser.new( 4, 80, 80 );
+    local pulser = Pulser( 4, 80, 80 )
     local coneOverlay = ConeOverlay( game, pulser, camera )
     local pathOverlay = PathOverlay( game, pulser )
     local tileset = TexturePacks.getTileset()
