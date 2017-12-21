@@ -9,6 +9,8 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
+local Weapon = require( 'src.items.weapons.Weapon' )
+local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,11 +31,11 @@ local Rearm = Action:subclass( 'Rearm' )
 --
 local function findItem( inventory, weaponID )
     for _, item in pairs( inventory:getItems() ) do
-        if item:instanceOf( 'Weapon' ) and item:getID() == weaponID then
+        if item:isInstanceOf( Weapon ) and item:getID() == weaponID then
             return item
-        elseif item:instanceOf( 'ItemStack' ) then
+        elseif item:isInstanceOf( ItemStack ) then
             for _, sitem in pairs( item:getItems() ) do
-                if sitem:instanceOf( 'Weapon' ) and sitem:getID() == weaponID then
+                if sitem:isInstanceOf( Weapon ) and sitem:getID() == weaponID then
                     return sitem
                 end
             end
