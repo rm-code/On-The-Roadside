@@ -38,9 +38,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 local function loadMap( savedMap )
     local loader = MapLoader.new()
     local tiles, mw, mh = loader:recreateMap( savedMap )
-    local map = Map.new()
-    map:init( tiles, mw, mh )
-    return map
+    return Map( tiles, mw, mh )
 end
 
 local function createMap()
@@ -49,8 +47,7 @@ local function createMap()
     local tiles = generator:getTiles()
     local mw, mh = generator:getTileGridDimensions()
 
-    local map = Map.new()
-    map:init( tiles, mw, mh )
+    local map = Map( tiles, mw, mh )
     map:setSpawnpoints( generator:getSpawnpoints() )
     return map
 end
