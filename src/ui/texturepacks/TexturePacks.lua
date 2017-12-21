@@ -99,8 +99,7 @@ local function load( src )
         return false
     end
 
-    local tpack = TexturePack.new()
-    tpack:init( src, module, spriteInfos, colorInfos )
+    local tpack = TexturePack( src, module, spriteInfos, colorInfos )
 
     return true, tpack
 end

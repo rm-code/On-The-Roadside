@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Object  = require( 'src.Object' )
+local Class   = require( 'lib.Middleclass' )
 local Font    = require( 'src.ui.texturepacks.Font' )
 local Tileset = require( 'src.ui.texturepacks.Tileset' )
 
@@ -14,69 +14,49 @@ local Tileset = require( 'src.ui.texturepacks.Tileset' )
 -- Module
 -- ------------------------------------------------
 
-local TexturePack = {}
+local TexturePack = Class( 'TexturePack' )
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
 
-function TexturePack.new()
-    local self = Object.new():addInstance( 'TexturePack' )
+function TexturePack:initialize( path, source, spriteInfos, colorInfos )
+    self.name = source.name
 
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
+    -- Generate font.
+    local f = source.font
+    self.font = Font( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
+    self.glyphWidth, self.glyphHeight = f.glyphs.width, f.glyphs.height
 
-    local name
-    local font
-    local glyphWidth, glyphHeight
-    local tileset
-    local colors
+    -- Generate tileset.
+    local t = source.tileset
+    self.tileset = Tileset( path .. t.source, spriteInfos, t.tiles.width, t.tiles.height )
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+    self.colors = colorInfos
+end
 
-    function self:init( path, source, spriteInfos, colorInfos )
-        name = source.name
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
 
-        -- Generate font.
-        local f = source.font
-        font = Font( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
-        glyphWidth, glyphHeight = f.glyphs.width, f.glyphs.height
+function self:getName()
+    return self.name
+end
 
-        -- Generate tileset.
-        local t = source.tileset
-        tileset = Tileset( path .. t.source, spriteInfos, t.tiles.width, t.tiles.height )
+function self:getFont()
+    return self.font
+end
 
-        colors = colorInfos
-    end
+function self:getGlyphDimensions()
+    return self.glyphWidth, self.glyphHeight
+end
 
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
+function self:getTileset()
+    return self.tileset
+end
 
-    function self:getName()
-        return name
-    end
-
-    function self:getFont()
-        return font
-    end
-
-    function self:getGlyphDimensions()
-        return glyphWidth, glyphHeight
-    end
-
-    function self:getTileset()
-        return tileset
-    end
-
-    function self:getColor( id )
-        return colors[id]
-    end
-
-    return self
+function self:getColor( id )
+    return self.colors[id]
 end
 
 return TexturePack
