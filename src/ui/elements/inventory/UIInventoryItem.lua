@@ -10,6 +10,7 @@ local UIElement = require( 'src.ui.elements.UIElement' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UILabel = require( 'src.ui.elements.UILabel' )
 local Translator = require( 'src.util.Translator' )
+local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,7 +32,7 @@ end
 
 local function createInfo( self )
     local count = 1
-    if self.item:instanceOf( 'ItemStack' ) and self.item:getItemCount() > 1 then
+    if self.item:isInstanceOf( ItemStack ) and self.item:getItemCount() > 1 then
         count = self.item:getItemCount()
     end
     self.amount = UILabel( self.ax, self.ay, self.w-2, 0, self.w, 1, count, 'ui_equipment_item' )
@@ -65,13 +66,13 @@ function UIInventoryItem:draw()
 end
 
 function UIInventoryItem:drag( rmb, fullstack )
-    if self.item:instanceOf( 'ItemStack' ) and rmb then
+    if self.item:isInstanceOf( ItemStack ) and rmb then
         if self.item:getItemCount() == 1 then
             return self.item
         else
             return self.item:split()
         end
-    elseif self.item:instanceOf( 'ItemStack' ) and not fullstack then
+    elseif self.item:isInstanceOf( ItemStack ) and not fullstack then
         return self.item:getItem()
     end
     return self.item

@@ -11,6 +11,8 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
+local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' )
+local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,8 +31,7 @@ local ITEM_WIDTH = 20
 -- ------------------------------------------------
 
 local function returnItemToOrigin( item, origin )
-    -- TODO Hack to bridge gap between middleclass and old oop.
-    if origin.instanceOf and origin:instanceOf( 'EquipmentSlot' ) then
+    if origin:isInstanceOf( EquipmentSlot ) then
         origin:addItem( item )
     else
         origin:drop( item );
@@ -39,7 +40,7 @@ end
 
 local function createLabel( item )
     local label = Translator.getText( item:getID() )
-    if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
+    if item:isInstanceOf( ItemStack ) and item:getItemCount() > 1 then
         label = string.format( '%s (%d)', label, item:getItemCount() )
     end
     return label

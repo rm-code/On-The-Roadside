@@ -17,6 +17,7 @@ local UIInventoryDragboard = require( 'src.ui.elements.inventory.UIInventoryDrag
 local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
+local Container = require( 'src.items.Container' )
 
 -- ------------------------------------------------
 -- Module
@@ -274,7 +275,7 @@ local function drag( button, lists, dragboard, itemStats )
 
     -- If the dragged item is a container we need to refresh the inventory lists
     -- because it changes the inventory volumes.
-    if item:instanceOf( 'Container' ) then
+    if item:isInstanceOf( Container ) then
         refreshLists( lists )
     end
 end

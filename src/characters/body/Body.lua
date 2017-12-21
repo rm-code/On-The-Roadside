@@ -15,6 +15,7 @@
 local Log = require( 'src.util.Log' )
 local Class = require( 'lib.Middleclass' )
 local StatusEffects = require( 'src.characters.body.StatusEffects' )
+local Armor = require( 'src.items.Armor' )
 
 -- ------------------------------------------------
 -- Module
@@ -73,7 +74,7 @@ local function checkArmorProtection( self, bodyPart, damage )
             -- Get the slot contains an item and the item is of type clothing we check
             -- if the attack actually hits a part that is covered by the armor.
             local item = slot:getItem()
-            if item and item:instanceOf( 'Armor' ) then
+            if item and item:isInstanceOf( Armor ) then
                 Log.debug( 'Body part is protected by armor ' .. item:getID(), 'Body' )
                 if love.math.random( 0, 100 ) < item:getArmorCoverage() then
                     Log.debug( string.format( 'The armor absorbs %d points of damage.', item:getArmorProtection() ), 'Body' )

@@ -8,6 +8,7 @@
 
 local Log = require( 'src.util.Log' )
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
+local Magazine = require( 'src.items.weapons.Magazine' )
 
 -- ------------------------------------------------
 -- Module
@@ -25,7 +26,7 @@ function BTCanReload:traverse( ... )
     local weapon = character:getWeapon()
     local inventory = character:getInventory()
     for _, item in pairs( inventory:getItems() ) do
-        if item:instanceOf( 'Magazine' ) and item:getCaliber() == weapon:getCaliber() then
+        if item:isInstanceOf( Magazine ) and item:getCaliber() == weapon:getCaliber() then
             Log.debug( 'Character can reload', 'BTCanReload' )
             return true
         end
