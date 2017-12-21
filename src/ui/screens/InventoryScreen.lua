@@ -319,7 +319,7 @@ function InventoryScreen:initialize( character, target )
     -- UI inventory lists.
     self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, target )
 
-    self.dragboard = UIInventoryDragboard.new()
+    self.dragboard = UIInventoryDragboard()
 
     -- Add the item stats area which displays the item attributes and a description area.
     --      x-axis: Outline left => 1

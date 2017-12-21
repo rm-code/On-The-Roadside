@@ -16,7 +16,7 @@ local UIBackground = require( 'src.ui.elements.UIBackground' )
 -- Module
 -- ------------------------------------------------
 
-local UIInventoryDragboard = {}
+local UIInventoryDragboard = Observable:subclass( 'UIInventoryDragboard' )
 
 -- ------------------------------------------------
 -- Constants
@@ -25,111 +25,99 @@ local UIInventoryDragboard = {}
 local ITEM_WIDTH = 20
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function UIInventoryDragboard.new()
-    local self = Observable.new():addInstance( 'UIInventoryDragboard' )
+local function returnItemToOrigin( item, origin )
+    -- TODO Hack to bridge gap between middleclass and old oop.
+    if origin.instanceOf and origin:instanceOf( 'EquipmentSlot' ) then
+        origin:addItem( item )
+    else
+        origin:drop( item );
+    end
+end
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+local function createLabel( item )
+    local label = Translator.getText( item:getID() )
+    if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
+        label = string.format( '%s (%d)', label, item:getItemCount() )
+    end
+    return label
+end
 
-    local background = UIBackground( 0, 0, 0, 0, ITEM_WIDTH, 1 )
-    local dragContext
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+function UIInventoryDragboard:initialize()
+    Observable.initialize( self )
 
-    local function returnItemToOrigin( item, origin )
-        -- TODO Hack to bridge gap between middleclass and old oop.
-        if origin.instanceOf and origin:instanceOf( 'EquipmentSlot' ) then
-            origin:addItem( item )
-        else
-            origin:drop( item );
-        end
+    self.background = UIBackground( 0, 0, 0, 0, ITEM_WIDTH, 1 )
+end
+
+function UIInventoryDragboard:draw( lists )
+    if not self.dragContext then
+        return
     end
 
-    local function createLabel()
-        local item = dragContext.item
-        local label = Translator.getText( item:getID() )
-        if item:instanceOf( 'ItemStack' ) and item:getItemCount() > 1 then
-            label = string.format( '%s (%d)', label, item:getItemCount() )
-        end
-        return label
-    end
+    local tw, th = TexturePacks.getTileDimensions()
+    local gx, gy = GridHelper.getMouseGridPosition()
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+    -- Move background and draw it.
+    self.background:setOrigin( gx, gy )
+    self.background:setColor( 'ui_inventory_drag_bg' )
+    self.background:draw()
 
-    function self:draw( lists )
-        if not dragContext then
-            return
-        end
-
-        local tw, th = TexturePacks.getTileDimensions()
-        local gx, gy = GridHelper.getMouseGridPosition()
-
-        -- Move background and draw it.
-        background:setOrigin( gx, gy )
-        background:setColor( 'ui_inventory_drag_bg' )
-        background:draw()
-
-        -- Check if the dragged item would fit.
-        TexturePacks.setColor( 'ui_inventory_drag_text' )
-        for _, list in pairs( lists ) do
-            if list:isMouseOver() then
-                if not list:doesFit( dragContext.item ) then
-                    TexturePacks.setColor( 'ui_inventory_full' )
-                    break
-                end
+    -- Check if the dragged item would fit.
+    TexturePacks.setColor( 'ui_inventory_drag_text' )
+    for _, list in pairs( lists ) do
+        if list:isMouseOver() then
+            if not list:doesFit( self.dragContext.item ) then
+                TexturePacks.setColor( 'ui_inventory_full' )
+                break
             end
         end
-
-        love.graphics.print( createLabel(), (gx+1) * tw, gy * th )
-        TexturePacks.resetColor()
     end
 
-    function self:drag( item, origin )
-        assert( item and origin, 'Missing parameters.' )
-        love.mouse.setVisible( false )
-        dragContext = { item = item, origin = origin }
-    end
+    love.graphics.print( createLabel( self.dragContext.item ), (gx+1) * tw, gy * th )
+    TexturePacks.resetColor()
+end
 
-    function self:drop( target )
-        love.mouse.setVisible( true )
+function UIInventoryDragboard:drag( item, origin )
+    assert( item and origin, 'Missing parameters.' )
+    love.mouse.setVisible( false )
+    self.dragContext = { item = item, origin = origin }
+end
 
-        if not target then
-            returnItemToOrigin( dragContext.item, dragContext.origin )
-        else
-            local success = target:drop( dragContext.item, dragContext.origin )
-            if not success then
-                returnItemToOrigin( dragContext.item, dragContext.origin )
-            end
+function UIInventoryDragboard:drop( target )
+    love.mouse.setVisible( true )
+
+    if not target then
+        returnItemToOrigin( self.dragContext.item, self.dragContext.origin )
+    else
+        local success = target:drop( self.dragContext.item, self.dragContext.origin )
+        if not success then
+            returnItemToOrigin( self.dragContext.item, self.dragContext.origin )
         end
-
-        self:clearDragContext()
     end
 
-    function self:hasDragContext()
-        return dragContext ~= nil
-    end
+    self:clearDragContext()
+end
 
-    function self:getDragContext()
-        return dragContext
-    end
+function UIInventoryDragboard:hasDragContext()
+    return self.dragContext ~= nil
+end
 
-    function self:clearDragContext()
-        dragContext = nil
-    end
+function UIInventoryDragboard:getDragContext()
+    return self.dragContext
+end
 
-    function self:getDraggedItem()
-        return dragContext.item
-    end
+function UIInventoryDragboard:clearDragContext()
+    self.dragContext = nil
+end
 
-    return self
+function UIInventoryDragboard:getDraggedItem()
+    return self.dragContext.item
 end
 
 return UIInventoryDragboard
