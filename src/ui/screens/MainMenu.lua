@@ -1,3 +1,7 @@
+---
+-- @module MainMenu
+--
+
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local UIButton = require( 'src.ui.elements.UIButton' )
