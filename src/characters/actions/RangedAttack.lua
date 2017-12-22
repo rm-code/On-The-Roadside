@@ -45,7 +45,7 @@ function RangedAttack:perform()
         return true
     end)
 
-    local package = ProjectileQueue.new( self.character, ax, ay, th )
+    local package = ProjectileQueue( self.character, ax, ay, th )
     ProjectileManager.register( package )
     return true
 end
