@@ -10,7 +10,7 @@
 local Class          = require( 'lib.Middleclass' )
 local Bresenham      = require( 'lib.Bresenham' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
-local VectorMath     = require( 'src.util.VectorMath' )
+local Util           = require( 'src.util.Util' )
 local TexturePacks   = require( 'src.ui.texturepacks.TexturePacks' )
 local AttackInput    = require( 'src.turnbased.helpers.AttackInput' )
 
@@ -152,7 +152,7 @@ function ConeOverlay:generate()
         -- Shoot multiple rays from the negative to the positive maxima for the
         -- weapon's "spread" angle.
         for angle = -deviation, deviation, 0.2 do
-            local nx, ny = VectorMath.rotate( px, py, tx, ty, angle )
+            local nx, ny = Util.rotateVector( px, py, tx, ty, angle )
             status = 1
             Bresenham.line( px, py, nx, ny, callback )
         end

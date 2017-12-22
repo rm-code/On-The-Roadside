@@ -13,6 +13,33 @@ local Util = {}
 -- ------------------------------------------------
 
 ---
+-- Rotates the target position by the given angle.
+-- @tparam  number px     The vector's origin along the x-axis.
+-- @tparam  number py     The vector's origin along the y-axis.
+-- @tparam  number tx     The vector's target along the x-axis.
+-- @tparam  number ty     The vector's target along the y-axis.
+-- @tparam  number angle  The angle by which to rotate the vector.
+-- @tparam  number factor Change the vector's magnitude.
+-- @treturn number        The new target along the x-axis.
+-- @treturn number        The new target along the y-axis.
+--
+function Util.rotateVector( px, py, tx, ty, angle, factor )
+    local vx, vy = tx - px, ty - py
+
+    factor = factor or 1
+    vx = vx * factor
+    vy = vy * factor
+
+    -- Transform angle from degrees to radians.
+    angle = math.rad( angle )
+
+    local nx = vx * math.cos( angle ) - vy * math.sin( angle )
+    local ny = vx * math.sin( angle ) + vy * math.cos( angle )
+
+    return px + nx, py + ny
+end
+
+---
 -- Gets all tiles within a certain radius around the center tile.
 -- @tparam  Map    map        The map to get the tiles from.
 -- @tparam  Tile   centerTile The center of the circle around which to get the tiles.
