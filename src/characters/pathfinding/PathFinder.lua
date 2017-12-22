@@ -15,13 +15,6 @@ local Path = require( 'src.characters.pathfinding.Path' )
 local PathFinder = {}
 
 -- ------------------------------------------------
--- Constants
--- ------------------------------------------------
-
-local DIRECTION = require( 'src.constants.DIRECTION' )
-local SQRT = math.sqrt( 2 )
-
--- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
@@ -34,22 +27,7 @@ local SQRT = math.sqrt( 2 )
 local function calculateHeuristic( a, b )
     local distanceX = math.abs( a:getX() - b:getX() )
     local distanceY = math.abs( a:getY() - b:getY() )
-    return math.max( distanceX, distanceY )
-end
-
----
--- Use a modifier for diagonal movement.
--- @param direction (string) The direction to get the modifier for.
--- @return          (number) The modifier.
---
-local function getDirectionModifier( direction )
-    if direction == DIRECTION.NORTH_EAST
-    or direction == DIRECTION.NORTH_WEST
-    or direction == DIRECTION.SOUTH_EAST
-    or direction == DIRECTION.SOUTH_WEST then
-        return SQRT
-    end
-    return 1
+    return (distanceX + distanceY) - 0.9 * math.min( distanceX, distanceY )
 end
 
 ---
@@ -216,7 +194,7 @@ function PathFinder.generatePath( start, target, stance )
             -- Check if the tile is valid to use in our path.
             if isValidTile( tile, closedList, target ) then
                 local cost = calculateCost( tile, target, stance )
-                local g = current.g + cost * getDirectionModifier( direction )
+                local g = current.g + cost
                 local f = g + calculateHeuristic( tile, target )
 
                 -- Check if the tile is in the open list. If it is not, then
