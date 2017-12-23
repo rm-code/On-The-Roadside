@@ -35,7 +35,7 @@ function CombatScreen:initialize( playerFaction, savegame )
     self.camera = Camera( mw, mh, tw, th )
 
     self.userInterface = UserInterface( self.combatState, self.camera )
-    self.overlayPainter = OverlayPainter.new( self.combatState, self.camera )
+    self.overlayPainter = OverlayPainter( self.combatState, self.camera )
 
     self.observations = {}
     self.observations[#self.observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
