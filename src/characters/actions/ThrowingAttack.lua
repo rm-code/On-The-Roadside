@@ -40,7 +40,7 @@ function ThrowingAttack:perform()
         return true
     end)
 
-    local package = ThrownProjectileQueue.new( self.character, ax, ay, th )
+    local package = ThrownProjectileQueue( self.character, ax, ay, th )
     ProjectileManager.register( package )
     return true
 end
