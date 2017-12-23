@@ -34,7 +34,7 @@ function CombatScreen:initialize( playerFaction, savegame )
     local mw, mh = self.combatState:getMap():getDimensions()
     self.camera = Camera( mw, mh, tw, th )
 
-    self.userInterface = UserInterface.new( self.combatState, self.camera )
+    self.userInterface = UserInterface( self.combatState, self.camera )
     self.overlayPainter = OverlayPainter.new( self.combatState, self.camera )
 
     self.observations = {}
