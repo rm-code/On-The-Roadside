@@ -142,11 +142,6 @@ function MainMenu:initialize()
 
     self.footer = UICopyrightFooter()
 
-    -- Flush the LuaJIT cache to prevent memory leaks caused by cached
-    -- upvalues and closures.
-    -- @see https://github.com/LuaJIT/LuaJIT/issues/303
-    jit.flush()
-
     collectgarbage( 'collect' )
 end
 
