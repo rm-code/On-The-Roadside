@@ -1,3 +1,38 @@
+# Version 0.13.0.1401 - 2017-12-24
+
+## Additions
+- Added connected sprites for walls and fences.
+- Added custom item sprites and colors.
+- Added versioning for the settings file. If the game detects an outdated file, it will replace it with the updated one.
+- Added new section to the options screen which allows the reconfiguration of keybindings.
+- Added key controls for panning the camera.
+- Added option to activate mouse panning (deactivated by default).
+
+## Removals
+- Removed map exploration. Instead of hiding unexplored tiles, the map is now fully visible to the player. Tiles which can't be seen by the player's characters are still drawn in greyscale.
+- Removed restrictions for the pathfinding algorithm. Characters can now find a path from one side of the map to the other (but it might take a while). Performance improvements for the pathfinding are being worked on as well.
+- Removed manual flushing of LuaJIT cache. This was necessary originally since LuaJIT had troubles freeing memory with the closure based approach to oop used before. Now that all classes are using a metatable based approach the garbage collector works as expected.
+
+## Fixes
+- Fixed badly placed windows in small house prefab.
+- Fixed prefab-editor being updated and drawn when menu is open.
+- Fixed settings screen warning about unsaved changes even if none of the values had changed.
+- Fixed faulty offset between sections in changelog screen.
+- Fixed the heuristic of the pathfinding module for diagonal movement.
+- Fixed volume calculation for backpacks dropped at invalid locations (e.g. outside of the inventory screen).
+
+## Other Changes
+- Changed translator warnings so they are only logged once.
+- Changed spawnpoints to ignore certain tiles (e.g. shallow water).
+- Changed input dialog to only delete the full text the first time backspace is pressed. Every press after that will only remove a single character.
+- Changed health screen to give better indication of a character's current health and status.
+- Changed controls to be saved in and loaded from the settings file instead of being hardcoded.
+- Changed pathfinding algorithm to prevent pathfinding to invalid target tiles
+- Changed threshold for dying from bleeding. A creature now dies when its blood volume reaches 50%.
+
+
+
+
 # Version 0.12.2.1222 - 2017-11-29
 
 ## Fixes
