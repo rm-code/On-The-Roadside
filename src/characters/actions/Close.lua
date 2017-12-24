@@ -1,27 +1,44 @@
-local Action = require('src.characters.actions.Action');
-local Messenger = require( 'src.Messenger' );
+---
+-- This Action is used when a character closes an openable world object.
+-- @module Close
+--
 
-local Close = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Close.new( character, tile )
-    local self = Action.new( tile:getWorldObject():getInteractionCost( character:getStance() ), tile ):addInstance( 'Close' );
+local Action = require( 'src.characters.actions.Action' )
+local Messenger = require( 'src.Messenger' )
 
-    function self:perform()
-        local target = tile:getWorldObject();
-        assert( target:isOpenable(), 'Target needs to be openable!' );
-        assert( target:isPassable(), 'Target tile needs to be passable!' );
-        assert( tile:isAdjacent( character:getTile() ), 'Character has to be adjacent to the target tile!' );
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        Messenger.publish( 'ACTION_DOOR' );
+local Close = Action:subclass( 'Close' )
 
-        target:setPassable( false );
-        target:setBlocksVision( true );
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        tile:setDirty( true );
-        return true;
-    end
-
-    return self;
+function Close:initialize( character, target )
+    Action.initialize( self, character, target, target:getWorldObject():getInteractionCost( character:getStance() ))
 end
 
-return Close;
+function Close:perform()
+    local targetObject = self.target:getWorldObject()
+    assert( targetObject:isOpenable(), 'Target needs to be openable!' )
+    assert( targetObject:isPassable(), 'Target tile needs to be passable!' )
+    assert( self.target:isAdjacent( self.character:getTile() ), 'Character has to be adjacent to the target tile!' )
+
+    Messenger.publish( 'ACTION_DOOR' )
+
+    -- Update the WorldObject.
+    targetObject:setPassable( false )
+    targetObject:setBlocksVision( true )
+
+    -- Mark target tile for update.
+    self.target:setDirty( true )
+    return true
+end
+
+return Close

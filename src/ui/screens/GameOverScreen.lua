@@ -7,7 +7,7 @@
 -- ------------------------------------------------
 
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local Translator = require( 'src.util.Translator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
@@ -18,7 +18,7 @@ local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 -- Module
 -- ------------------------------------------------
 
-local GameOverScreen = {}
+local GameOverScreen = Screen:subclass( 'GameOverScreen' )
 
 -- ------------------------------------------------
 -- Constants
@@ -28,83 +28,66 @@ local UI_GRID_WIDTH  = 30
 local UI_GRID_HEIGHT = 16
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function GameOverScreen.new()
-    local self = Screen.new()
+---
+-- Generates the outlines for this screen.
+-- @tparam  number     x The origin of the screen along the x-axis.
+-- @tparam  number     y The origin of the screen along the y-axis.
+-- @treturn UIOutlines   The newly created UIOutlines instance.
+--
+local function generateOutlines( x, y )
+    local outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
-
-    local text
-    local outlines
-    local background
-    local x, y
-    local win
-    local playerFaction
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Generates the outlines for this screen.
-    --
-    local function generateOutlines()
-        outlines = UIOutlines( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        -- Horizontal borders.
-        for ox = 0, UI_GRID_WIDTH-1 do
-            outlines:add( ox, 0                ) -- Top
-            outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
-        end
-
-        -- Vertical outlines.
-        for oy = 0, UI_GRID_HEIGHT-1 do
-            outlines:add( 0,               oy ) -- Left
-            outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
-        end
-
-        outlines:refresh()
+    -- Horizontal borders.
+    for ox = 0, UI_GRID_WIDTH-1 do
+        outlines:add( ox, 0                ) -- Top
+        outlines:add( ox, UI_GRID_HEIGHT-1 ) -- Bottom
     end
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    function self:init( nplayerFaction, nwin )
-        playerFaction = nplayerFaction
-        win = nwin
-
-        x, y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        background = UIBackground( x, y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
-        generateOutlines()
-
-        text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
+    -- Vertical outlines.
+    for oy = 0, UI_GRID_HEIGHT-1 do
+        outlines:add( 0,               oy ) -- Left
+        outlines:add( UI_GRID_WIDTH-1, oy ) -- Right
     end
 
-    function self:draw()
-        background:draw()
-        outlines:draw()
+    outlines:refresh()
+    return outlines
+end
 
-        local tw, th = TexturePacks.getTileDimensions()
-        love.graphics.printf( text, x * tw, (y+6) * th, UI_GRID_WIDTH * tw, 'center' )
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function GameOverScreen:initialize( playerFaction, win )
+    self.playerFaction = playerFaction
+    self.win = win
+
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+    self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+
+    self.outlines = generateOutlines( self.x, self.y )
+
+    self.text = self.win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
+end
+
+function GameOverScreen:draw()
+    self.background:draw()
+    self.outlines:draw()
+
+    local tw, th = TexturePacks.getTileDimensions()
+    love.graphics.printf( self.text, self.x * tw, (self.y+6) * th, UI_GRID_WIDTH * tw, 'center' )
+end
+
+function GameOverScreen:keypressed()
+    if self.win then
+        ScreenManager.pop()
+        ScreenManager.push( 'base', self.playerFaction )
+    else
+        ScreenManager.switch( 'mainmenu' )
     end
-
-    function self:keypressed()
-        if win then
-            ScreenManager.pop()
-            ScreenManager.push( 'base', playerFaction )
-        else
-            ScreenManager.switch( 'mainmenu' )
-        end
-    end
-
-    return self
 end
 
 return GameOverScreen

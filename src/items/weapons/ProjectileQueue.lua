@@ -1,142 +1,157 @@
-local Projectile = require( 'src.items.weapons.Projectile' );
-local ProjectilePath = require( 'src.items.weapons.ProjectilePath' );
-local Queue = require( 'src.util.Queue' );
-local Messenger = require( 'src.Messenger' );
+---
+-- @module ProjectileQueue
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Class = require( 'lib.Middleclass' )
+local Projectile = require( 'src.items.weapons.Projectile' )
+local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
+local Queue = require( 'src.util.Queue' )
+local Messenger = require( 'src.Messenger' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local ProjectileQueue = {};
+local ProjectileQueue = Class( 'ProjectileQueue' )
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
+-- ------------------------------------------------
+
+---
+-- Enqueues projectiles based on the amount specified by the weapon's current
+-- attack mode.
+-- @tparam  Weapon weapon The weapon to generate the projectiles for.
+-- @tparam  Queue  queue  The queue to fill.
+-- @treturn number        The amount of shots fired from the weapon.
+--
+local function calculateShots( weapon, queue )
+    local shots = math.min( weapon:getMagazine():getNumberOfRounds(), weapon:getAttacks() )
+    for i = 1, shots do
+        queue:enqueue( weapon:getMagazine():getRound( i ))
+    end
+    return shots
+end
+
+---
+-- Removes a projectile from the queue and adds it to the table of active
+-- projectiles.
+--
+local function spawnProjectile( queue, character, weapon, shots, projectiles, tx, ty, th, index )
+    local round = queue:dequeue()
+
+    local path = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - queue:getSize() )
+    local projectile = Projectile( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
+
+    -- Play sound and remove the round from the magazine.
+    Messenger.publish( 'SOUND_ATTACK', weapon )
+    weapon:getMagazine():removeRound()
+
+    -- Spawn projectiles for the spread shot.
+    if round:getEffects():spreadsOnShot() then
+        for _ = 1, round:getEffects():getPellets() do
+            index = index + 1
+            local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - queue:getSize() )
+            projectiles[index] = Projectile( character, spreadTiles, weapon:getDamage(), round:getDamageType(), round:getEffects() )
+        end
+        return
+    end
+
+    -- Spawn default projectile.
+    index = index + 1
+    projectiles[index] = projectile
+    return index
+end
+
+
+-- ------------------------------------------------
+-- Public Methods
 -- ------------------------------------------------
 
 ---
 -- Creates a new ProjectileQueue.
--- @param character (Character)       The character who started the attack.
--- @tparam number tx                   The target's x-coordinate.
--- @tparam number ty                   The target's y-coordinate.
--- @tparam number th                   The target's height.
--- @return          (ProjectileQueue) A new instance of the ProjectileQueue class.
 --
-function ProjectileQueue.new( character, tx, ty, th )
-    local self = {};
+-- @tparam Character Character The character who started the attack.
+-- @tparam number    tx        The target's x-coordinate.
+-- @tparam number    ty        The target's y-coordinate.
+-- @tparam number    th        The target's height.
+-- @treturn ProjectileQueue A new instance of the ProjectileQueue class.
+--
+function ProjectileQueue:initialize( character, tx, ty, th )
+    self.character = character
+    self.targetX = tx
+    self.targetY = ty
+    self.targetHeight = th
 
-    local ammoQueue = Queue.new();
-    local shots;
-    local projectiles = {};
-    local index = 0;
-    local timer = 0;
-    local weapon = character:getWeapon();
+    self.weapon = character:getWeapon()
 
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
+    self.queue = Queue()
+    self.projectiles = {}
+    self.index = 0
+    self.timer = 0
 
-    ---
-    -- Removes a projectile from the queue and adds it to the table of active
-    -- projectiles.
-    --
-    local function spawnProjectile()
-        local round = ammoQueue:dequeue();
-
-        local path = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - ammoQueue:getSize() )
-        local projectile = Projectile.new( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
-
-        -- Play sound and remove the round from the magazine.
-        Messenger.publish( 'SOUND_ATTACK', weapon );
-        weapon:getMagazine():removeRound();
-
-        -- Spawn projectiles for the spread shot.
-        if round:getEffects():spreadsOnShot() then
-            for _ = 1, round:getEffects():getPellets() do
-                index = index + 1;
-                local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - ammoQueue:getSize() )
-                projectiles[index] = Projectile.new( character, spreadTiles, weapon:getDamage(), round:getDamageType(), round:getEffects() );
-            end
-            return;
-        end
-
-        -- Spawn default projectile.
-        index = index + 1;
-        projectiles[index] = projectile;
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Generates projectiles based on the weapons firing mode. The value is
-    -- limited by the amount of rounds in the weapon's magazine. For each
-    -- projectile an angle of deviation is calculated before it is placed in
-    -- the queue.
-    --
-    function self:init()
-        shots = math.min( weapon:getMagazine():getNumberOfRounds(), weapon:getAttacks() );
-        for i = 1, shots do
-            ammoQueue:enqueue( weapon:getMagazine():getRound( i ));
-        end
-    end
-
-    ---
-    -- Spawns a new projectile after a certain delay defined by the weapon's
-    -- rate of fire.
-    --
-    function self:update( dt )
-        timer = timer - dt;
-        if timer <= 0 and not ammoQueue.isEmpty() then
-            spawnProjectile();
-            timer = weapon:getFiringDelay();
-        end
-    end
-
-    ---
-    -- Removes a projectile from the table of active projectiles.
-    -- @param id (number) The id of the projectile to remove.
-    --
-    function self:removeProjectile( id )
-        projectiles[id] = nil;
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    ---
-    -- Gets the character this attack was performed by.
-    -- @return (Character) The character.
-    --
-    function self:getCharacter()
-        return character;
-    end
-
-    ---
-    -- Gets the table of projectiles which are active on the map.
-    -- @return (table) A table containing the projectiles.
-    function self:getProjectiles()
-        return projectiles;
-    end
-
-    ---
-    -- Checks if this ProjectileQueue is done with all the projectiles.
-    -- @return (boolean) True if it is done.
-    --
-    function self:isDone()
-        if not ammoQueue:isEmpty() then
-            return false;
-        end
-
-        local count = 0;
-        for _, _ in pairs( projectiles ) do
-            count = count + 1;
-        end
-        return count == 0;
-    end
-
-    return self;
+    self.shots = calculateShots( self.weapon, self.queue )
 end
 
-return ProjectileQueue;
+---
+-- Spawns a new projectile after a certain delay defined by the weapon's
+-- rate of fire.
+-- @tparam number dt Time since the last update in seconds.
+--
+function ProjectileQueue:update( dt )
+    self.timer = self.timer - dt
+    if self.timer <= 0 and not self.queue:isEmpty() then
+        spawnProjectile( self.queue, self.character, self.weapon, self.shots, self.projectiles, self.targetX, self.targetY, self.targetHeight, self.index )
+        self.timer = self.weapon:getFiringDelay()
+    end
+end
+
+---
+-- Removes a projectile from the table of active projectiles.
+-- @tparam number id The id of the projectile to remove.
+--
+function ProjectileQueue:removeProjectile( id )
+    self.projectiles[id] = nil
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Gets the character this attack was performed by.
+-- @treturn Character The character.
+--
+function ProjectileQueue:getCharacter()
+    return self.character
+end
+
+---
+-- Gets the table of projectiles which are active on the map.
+-- @treturn table A table containing the projectiles.
+--
+function ProjectileQueue:getProjectiles()
+    return self.projectiles
+end
+
+---
+-- Checks if this ProjectileQueue is done with all the projectiles.
+-- @treturn boolean True if it is done.
+--
+function ProjectileQueue:isDone()
+    if not self.queue:isEmpty() then
+        return false
+    end
+
+    local count = 0
+    for _, _ in pairs( self.projectiles ) do
+        count = count + 1
+    end
+    return count == 0
+end
+
+return ProjectileQueue

@@ -1,22 +1,36 @@
-local Item = require( 'src.items.Item' );
+---
+-- @module Armor
+--
 
-local Armor = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function Armor.new( template )
-    local self = Item.new( template ):addInstance( 'Armor' );
+local Item = require( 'src.items.Item' )
 
-    local armorProtection = template.armor.protection;
-    local armorCoverage = template.armor.coverage;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:getArmorProtection()
-        return armorProtection;
-    end
+local Armor = Item:subclass( 'Armor' )
 
-    function self:getArmorCoverage()
-        return armorCoverage;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    return self;
+function Armor:initialize( template )
+    Item.initialize( self, template )
+
+    self.armorProtection = template.armor.protection
+    self.armorCoverage = template.armor.coverage
 end
 
-return Armor;
+function Armor:getArmorProtection()
+    return self.armorProtection
+end
+
+function Armor:getArmorCoverage()
+    return self.armorCoverage
+end
+
+return Armor

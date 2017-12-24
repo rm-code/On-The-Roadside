@@ -70,7 +70,7 @@ end
 function TileFactory.create( x, y, id )
     local template = tiles[id]
     assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ))
-    return Tile.new( x, y, template )
+    return Tile( x, y, template.id, template.movementCost, template.passable, template.spawn )
 end
 
 ---

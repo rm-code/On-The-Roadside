@@ -1,42 +1,52 @@
-local Pulser = {};
+---
+-- @module Pulser
+--
 
-function Pulser.new( nspeed, noffset, nrange )
-    local self = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-    local speed = nspeed or 1;
-    local offset = noffset or 1;
-    local range = nrange or 1;
-    local timer = 0;
-    local value;
+local Class = require( 'lib.Middleclass' )
 
-    -- ------------------------------------------------
-    -- Public Functions
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    ---
-    -- Returns gradually changing values between 0 and 1 which can be used to
-    -- make elements slowly pulsate.
-    -- @param dt (number) The time since the last update in seconds.
-    --
-    function self:update( dt )
-        timer = timer + dt * speed;
-        local sin = math.sin( timer );
-        value = math.abs( sin ) * range + offset;
-    end
+local Pulser = Class( 'Middleclass' )
 
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    ---
-    -- Returns the pulse value.
-    -- @return (number) A value between 0 and 1.
-    --
-    function self:getPulse()
-        return value;
-    end
+function Pulser:initialize( speed, offset, range )
+    self.speed = speed or 1
+    self.offset = offset or 1
+    self.range = range or 1
 
-    return self;
+    self.timer = 0
+    self.value = 0
 end
 
-return Pulser;
+---
+-- Returns gradually changing values between 0 and 1 which can be used to
+-- make elements slowly pulsate.
+-- @tparam number dt The time since the last update in seconds.
+--
+function Pulser:update( dt )
+    self.timer = self.timer + dt * self.speed
+    self.value = math.abs( math.sin( self.timer )) * self.range + self.offset
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns the pulse value.
+-- @treturn number A value between 0 and 1.
+--
+function Pulser:getPulse()
+    return self.value
+end
+
+return Pulser

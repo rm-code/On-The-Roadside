@@ -77,12 +77,14 @@ function love.load( args )
         mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'          ),
         prefabeditor     = require( 'src.ui.screens.PrefabEditor'           ),
         prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'       ),
-        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  )
+        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  ),
+        keybindingeditor = require( 'src.ui.screens.KeybindingScreen' ),
+        keybindingmodal = require( 'src.ui.screens.KeybindingModal' ),
     }
 
     ScreenManager.init( screens, 'bootloading' )
 
-    letterbox = Letterbox.new()
+    letterbox = Letterbox()
 end
 
 function love.draw()
@@ -105,6 +107,10 @@ end
 
 function love.keypressed( key, scancode, isrepeat )
     ScreenManager.keypressed( key, scancode, isrepeat )
+end
+
+function love.keyreleased( key, scancode )
+    ScreenManager.keyreleased( key, scancode )
 end
 
 function love.resize( w, h )

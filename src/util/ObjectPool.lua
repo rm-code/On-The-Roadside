@@ -1,43 +1,49 @@
-local Object = require( 'src.Object' );
-local Queue = require( 'src.util.Queue' );
+---
+-- @module ObjectPool
+--
 
-local ObjectPool = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function ObjectPool.new( class, type )
-    local self = Object.new():addInstance( 'ObjectPool' );
+local Class = require( 'lib.Middleclass' )
+local Queue = require( 'src.util.Queue' )
 
-    local queue = Queue.new();
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:request( ... )
-        local object;
+local ObjectPool = Class( 'ObjectPool' )
 
-        if queue:isEmpty() then
-            object = class.new();
-            queue:enqueue( object );
-        end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-        object = queue:dequeue();
-        object:setParameters( ... )
-        return object;
-    end
-
-    function self:deposit( object )
-        if type and object:instanceOf( type ) then
-            object:clear();
-            queue:enqueue( object );
-        else
-            local list = "";
-            for i, v in pairs( object.__instances ) do
-                list = list .. v;
-                if i ~= #object.__instances then
-                    list = list .. ', ';
-                end
-            end
-            error( string.format( "Object (%s) isn't an instance of the class type required for this ObjectPool (%s).", list, type ));
-        end
-    end
-
-    return self;
+function ObjectPool:initialize( class )
+    self.class = class
+    self.queue = Queue()
 end
 
-return ObjectPool;
+function ObjectPool:request( ... )
+    local object
+
+    if self.queue:isEmpty() then
+        object = self.class()
+        self.queue:enqueue( object )
+    end
+
+    object = self.queue:dequeue()
+    object:setParameters( ... )
+    return object
+end
+
+function ObjectPool:deposit( object )
+    if object:isInstanceOf( self.class ) then
+        object:clear()
+        self.queue:enqueue( object )
+    else
+        error( string.format( "Object (%s) isn't an instance of the class type required for this ObjectPool (%s).", object, self.class ))
+    end
+end
+
+return ObjectPool

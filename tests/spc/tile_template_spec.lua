@@ -7,27 +7,29 @@ describe( 'Tile template spec', function()
         templates = require( FILE_PATH )
     end)
 
-    it( 'makes sure all tile templates have and id', function()
+    it( 'makes sure all tile templates have an id', function()
         for i, template in ipairs( templates ) do
-            assert.is.truthy( template.id, string.format( "Index number %d.", i ))
+            assert.not_nil( template.id, string.format( "Index number %d.", i ))
         end
     end)
 
-    it( 'makes sure all passable tiles have movement costs', function()
+    it( 'makes sure all passable tiles have their necessary fields', function()
         for _, template in ipairs( templates ) do
             if template.passable then
-                assert.is.truthy( template.movementCost,        template.id )
-                assert.is.truthy( template.movementCost.stand,  template.id )
-                assert.is.truthy( template.movementCost.crouch, template.id )
-                assert.is.truthy( template.movementCost.prone,  template.id )
+                assert.not_nil( template.movementCost,        template.id )
+                assert.not_nil( template.movementCost.stand,  template.id .. ' => stand'  )
+                assert.not_nil( template.movementCost.crouch, template.id .. ' => crouch'  )
+                assert.not_nil( template.movementCost.prone,  template.id .. ' => prone'  )
+                assert.not_nil( template.spawn, template.id )
             end
         end
     end)
 
-    it( 'makes sure all impassable tiles have no movement costs', function()
+    it( 'makes sure all impassable tiles have their necessary fields', function()
         for _, template in ipairs( templates ) do
             if not template.passable then
-                assert.is.falsy( template.movementCost,        template.id )
+                assert.is_nil( template.movementCost, template.id )
+                assert.is_nil( template.spawn, template.id )
             end
         end
     end)

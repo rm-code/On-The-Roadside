@@ -8,6 +8,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         caliber    = "5.45x39mm",
         sound      = 'ASSAULT_RIFLE',
         subType    = "Ranged",
@@ -29,9 +32,6 @@ return {
                 accuracy = 40,
                 attacks  = 5,
             }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -43,6 +43,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Ranged",
         caliber    = "OG-7V",
         sound      = 'ROCKET_LAUNCHER',
@@ -57,9 +60,6 @@ return {
                 accuracy = 65,
                 attacks = 1,
             }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -71,6 +71,9 @@ return {
         equippable = true,
         stackable  = false,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Ranged",
         caliber    = "12_gauge",
         sound      = 'SHOTGUN',
@@ -85,9 +88,6 @@ return {
                 accuracy = 25,
                 attacks = 1,
             }
-        },
-        tags = {
-            'humanoid'
         }
     }
 }

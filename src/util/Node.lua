@@ -1,39 +1,46 @@
-local Object = require('src.Object');
-
-local Node = {};
-
 ---
--- Creates a node to be used in a linked list.
--- @param object (Object) The object to store in this Node.
--- @return       (Node)   The newly created node.
+-- A node to be used in a linked list.
+-- @module Node
 --
-function Node.new( object )
-    local self = Object.new():addInstance( 'Node' );
 
-    local next;
-    local prev;
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-    function self:linkNext( node )
-        next = node;
-    end
+local Class = require( 'lib.Middleclass' )
 
-    function self:linkPrev( node )
-        prev = node;
-    end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:getNext()
-        return next;
-    end
+local Node = Class( 'Node' )
 
-    function self:getPrev()
-        return prev;
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:getObject()
-        return object;
-    end
-
-    return self;
+function Node:initialize( object )
+    self.object = object
 end
 
-return Node;
+function Node:linkNext( node )
+    self.next = node
+end
+
+function Node:linkPrev( node )
+    self.prev = node
+end
+
+function Node:getNext()
+    return self.next
+end
+
+function Node:getPrev()
+    return self.prev
+end
+
+function Node:getObject()
+    return self.object
+end
+
+return Node

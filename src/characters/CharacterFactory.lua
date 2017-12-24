@@ -144,7 +144,7 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character.new()
+    local character = Character()
 
     character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints );
@@ -163,7 +163,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
 end
 
 function CharacterFactory.newCharacter( type, factionType )
-    local character = Character.new()
+    local character = Character()
 
     if type == 'human' then
         local nationality = chooseNationality()

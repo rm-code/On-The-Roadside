@@ -1,5 +1,5 @@
 local Bresenham = require( 'lib.Bresenham' );
-local VectorMath = require( 'src.util.VectorMath' );
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -219,7 +219,7 @@ function ProjectilePath.calculate( character, tx, ty, th, weapon, count )
     local origin = character:getTile();
     local px, py = origin:getPosition();
 
-    local nx, ny = VectorMath.rotate( px, py, tx, ty, actualDeviation, love.math.random( 90, 130 ) / 100 )
+    local nx, ny = Util.rotateVector( px, py, tx, ty, actualDeviation, love.math.random( 90, 130 ) / 100 )
     nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
 
     -- Determine the height falloff for the projectile.

@@ -1,27 +1,31 @@
-local Item = require( 'src.items.Item' );
-
-local Container = {};
+---
+-- @module Container
+--
 
 -- ------------------------------------------------
--- Constructor
+-- Required Modules
 -- ------------------------------------------------
 
-function Container.new( template )
-    local self = Item.new( template ):addInstance( 'Container' );
+local Item = require( 'src.items.Item' )
 
-    function self:getCarryCapacity()
-        return template.carryCapacity;
-    end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:serialize()
-        local t = {
-            ['id'] = template.id,
-            ['itemType'] = template.itemType
-        };
-        return t;
-    end
+local Container = Item:subclass( 'Container' )
 
-    return self;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function Container:initialize( template )
+    Item.initialize( self, template )
+
+    self.carryCapacity = template.carryCapacity
 end
 
-return Container;
+function Container:getCarryCapacity()
+    return self.carryCapacity
+end
+
+return Container

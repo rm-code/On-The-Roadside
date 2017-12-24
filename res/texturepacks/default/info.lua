@@ -11,7 +11,7 @@ return {
     font = {
         source = 'imagefont.png',
         glyphs = {
-            source = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÖÜäöü0123456789.,:;!?-+/()[]%&"\'*=_<>ß^©',
+            source = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÖÜäöü0123456789.,:;!?-+/()[]%&"\'*=_<>ß^©|',
             width = 8,
             height = 16
         }

@@ -8,12 +8,12 @@ return {
         equippable = false,
         stackable  = true,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         damageType = 'piercing',
         effects = {
             customSpeed = { speed = 35 }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -25,13 +25,13 @@ return {
         equippable = false,
         stackable  = true,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         damageType = 'piercing',
         effects = {
             spreadsOnShot = { pellets = 6 },
             customSprite  = { sprite = "12_gauge" }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -43,13 +43,13 @@ return {
         equippable = false,
         stackable  = true,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         damageType = 'explosive',
         effects = {
             explosive = { blastRadius = 5 },
             customSpeed = { speed = 12, increase = 1, final = 35 }
-        },
-        tags = {
-            'humanoid'
         }
     }
 }

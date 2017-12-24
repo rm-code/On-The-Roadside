@@ -6,7 +6,8 @@ return {
             crouch = 1,
             prone  = 2,
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_deep_water',
@@ -19,7 +20,8 @@ return {
             crouch = 1,
             prone  = 2,
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_gravel',
@@ -28,7 +30,8 @@ return {
             crouch = 1,
             prone  = 2,
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_soil',
@@ -37,7 +40,8 @@ return {
             crouch = 1,
             prone  = 2,
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_water',
@@ -46,7 +50,8 @@ return {
             crouch = 4,
             prone  = 6,
         },
-        passable = true
+        passable = true,
+        spawn = false
     },
     {
         id = 'tile_woodenfloor',
@@ -55,7 +60,8 @@ return {
             crouch = 1,
             prone  = 2,
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_carpet',
@@ -64,7 +70,8 @@ return {
             crouch = 1,
             prone  = 2
         },
-        passable = true
+        passable = true,
+        spawn = true
     },
     {
         id = 'tile_floortiles',
@@ -73,6 +80,7 @@ return {
             crouch = 1,
             prone  = 2
         },
-        passable = true
+        passable = true,
+        spawn = true
     }
 }

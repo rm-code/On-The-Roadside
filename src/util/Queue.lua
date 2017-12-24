@@ -1,39 +1,53 @@
-local Queue = {};
+---
+-- @module Queue
+--
 
-function Queue.new()
-    local self = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-    local queue = {};
+local Class = require( 'lib.Middleclass' )
 
-    function self:enqueue( item )
-        table.insert( queue, item );
-    end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    function self:dequeue()
-        return table.remove( queue, 1 );
-    end
+local Queue = Class( 'Queue' )
 
-    function self:peek()
-        return queue[1];
-    end
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:isEmpty()
-        return #queue == 0;
-    end
-
-    function self:getSize()
-        return #queue;
-    end
-
-    function self:clear()
-        queue = {};
-    end
-
-    function self:getItems()
-        return queue;
-    end
-
-    return self;
+function Queue:initialize()
+    self.queue = {}
 end
 
-return Queue;
+function Queue:enqueue( item )
+    table.insert( self.queue, item )
+end
+
+function Queue:dequeue()
+    return table.remove( self.queue, 1 )
+end
+
+function Queue:peek()
+    return self.queue[1]
+end
+
+function Queue:isEmpty()
+    return #self.queue == 0
+end
+
+function Queue:getSize()
+    return #self.queue
+end
+
+function Queue:clear()
+    self.queue = {}
+end
+
+function Queue:getItems()
+    return self.queue
+end
+
+return Queue

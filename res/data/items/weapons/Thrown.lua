@@ -8,6 +8,9 @@ return {
         equippable = true,
         stackable  = true,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Thrown",
         damage     = 80,
         reloadable = false,
@@ -23,9 +26,6 @@ return {
         effects = {
             explosive    = { blastRadius = 2 },
             customSprite = { sprite = "weapon_m67_grenade" }
-        },
-        tags = {
-            'humanoid'
         }
     },
     {
@@ -37,6 +37,9 @@ return {
         equippable = true,
         stackable  = true,
         permanent  = false,
+        tags = {
+            'humanoid'
+        },
         subType    = "Thrown",
         damage     = 24,
         reloadable = false,
@@ -51,9 +54,6 @@ return {
         },
         effects = {
             customSprite = { sprite = "weapon_shuriken" }
-        },
-        tags = {
-            'humanoid'
         }
     }
 }

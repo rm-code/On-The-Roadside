@@ -8,6 +8,8 @@
 
 local UIElement = require( 'src.ui.elements.UIElement' )
 local UIEquipmentSlot = require( 'src.ui.elements.inventory.UIEquipmentSlot' )
+local Container = require( 'src.items.Container' )
+local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -74,12 +76,12 @@ function UIEquipmentList:drag()
         if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
             local item = self.equipment:removeItem( uiItem:getSlot() )
 
-            if item:instanceOf( 'Container' ) then
+            if item:isInstanceOf( Container ) then
                 self.character:getInventory():dropItems( self.character:getTile() )
             end
 
             self:refresh()
-            return item, uiItem:getSlot()
+            return item, self.equipment, uiItem:getSlot()
         end
     end
 end
@@ -94,7 +96,7 @@ end
 --
 function UIEquipmentList:drop( item, origin )
     -- Stacks and unequippable items can't be dropped on equipment lists.
-    if item:instanceOf( 'ItemStack' ) or not item:isEquippable() then
+    if item:isInstanceOf( ItemStack ) or not item:isEquippable() then
         return false
     end
 

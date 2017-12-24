@@ -1,17 +1,31 @@
-local Action = require('src.characters.actions.Action');
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' );
+---
+-- @module OpenInventory
+--
 
-local OpenInventory = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function OpenInventory.new( character, target )
-    local self = Action.new( 0, target ):addInstance( 'OpenInventory' );
+local Action = require( 'src.characters.actions.Action' )
+local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 
-    function self:perform()
-        ScreenManager.push( 'inventory', character, target );
-        return true;
-    end
+-- ------------------------------------------------
+-- Required Module
+-- ------------------------------------------------
 
-    return self;
+local OpenInventory = Action:subclass( 'OpenInventory' )
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function OpenInventory:initialize( character, target )
+    Action.initialize( self, character, target, 0 )
 end
 
-return OpenInventory;
+function OpenInventory:perform()
+    ScreenManager.push( 'inventory', self.character, self.target )
+    return true
+end
+
+return OpenInventory

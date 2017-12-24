@@ -1,21 +1,31 @@
-local BTComposite = require( 'src.characters.ai.behaviortree.composite.BTComposite' );
+---
+-- @module BTSelector
+--
 
-local BTSelector = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTSelector.new()
-    local self = BTComposite.new():addInstance( 'BTSelector' );
+local BTComposite = require( 'src.characters.ai.behaviortree.composite.BTComposite' )
 
-    function self:traverse( ... )
-        for _, child in ipairs( self:getChildren() ) do
-            local success = child:traverse( ... );
-            if success then
-                return true;
-            end
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local BTSelector = BTComposite:subclass( 'BTSelector' )
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTSelector:traverse( ... )
+    for _, child in ipairs( self:getChildren() ) do
+        local success = child:traverse( ... )
+        if success then
+            return true
         end
-        return false;
     end
-
-    return self;
+    return false
 end
 
-return BTSelector;
+return BTSelector

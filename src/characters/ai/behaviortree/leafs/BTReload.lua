@@ -1,26 +1,36 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
-local Reload = require( 'src.characters.actions.Reload' );
+---
+-- @module BTReload
+--
 
-local BTReload = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTReload.new()
-    local self = BTLeaf.new():addInstance( 'BTReload' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
+local Reload = require( 'src.characters.actions.Reload' )
 
-    function self:traverse( ... )
-        local _, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local success = character:enqueueAction( Reload.new( character ));
-        if success then
-            Log.debug( 'Reloading weapon', 'BTReload' );
-            return true;
-        end
+local BTReload = BTLeaf:subclass( 'BTReload' )
 
-        Log.debug( 'Can not reload weapon', 'BTReload' );
-        return false;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTReload:traverse( ... )
+    local _, character = ...
+
+    local success = character:enqueueAction( Reload( character ))
+    if success then
+        Log.debug( 'Reloading weapon', 'BTReload' )
+        return true
     end
 
-    return self;
+    Log.debug( 'Can not reload weapon', 'BTReload' )
+    return false
 end
 
-return BTReload;
+return BTReload

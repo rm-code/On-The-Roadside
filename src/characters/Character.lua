@@ -1,566 +1,567 @@
-local Log = require( 'src.util.Log' );
-local Object = require('src.Object');
-local Queue = require('src.util.Queue');
-local Bresenham = require( 'lib.Bresenham' );
-local Util = require( 'src.util.Util' );
+---
+-- @module Character
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Class = require( 'lib.Middleclass' )
+local Log = require( 'src.util.Log' )
+local Queue = require('src.util.Queue')
+local Bresenham = require( 'lib.Bresenham' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Character = {};
+local Character = Class( 'Character' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local DEFAULT_ACTION_POINTS = 40;
+local DEFAULT_ACTION_POINTS = 40
 
 local STANCES = require( 'src.constants.STANCES' )
-local ITEM_TYPES = require('src.constants.ITEM_TYPES')
+local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
 ---
--- Creates a new character and places it on the target tile.
--- @treturn Character A new instance of the Character class.
+-- Marks a tile as seen by this character if it fullfills the necessary
+-- requirements. Used as a callback for Bresenham's line algorithm.
+-- @tparam  number    cx      The tile's coordinate along the x-axis.
+-- @tparam  number    cy      The tile's coordinate along the y-axis.
+-- @tparam  number    counter The number of tiles touched by the ray so far.
+-- @tparam  Character self    The character instance to use.
+-- @tparam  number    falloff Determines how much height the ray loses each step.
+-- @treturn boolean           Returns true if the tile can be seen by the character.
 --
-function Character.new()
-    local self = Object.new():addInstance( 'Character' );
-
-    -- ------------------------------------------------
-    -- Private Variables
-    -- ------------------------------------------------
-
-    local faction
-
-    local map
-    local tile
-
-    local name
-    local nationality
-
-    local actionPoints = DEFAULT_ACTION_POINTS;
-    local actions = Queue.new();
-    local fov = {};
-
-    local accuracy = love.math.random( 60, 90 );
-    local throwingSkill = love.math.random( 60, 90 );
-
-    local stance = STANCES.STAND;
-    local body;
-
-    local finishedTurn = false;
-
-    -- TODO Remove hack for saving / loading characters
-    local savedX, savedY
-
-    -- ------------------------------------------------
-    -- Private Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Marks a tile as seen by this character if it fullfills the necessary
-    -- requirements. Used as a callback for Bresenham's line algorithm.
-    -- @tparam  number  cx      The tile's coordinate along the x-axis.
-    -- @tparam  number  cy      The tile's coordinate along the y-axis.
-    -- @tparam  number  counter The number of tiles touched by the ray so far.
-    -- @tparam  number  falloff Determines how much height the ray loses each step.
-    -- @treturn boolean         Returns true if the tile can be seen by the character.
-    --
-    local function markSeenTiles( cx, cy, counter, falloff )
-        local target = map:getTileAt( cx, cy );
-        if not target then
-            return false;
-        end
-
-        -- Calculate the height of the ray on the current tile. If the height
-        -- is smaller than the tile's height it is marked as visible. This
-        -- simulates how small objects can be hidden behind bigger objects, but
-        -- not the other way around.
-        local height = self:getHeight() - (counter+1) * falloff
-        if height <= target:getHeight() then
-            -- Add tile to this character's FOV.
-            self:addSeenTile( cx, cy, target );
-
-            -- Mark tile as explored for this character's faction.
-            target:setExplored( faction:getType(), true );
-
-            -- Mark tile for drawing update.
-            target:setDirty( true );
-        end
-
-        -- A world object blocks vision if it has the "blocksVision" flag set
-        -- to true in its template file and if the ray is smaller than the world
-        -- object's size. This prevents characters from looking over bigger world
-        -- objects and allows smaller objects like low walls to cast a "shadow"
-        -- in which smaller objects could be hidden.
-        if  target:hasWorldObject()
-        and target:getWorldObject():blocksVision()
-        and height <= target:getWorldObject():getHeight() then
-            return false;
-        end
-
-        return true;
+local function markSeenTiles( cx, cy, counter, self, falloff )
+    local target = self.map:getTileAt( cx, cy )
+    if not target then
+        return false
     end
 
-    ---
-    -- Determine the height falloff for rays of the FOV calculation. This value
-    -- will be deducted from the ray's height for each tile the ray traverses.
-    -- @tparam  Tile   The target tile.
-    -- @tparam  number The distance to the target.
-    -- @treturn number The calculated falloff value.
-    --
-    local function calculateFalloff( target, steps )
-        local oheight = self:getHeight()
-        local theight = target:getHeight()
+    -- Calculate the height of the ray on the current tile. If the height
+    -- is smaller than the tile's height it is marked as visible. This
+    -- simulates how small objects can be hidden behind bigger objects, but
+    -- not the other way around.
+    local height = self:getHeight() - (counter+1) * falloff
+    if height <= target:getHeight() then
+        -- Add tile to this character's FOV.
+        self:addSeenTile( cx, cy, target )
 
-        local delta = oheight - theight;
-        return delta / steps;
+        -- Mark tile for drawing update.
+        target:setDirty( true )
     end
 
-    ---
-    -- Clears the list of seen tiles and marks them for a drawing update.
-    --
-    local function resetFOV()
-        for x, rx in pairs( fov ) do
-            for y, target in pairs( rx ) do
-                target:setDirty( true );
-                fov[x][y] = nil;
-            end
-        end
+    -- A world object blocks vision if it has the "blocksVision" flag set
+    -- to true in its template file and if the ray is smaller than the world
+    -- object's size. This prevents characters from looking over bigger world
+    -- objects and allows smaller objects like low walls to cast a "shadow"
+    -- in which smaller objects could be hidden.
+    if  target:hasWorldObject()
+    and target:getWorldObject():doesBlockVision()
+    and height <= target:getWorldObject():getHeight() then
+        return false
     end
 
-    ---
-    -- Drops all inventory and equipment items, removes the character from
-    -- the tile and resets the FOV information for this character.
-    --
-    local function handleDeath()
-        self:getEquipment():dropAllItems( tile )
-        self:getInventory():dropAllItems( tile )
-        tile:removeCharacter()
-        resetFOV()
-    end
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Called when this character is made active by the game.
-    --
-    function self:activate()
-        if self:isDead() then
-            return;
-        end
-        self:generateFOV();
-        self:clearActions();
-    end
-
-    ---
-    -- Adds a tile to this character's FOV.
-    -- @param tx     (number) The target-tile's position along the x-axis.
-    -- @param ty     (number) The target-tile's position along the y-axis.
-    -- @param target (Tile)   The target-tile.
-    --
-    function self:addSeenTile( tx, ty, target )
-        fov[tx] = fov[tx] or {};
-        fov[tx][ty] = target;
-    end
-
-    ---
-    -- Adds a new action to the action queue if the character has enough action
-    -- points to perform it.
-    -- @param naction (Action) The action to enqueue.
-    -- @return       (boolean) True if the action was enqueued.
-    --
-    function self:enqueueAction( naction )
-        local cost = 0;
-        for _, action in ipairs( actions:getItems() ) do
-            cost = cost + action:getCost();
-        end
-
-        if cost + naction:getCost() <= actionPoints then
-            actions:enqueue( naction );
-            return true;
-        end
-
-        Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' );
-        return false;
-    end
-
-    ---
-    -- Removes the next action from the action queue, reduces the action points
-    -- of the character by the action's cost and performs the action.
-    --
-    function self:performAction()
-        local action = actions:dequeue();
-        local success = action:perform();
-        if success then
-            actionPoints = actionPoints - action:getCost();
-        end
-        self:generateFOV();
-    end
-
-    ---
-    -- Cleas the action queue.
-    --
-    function self:clearActions()
-        actions:clear();
-    end
-
-    ---
-    -- Called when this character is made inactive by the game.
-    --
-    function self:deactivate()
-        if self:isDead() then
-            return;
-        end
-        self:generateFOV();
-        self:clearActions();
-    end
-
-    ---
-    -- Casts rays in a circle around the character to determine all tiles he can
-    -- see. Rays stop if they reach the map border or a world object which has
-    -- the blocksVision attribute set to true.
-    --
-    function self:generateFOV()
-        resetFOV()
-
-        local range = body:getStatusEffects():isBlind() and 1 or self:getViewRange();
-        local list = Util.getTilesInCircle( map, tile, range );
-        local sx, sy = tile:getPosition();
-
-        for _, ttile in ipairs( list ) do
-            local tx, ty = ttile:getPosition();
-            local _, counter = Bresenham.line( sx, sy, tx, ty );
-            local falloff = calculateFalloff( ttile, counter );
-            Bresenham.line( sx, sy, tx, ty, markSeenTiles, falloff );
-        end
-    end
-
-    ---
-    -- Resets the character's action points to the default value.
-    --
-    function self:resetActionPoints()
-        actionPoints = DEFAULT_ACTION_POINTS;
-    end
-
-    ---
-    -- Hits the character with damage.
-    -- @param damage (number) The amount of damage the character is hit with.
-    -- @param damageType (string) The type of damage the tile is hit with.
-    --
-    function self:hit( damage, damageType )
-        body:hit( damage, damageType );
-
-        self:generateFOV();
-
-        if self:isDead() then
-            handleDeath()
-        end
-    end
-
-    ---
-    -- Checks if the character can see a certain tile.
-    -- @param target (Tile)    The tile to check.
-    -- @return       (boolean) Wether the character sees the tile.
-    --
-    function self:canSee( target )
-        local tx, ty = target:getPosition();
-        if not fov[tx] then
-            return false;
-        end
-        return fov[tx][ty] ~= nil;
-    end
-
-    function self:tickOneTurn()
-        body:tickOneTurn();
-        if self:isDead() then
-            handleDeath()
-        end
-    end
-
-    function self:serialize()
-        local t = {
-            ['name'] = name,
-            ['actionPoints'] = actionPoints,
-            ['accuracy'] = accuracy,
-            ['throwingSkill'] = throwingSkill,
-            ['stance'] = stance,
-            ['finishedTurn'] = finishedTurn,
-            ['body'] = body:serialize(),
-            ['x'] = tile:getX(),
-            ['y'] = tile:getY()
-        }
-        return t;
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    ---
-    -- Returns the accuracy of this character used when shooting guns.
-    -- @return (number) The accuracy of the character.
-    --
-    function self:getAccuracy()
-        return accuracy;
-    end
-
-    ---
-    -- Returns the amount of action points.
-    -- @return (number) The amount of action points.
-    --
-    function self:getActionPoints()
-        return actionPoints;
-    end
-
-    ---
-    -- Returns the action queue.
-    -- @return (table) A sequence containing all actions.
-    --
-    function self:getActions()
-        return actions:getItems();
-    end
-
-    ---
-    -- Returns the action queue.
-    -- @return (Queue) A queue containing all actions.
-    --
-    function self:getActionQueue()
-        return actions;
-    end
-
-    function self:getBody()
-        return body;
-    end
-
-    ---
-    -- Returns the faction the character belongs to.
-    -- @return (Faction) The Faction object.
-    --
-    function self:getFaction()
-        return faction;
-    end
-
-    ---
-    -- Returns the character's equipment.
-    -- @return (Equipment) The character's equipment.
-    --
-    function self:getEquipment()
-        return body:getEquipment();
-    end
-
-    ---
-    -- Returns the character's inventory.
-    -- @return (Equipment) The character's inventory.
-    --
-    function self:getInventory()
-        return body:getInventory();
-    end
-
-    ---
-    -- Returns the character's fov.
-    -- @return (table) A table containing the tiles this character sees.
-    --
-    function self:getFOV()
-        return fov;
-    end
-
-    ---
-    -- Gets the name of this character.
-    -- @treturn string The name.
-    --
-    function self:getName()
-        return name
-    end
-
-    ---
-    -- Returns the character's nationality.
-    -- @treturn string The nationality.
-    --
-    function self:getNationality()
-        return nationality
-    end
-
-    ---
-    -- Returns the character's size based on his stance.
-    -- @return (number) The character's size.
-    --
-    function self:getHeight()
-        return body:getHeight( stance )
-    end
-
-    ---
-    -- Returns the character's current stance.
-    -- @return (number) The character's stance.
-    --
-    function self:getStance()
-        return stance;
-    end
-
-    ---
-    -- Gets the character's throwing skill.
-    -- @return (number) The character's throwing skill.
-    --
-    function self:getThrowingSkill()
-        return throwingSkill;
-    end
-
-    ---
-    -- Gets the character's tile.
-    -- @return (Tile) The tile the character is located on.
-    --
-    function self:getTile()
-        return tile;
-    end
-
-    ---
-    -- Returns the total amount of action points.
-    -- @return (number) The total amount of action points.
-    --
-    function self:getMaxActionPoints()
-        return DEFAULT_ACTION_POINTS;
-    end
-
-    ---
-    -- Returns the view range.
-    -- @return (number) The view range.
-    --
-    function self:getViewRange()
-        return 12;
-    end
-
-    ---
-    -- Checks if the character has an action enqueued.
-    -- @return (boolean) Wether an action is enqueued.
-    --
-    function self:hasEnqueuedAction()
-        return actions:getSize() > 0;
-    end
-
-    ---
-    -- Returns wether the character is dead or not.
-    -- @return (boolean) Wether the character is dead or not.
-    --
-    function self:isDead()
-        return body:getStatusEffects():isDead();
-    end
-
-    ---
-    -- Gets an item of type weapon.
-    -- @return (Weapon) The weapon item.
-    --
-    function self:getWeapon()
-        return self:getEquipment():getItem( ITEM_TYPES.WEAPON );
-    end
-
-    ---
-    -- Gets wether the character has finished a turn or not.
-    -- @return (boolean) Wether the character has finished a turn or not.
-    --
-    function self:hasFinishedTurn()
-        return finishedTurn;
-    end
-
-    -- ------------------------------------------------
-    -- Setters
-    -- ------------------------------------------------
-
-    ---
-    -- Sets the character's accuracy attribute.
-    -- @param naccuracy (number) The new accuracy value.
-    --
-    function self:setAccuracy( naccuracy )
-        accuracy = naccuracy;
-    end
-
-    ---
-    -- Sets the character's action points.
-    -- @param nap (number) The amount of AP to set.
-    --
-    function self:setActionPoints( nap )
-        actionPoints = nap;
-    end
-
-    ---
-    -- Sets the character's new body.
-    -- @param nbody (Body) The body object to use.
-    --
-    function self:setBody( nbody )
-        body = nbody;
-    end
-
-    ----
-    -- @tparam Faction faction The Faction object determining the character's faction.
-    --
-    function self:setFaction( nfaction )
-        faction = nfaction
-    end
-
-    ---
-    -- Sets the map the character is currently on.
-    -- @tparam Map map The map to set for this character.
-    --
-    function self:setMap( nmap )
-        map = nmap;
-    end
-
-    ---
-    -- Sets a new name for this character.
-    -- @tparam string nname The name to set for this character.
-    --
-    function self:setName( nname )
-        name = nname
-    end
-
-    function self:setNationality( nnationality )
-        nationality = nnationality
-    end
-
-    ---
-    -- Sets the character's tile.
-    -- @param tile (Tile) The tile to set the character to.
-    --
-    function self:setTile( ntile )
-        tile = ntile;
-    end
-
-    function self:setThrowingSkill( nthrowingSkill )
-        throwingSkill = nthrowingSkill;
-    end
-
-    ---
-    -- Sets if the character is done with a turn. This is used by the AI handler
-    -- to determine if the character is viable for another update.
-    -- @param tile (Tile) The tile to set the character to.
-    --
-    function self:setFinishedTurn( nfinished )
-        finishedTurn = nfinished;
-    end
-
-    ---
-    -- Sets the character's stance.
-    -- @param nstance (number) The character's new stance.
-    --
-    function self:setStance( nstance )
-        stance = nstance;
-    end
-
-    -- TODO Remove hack for saving / loading characters
-    function self:getSavedPosition()
-        return savedX, savedY
-    end
-
-    function self:setSavedPosition( x, y )
-        savedX, savedY = x, y
-    end
-
-    return self;
+    return true
 end
 
-return Character;
+---
+-- Determine the height falloff for rays of the FOV calculation. This value
+-- will be deducted from the ray's height for each tile the ray traverses.
+-- @tparam  number characterHeight The character's height.
+-- @tparam  number targetHeight    The target's height.
+-- @tparam  number steps           The amount of steps between the character and the target.
+-- @treturn number The calculated falloff value.
+--
+local function calculateFalloff( characterHeight, targetHeight, steps )
+    return (characterHeight - targetHeight) / steps
+end
+
+---
+-- Clears the list of seen tiles and marks them for a drawing update.
+-- @tparam table fov The table containing the tiles the character can see.
+--
+local function resetFOV( fov )
+    for x, row in pairs( fov ) do
+        for y, target in pairs( row ) do
+            target:setDirty( true )
+            fov[x][y] = nil
+        end
+    end
+end
+
+---
+-- Drops all inventory and equipment items, removes the character from
+-- the tile and resets the FOV information for this character.
+-- @tparam Character self The character instance to use.
+--
+local function handleDeath( self )
+    self:getEquipment():dropAllItems( self.tile )
+    self:getInventory():dropAllItems( self.tile )
+    self.tile:removeCharacter()
+    resetFOV( self.fov )
+end
+
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function Character:initialize()
+    self.actionPoints = DEFAULT_ACTION_POINTS
+    self.actions = Queue()
+
+    self.fov = {}
+    self.viewRange = 12
+
+    self.accuracy = love.math.random( 60, 90 )
+    self.throwingSkill = love.math.random( 60, 90 )
+
+    self.stance = STANCES.STAND
+
+    self.finishedTurn = false
+end
+
+---
+-- Called when this character is made active by the game.
+--
+function Character:activate()
+    if self:isDead() then
+        return
+    end
+    self:generateFOV()
+    self:clearActions()
+end
+
+---
+-- Called when this character is made inactive by the game.
+--
+function Character:deactivate()
+    if self:isDead() then
+        return
+    end
+    self:generateFOV()
+    self:clearActions()
+end
+
+---
+-- Adds a tile to this character's FOV.
+-- @tparam number tx     The target-tile's position along the x-axis.
+-- @tparam number ty     The target-tile's position along the y-axis.
+-- @tparam Tile   target The target-tile.
+--
+function Character:addSeenTile( tx, ty, target )
+    self.fov[tx] = self.fov[tx] or {}
+    self.fov[tx][ty] = target
+end
+
+---
+-- Adds a new action to the action queue if the character has enough action
+-- points to perform it.
+-- @tparam  Action  newAction The action to enqueue.
+-- @treturn boolean           True if the action was enqueued.
+--
+function Character:enqueueAction( newAction )
+    local cost = 0
+    for _, action in ipairs( self.actions:getItems() ) do
+        cost = cost + action:getCost()
+    end
+
+    -- Enqueue action only if the character has enough action points left.
+    if cost + newAction:getCost() <= self.actionPoints then
+        self.actions:enqueue( newAction )
+        return true
+    end
+
+    Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' )
+    return false
+end
+
+---
+-- Removes the next action from the action queue, reduces the action points
+-- of the character by the action's cost and performs the action.
+--
+function Character:performAction()
+    local action = self.actions:dequeue()
+    local success = action:perform()
+    if success then
+        self.actionPoints = self.actionPoints - action:getCost()
+    end
+    self:generateFOV()
+end
+
+---
+-- Clears the action queue.
+--
+function Character:clearActions()
+    self.actions:clear()
+end
+
+---
+-- Casts rays in a circle around the character to determine all tiles he can
+-- see. Rays stop if they reach the map border or a world object which has
+-- the blocksVision attribute set to true.
+--
+function Character:generateFOV()
+    resetFOV( self.fov )
+
+    local range = self.body:getStatusEffects():isBlind() and 1 or self:getViewRange()
+    local list = Util.getTilesInCircle( self.map, self.tile, range )
+    local sx, sy = self.tile:getPosition()
+
+    for _, tile in ipairs( list ) do
+        local tx, ty = tile:getPosition()
+        local _, counter = Bresenham.line( sx, sy, tx, ty )
+        local falloff = calculateFalloff( self:getHeight(), tile:getHeight(), counter )
+        Bresenham.line( sx, sy, tx, ty, markSeenTiles, self, falloff )
+    end
+end
+
+---
+-- Resets the character's action points to the default value.
+--
+function Character:resetActionPoints()
+    self.actionPoints = DEFAULT_ACTION_POINTS
+end
+
+---
+-- Hits the character with damage.
+-- @tparam number damage     The amount of damage the character is hit with.
+-- @tparam string damageType The type of damage the tile is hit with.
+--
+function Character:hit( damage, damageType )
+    self.body:hit( damage, damageType )
+
+    self:generateFOV()
+
+    if self:isDead() then
+        handleDeath( self )
+    end
+end
+
+---
+-- Checks if the character can see a certain tile.
+-- @tparam  Tile    target The tile to check.
+-- @treturn boolean        Wether the character sees the tile.
+--
+function Character:canSee( target )
+    local tx, ty = target:getPosition()
+    if not self.fov[tx] then
+        return false
+    end
+    return self.fov[tx][ty] ~= nil
+end
+
+---
+-- Updates the character once. This should be used to update status effects and
+-- other things which should happen once per round.
+--
+function Character:tickOneTurn()
+    self.body:tickOneTurn()
+    if self:isDead() then
+        handleDeath( self )
+    end
+end
+
+---
+-- Serializes the Character instance.
+-- @treturn table The serialized character instance.
+--
+function Character:serialize()
+    local t = {
+        ['name'] = self.name,
+        ['actionPoints'] = self.actionPoints,
+        ['accuracy'] = self.accuracy,
+        ['throwingSkill'] = self.throwingSkill,
+        ['stance'] = self.stance,
+        ['finishedTurn'] = self.finishedTurn,
+        ['body'] = self.body:serialize(),
+        ['x'] = self.tile:getX(),
+        ['y'] = self.tile:getY()
+    }
+    return t
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns the accuracy of this character used when shooting guns.
+-- @treturn number The character's accuracy.
+--
+function Character:getAccuracy()
+    return self.accuracy
+end
+
+---
+-- Returns the amount of action points.
+-- @treturn number The amount of action points.
+--
+function Character:getActionPoints()
+    return self.actionPoints
+end
+
+---
+-- Returns the action queue.
+-- @return table A sequence containing all actions.
+--
+function Character:getActions()
+    return self.actions:getItems()
+end
+
+---
+-- Returns the action queue.
+-- @treturn Queue A queue containing all actions.
+--
+function Character:getActionQueue()
+    return self.actions
+end
+
+---
+-- Returns the character's body.
+-- @treturn Body The character's body.
+--
+function Character:getBody()
+    return self.body
+end
+
+---
+-- Returns the faction the character belongs to.
+-- @treturn Faction The Faction object.
+--
+function Character:getFaction()
+    return self.faction
+end
+
+---
+-- Returns the character's equipment.
+-- @treturn Equipment The character's equipment.
+--
+function Character:getEquipment()
+    return self.body:getEquipment()
+end
+
+---
+-- Returns the character's inventory.
+-- @treturn Equipment The character's inventory.
+--
+function Character:getInventory()
+    return self.body:getInventory()
+end
+
+---
+-- Returns the character's fov.
+-- @treturn table A table containing the tiles this character sees.
+--
+function Character:getFOV()
+    return self.fov
+end
+
+---
+-- Gets the name of this character.
+-- @treturn string The character's name.
+--
+function Character:getName()
+    return self.name
+end
+
+---
+-- Returns the character's nationality.
+-- @treturn string The nationality.
+--
+function Character:getNationality()
+    return self.nationality
+end
+
+---
+-- Returns the character's size based on his stance.
+-- @treturn number The character's size.
+--
+function Character:getHeight()
+    return self.body:getHeight( self.stance )
+end
+
+---
+-- Returns the character's current stance.
+-- @treturn number The character's stance.
+--
+function Character:getStance()
+    return self.stance
+end
+
+---
+-- Gets the character's throwing skill.
+-- @treturn number The character's throwing skill.
+--
+function Character:getThrowingSkill()
+    return self.throwingSkill
+end
+
+---
+-- Gets the character's tile.
+-- @treturn Tile The tile the character is located on.
+--
+function Character:getTile()
+    return self.tile
+end
+
+---
+-- Returns the total amount of action points.
+-- @treturn number The total amount of action points.
+--
+function Character:getMaxActionPoints()
+    return DEFAULT_ACTION_POINTS
+end
+
+---
+-- Returns the view range.
+-- @treturn number The view range.
+--
+function Character:getViewRange()
+    return self.viewRange
+end
+
+---
+-- Checks if the character has an action enqueued.
+-- @treturn boolean Wether an action is enqueued.
+--
+function Character:hasEnqueuedAction()
+    return self.actions:getSize() > 0
+end
+
+---
+-- Returns wether the character is dead or not.
+-- @treturn boolean Wether the character is dead or not.
+--
+function Character:isDead()
+    return self.body:getStatusEffects():isDead()
+end
+
+---
+-- Gets an item of type weapon.
+-- @treturn Weapon The weapon item.
+--
+function Character:getWeapon()
+    return self:getEquipment():getItem( ITEM_TYPES.WEAPON )
+end
+
+---
+-- Gets wether the character has finished a turn or not.
+-- @treturn boolean Wether the character has finished a turn or not.
+--
+function Character:hasFinishedTurn()
+    return self.finishedTurn
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+---
+-- Sets the character's accuracy attribute.
+-- @tparam number accuracy The new accuracy value.
+--
+function Character:setAccuracy( accuracy )
+    self.accuracy = accuracy
+end
+
+---
+-- Sets the character's action points.
+-- @tparam number ap The amount of AP to set.
+--
+function Character:setActionPoints( ap )
+    self.actionPoints = ap
+end
+
+---
+-- Sets the character's new body.
+-- @tparam Body body The body object to use.
+--
+function Character:setBody( body )
+    self.body = body
+end
+
+----
+-- Sets the faction this character belongs to.
+-- @tparam Faction faction The Faction object determining the character's faction.
+--
+function Character:setFaction( faction )
+    self.faction = faction
+end
+
+---
+-- Sets the map the character is currently on.
+-- @tparam Map map The map to set for this character.
+--
+function Character:setMap( map )
+    self.map = map
+end
+
+---
+-- Sets a new name for this character.
+-- @tparam string nname The name to set for this character.
+--
+function Character:setName( name )
+    self.name = name
+end
+
+---
+-- Sets the character's nationality.
+-- @tparam string nationality The character's nationality.
+--
+function Character:setNationality( nationality )
+    self.nationality = nationality
+end
+
+---
+-- Sets the character's tile.
+-- @tparam Tile tile The tile to set the character to.
+--
+function Character:setTile( tile )
+    self.tile = tile
+end
+
+---
+-- Sets the character's throwing skill.
+-- @tparam number throwingSkill The character's throwing skill.
+--
+function Character:setThrowingSkill( throwingSkill )
+    self.throwingSkill = throwingSkill
+end
+
+---
+-- Sets if the character is done with a turn. This is used by the AI handler
+-- to determine if the character is viable for another update.
+-- @tparam boolean finished Wether the character is done with its turn.
+--
+function Character:setFinishedTurn( finished )
+    self.finishedTurn = finished
+end
+
+---
+-- Sets the character's stance.
+-- @tparam number stance The character's new stance.
+--
+function Character:setStance( stance )
+    self.stance = stance
+end
+
+-- TODO Remove hack for saving / loading characters
+function Character:getSavedPosition()
+    return self.savedX, self.savedY
+end
+
+function Character:setSavedPosition( x, y )
+    self.savedX, self.savedY = x, y
+end
+
+return Character

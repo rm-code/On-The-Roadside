@@ -1,7 +1,15 @@
-local Screen = require( 'lib.screenmanager.Screen' )
+---
+-- @module MapTest
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local MapPainter = require( 'src.ui.MapPainter' )
-local CameraHandler = require('src.ui.CameraHandler')
+local Camera = require( 'src.ui.Camera' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -11,69 +19,58 @@ local Map = require( 'src.map.Map' )
 -- Module
 -- ------------------------------------------------
 
-local MapTest = {}
+local MapTest = Screen:subclass( 'MapTest' )
 
 -- ------------------------------------------------
--- Constructor
+-- Private Methods
 -- ------------------------------------------------
 
-function MapTest.new()
-    local self = Screen.new()
+local function createMap( layout )
+    local generator = ProceduralMapGenerator( layout )
 
-    local layout
-    local map, mw, mh
-    local mapPainter
-    local camera
+    local tiles = generator:getTiles()
+    local mw, mh = generator:getTileGridDimensions()
 
-    local function createMap()
-        local generator = ProceduralMapGenerator.new()
-        generator:init( layout )
+    local map = Map( tiles, mw, mh )
+    map:setSpawnpoints( generator:getSpawnpoints() )
 
-        local tiles = generator:getTiles()
-        mw, mh = generator:getTileGridDimensions()
+    return map, mw, mh
+end
 
-        map = Map.new()
-        map:init( tiles, mw, mh )
-        map:setSpawnpoints( generator:getSpawnpoints() )
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function MapTest:initialize( layout )
+    ProceduralMapGenerator.load()
+    PrefabLoader.load()
+
+    self.map, self.mw, self.mh = createMap( layout )
+    self.mapPainter = MapPainter( self.map )
+    self.camera = Camera( self.mw, self.mh, TexturePacks.getTileDimensions() )
+end
+
+function MapTest:draw()
+    TexturePacks.setColor( 'sys_background' )
+    love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() )
+    TexturePacks.resetColor()
+
+    self.camera:attach()
+    self.mapPainter:draw()
+    self.camera:detach()
+end
+
+function MapTest:update( dt )
+    if self.mapPainter then
+        self.mapPainter:update()
     end
+    self.camera:update( dt )
+end
 
-    function self:init( nlayout )
-        layout = nlayout
-
-        ProceduralMapGenerator.load()
-        PrefabLoader.load()
-
-        createMap()
-
-        mapPainter = MapPainter( map )
-
-        camera = CameraHandler.new( mw, mh, TexturePacks.getTileDimensions() )
+function MapTest:keypressed( _, scancode )
+    if scancode == 'escape' then
+        ScreenManager.pop()
     end
-
-    function self:draw()
-        TexturePacks.setColor( 'sys_background' )
-        love.graphics.rectangle( 'fill', 0, 0, love.graphics.getDimensions() )
-        TexturePacks.resetColor()
-
-        camera:attach()
-        mapPainter:draw()
-        camera:detach()
-    end
-
-    function self:update( dt )
-        if mapPainter then
-            mapPainter:update()
-        end
-        camera:update( dt )
-    end
-
-    function self:keypressed( _, scancode )
-        if scancode == 'escape' then
-            ScreenManager.pop()
-        end
-    end
-
-    return self
 end
 
 return MapTest

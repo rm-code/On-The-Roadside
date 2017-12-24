@@ -110,9 +110,9 @@ end
 local function createBodyPart( cid, body, equipment, index, id )
     local template = templates[cid][id];
     if template.type == 'equipment' then
-        equipment:addSlot( EquipmentSlot.new( index, template ));
+        equipment:addSlot( EquipmentSlot( index, template.id, template.itemType, template.subType, template.sort ))
     else
-        body:addBodyPart( BodyPart.new( index, template ));
+        body:addBodyPart( BodyPart( index, template.id, template.type, template.health, template.effects ))
     end
 end
 
@@ -125,9 +125,9 @@ end
 -- @treturn Body              A shiny new Body.
 --
 local function assembleBody( creatureID, template, layout )
-    local body = Body.new( template )
-    local equipment = Equipment.new();
-    local inventory = Inventory.new( template.defaultCarryWeight, template.defaultCarryVolume )
+    local body = Body( template.id, template.bloodVolume, template.tags, template.size )
+    local equipment = Equipment()
+    local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
 
     equipment:observe( inventory );
 

@@ -1,18 +1,18 @@
-local Path = require('src.characters.pathfinding.Path');
+---
+-- @module PathFinder
+--
 
 -- ------------------------------------------------
--- Constants
+-- Required Modules
 -- ------------------------------------------------
 
-local DIRECTION = require( 'src.constants.DIRECTION' );
-local MAX_TILES = 300;
-local SQRT = math.sqrt( 2 );
+local Path = require( 'src.characters.pathfinding.Path' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local PathFinder = {};
+local PathFinder = {}
 
 -- ------------------------------------------------
 -- Private Functions
@@ -25,72 +25,56 @@ local PathFinder = {};
 -- @return  (number) The calculated heuristic.
 --
 local function calculateHeuristic( a, b )
-    local distanceX = math.abs( a:getX() - b:getX() );
-    local distanceY = math.abs( a:getY() - b:getY() );
-    return math.max( distanceX, distanceY );
-end
-
----
--- Use a modifier for diagonal movement.
--- @param direction (string) The direction to get the modifier for.
--- @return          (number) The modifier.
---
-local function getDirectionModifier( direction )
-    if direction == DIRECTION.NORTH_EAST
-    or direction == DIRECTION.NORTH_WEST
-    or direction == DIRECTION.SOUTH_EAST
-    or direction == DIRECTION.SOUTH_WEST then
-        return SQRT;
-    end
-    return 1;
+    local distanceX = math.abs( a:getX() - b:getX() )
+    local distanceY = math.abs( a:getY() - b:getY() )
+    return (distanceX + distanceY) - 0.9 * math.min( distanceX, distanceY )
 end
 
 ---
 -- Calculates the cost of moving to a tile.
--- @param tile      (Tile)      The tile to calculate a cost for.
--- @param target    (Tile)      The target tile of the path.
--- @param character (Character) The character to plot a path for.
--- @return     (number) The calculated movement cost.
+-- @tparam  Tile   tile   The tile to calculate a cost for.
+-- @tparam  Tile   target The target tile of the path.
+-- @tparam  string stance The stance of the creature to search a path for.
+-- @treturn number        The calculated movement cost.
 --
-local function calculateCost( tile, target, character )
+local function calculateCost( tile, target, stance )
     if tile:hasWorldObject() then
-        local worldObject = tile:getWorldObject();
-        local interactionCost = worldObject:getInteractionCost( character:getStance() );
+        local worldObject = tile:getWorldObject()
+        local interactionCost = worldObject:getInteractionCost( stance )
 
         -- We never move on the tile that the character wants to interact with.
         if tile == target then
-            return interactionCost;
+            return interactionCost
         end
 
         -- Open the object and walk on the tile.
         if worldObject:isOpenable() and not worldObject:isPassable() then
-            return interactionCost + tile:getMovementCost( character:getStance() );
+            return interactionCost + tile:getMovementCost( stance )
         end
 
         -- Climbing ignores the movement cost of the tile the world object is on.
         if worldObject:isClimbable() then
-            return interactionCost;
+            return interactionCost
         end
     end
 
-    return tile:getMovementCost( character:getStance() );
+    return tile:getMovementCost( stance )
 end
 
 ---
--- Gets the next tile with the lowest cost from a list.
--- @param list (table)  The list to search through.
--- @return     (table)  The next tile in the list.
+-- Removes the node with the lowest cost from the open list and returns it.
+-- @treturn table The next node in the list.
 -- @return     (number) The index in the list.
 --
-local function getNextTile( list )
-    local index, cost;
-    for i = 1, #list do
-        if not cost or cost > list[i].f then
-            cost = list[i].f;
-            index = i;
+local function getNextNode( openList )
+    local index, cost
+    for i = 1, #openList do
+        if not cost or cost > openList[i].f then
+            cost = openList[i].f
+            index = i
         end
     end
-    return list[index], index;
+    return table.remove( openList, index )
 end
 
 ---
@@ -100,12 +84,12 @@ end
 -- @param return (boolean) Wether the tile is in the list or not.
 --
 local function isInList( list, tile )
-    for _, node in ipairs( list ) do
-        if node.tile == tile then
-            return node;
+    for i = 1, #list do
+        if list[i].tile == tile then
+            return list[i]
         end
     end
-    return false;
+    return false
 end
 
 ---
@@ -118,31 +102,31 @@ end
 local function isValidTile( tile, closedList, target )
     -- Ignore tiles that are already used in the path.
     if isInList( closedList, tile ) then
-        return false;
+        return false
     end
 
     -- We don't allow movement to tiles occupied by other characters.
     if tile:isOccupied() then
-        return false;
+        return false
     end
 
     if tile:hasWorldObject() then
-        local worldObject = tile:getWorldObject();
+        local worldObject = tile:getWorldObject()
 
         -- Openable world objects never block pathfinding.
         if worldObject:isOpenable() then
-            return true;
+            return true
         end
 
         -- Container objects are valid if they are the target of the path.
-        if worldObject:blocksPathfinding() and worldObject:isContainer() then
-            return tile == target;
+        if worldObject:doesBlockPathfinding() and worldObject:isContainer() then
+            return tile == target
         end
 
         -- Non-blocking world objects are valid too.
-        return not worldObject:blocksPathfinding();
+        return not worldObject:doesBlockPathfinding()
     end
-    return tile:isPassable();
+    return tile:isPassable()
 end
 
 ---
@@ -151,16 +135,7 @@ end
 -- @param node       (table) The node to add.
 --
 local function addToCLosedList( closedList, node )
-    closedList[#closedList + 1] = node;
-end
-
----
--- Removes a node from the open list.
--- @param openList (table)  The open list.
--- @param index    (number) The index of the node to remove.
---
-local function removeFromOpenList( openList, index )
-    table.remove( openList, index );
+    closedList[#closedList + 1] = node
 end
 
 ---
@@ -170,17 +145,17 @@ end
 -- @return        (Path) A path object containing tiles to form a path.
 --
 local function finalizePath( endNode )
-    local path = Path.new();
-    path:addNode( endNode.tile, endNode.actualCost );
+    local path = Path()
+    path:addNode( endNode.tile, endNode.actualCost )
 
     -- Build the rest of the path.
-    local parent = endNode.parent;
+    local parent = endNode.parent
     while parent and parent.parent do
-        path:addNode( parent.tile, parent.actualCost );
-        parent = parent.parent;
+        path:addNode( parent.tile, parent.actualCost )
+        parent = parent.parent
     end
 
-    return path;
+    return path
 end
 
 -- ------------------------------------------------
@@ -189,55 +164,56 @@ end
 
 ---
 -- Calculates a path between two tiles by using the A* algorithm.
--- @param character (Character) The character to plot a path for.
--- @param target    (Tile)      The target.
--- @return          (Path)      A Path object containing tiles to form a path.
+-- @tparam  Tile   start  The tile to start the pathfinding at.
+-- @tparam  Tile   target The target to search for.
+-- @tparam  string stance The stance of the creature to search a path for.
+-- @treturn Path          The path containing all tiles from the start to the target.
 --
-function PathFinder.generatePath( character, target )
-    local counter = 0;
-    local closedList = {};
+function PathFinder.generatePath( start, target, stance )
+    local closedList = {}
     local openList = {
-        { tile = character:getTile(), direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
-    };
+        { tile = start, direction = nil, parent = nil, g = 0, f = 0 } -- Starting point.
+    }
+
+    -- The currently evaluated node in the graph.
+    local current
 
     while #openList > 0 do
-        counter = counter + 1;
-        local current, index = getNextTile( openList );
+        current = getNextNode( openList )
 
         -- Update lists.
-        addToCLosedList( closedList, current );
-        removeFromOpenList( openList, index );
+        addToCLosedList( closedList, current )
 
         -- Stop if we have found the target.
         if current.tile == target then
-            return finalizePath( current, character );
-        elseif counter > MAX_TILES then
-            return; -- Abort if we haven't found the tile after searching for a while.
+            break;
         end
 
         -- Look for the next tile.
         for direction, tile in pairs( current.tile:getNeighbours() ) do
             -- Check if the tile is valid to use in our path.
             if isValidTile( tile, closedList, target ) then
-                local cost = calculateCost( tile, target, character );
-                local g = current.g + cost * getDirectionModifier( direction );
-                local f = g + calculateHeuristic( tile, target );
+                local cost = calculateCost( tile, target, stance )
+                local g = current.g + cost
+                local f = g + calculateHeuristic( tile, target )
 
                 -- Check if the tile is in the open list. If it is not, then
                 -- add it to the open list and proceed. If it already is in
                 -- the open list, update its cost and parent values.
-                local visitedNode = isInList( openList, tile );
+                local visitedNode = isInList( openList, tile )
                 if not visitedNode then
-                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, actualCost = cost, g = g, f = f };
+                    openList[#openList + 1] = { tile = tile, direction = direction, parent = current, actualCost = cost, g = g, f = f }
                 elseif g < visitedNode.g then
-                    visitedNode.direction = direction;
-                    visitedNode.parent = current;
-                    visitedNode.g = g;
-                    visitedNode.f = f;
+                    visitedNode.direction = direction
+                    visitedNode.parent = current
+                    visitedNode.g = g
+                    visitedNode.f = f
                 end
             end
         end
     end
+
+    return finalizePath( current, stance )
 end
 
-return PathFinder;
+return PathFinder

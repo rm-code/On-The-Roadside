@@ -1,59 +1,65 @@
-local Weapon = require( 'src.items.weapons.Weapon' );
-local Magazine = require( 'src.items.weapons.Magazine' );
+---
+-- @module RangedWeapon
+--
 
-local RangedWeapon = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function RangedWeapon.new( template )
-    local self = Weapon.new( template ):addInstance( 'RangedWeapon' );
+local Weapon = require( 'src.items.weapons.Weapon' )
+local Magazine = require( 'src.items.weapons.Magazine' )
 
-    -- ------------------------------------------------
-    -- Private Attributes
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-    local rpm = template.rpm or 60;
-    local firingDelay = 1 / ( rpm / 60 );
-    local magazine = Magazine( template.caliber, template.magSize )
-    local range = template.range;
+local RangedWeapon = Weapon:subclass( 'RangedWeapon' )
 
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
 
-    function self:attack()
-        magazine:removeShell();
-    end
+function RangedWeapon:initialize( template )
+    Weapon.initialize( self, template )
 
-    function self:serialize()
-        local t = {
-            ['id'] = template.id,
-            ['itemType'] = template.itemType,
-            ['modeIndex'] = self:getAttackModeIndex()
-        };
-
-        if magazine then
-            t['magazine'] = magazine:serialize()
-        end
-
-        return t;
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    function self:getFiringDelay()
-        return firingDelay;
-    end
-
-    function self:getMagazine()
-        return magazine;
-    end
-
-    function self:getRange()
-        return range;
-    end
-
-    return self;
+    self.rpm = template.rpm or 60
+    self.firingDelay = 1 / ( self.rpm / 60 )
+    self.magazine = Magazine( template.caliber, template.magSize )
+    self.range = template.range
 end
 
-return RangedWeapon;
+function RangedWeapon:attack()
+    self.magazine:removeShell()
+end
+
+function RangedWeapon:serialize()
+    local t = {
+        ['id'] = self.template.id,
+        ['itemType'] = self.template.itemType,
+        ['modeIndex'] = self:getAttackModeIndex()
+    }
+
+    if self.magazine then
+        t['magazine'] = self.magazine:serialize()
+    end
+
+    return t
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+function RangedWeapon:getFiringDelay()
+    return self.firingDelay
+end
+
+function RangedWeapon:getMagazine()
+    return self.magazine
+end
+
+function RangedWeapon:getRange()
+    return self.range
+end
+
+return RangedWeapon

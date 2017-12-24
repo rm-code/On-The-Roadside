@@ -28,6 +28,8 @@ local MapPainter = Class( 'MapPainter' )
 
 local MAX_SPRITES = 16384 -- Enough sprites for a 128*128 map.
 
+local DIRECTION = require( 'src.constants.DIRECTION' )
+
 local FACTIONS = require( 'src.constants.FACTIONS' )
 local COLORS = {
     [FACTIONS.ALLIED] = {
@@ -42,6 +44,33 @@ local COLORS = {
         ACTIVE   = 'neutral_active',
         INACTIVE = 'neutral_inactive'
     },
+}
+
+local CONNECTION_BITMASK = {
+    [0]  = 'default',
+
+    -- Straight connections-
+    [1]  = 'vertical', -- North
+    [4]  = 'vertical', -- South
+    [5]  = 'vertical', -- North South
+    [2]  = 'horizontal', -- East
+    [8]  = 'horizontal', -- West
+    [10] = 'horizontal', -- East West
+
+    -- Corners.
+    [3]  = 'ne',
+    [9]  = 'nw',
+    [6]  = 'se',
+    [12] = 'sw',
+
+    -- T Intersection
+    [7]  = 'nes',
+    [11] = 'new',
+    [13] = 'nws',
+    [14] = 'sew',
+
+    -- + Intersection
+    [15] = 'news',
 }
 
 -- ------------------------------------------------
@@ -71,14 +100,9 @@ end
 -- @treturn table               A table containing RGBA values.
 --
 local function selectTileColor( tile, faction )
-    -- If there is a faction we check which tiles are explored and which tiles
-    -- are currently seen.
+    -- If there is a faction we check which tiles are currently seen and highlight
+    -- the active character.
     if faction then
-        -- Hide unexplored tiles.
-        if not tile:isExplored( faction:getType() ) then
-            return TexturePacks.getColor( 'tile_unexplored' )
-        end
-
         -- Dim tiles hidden from the player.
         if not faction:canSee( tile ) then
             return TexturePacks.getColor( 'tile_unseen' )
@@ -95,7 +119,8 @@ local function selectTileColor( tile, faction )
     end
 
     if not tile:getInventory():isEmpty() then
-        return TexturePacks.getColor( 'items' )
+        local items = tile:getInventory():getItems()
+        return TexturePacks.getColor( items[1]:getID() )
     end
 
     if tile:hasWorldObject() then
@@ -116,11 +141,33 @@ local function selectCharacterTile( tile )
 end
 
 ---
+-- Checks wether there is an adjacent world object with a group that matches the
+-- connections of the original world object.
+-- @tparam  table  connections The connections table containing the groups the world object connects to.
+-- @tparam  Tile   neighbour   The neighbouring tile to check for a matching world object.
+-- @tparam  number value       The value to return in case the world object matches.
+-- @treturn number             The value indicating a match (0 if the world object doesn't match).
+--
+local function checkConnection( connections, neighbour, value )
+    if neighbour and neighbour:hasWorldObject() then
+        local group = neighbour:getWorldObject():getGroup()
+        if group then
+            for i = 1, #connections do
+                if connections[i] == group then
+                    return value
+                end
+            end
+        end
+    end
+    return 0
+end
+
+---
 -- Selects the tile to use for drawing a worldobject.
 -- @tparam  WorldObject worldObject The worldobject to pick a sprite for.
 -- @treturn Quad                    A quad pointing to the sprite on the active tileset.
 --
-local function selectWorldObjectSprite( worldObject )
+local function selectWorldObjectSprite( worldObject, tile )
     if worldObject:isOpenable() then
         if worldObject:isPassable() then
             return TexturePacks.getSprite( worldObject:getID(), 'open' )
@@ -128,6 +175,18 @@ local function selectWorldObjectSprite( worldObject )
             return TexturePacks.getSprite( worldObject:getID(), 'closed' )
         end
     end
+
+    -- Check if the world object sprite connects to adjacent sprites.
+    local connections = worldObject:getConnections()
+    if connections then
+        local neighbours = tile:getNeighbours()
+        local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
+                       checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
+                       checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
+                       checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
+        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
+    end
+
     return TexturePacks.getSprite( worldObject:getID() )
 end
 
@@ -143,11 +202,12 @@ local function selectTileSprite( tile, faction )
     end
 
     if not tile:getInventory():isEmpty() then
-        return TexturePacks.getSprite( 'items' )
+        local items = tile:getInventory():getItems()
+        return TexturePacks.getSprite( items[1]:getID() )
     end
 
     if tile:hasWorldObject() then
-        return selectWorldObjectSprite( tile:getWorldObject() )
+        return selectWorldObjectSprite( tile:getWorldObject(), tile )
     end
 
     return TexturePacks.getSprite( tile:getID() )
@@ -202,8 +262,7 @@ function MapPainter:update()
 end
 
 ---
--- Sets the faction which is used for checking which parts of the map are visible
--- and explored.
+-- Sets the faction which is used for checking which parts of the map are visible.
 -- @tparam Faction faction The faction to use.
 --
 function MapPainter:setActiveFaction( faction )

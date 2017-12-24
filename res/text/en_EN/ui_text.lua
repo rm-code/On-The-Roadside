@@ -3,7 +3,6 @@ locale.identifier = 'en_EN';
 
 locale.strings = {
     ['ui_tile'] = "Tile: ",
-    ['ui_tile_unexplored'] = "Unexplored",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
     ['ui_mode'] = "Mode: ",
@@ -11,8 +10,11 @@ locale.strings = {
     ['ui_lose'] = "Your team is dead. You lose!\n\nPress any key to continue...",
 
     -- Health screen
-    ['ui_character_type'] = "Type: ",
-    ['ui_character_name'] = "Name: ",
+    ['ui_healthscreen_type'] = "Type: ",
+    ['ui_healthscreen_name'] = "Name: ",
+    ['ui_healthscreen_limb'] = "Limb",
+    ['ui_healthscreen_bleeding'] = "Bleeding",
+    ['ui_healthscreen_status'] = "Status",
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New",
@@ -33,6 +35,29 @@ locale.strings = {
     ['ui_applied_settings'] = "Your settings have been updated.",
     ['ui_settings_ingame_editor'] = "Activate Map Editor:",
     ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
+    ['ui_settings_mouse_panning'] = "Mouse Panning:",
+    ['ui_keybindings'] = "Edit Keybindings",
+
+    -- Keybindings
+    ['action_stand'] = "Stand",
+    ['action_crouch'] = "Crouch",
+    ['action_prone'] = "Prone",
+    ['action_reload_weapon'] = "Reload Weapon",
+    ['next_weapon_mode'] = "Next weapon mode",
+    ['prev_weapon_mode'] = "Previous weapon mode",
+    ['movement_mode'] = "Move",
+    ['attack_mode'] = "Attack",
+    ['interaction_mode'] = "Interact",
+    ['next_character'] = "Next character",
+    ['prev_character'] = "Previous character",
+    ['end_turn'] = "End turn",
+    ['open_inventory_screen'] = "Open inventory screen",
+    ['open_health_screen'] = "Open health screen",
+    ['pan_camera_left'] = "Move camera left",
+    ['pan_camera_right'] = "Move camera right",
+    ['pan_camera_up'] = "Move camera up",
+    ['pan_camera_down'] = "Move camera down",
+    ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
 
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",

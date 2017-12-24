@@ -1,5 +1,5 @@
 ---
--- @module ThrowingAttack
+-- @module RangedAttack
 --
 
 -- ------------------------------------------------
@@ -8,24 +8,29 @@
 
 local Action = require( 'src.characters.actions.Action' )
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
-local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' )
+local ProjectileQueue = require( 'src.items.weapons.ProjectileQueue' )
 local Bresenham = require( 'lib.Bresenham' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local ThrowingAttack = Action:subclass( 'ThrowingAttack' )
+local RangedAttack = Action:subclass( 'RangedAttack' )
 
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function ThrowingAttack:initialize( character, target )
+function RangedAttack:initialize( character, target )
     Action.initialize( self, character, target, character:getWeapon():getAttackCost() )
 end
 
-function ThrowingAttack:perform()
+function RangedAttack:perform()
+    -- Stop if the character's weapon is empty.
+    if self.character:getWeapon():getMagazine():isEmpty() then
+        return false
+    end
+
     -- Pick the actual target based on the weapon's range attribute.
     local ox, oy = self.character:getTile():getPosition()
     local tx, ty = self.target:getPosition()
@@ -40,9 +45,9 @@ function ThrowingAttack:perform()
         return true
     end)
 
-    local package = ThrownProjectileQueue( self.character, ax, ay, th )
+    local package = ProjectileQueue( self.character, ax, ay, th )
     ProjectileManager.register( package )
     return true
 end
 
-return ThrowingAttack
+return RangedAttack

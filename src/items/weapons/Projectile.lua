@@ -1,123 +1,127 @@
-local Object = require( 'src.Object' );
+---
+-- @module Projectile
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Class = require( 'lib.Middleclass' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Projectile = {};
+local Projectile = Class( 'Projectile' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local DEFAULT_SPEED = 30;
+local DEFAULT_SPEED = 30
 
 -- ------------------------------------------------
--- Constructor
+-- Public Methods
 -- ------------------------------------------------
 
 ---
--- Creates a new Projectile.
--- @param character  (Character)         The character this projectile belongs to.
--- @param tiles      (table)             A sequence containing all tiles this projectile will pass.
--- @param damage     (number)            The damage this projectile deals.
--- @param damageType (string)            The type of damage the tile is hit with.
--- @param effects    (AmmunitionEffects) An object containing different effects associated with ammunition.
--- @return           (Projectile)        A new instance of the Projectile class.
+-- Initializes a new Projectile object.
+-- @tparam Character         character  The character this projectile belongs to.
+-- @tparam table             tiles      A sequence containing all tiles this projectile will pass.
+-- @tparam number            damage     The damage this projectile deals.
+-- @tparam string            damageType The type of damage the tile is hit with.
+-- @tparam AmmunitionEffects effects    An object containing different effects associated with ammunition.
 --
-function Projectile.new( character, tiles, damage, damageType, effects )
-    local self = Object.new():addInstance( 'Projectile' );
+function Projectile:initialize( character, tiles, damage, damageType, effects )
+    self.character = character
+    self.tiles = tiles
+    self.damage = damage
+    self.damageType = damageType
+    self.effects = effects
 
-    local energy = 100;
-    local timer = 0;
-    local index = 1;
-    local tile = character:getTile();
-    local previousTile;
-    local speed = effects:hasCustomSpeed() and effects:getCustomSpeed() or DEFAULT_SPEED;
-
-    -- ------------------------------------------------
-    -- Public Methods
-    -- ------------------------------------------------
-
-    ---
-    -- Advances the projectile to the next tile in its queue if the timer is
-    -- reached. Different types of projectiles can have different speeds.
-    -- @param dt (number) The time since the last frame update.
-    --
-    function self:update( dt )
-        timer = timer + dt * speed;
-        if timer > 1 and index < #tiles then
-            index = index + 1;
-            timer = 0;
-        end
-
-        if effects:hasCustomSpeed() then
-            speed = math.min( speed + effects:getSpeedIncrease(), effects:getFinalSpeed() );
-        end
-    end
-
-    ---
-    -- Moves the projectile to the next tile.
-    -- @param map (Map) The game's map.
-    --
-    function self:updateTile( map )
-        previousTile = tile;
-        tile = map:getTileAt( tiles[index].x, tiles[index].y );
-    end
-
-    -- ------------------------------------------------
-    -- Getters
-    -- ------------------------------------------------
-
-    function self:getCharacter()
-        return character;
-    end
-
-    function self:getEffects()
-        return effects;
-    end
-
-    function self:getDamage()
-        return damage;
-    end
-
-    function self:getDamageType()
-        return damageType;
-    end
-
-    function self:getEnergy()
-        return energy;
-    end
-
-    function self:getTile()
-        return tile;
-    end
-
-    function self:getPreviousTile()
-        return previousTile;
-    end
-
-    function self:hasMoved( map )
-        return tile ~= map:getTileAt( tiles[index].x, tiles[index].y );
-    end
-
-    function self:hasReachedTarget()
-        return #tiles == index;
-    end
-
-    function self:getHeight()
-        return tiles[index].z
-    end
-
-    -- ------------------------------------------------
-    -- Setters
-    -- ------------------------------------------------
-
-    function self:setEnergy( nenergy )
-        energy = nenergy;
-    end
-
-    return self;
+    self.energy = 100
+    self.timer = 0
+    self.index = 1
+    self.tile = character:getTile()
+    self.speed = effects:hasCustomSpeed() and effects:getCustomSpeed() or DEFAULT_SPEED
 end
 
-return Projectile;
+---
+-- Advances the projectile to the next tile in its queue if the timer is
+-- reached. Different types of projectiles can have different speeds.
+-- @tparam number dt The time since the last frame update.
+--
+function Projectile:update( dt )
+    self.timer = self.timer + dt * self.speed
+    if self.timer > 1 and self.index < #self.tiles then
+        self.index = self.index + 1
+        self.timer = 0
+    end
+
+    if self.effects:hasCustomSpeed() then
+        self.speed = math.min( self.speed + self.effects:getSpeedIncrease(), self.effects:getFinalSpeed() )
+    end
+end
+
+---
+-- Moves the projectile to the next tile.
+-- @tparam Map map The game's map.
+--
+function Projectile:updateTile( map )
+    self.previousTile = self.tile
+    self.tile = map:getTileAt( self.tiles[self.index].x, self.tiles[self.index].y )
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+function Projectile:getCharacter()
+    return self.character
+end
+
+function Projectile:getEffects()
+    return self.effects
+end
+
+function Projectile:getDamage()
+    return self.damage
+end
+
+function Projectile:getDamageType()
+    return self.damageType
+end
+
+function Projectile:getEnergy()
+    return self.energy
+end
+
+function Projectile:getTile()
+    return self.tile
+end
+
+function Projectile:getPreviousTile()
+    return self.previousTile
+end
+
+function Projectile:hasMoved( map )
+    return self.tile ~= map:getTileAt( self.tiles[self.index].x, self.tiles[self.index].y )
+end
+
+function Projectile:hasReachedTarget()
+    return #self.tiles == self.index
+end
+
+function Projectile:getHeight()
+    return self.tiles[self.index].z
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+function Projectile:setEnergy( energy )
+    self.energy = energy
+end
+
+return Projectile

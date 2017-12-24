@@ -1,26 +1,36 @@
-local Log = require( 'src.util.Log' );
-local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' );
-local Rearm = require( 'src.characters.actions.Rearm' );
+---
+-- @module BTRearm
+--
 
-local BTRearm = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-function BTRearm.new()
-    local self = BTLeaf.new():addInstance( 'BTRearm' );
+local Log = require( 'src.util.Log' )
+local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
+local Rearm = require( 'src.characters.actions.Rearm' )
 
-    function self:traverse( ... )
-        local blackboard, character = ...;
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
 
-        local success = character:enqueueAction( Rearm.new( character, blackboard.weaponID ));
-        if success then
-            Log.debug( 'Equipping throwing weapon ' .. blackboard.weaponID, 'BTRearm' );
-            return true;
-        end
+local BTRearm = BTLeaf:subclass( 'BTRearm' )
 
-        Log.debug( 'Equipping throwing weapon', 'BTRearm' );
-        return false;
+-- ------------------------------------------------
+-- Public Methods
+-- ------------------------------------------------
+
+function BTRearm:traverse( ... )
+    local blackboard, character = ...
+
+    local success = character:enqueueAction( Rearm( character, blackboard.weaponID ))
+    if success then
+        Log.debug( 'Equipping throwing weapon ' .. blackboard.weaponID, 'BTRearm' )
+        return true
     end
 
-    return self;
+    Log.debug( 'Equipping throwing weapon', 'BTRearm' )
+    return false
 end
 
-return BTRearm;
+return BTRearm

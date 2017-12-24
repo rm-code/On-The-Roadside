@@ -9,7 +9,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Screen = require( 'lib.screenmanager.Screen' )
+local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Faction = require( 'src.characters.Faction' )
 
@@ -17,7 +17,7 @@ local Faction = require( 'src.characters.Faction' )
 -- Module
 -- ------------------------------------------------
 
-local GameScreen = {}
+local GameScreen = Screen:subclass( 'GameScreen' )
 
 -- ------------------------------------------------
 -- Constants
@@ -29,29 +29,17 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- Constructor
 -- ------------------------------------------------
 
-function GameScreen.new()
-    local self = Screen.new()
+function GameScreen:initialize( savegame )
+    local playerFaction = Faction( FACTIONS.ALLIED, false )
 
-    function self:init( savegame )
-        local playerFaction = Faction.new( FACTIONS.ALLIED, false )
-
-        if savegame then
-            playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
-        else
-            playerFaction:addCharacters( 10, 'human' )
-        end
-
-        local state = savegame and savegame.type or 'combat'
-        ScreenManager.push( state, playerFaction, savegame )
+    if savegame then
+        playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+    else
+        playerFaction:addCharacters( 10, 'human' )
     end
 
-    function self:draw()
-    end
-
-    function self:update()
-    end
-
-    return self
+    local state = savegame and savegame.type or 'combat'
+    ScreenManager.push( state, playerFaction, savegame )
 end
 
 return GameScreen

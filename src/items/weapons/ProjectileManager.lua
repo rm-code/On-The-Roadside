@@ -177,8 +177,7 @@ end
 -- @param nqueue (ProjectileQueue) The ProjectileQueue to process.
 --
 function ProjectileManager.register( nqueue )
-    queue = nqueue;
-    queue:init();
+    queue = nqueue
 end
 
 ---
