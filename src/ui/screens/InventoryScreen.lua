@@ -260,7 +260,7 @@ local function drag( button, lists, dragboard, itemStats )
         return
     end
 
-    local item, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ))
+    local item, origin, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ))
 
     -- Abort if there is nothing to drag here.
     if not item then
@@ -270,9 +270,9 @@ local function drag( button, lists, dragboard, itemStats )
     -- Display stats for the dragged item.
     itemStats:setItem( item )
 
-    -- If we have an actual item slot we use it as the origin to
-    -- which the item is returned in case it can't be dropped anywhere.
-    dragboard:drag( item, slot or list )
+    -- Add the item and list to the dragboard. If the item comes from the
+    -- equipment list we also pass the slot.
+    dragboard:drag( item, origin or list, slot )
 
     -- If the dragged item is a container we need to refresh the inventory lists
     -- because it changes the inventory volumes.

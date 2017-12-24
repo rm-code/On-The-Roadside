@@ -11,7 +11,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
-local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' )
+local Equipment = require( 'src.characters.body.Equipment' )
 local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
@@ -30,9 +30,9 @@ local ITEM_WIDTH = 20
 -- Private Methods
 -- ------------------------------------------------
 
-local function returnItemToOrigin( item, origin )
-    if origin:isInstanceOf( EquipmentSlot ) then
-        origin:addItem( item )
+local function returnItemToOrigin( item, origin, slot )
+    if origin:isInstanceOf( Equipment ) then
+        origin:addItem( slot, item )
     else
         origin:drop( item );
     end
@@ -84,21 +84,20 @@ function UIInventoryDragboard:draw( lists )
     TexturePacks.resetColor()
 end
 
-function UIInventoryDragboard:drag( item, origin )
-    assert( item and origin, 'Missing parameters.' )
+function UIInventoryDragboard:drag( item, origin, slot )
     love.mouse.setVisible( false )
-    self.dragContext = { item = item, origin = origin }
+    self.dragContext = { item = item, origin = origin, slot = slot }
 end
 
 function UIInventoryDragboard:drop( target )
     love.mouse.setVisible( true )
 
     if not target then
-        returnItemToOrigin( self.dragContext.item, self.dragContext.origin )
+        returnItemToOrigin( self.dragContext.item, self.dragContext.origin, self.dragContext.slot )
     else
         local success = target:drop( self.dragContext.item, self.dragContext.origin )
         if not success then
-            returnItemToOrigin( self.dragContext.item, self.dragContext.origin )
+            returnItemToOrigin( self.dragContext.item, self.dragContext.origin, self.dragContext.slot )
         end
     end
 

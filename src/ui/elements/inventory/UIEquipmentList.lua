@@ -81,7 +81,7 @@ function UIEquipmentList:drag()
             end
 
             self:refresh()
-            return item, uiItem:getSlot()
+            return item, self.equipment, uiItem:getSlot()
         end
     end
 end
