@@ -1,4 +1,3 @@
-local Log = require( 'src.util.Log' );
 local Character = require( 'src.characters.Character' );
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
@@ -16,7 +15,8 @@ local CharacterFactory = {};
 local FACTIONS = require( 'src.constants.FACTIONS' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
-local NAME_FILE = 'res.data.creatures.names'
+
+local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
     { id = 'german',  weight = 10 },
     { id = 'russian', weight =  3 },
@@ -28,20 +28,11 @@ local NATIONALITY = {
 -- Local Variables
 -- ------------------------------------------------
 
-local names
 local nationalityWeight
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
-
----
--- Load all names from the specified file.
--- @tparam string path The path pointing to the file to load.
---
-local function loadNames( path )
-    return require( path )
-end
 
 ---
 -- Calculates the total weight of all nationalities used for their random
@@ -137,9 +128,6 @@ end
 -- ------------------------------------------------
 
 function CharacterFactory.init()
-    Log.debug( "Load Creature-Names:" )
-    names = loadNames( NAME_FILE )
-
     nationalityWeight = calculateNationalitiesWeight()
 end
 
@@ -168,7 +156,7 @@ function CharacterFactory.newCharacter( type, factionType )
     if type == 'human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
-        character:setName( names[nationality][love.math.random( #names[nationality] )])
+        character:setName( CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )])
     end
 
     character:setBody( BodyFactory.create( type ));
