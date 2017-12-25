@@ -16,7 +16,7 @@ local CharacterFactory = {};
 local FACTIONS = require( 'src.constants.FACTIONS' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
-local NAME_FILE = 'res.data.Names'
+local NAME_FILE = 'res.data.creatures.names'
 local NATIONALITY = {
     { id = 'german',  weight = 10 },
     { id = 'russian', weight =  3 },
