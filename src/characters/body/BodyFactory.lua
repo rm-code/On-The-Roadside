@@ -1,3 +1,17 @@
+---
+-- The BodyFactory is used to assemble the bodies of each creature in the game
+-- from their template files.
+-- Each creature template needs to come with a .lua file containing general
+-- stats such as the blood volume and the id of the creature and a .tgf file
+-- which contains the layout of the body graph.
+--
+-- @module BodyFactory
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
 local Log = require( 'src.util.Log' )
 local Body = require( 'src.characters.body.Body' )
 local BodyPart = require( 'src.characters.body.BodyPart' )
@@ -33,8 +47,8 @@ local layouts      -- Define how body parts are connected.
 
 ---
 -- Returns a list of all files inside the specified directory.
--- @param dir (string) The directory to load the templates from.
--- @return    (table)  A sequence containing all files in the directory.
+-- @tparam  string dir The directory to load the templates from.
+-- @treturn table A sequence containing all files in the directory.
 --
 local function loadFiles( dir )
     local files = {}
@@ -50,8 +64,8 @@ end
 
 ---
 -- Loads all templates for body parts found in the specified directory.
--- @param files (table) A sequence containing all files in the directory.
--- @return      (table) A table containing the body part templates.
+-- @tparam  table files A sequence containing all files in the directory.
+-- @treturn table A table containing the body part templates.
 --
 local function loadTemplates( files )
     local tmp = {}
@@ -78,8 +92,8 @@ end
 
 ---
 -- Loads all creatures templates and converts them using the TGFParser.
--- @param files (table) A sequence containing all files in the directory.
--- @return      (table) A table containing the converted templates.
+-- @tparam  table files A sequence containing all files in the directory.
+-- @treturn table A table containing the converted templates.
 --
 local function loadLayouts( files )
     local tmp = {}
@@ -101,11 +115,11 @@ end
 -- Creates a body part based on the id returned from the creature's template. If
 -- a body part is of the type 'equipment' it will be added to the creature's
 -- equipment instead.
--- @param cid       (string)    The body id of the creature to create.
--- @param body      (Body)      The body to add this body part to.
--- @param equipment (Equipment) The equipment object to add a new slot to.
--- @param index     (number)    A unique number identifying a specific node in the graph.
--- @param id        (string)    The id used to determine the body part to create.
+-- @tparam string    cid       The body id of the creature to create.
+-- @tparam Body      body      The body to add this body part to.
+-- @tparam Equipment equipment The equipment object to add a new slot to.
+-- @tparam number    index     A unique number identifying a specific node in the graph.
+-- @tparam string    id        The id used to determine the body part to create.
 --
 local function createBodyPart( cid, body, equipment, index, id )
     local template = templates[cid][id]
@@ -165,8 +179,8 @@ end
 
 ---
 -- Creates a body based on the specified id.
--- @param id (string) The body id of the creature to create.
--- @return   (Body)   The newly created Body.
+-- @tparam string id The body id of the creature to create.
+-- @treturn Body The newly created Body.
 --
 function BodyFactory.create( id )
     local layout, template = layouts[id], templates[id]
@@ -177,6 +191,11 @@ function BodyFactory.create( id )
     return assembleBody( id, template, layout )
 end
 
+---
+-- Loads a body based on a saved file.
+-- @tparam table savedBody A table containing the saved body.
+-- @treturn Body The loaded body.
+--
 function BodyFactory.load( savedbody )
     local body = BodyFactory.create( savedbody.id )
 
