@@ -30,7 +30,7 @@ local BodyFactory = {}
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/'
+local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/bodies/'
 local TEMPLATE_EXTENSION = 'lua'
 local LAYOUT_EXTENSION = 'tgf'
 
