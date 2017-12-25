@@ -1,31 +1,31 @@
-local Log = require( 'src.util.Log' );
-local Body = require( 'src.characters.body.Body' );
-local BodyPart = require( 'src.characters.body.BodyPart' );
-local Equipment = require( 'src.characters.body.Equipment' );
-local Inventory = require( 'src.inventory.Inventory' );
-local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' );
-local TGFParser = require( 'lib.TGFParser' );
+local Log = require( 'src.util.Log' )
+local Body = require( 'src.characters.body.Body' )
+local BodyPart = require( 'src.characters.body.BodyPart' )
+local Equipment = require( 'src.characters.body.Equipment' )
+local Inventory = require( 'src.inventory.Inventory' )
+local EquipmentSlot = require( 'src.characters.body.EquipmentSlot' )
+local TGFParser = require( 'lib.TGFParser' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local BodyFactory = {};
+local BodyFactory = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/';
-local TEMPLATE_EXTENSION = 'lua';
-local LAYOUT_EXTENSION = 'tgf';
+local TEMPLATE_DIRECTORY_CREATURES  = 'res/data/creatures/'
+local TEMPLATE_EXTENSION = 'lua'
+local LAYOUT_EXTENSION = 'tgf'
 
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
 
-local templates;    -- Define the attributes for each body part.
-local layouts;      -- Define how body parts are connected.
+local templates    -- Define the attributes for each body part.
+local layouts      -- Define how body parts are connected.
 
 -- ------------------------------------------------
 -- Private Functions
@@ -37,15 +37,15 @@ local layouts;      -- Define how body parts are connected.
 -- @return    (table)  A sequence containing all files in the directory.
 --
 local function loadFiles( dir )
-    local files = {};
+    local files = {}
     for i, file in ipairs( love.filesystem.getDirectoryItems( dir )) do
-        local fn, fe = file:match( '^(.+)%.(.+)$' );
+        local fn, fe = file:match( '^(.+)%.(.+)$' )
         if fe == TEMPLATE_EXTENSION or fe == LAYOUT_EXTENSION then
-            files[#files + 1] = { name = fn, extension = fe };
-            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ));
+            files[#files + 1] = { name = fn, extension = fe }
+            Log.debug( string.format( '%3d. %s.%s', i, fn, fe ))
         end
     end
-    return files;
+    return files
 end
 
 ---
@@ -54,26 +54,26 @@ end
 -- @return      (table) A table containing the body part templates.
 --
 local function loadTemplates( files )
-    local tmp = {};
+    local tmp = {}
     for _, file in ipairs( files ) do
         if file.extension == TEMPLATE_EXTENSION then
-            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
-            local status, loaded = pcall( love.filesystem.load, path );
+            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension )
+            local status, loaded = pcall( love.filesystem.load, path )
             if not status then
-                Log.warn( 'Can not load ' .. path );
+                Log.warn( 'Can not load ' .. path )
             else
-                local creature = loaded();
-                tmp[creature.id] = {};
+                local creature = loaded()
+                tmp[creature.id] = {}
 
                 -- Create template library for this creature.
                 for id, sub in pairs( creature ) do
-                    local i = type( sub ) == 'table' and sub.id or id;
-                    tmp[creature.id][i] = sub;
+                    local i = type( sub ) == 'table' and sub.id or id
+                    tmp[creature.id][i] = sub
                 end
             end
         end
     end
-    return tmp;
+    return tmp
 end
 
 ---
@@ -82,19 +82,19 @@ end
 -- @return      (table) A table containing the converted templates.
 --
 local function loadLayouts( files )
-    local tmp = {};
+    local tmp = {}
     for _, file in ipairs( files ) do
         if file.extension == LAYOUT_EXTENSION then
-            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension );
-            local status, template = pcall( TGFParser.parse, path );
+            local path = string.format( '%s%s.%s', TEMPLATE_DIRECTORY_CREATURES, file.name, file.extension )
+            local status, template = pcall( TGFParser.parse, path )
             if not status then
-                Log.warn( 'Can not load ' .. path );
+                Log.warn( 'Can not load ' .. path )
             else
-                tmp[file.name] = template;
+                tmp[file.name] = template
             end
         end
     end
-    return tmp;
+    return tmp
 end
 
 ---
@@ -108,7 +108,7 @@ end
 -- @param id        (string)    The id used to determine the body part to create.
 --
 local function createBodyPart( cid, body, equipment, index, id )
-    local template = templates[cid][id];
+    local template = templates[cid][id]
     if template.type == 'equipment' then
         equipment:addSlot( EquipmentSlot( index, template.id, template.itemType, template.subType, template.sort ))
     else
@@ -129,7 +129,7 @@ local function assembleBody( creatureID, template, layout )
     local equipment = Equipment()
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
 
-    equipment:observe( inventory );
+    equipment:observe( inventory )
 
     -- The index is the number used inside of the graph whereas the id determines
     -- which type of object to create for this node.
@@ -139,14 +139,14 @@ local function assembleBody( creatureID, template, layout )
 
     -- Connect the bodyparts.
     for _, edge in ipairs( layout.edges ) do
-        body:addConnection( edge );
+        body:addConnection( edge )
     end
 
     -- Set the equipment to be used for this body.
-    body:setEquipment( equipment );
-    body:setInventory( inventory );
+    body:setEquipment( equipment )
+    body:setInventory( inventory )
 
-    return body;
+    return body
 end
 
 -- ------------------------------------------------
@@ -158,9 +158,9 @@ end
 --
 function BodyFactory.loadTemplates()
     Log.debug( "Load Creature-Templates:" )
-    local files = loadFiles( TEMPLATE_DIRECTORY_CREATURES );
-    layouts = loadLayouts( files );
-    templates = loadTemplates( files );
+    local files = loadFiles( TEMPLATE_DIRECTORY_CREATURES )
+    layouts = loadLayouts( files )
+    templates = loadTemplates( files )
 end
 
 ---
@@ -178,20 +178,20 @@ function BodyFactory.create( id )
 end
 
 function BodyFactory.load( savedbody )
-    local body = BodyFactory.create( savedbody.id );
+    local body = BodyFactory.create( savedbody.id )
 
     for id, savedBodyPart in pairs( savedbody.nodes ) do
-        body:getBodyPart( id ):load( savedBodyPart );
+        body:getBodyPart( id ):load( savedBodyPart )
     end
 
-    body:getInventory():loadItems( savedbody.inventory );
-    body:getEquipment():load( savedbody.equipment );
+    body:getInventory():loadItems( savedbody.inventory )
+    body:getEquipment():load( savedbody.equipment )
 
     for effect, _ in pairs( savedbody.statusEffects ) do
-        body:getStatusEffects():add({ effect });
+        body:getStatusEffects():add({ effect })
     end
 
-    return body;
+    return body
 end
 
-return BodyFactory;
+return BodyFactory
