@@ -64,6 +64,15 @@ local function chooseNationality()
 end
 
 ---
+-- Select a random name from the templates for the specified nationality.
+-- @tparam string nationality The nationality to generate a name for.
+-- @treturn name The generated name.
+--
+local function generateName( nationality )
+    return CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )]
+end
+
+---
 -- Loads the character's weapon and adds ammunition to his inventory.
 -- @param weapon    (Weapon) The weapon to load.
 -- @param inventory (Container)    The inventory to create ammunition for.
@@ -156,7 +165,7 @@ function CharacterFactory.newCharacter( type, factionType )
     if type == 'human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
-        character:setName( CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )])
+        character:setName( generateName( nationality ))
     end
 
     character:setBody( BodyFactory.create( type ));
