@@ -221,7 +221,7 @@ end
 ---
 -- Returns the list the mouse is currently over.
 -- @tparam table lists A table containing the different inventories.
--- @return             The equipment or inventory list the mouse is over.
+-- @treturn table The equipment or inventory list the mouse is over.
 --
 local function getListBelowCursor( lists )
     for _, list in pairs( lists ) do
@@ -306,8 +306,8 @@ end
 
 ---
 -- Initialises the inventory screen.
--- @tparam Character ncharacter The character to open the inventory for.
--- @tparam Tile      ntarget    The target tile to open the inventory for.
+-- @tparam Character character The character to open the inventory for.
+-- @tparam Tile      target    The target tile to open the inventory for.
 --
 function InventoryScreen:initialize( character, target )
     love.mouse.setVisible( true )
