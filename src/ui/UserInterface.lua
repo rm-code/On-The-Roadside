@@ -89,7 +89,6 @@ function UserInterface:draw()
         return
     end
 
-    local character = self.factions:getFaction():getCurrentCharacter()
     self.characterInfo:draw()
 
     inspectTile( self.mouseX, self.mouseY, self.map )
