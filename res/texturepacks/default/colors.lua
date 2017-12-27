@@ -167,9 +167,6 @@ return {
     ['ui_inventory_drag_bg'] = COLORS.DB01,
     ['ui_inventory_drag_text'] = COLORS.DB20,
 
-    ['ui_ap_cost'] = COLORS.DB27,
-    ['ui_ap_cost_result'] = COLORS.DB10,
-
     ['ui_shot_valid']               = COLORS.DB09,
     ['ui_shot_potentially_blocked'] = COLORS.DB05,
     ['ui_shot_blocked']             = COLORS.DB27,
@@ -196,6 +193,8 @@ return {
     ['ui_changelog_fixes'] = COLORS.DB16,
     ['ui_changelog_other'] = COLORS.DB16,
     ['ui_changelog_text'] = COLORS.DB25,
+
+    ['ui_character_name'] = COLORS.DB17,
 
     -- ==============================
     -- MAP EDITOR
