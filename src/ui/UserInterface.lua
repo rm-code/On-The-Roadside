@@ -11,12 +11,20 @@ local Log = require( 'src.util.Log' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
 local UITileInfo = require( 'src.ui.elements.UITileInfo' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
+local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UserInterface = Class( 'UserInterface' )
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local UI_GRID_WIDTH = 16
 
 -- ------------------------------------------------
 -- Private Methods
@@ -48,6 +56,9 @@ function UserInterface:initialize( game, camera )
     self.factions = game:getFactions()
     self.camera = camera
 
+    local sw, sh = GridHelper.getScreenGridDimensions()
+    self.background = UIBackground( sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, sh )
+
     self.characterInfo = UICharacterInfo()
     self.tileInfo = UITileInfo()
 
@@ -63,6 +74,7 @@ function UserInterface:draw()
         return
     end
 
+    self.background:draw()
     self.characterInfo:draw()
     self.tileInfo:draw()
 end

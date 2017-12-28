@@ -10,7 +10,6 @@ local UIElement = require( 'src.ui.elements.UIElement' )
 local GridHelper = require( 'src.util.GridHelper' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
-local UIBackground = require( 'src.ui.elements.UIBackground' )
 
 -- ------------------------------------------------
 -- Module
@@ -111,17 +110,12 @@ function UITileInfo:initialize()
     local sw, _ = GridHelper.getScreenGridDimensions()
     UIElement.initialize( self, sw - UI_GRID_WIDTH, UI_GRID_HEIGHT, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.background = UIBackground( self.ax, self.ay, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
     self.textObject = love.graphics.newText( TexturePacks.getFont():get() )
     self.colorTable = {}
 end
 
 function UITileInfo:draw()
     local tw, th = TexturePacks.getTileDimensions()
-
-    self.background:draw()
-
     love.graphics.draw( self.textObject, (self.ax+1) * tw, (self.ay+1) * th )
 end
 

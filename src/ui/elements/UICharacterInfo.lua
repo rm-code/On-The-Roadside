@@ -14,7 +14,6 @@ local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
 local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
 local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
 local GridHelper = require( 'src.util.GridHelper' )
-local UIBackground = require( 'src.ui.elements.UIBackground' )
 
 -- ------------------------------------------------
 -- Module
@@ -212,16 +211,12 @@ function UICharacterInfo:initialize()
     local sw, _ = GridHelper.getScreenGridDimensions()
     UIElement.initialize( self, sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.background = UIBackground( self.ax, self.ay, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
-
     self.textObject = love.graphics.newText( TexturePacks.getFont():get() )
     self.colorTable = {}
 end
 
 function UICharacterInfo:draw()
     local tw, th = TexturePacks.getTileDimensions()
-
-    self.background:draw()
 
     love.graphics.draw( self.textObject, (self.ax+1) * tw, (self.ay+1) * th )
 end
