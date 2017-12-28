@@ -1,3 +1,12 @@
+# Version 0.13.1.1413 - 2017-12-28
+
+## Fixes
+- Fixed crash when trying to create a save game.
+- Fixed crash when trying to path through a closed door with a creature that doesn't have enough action points to open the door.
+
+
+
+
 # Version 0.13.0.1401 - 2017-12-24
 
 ## Additions
