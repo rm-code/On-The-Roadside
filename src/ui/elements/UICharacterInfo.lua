@@ -19,7 +19,7 @@ local GridHelper = require( 'src.util.GridHelper' )
 -- Module
 -- ------------------------------------------------
 
-local UICharacterInfo = UIElement:subclass( 'UIMessageLog' )
+local UICharacterInfo = UIElement:subclass( 'UICharacterInfo' )
 
 -- ------------------------------------------------
 -- Constants
