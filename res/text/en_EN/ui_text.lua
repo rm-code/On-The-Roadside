@@ -2,12 +2,21 @@ local locale = {};
 locale.identifier = 'en_EN';
 
 locale.strings = {
+    -- User interface
     ['ui_ap'] = "AP: ",
     ['ui_tile'] = "Tile: ",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
     ['ui_win'] = "All enemies are dead. You won!\n\nPress any key to continue...",
     ['ui_lose'] = "Your team is dead. You lose!\n\nPress any key to continue...",
+    ['ui_tile_info_passable'] = "passable",
+    ['ui_tile_info_impassable'] = "impassable",
+    ['ui_tile_info_moreitems'] = "... %d additional items.",
+    ['ui_worldobject_info_climbable'] = "climbable",
+    ['ui_worldobject_info_openable'] = "openable",
+    ['ui_worldobject_info_lootable'] = "lootable",
+    ['ui_worldobject_info_destructible'] = ", destructible",
+    ['ui_worldobject_info_indestructible'] = ", indestructible",
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",

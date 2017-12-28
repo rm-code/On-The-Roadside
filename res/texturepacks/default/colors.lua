@@ -148,6 +148,9 @@ return {
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
     ['ui_text_dark'] = COLORS.DB25,
+    ['ui_text_success'] = COLORS.DB09,
+    ['ui_text_warning'] = COLORS.DB05,
+    ['ui_text_error'] = COLORS.DB27,
 
     ['ui_help_section'] = COLORS.DB24,
 

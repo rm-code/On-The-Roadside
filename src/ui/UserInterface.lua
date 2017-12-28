@@ -8,9 +8,9 @@
 
 local Class = require( 'lib.Middleclass' )
 local Log = require( 'src.util.Log' )
-local Translator = require( 'src.util.Translator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
+local UITileInfo = require( 'src.ui.elements.UITileInfo' )
 
 -- ------------------------------------------------
 -- Module
@@ -21,33 +21,6 @@ local UserInterface = Class( 'UserInterface' )
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
-
----
--- Draws some information of the tile the mouse is currently hovering over.
--- @tparam number mouseX The mouse cursor's position along the x-axis.
--- @tparam number mouseY The mouse cursor's position along the y-axis.
--- @tparam Map    map    The map to inspect.
---
-local function inspectTile( mouseX, mouseY, map )
-    local font = TexturePacks.getFont()
-    local tw, th = TexturePacks.getTileDimensions()
-
-    local x, y = tw, love.graphics.getHeight() - th * 6
-    local tile = map:getTileAt( mouseX, mouseY )
-
-    if not tile then
-        return
-    end
-
-    love.graphics.print( Translator.getText( 'ui_tile' ), x, y )
-
-    local sw = font:measureWidth( Translator.getText( 'ui_tile' ))
-    if tile:hasWorldObject() then
-        love.graphics.print( Translator.getText( tile:getWorldObject():getID() ), x + sw, y )
-    else
-        love.graphics.print( Translator.getText( tile:getID() ), x + sw, y )
-    end
-end
 
 local function drawDebugInfo( mouseX, mouseY, debug )
     local tw, th = TexturePacks.getTileDimensions()
@@ -76,6 +49,7 @@ function UserInterface:initialize( game, camera )
     self.camera = camera
 
     self.characterInfo = UICharacterInfo()
+    self.tileInfo = UITileInfo()
 
     self.mouseX, self.mouseY = 0, 0
 
@@ -90,14 +64,14 @@ function UserInterface:draw()
     end
 
     self.characterInfo:draw()
-
-    inspectTile( self.mouseX, self.mouseY, self.map )
+    self.tileInfo:draw()
 end
 
 function UserInterface:update()
     self.mouseX, self.mouseY = self.camera:getMouseWorldGridPosition()
 
     self.characterInfo:update( self.game:getState(), self.map, self.camera, self.factions:getFaction():getCurrentCharacter() )
+    self.tileInfo:update( self.mouseX, self.mouseY, self.map )
 end
 
 function UserInterface:toggleDebugInfo()
