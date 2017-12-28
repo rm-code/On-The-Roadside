@@ -33,16 +33,10 @@ function RangedWeapon:attack()
 end
 
 function RangedWeapon:serialize()
-    local t = {
-        ['id'] = self.template.id,
-        ['itemType'] = self.template.itemType,
-        ['modeIndex'] = self:getAttackModeIndex()
-    }
-
+    local t = RangedWeapon.super.serialize( self )
     if self.magazine then
         t['magazine'] = self.magazine:serialize()
     end
-
     return t
 end
 

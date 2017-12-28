@@ -35,7 +35,7 @@ local function handleOpenableObjects( worldObject, character, tile, index )
     if not worldObject:isPassable() then
         local success = character:enqueueAction( Open( character, tile ))
         -- Don't create a walk action if the tile is the last one in the path.
-        if index ~= 1 then
+        if success and index ~= 1 then
             success = character:enqueueAction( Walk( character, tile ))
         end
         return success
