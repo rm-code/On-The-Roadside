@@ -42,11 +42,8 @@ function Weapon:selectPrevFiringMode()
 end
 
 function Weapon:serialize()
-    local t = {
-        ['id'] = self.id,
-        ['itemType'] = self.itemType,
-        ['modeIndex'] = self.modeIndex
-    }
+    local t = Weapon.super.serialize( self )
+    t['modeIndex'] = self.modeIndex
     return t
 end
 
