@@ -4,7 +4,6 @@ locale.identifier = 'en_EN';
 locale.strings = {
     -- User interface
     ['ui_ap'] = "AP: ",
-    ['ui_tile'] = "Tile: ",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
     ['ui_win'] = "All enemies are dead. You won!\n\nPress any key to continue...",
