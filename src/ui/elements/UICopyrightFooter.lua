@@ -21,7 +21,7 @@ local UICopyrightFooter = Class( 'UICopyrightFooter' )
 -- ------------------------------------------------
 
 local VERSION_STRING = string.format( 'PRE-ALPHA Version: %s ', getVersion() )
-local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2017. All rights reserved.'
+local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2018. All rights reserved.'
 
 -- ------------------------------------------------
 -- Constructor
