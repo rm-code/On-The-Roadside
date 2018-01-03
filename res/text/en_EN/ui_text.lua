@@ -44,6 +44,7 @@ locale.strings = {
     ['ui_settings_ingame_editor'] = "Activate Map Editor:",
     ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
     ['ui_settings_mouse_panning'] = "Mouse Panning:",
+    ['ui_settings_invert_messagelog'] = "Invert message log:",
     ['ui_keybindings'] = "Edit Keybindings",
 
     -- Keybindings

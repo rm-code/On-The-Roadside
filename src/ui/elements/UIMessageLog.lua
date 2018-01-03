@@ -11,6 +11,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local MessageQueue = require( 'src.util.MessageQueue' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local GridHelper = require( 'src.util.GridHelper' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -38,6 +39,13 @@ local COLORS = {
 -- Private Methods
 -- ------------------------------------------------
 
+local function chooseFlowDirection( messageCount )
+    if Settings.getInvertedMessageLog() then
+        return 1, messageCount, 1
+    end
+    return messageCount, 1, -1
+end
+
 local function selectColor( i, messages )
     if i == #messages then
         return TexturePacks.getColor( COLORS[messages[i].type] )
@@ -49,7 +57,10 @@ local function generateTextObject( textObject, messages, coloredTextTable, width
     textObject:clear()
 
     local height = 0
-    for i = 1, #messages do
+
+    -- Change the direction of the text flow based on settings.
+    local fstart, fend, steps = chooseFlowDirection( #messages )
+    for i = fstart, fend, steps do
         coloredTextTable[1] = selectColor( i, messages )
         coloredTextTable[2] = string.format( '[%d] %s', messages[i].id, messages[i].text )
 
@@ -91,6 +102,13 @@ local function registerMessage( msg, id, messages )
     return id
 end
 
+local function getVerticalPosition( y, th, offset )
+    if Settings.getInvertedMessageLog() then
+        return (y + UI_GRID_HEIGHT) * th - offset
+    end
+    return y * th
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -117,7 +135,7 @@ function UIMessageLog:draw()
     self.background:draw()
 
     love.graphics.setScissor( self.ax * tw, self.ay * th, UI_GRID_WIDTH * tw, UI_GRID_HEIGHT * th )
-    love.graphics.draw( self.textObject, (self.ax+1) * tw, (self.ay + UI_GRID_HEIGHT) * th - self.verticalOffset )
+    love.graphics.draw( self.textObject, (self.ax+1) * tw, getVerticalPosition( self.ay, th, self.verticalOffset ))
     love.graphics.setScissor()
 end
 

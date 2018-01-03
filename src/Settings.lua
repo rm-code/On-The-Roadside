@@ -21,13 +21,14 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 4,
+    version = 5,
     general = {
         fullscreen = true,
         locale = 'en_EN',
         mapeditor = false,
         texturepack = 'default',
-        mousepanning = false
+        mousepanning = false,
+        invertedMessageLog = false,
     },
     controls = {
         ['x']      = 'action_stand',
@@ -131,6 +132,10 @@ function Settings.getMousePanning()
     return settings.general.mousepanning
 end
 
+function Settings.getInvertedMessageLog()
+    return settings.general.invertedMessageLog
+end
+
 function Settings.getTexturepack()
     return settings.general.texturepack
 end
@@ -176,6 +181,10 @@ end
 
 function Settings.setMousePanning( mousepanning )
     settings.general.mousepanning = mousepanning
+end
+
+function Settings.setInvertedMessageLog( invertedMessageLog )
+    settings.general.invertedMessageLog = invertedMessageLog
 end
 
 function Settings.setTexturepack( ntexturepack )
