@@ -27,8 +27,6 @@ mkdir ../releases/OTR_$formatted
 mv -i -v OTR_$formatted.love ../releases/OTR_$formatted
 cd ../releases/OTR_$formatted || exit
 
-exit
-
 ## CREATE WINDOWS EXECUTABLE
 # Unzip the LÖVE binaries.
 unzip -q ../LOVE_bin.zip -d LOVE_WIN
@@ -51,6 +49,7 @@ zip -r -q OTR_$formatted-WIN.zip LOVE_WIN/ -x *.git* -x *.DS_Store*
 
 # Remove the folder.
 rm -r LOVE_WIN
+
 
 ## CREATE MAC OS APPLICATION
 echo "Creating Mac OS Application"
@@ -75,9 +74,13 @@ echo "</plist>" >> OTR_$formatted.app/Contents/Info.plist
 # Move to the parent folder
 mv -i -v OTR_$formatted.app ../OTR_$formatted-OSX.app
 
-# Remove the temporary folder.
+# Zip the .app file.
 cd ..
-rm -r LOVE_OSX
+zip -r OTR_$formatted-OSX.zip OTR_$formatted-OSX.app
+
+# Remove the temporary folder and the .app file.
+rm -r LOVE_OSX OTR_$formatted-OSX.app
+
 
 ## ZIP THE LOVE FILE
 # Fix for https://github.com/itchio/butler/issues/58#issuecomment-299619964
@@ -89,5 +92,5 @@ rm OTR_$formatted.love
 # Publish to itch.io
 echo "Publishing to itch.io"
 butler push OTR_$formatted-WIN.zip rmcode/on-the-roadside:win --userversion $major.$minor.$patch.$build
-butler push OTR_$formatted-OSX.app rmcode/on-the-roadside:osx --userversion $major.$minor.$patch.$build
+butler push OTR_$formatted-OSX.zip rmcode/on-the-roadside:osx --userversion $major.$minor.$patch.$build
 butler push OTR_$formatted-LOVE.zip rmcode/on-the-roadside:win-osx-linux --userversion $major.$minor.$patch.$build
