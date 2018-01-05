@@ -35,7 +35,7 @@ function GameScreen:initialize( savegame )
     if savegame then
         playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
     else
-        playerFaction:addCharacters( 10, 'human' )
+        playerFaction:addCharacters( 10, 'stalker' )
     end
 
     local state = savegame and savegame.type or 'combat'

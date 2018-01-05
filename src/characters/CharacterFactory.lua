@@ -16,6 +16,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
+local CREATURE_CLASSES = require( 'res.data.creatures.classes' )
 local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
     { id = 'german',  weight = 10 },
@@ -132,6 +133,19 @@ local function createEquipment( character, factionType )
     end
 end
 
+---
+-- Searches and returns a body type for a specific class.
+-- @tparam string classID The class id to look for.
+-- @tparam string The body type for the provided class.
+--
+local function findBodyType( classID )
+    for _, class in ipairs( CREATURE_CLASSES ) do
+        if class.id == classID then
+            return class.body[love.math.random( #class.body )]
+        end
+    end
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -159,16 +173,17 @@ function CharacterFactory.loadCharacter( savedCharacter )
     return character;
 end
 
-function CharacterFactory.newCharacter( type, factionType )
-    local character = Character()
+function CharacterFactory.newCharacter( classID, factionType )
+    local character = Character( classID )
 
-    if type == 'human' then
+    local bodyType = findBodyType( classID )
+    if bodyType == 'human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
         character:setName( generateName( nationality ))
     end
 
-    character:setBody( BodyFactory.create( type ));
+    character:setBody( BodyFactory.create( bodyType ))
     createEquipment( character, factionType )
 
     return character;

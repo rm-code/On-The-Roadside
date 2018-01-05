@@ -78,8 +78,8 @@ function CombatState:initialize( playerFaction, savegame )
         self.factions:findFaction( FACTIONS.ENEMY   ):loadCharacters( savegame.factions[FACTIONS.ENEMY]   )
         self.factions:findFaction( FACTIONS.NEUTRAL ):loadCharacters( savegame.factions[FACTIONS.NEUTRAL] )
     else
-        self.factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10, 'human' )
-        self.factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5, 'dog'   )
+        self.factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10, 'stalker' )
+        self.factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5, 'dog' )
     end
 
     self.factions:findFaction( FACTIONS.ENEMY   ):spawnCharacters( self.map )
