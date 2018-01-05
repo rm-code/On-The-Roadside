@@ -1,6 +1,7 @@
 local Character = require( 'src.characters.Character' );
 local BodyFactory = require( 'src.characters.body.BodyFactory' );
 local ItemFactory = require('src.items.ItemFactory');
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -17,6 +18,7 @@ local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 
 local CREATURE_CLASSES = require( 'res.data.creatures.classes' )
+local CREATURE_GROUPS = require( 'res.data.creatures.groups' )
 local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
     { id = 'german',  weight = 10 },
@@ -146,6 +148,15 @@ local function findBodyType( classID )
     end
 end
 
+---
+-- Picks a random creature class based on the faction.
+-- @tparam string factionID The faction id to select from.
+-- @treturn string The class id.
+--
+local function pickCreatureClass( factionID )
+    return Util.pickRandomValue( CREATURE_GROUPS[factionID] )
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -173,7 +184,8 @@ function CharacterFactory.loadCharacter( savedCharacter )
     return character;
 end
 
-function CharacterFactory.newCharacter( classID, factionType )
+function CharacterFactory.newCharacter( factionType )
+    local classID = pickCreatureClass( factionType )
     local character = Character( classID )
 
     local bodyType = findBodyType( classID )

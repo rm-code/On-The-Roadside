@@ -73,12 +73,11 @@ end
 ---
 -- Adds characters to this faction.
 -- @tparam number amount The amount of characters to add.
--- @tparam string ctype  The type of characters to add.
 --
-function Faction:addCharacters( amount, ctype )
+function Faction:addCharacters( amount )
     for _ = 1, amount do
         -- Create the new character.
-        local character = CharacterFactory.newCharacter( ctype, self.type )
+        local character = CharacterFactory.newCharacter( self.type )
         character:setFaction( self )
 
         -- Add it to this faction.
