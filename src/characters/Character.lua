@@ -119,7 +119,9 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize()
+function Character:initialize( classID )
+    self.class = classID
+
     self.actionPoints = DEFAULT_ACTION_POINTS
     self.actions = Queue()
 
@@ -337,6 +339,14 @@ end
 --
 function Character:getBody()
     return self.body
+end
+
+---
+-- Returns the character's class type.
+-- @treturn string The character's class.
+--
+function Character:getClass()
+    return self.class
 end
 
 ---

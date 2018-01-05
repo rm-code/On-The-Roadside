@@ -107,6 +107,10 @@ local function drawCharacterInfo( textObject, colorTable, character )
     local x, y = 0, 0
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_healthscreen_name' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character:getName() )
+
+    x, y = 0, 16
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_class' ))
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getClass() ))
 end
 
 ---
@@ -123,7 +127,7 @@ local function drawActionPoints( textObject, colorTable, state, map, camera, cha
     local currentActionPoints = character:getActionPoints()
     local maximumActionPoints = character:getMaxActionPoints()
 
-    local x, y = 0, 16
+    local x, y = 0, 32
     -- AP:
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_ap' ))
     -- AP: xx
@@ -153,7 +157,7 @@ end
 -- @tparam Weapon weapon     The equipped weapon.
 --
 local function drawWeaponName( textObject, colorTable, weapon )
-    local x, y = 0, 32
+    local x, y = 0, 48
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_weapon' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), Translator.getText( weapon:getID() ))
 end
@@ -173,7 +177,7 @@ local function drawAmmunitionInfo( textObject, colorTable, inventory, weapon )
         return
     end
 
-    local x, y = 0, 48
+    local x, y = 0, 64
     local magazine = weapon:getMagazine()
     local total = inventory:countItems( ITEM_TYPES.AMMO, magazine:getCaliber() )
     local text = string.format( '%d/%d (%d)', magazine:getNumberOfRounds(), magazine:getCapacity(), total )
@@ -190,13 +194,13 @@ end
 --
 local function drawWeaponMode( textObject, colorTable, mode )
     local tw, _ = TexturePacks.getGlyphDimensions()
-    local y = 64
+    local y = 80
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_MODE    * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'MODE'    )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_AP      * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'AP'      )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_ACC     * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'ACC'     )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_ATTACKS * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'ATTACKS' )
 
-    y = 80
+    y = 96
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_MODE    * tw, y, TexturePacks.getColor( 'ui_text' ), mode.name     )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_AP      * tw, y, TexturePacks.getColor( 'ui_text' ), mode.cost     )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_ACC     * tw, y, TexturePacks.getColor( 'ui_text' ), mode.accuracy )

@@ -1,18 +1,18 @@
 return {
     {
-        id = 'stalker',
+        id = 'class_stalker',
         body = {
             'human'
         }
     },
     {
-        id = 'bandit',
+        id = 'class_bandit',
         body = {
             'human'
         }
     },
     {
-        id = 'dog',
+        id = 'class_dog',
         body = {
             'dog'
         }

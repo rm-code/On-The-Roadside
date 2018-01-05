@@ -1,11 +1,11 @@
 return {
     allied = {
-        "stalker"
+        "class_stalker"
     },
     neutral = {
-        "dog"
+        "class_dog"
     },
     enemy = {
-        "bandit"
+        "class_bandit"
     }
 }

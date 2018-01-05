@@ -3,6 +3,7 @@ locale.identifier = 'en_EN';
 
 locale.strings = {
     -- User interface
+    ['ui_class'] = "Class: ",
     ['ui_ap'] = "AP: ",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
