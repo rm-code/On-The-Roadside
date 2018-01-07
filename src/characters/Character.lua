@@ -268,17 +268,6 @@ function Character:canSee( target )
 end
 
 ---
--- Updates the character once. This should be used to update status effects and
--- other things which should happen once per round.
---
-function Character:tickOneTurn()
-    self.body:tickOneTurn()
-    if self:isDead() then
-        handleDeath( self )
-    end
-end
-
----
 -- Serializes the Character instance.
 -- @treturn table The serialized character instance.
 --
@@ -379,6 +368,22 @@ end
 --
 function Character:getFOV()
     return self.fov
+end
+
+---
+-- Returns the creature's health.
+-- @treturn number The current health points.
+--
+function Character:getHealthPoints()
+    return self.body:getHealthPoints()
+end
+
+---
+-- Returns the creature's maximum health.
+-- @treturn number The maximum health points.
+--
+function Character:getMaximumHealthPoints()
+    return self.body:getMaximumHealthPoints()
 end
 
 ---

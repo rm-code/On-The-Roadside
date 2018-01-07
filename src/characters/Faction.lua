@@ -41,7 +41,6 @@ function Faction:activate()
         if not character:isDead() then
             Log.debug( 'Tick character ' .. tostring( character ), 'Faction' )
             character:setFinishedTurn( false )
-            character:tickOneTurn()
         end
     end)
 end

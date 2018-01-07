@@ -40,13 +40,12 @@ local WEAPON_COLUMN_ATTACKS = 20
 -- ------------------------------------------------
 
 ---
--- Selects a color for the node in a path based on the distance to the
--- target and the remaining action points the character has.
--- @tparam number value The cost of the node.
--- @tparam number total The total number of nodes in the path.
+-- Adjusts colors based on how close a value is compared to its total.
+-- @tparam number value The value to compare.
+-- @tparam number total The maxium value.
 -- @treturn table A table containing RGBA values.
 --
-local function getActionPointColors( value, total )
+local function adjustColors( value, total )
     local fraction = value / total
     if fraction < 0 then
         return TexturePacks.getColor( 'ui_path_ap_low' )
@@ -131,7 +130,7 @@ local function drawActionPoints( textObject, colorTable, state, map, camera, cha
     -- AP:
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_ap' ))
     -- AP: xx
-    x = x + addToTextObject( textObject, colorTable, x, y, getActionPointColors( currentActionPoints, maximumActionPoints ), currentActionPoints )
+    x = x + addToTextObject( textObject, colorTable, x, y, adjustColors( currentActionPoints, maximumActionPoints ), currentActionPoints )
 
     -- The cost display should only be displayed during the planning state.
     if state:isInstanceOf( ExecutionState ) then
@@ -147,7 +146,25 @@ local function drawActionPoints( textObject, colorTable, state, map, camera, cha
     -- AP: xx =>
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), ' => ' )
     -- AP: xx => yy
-    addToTextObject( textObject, colorTable, x, y, getActionPointColors( character:getActionPoints() - cost, character:getMaxActionPoints() ), character:getActionPoints() - cost )
+    addToTextObject( textObject, colorTable, x, y, adjustColors( character:getActionPoints() - cost, character:getMaxActionPoints() ), character:getActionPoints() - cost )
+end
+
+---
+-- Draws the action point indicator. If the player planning mode is active it
+-- also draws the predicted costs for any action planned by the player.
+-- @tparam Text      textObject The Text object to modify.
+-- @tparam table     colorTable The table to use for adding colored text.
+-- @tparam Character character  The currently active character.
+
+local function drawHealthPoints( textObject, colorTable, character )
+    local currentHealthPoints = character:getHealthPoints()
+    local maximumHealthPoints = character:getMaximumHealthPoints()
+
+    local x, y = 112, 32
+    -- HP:
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_hp' ))
+    -- HP: xx
+    addToTextObject( textObject, colorTable, x, y, adjustColors( currentHealthPoints, maximumHealthPoints ), currentHealthPoints )
 end
 
 ---
@@ -230,6 +247,7 @@ function UICharacterInfo:update( state, map, camera, character )
 
     drawCharacterInfo( self.textObject, self.colorTable, character )
     drawActionPoints( self.textObject, self.colorTable, state, map, camera, character )
+    drawHealthPoints( self.textObject, self.colorTable, character )
 
     if not character:getWeapon() then
         return
