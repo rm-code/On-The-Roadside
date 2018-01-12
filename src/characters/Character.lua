@@ -120,7 +120,7 @@ end
 -- ------------------------------------------------
 
 function Character:initialize( classID )
-    self.class = classID
+    self.creatureClass = classID
 
     self.actionPoints = DEFAULT_ACTION_POINTS
     self.actions = Queue()
@@ -345,8 +345,8 @@ end
 -- Returns the character's class type.
 -- @treturn string The character's class.
 --
-function Character:getClass()
-    return self.class
+function Character:getCreatureClass()
+    return self.creatureClass
 end
 
 ---
