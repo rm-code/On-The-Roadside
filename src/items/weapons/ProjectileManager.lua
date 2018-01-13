@@ -125,19 +125,15 @@ local function checkForHits( index, projectile, tile, character )
         return;
     end
 
-    local remove = false
-
-    -- Always remove projectile when it reaches the target of the attack.
-    if projectile:hasReachedTarget() then
-        Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
-        remove = true
-    end
-
-    -- Hit characters and world objects along the path.
     if tile:isOccupied() then
-        hitCharacter( index, remove, tile, projectile )
+        hitCharacter( index, true, tile, projectile )
     elseif tile:hasWorldObject() then
         hitWorldObject( index, projectile, tile, tile:getWorldObject(), character );
+    end
+
+    if projectile:hasReachedTarget() then
+        Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
+        hitTile( index, true, tile, projectile )
     end
 end
 
