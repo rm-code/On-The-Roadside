@@ -43,6 +43,7 @@ function love.load( args )
     info[#info + 1] = string.format( "Title: '%s'", getTitle() )
     info[#info + 1] = string.format( "Version: %s", getVersion() )
     info[#info + 1] = string.format( "LOVE Version: %d.%d.%d (%s)", love.getVersion() )
+    info[#info + 1] = string.format( "OS: %s", love.system.getOS() )
     info[#info + 1] = string.format( "Resolution: %dx%d\n", love.graphics.getDimensions() )
 
     info[#info + 1] = "---- RENDERER  ---- "
