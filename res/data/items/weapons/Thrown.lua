@@ -14,7 +14,6 @@ return {
         subType    = "Thrown",
         damage     = 80,
         reloadable = false,
-        range      = 10,
         sound      = 'MELEE',
         mode = {
             {
@@ -23,6 +22,7 @@ return {
                 damageType = 'explosive'
             }
         },
+        range = 10,
         effects = {
             explosive    = { blastRadius = 2 },
             customSprite = { sprite = "weapon_m67_grenade" }
@@ -43,7 +43,6 @@ return {
         subType    = "Thrown",
         damage     = 24,
         reloadable = false,
-        range      = 10,
         sound      = 'MELEE',
         mode = {
             {
@@ -52,6 +51,7 @@ return {
                 damageType = 'piercing'
             }
         },
+        range = 10,
         effects = {
             customSprite = { sprite = "weapon_shuriken" }
         }

@@ -11,14 +11,10 @@ return {
         tags = {
             'humanoid'
         },
-        caliber    = "5.45x39mm",
-        sound      = 'ASSAULT_RIFLE',
         subType    = "Ranged",
+        sound      = 'ASSAULT_RIFLE',
         damage     = 26,
-        rpm        = 650,
-        magSize    = 30,
         reloadable = true,
-        range      = 30,
         mode = {
             {
                 name     = "Single",
@@ -32,7 +28,11 @@ return {
                 accuracy = 40,
                 attacks  = 5,
             }
-        }
+        },
+        caliber    = "5.45x39mm",
+        magSize    = 30,
+        range      = 30,
+        rpm        = 650
     },
     {
         id         = "weapon_rpg7",
@@ -47,12 +47,9 @@ return {
             'humanoid'
         },
         subType    = "Ranged",
-        caliber    = "OG-7V",
         sound      = 'ROCKET_LAUNCHER',
         damage     = 120,
-        magSize    = 1,
         reloadable = true,
-        range      = 30,
         mode = {
             {
                 name = "Single",
@@ -60,7 +57,10 @@ return {
                 accuracy = 65,
                 attacks = 1,
             }
-        }
+        },
+        caliber    = "OG-7V",
+        magSize    = 1,
+        range      = 30
     },
     {
         id         = "weapon_benelli_m4",
@@ -75,12 +75,9 @@ return {
             'humanoid'
         },
         subType    = "Ranged",
-        caliber    = "12_gauge",
         sound      = 'SHOTGUN',
         damage     = 15,
-        magSize    = 8,
         reloadable = true,
-        range      = 15,
         mode = {
             {
                 name = "Single",
@@ -88,6 +85,9 @@ return {
                 accuracy = 25,
                 attacks = 1,
             }
-        }
+        },
+        caliber    = "12_gauge",
+        magSize    = 8,
+        range      = 15
     }
 }
