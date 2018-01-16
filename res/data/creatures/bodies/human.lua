@@ -3,7 +3,7 @@ return {
     bloodVolume = 5,
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
-    hp = 40,
+    hp = 8,
     size = {
         stand  = 80,
         crouch = 50,

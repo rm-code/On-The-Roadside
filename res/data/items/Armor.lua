@@ -13,7 +13,7 @@ return {
         },
         subType = "Footwear",
         armor = {
-            protection = 12,
+            protection = 1,
             coverage = 100
         }
     },
@@ -31,7 +31,7 @@ return {
         },
         subType = "Headgear",
         armor = {
-            protection = 30,
+            protection = 1,
             coverage = 45
         }
     },
@@ -49,7 +49,7 @@ return {
         },
         subType = "Jacket",
         armor = {
-            protection = 12,
+            protection = 2,
             coverage = 80
         }
     },
@@ -67,7 +67,7 @@ return {
         },
         subType = "Trousers",
         armor = {
-            protection = 4,
+            protection = 0,
             coverage = 100
         },
     },
@@ -85,7 +85,7 @@ return {
         },
         subType = "Fur",
         armor = {
-            protection = 4,
+            protection = 0,
             coverage = 100
         }
     }

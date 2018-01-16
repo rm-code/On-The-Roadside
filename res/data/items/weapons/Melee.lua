@@ -12,7 +12,7 @@ return {
             'humanoid'
         },
         subType    = "Melee",
-        damage     = 18,
+        damage     = 5,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
@@ -45,7 +45,7 @@ return {
             'humanoid'
         },
         subType    = "Melee",
-        damage     = 24,
+        damage     = 4,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
@@ -71,7 +71,7 @@ return {
             'creature'
         },
         subType    = "Melee",
-        damage     = 14,
+        damage     = 3,
         reloadable = false,
         sound      = 'MELEE',
         mode = {

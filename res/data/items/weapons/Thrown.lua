@@ -12,7 +12,7 @@ return {
             'humanoid'
         },
         subType    = "Thrown",
-        damage     = 80,
+        damage     = 5,
         reloadable = false,
         sound      = 'MELEE',
         mode = {
@@ -41,7 +41,7 @@ return {
             'humanoid'
         },
         subType    = "Thrown",
-        damage     = 24,
+        damage     = 3,
         reloadable = false,
         sound      = 'MELEE',
         mode = {

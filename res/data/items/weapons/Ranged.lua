@@ -13,7 +13,7 @@ return {
         },
         subType    = "Ranged",
         sound      = 'ASSAULT_RIFLE',
-        damage     = 26,
+        damage     = 3,
         reloadable = true,
         mode = {
             {
@@ -48,7 +48,7 @@ return {
         },
         subType    = "Ranged",
         sound      = 'ROCKET_LAUNCHER',
-        damage     = 120,
+        damage     = 8,
         reloadable = true,
         mode = {
             {
@@ -76,7 +76,7 @@ return {
         },
         subType    = "Ranged",
         sound      = 'SHOTGUN',
-        damage     = 15,
+        damage     = 2,
         reloadable = true,
         mode = {
             {
