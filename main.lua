@@ -66,7 +66,6 @@ function love.load( args )
         combat      = require( 'src.ui.screens.CombatScreen'      ),
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
-        health      = require( 'src.ui.screens.HealthScreen'      ),
         gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
         loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
@@ -81,6 +80,7 @@ function love.load( args )
         editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  ),
         keybindingeditor = require( 'src.ui.screens.KeybindingScreen' ),
         keybindingmodal = require( 'src.ui.screens.KeybindingModal' ),
+        playerInfo = require( 'src.ui.screens.PlayerInfo' ),
     }
 
     ScreenManager.init( screens, 'bootloading' )

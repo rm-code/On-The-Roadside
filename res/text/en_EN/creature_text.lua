@@ -9,6 +9,9 @@ locale.strings = {
     ['class_stalker'] = "Stalker",
     ['class_bandit'] = "Bandit",
     ['class_dog'] = "Dog",
+
+    -- Status Effects
+    ['blind'] = 'Blindness'
 }
 
 return locale;

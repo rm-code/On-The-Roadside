@@ -122,4 +122,12 @@ function StatusEffects:isBlind()
     return self.active[STATUS_EFFECTS.BLIND]
 end
 
+---
+-- Returns a list of active status effects.
+-- @treturn table The active status effects.
+--
+function StatusEffects:getActiveEffects()
+    return self.active
+end
+
 return StatusEffects
