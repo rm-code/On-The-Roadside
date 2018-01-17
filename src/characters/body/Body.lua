@@ -51,7 +51,7 @@ local function checkArmorProtection( equipment, bodyPart, damage )
         Log.debug( string.format( 'Body part is protected by armor [%s].', item:getID() ), 'Body' )
         if love.math.random( 0, 100 ) < item:getArmorCoverage() then
             Log.debug( string.format( 'The armor absorbs %d points of damage.', item:getArmorProtection() ), 'Body' )
-            return damage - item:getArmorProtection()
+            return math.max( 0, damage - item:getArmorProtection() )
         end
     end
     return damage
