@@ -21,7 +21,10 @@ return {
         {
             name = 'head',
             damageModifier = 2.0,
-            equipment = 'equip_head'
+            equipment = 'equip_head',
+            effects = {
+                'blind'
+            }
         },
         {
             name = 'torso',

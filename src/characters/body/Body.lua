@@ -67,6 +67,28 @@ local function modifyDamage( damage, modifier )
     return math.floor( damage * modifier )
 end
 
+---
+-- @tparam StatusEffects statusEffects
+-- @tparam number damage
+-- @tparam table effects
+--
+local function handleCriticalHits( statusEffects, damage, effects )
+    -- Attacks which don't deal damage can't be a critical hit.
+    if damage <= 0 then
+        return
+    end
+
+    -- Some body parts don't have any status effects assigned to them.
+    if not effects then
+        return
+    end
+
+    -- TODO Use percentage based on weapon stats.
+    if love.math.random( 100 ) <= 5 then
+        statusEffects:add({ Util.pickRandomValue( effects )})
+    end
+end
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -124,6 +146,9 @@ function Body:hit( damage, _ )
     -- Apply the damage to the hp.
     self.currentHP = self.currentHP - damage
 
+    handleCriticalHits( self.statusEffects, damage, bodyPart.effects )
+
+    -- Kill the character if health drops below zero.
     if self.currentHP <= 0 then
         self.statusEffects:add({ STATUS_EFFECTS.DEAD })
     end

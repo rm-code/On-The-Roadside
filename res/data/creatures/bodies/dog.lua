@@ -20,7 +20,10 @@ return {
     bodyparts = {
         {
             name = 'head',
-            damageModifier = 2.0
+            damageModifier = 2.0,
+            effects = {
+                'blind'
+            }
         },
         {
             name = 'torso',
