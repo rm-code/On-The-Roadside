@@ -273,6 +273,7 @@ end
 --
 function Character:serialize()
     local t = {
+        ['class'] = self.creatureClass,
         ['name'] = self.name,
         ['actionPoints'] = self.actionPoints,
         ['accuracy'] = self.accuracy,

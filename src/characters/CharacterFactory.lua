@@ -174,7 +174,7 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character()
+    local character = Character( savedCharacter.class )
 
     character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints )
