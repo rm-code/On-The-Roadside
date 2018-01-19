@@ -148,10 +148,10 @@ end
 -- @tparam string classID The class id to look for.
 -- @tparam string The body type for the provided class.
 --
-local function findBodyType( classID )
+local function findClass( classID )
     for _, class in ipairs( CREATURE_CLASSES ) do
         if class.id == classID then
-            return class.body[love.math.random( #class.body )]
+            return class
         end
     end
 end
@@ -194,16 +194,17 @@ end
 
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
+    local class = findClass( classID )
     local character = Character( classID )
 
-    local bodyType = findBodyType( classID )
+    local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
         character:setName( generateName( nationality ))
     end
 
-    character:setBody( BodyFactory.create( bodyType ))
+    character:setBody( BodyFactory.create( bodyType, class.stats ))
     createEquipment( character, factionType )
 
     return character

@@ -2,7 +2,6 @@ return {
     id = 'dog',
     defaultCarryWeight = 20,
     defaultCarryVolume = 5,
-    hp = 4,
     size = {
         stand  = 50,
         crouch = 30,

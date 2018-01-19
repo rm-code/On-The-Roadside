@@ -2,7 +2,6 @@ return {
     id = 'human',
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
-    hp = 8,
     size = {
         stand  = 80,
         crouch = 50,

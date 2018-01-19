@@ -80,13 +80,14 @@ end
 ---
 -- Assembles a new body.
 -- @tparam table template A table containing the definitions for this creature's body parts.
+-- @tparam table stats A table containing the stats for this creature defined by its class.
 -- @treturn Body A shiny new Body.
 --
-local function assembleBody( template )
+local function assembleBody( template, stats )
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
     local equipment = createEquipment( inventory, template )
 
-    return Body( template.id, template.hp, template.tags, template.size, template.bodyparts, equipment, inventory )
+    return Body( template.id, stats.hp, template.tags, template.size, template.bodyparts, equipment, inventory )
 end
 
 -- ------------------------------------------------
@@ -106,10 +107,10 @@ end
 -- @tparam string id The body id of the creature to create.
 -- @treturn Body The newly created Body.
 --
-function BodyFactory.create( id )
+function BodyFactory.create( id, stats )
     local template = templates[id]
     assert( template, string.format( 'Requested body template (%s) doesn\'t exist!', id ))
-    return assembleBody( template )
+    return assembleBody( template, stats )
 end
 
 ---
