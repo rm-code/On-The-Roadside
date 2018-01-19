@@ -130,6 +130,7 @@ local function checkForHits( index, projectile, tile )
 
     if projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
+        hitTile( tile, projectile )
         remove = true
     end
 
