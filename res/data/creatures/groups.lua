@@ -6,6 +6,7 @@ return {
         "class_dog"
     },
     enemy = {
-        "class_bandit"
+        "class_bandit",
+        "class_dog"
     }
 }
