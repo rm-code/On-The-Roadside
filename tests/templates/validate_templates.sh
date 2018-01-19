@@ -36,6 +36,7 @@ searchUses "res/text/en_EN/body_parts" strings
 searchUses "res/text/en_EN/creature_text" strings
 searchUses "res/text/en_EN/inventory_text" strings
 searchUses "res/text/en_EN/item_text" strings
+searchUses "res/text/en_EN/messages_text" strings
 searchUses "res/text/en_EN/tiles_text" strings
 searchUses "res/text/en_EN/ui_text" strings
 searchUses "res/text/en_EN/worldobjects_text" strings
