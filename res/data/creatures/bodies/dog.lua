@@ -21,17 +21,20 @@ return {
         {
             name = 'head',
             damageModifier = 2.0,
+            equipment = 'equip_torso',
             effects = {
                 'blind'
             }
         },
         {
             name = 'torso',
-            damageModifier = 1.0
+            damageModifier = 1.0,
+            equipment = 'equip_torso'
         },
         {
             name = 'legs',
-            damageModifier = 1.0
+            damageModifier = 1.0,
+            equipment = 'equip_legs'
         }
     },
     equipment = {
