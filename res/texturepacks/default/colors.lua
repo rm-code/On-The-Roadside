@@ -183,12 +183,6 @@ return {
     ['ui_path_ap_med']  = COLORS.DB05,
     ['ui_path_ap_low']  = COLORS.DB27,
 
-    ['ui_health_destroyed_limb']     = COLORS.DB24,
-    ['ui_health_badly_damaged_limb'] = COLORS.DB27,
-    ['ui_health_damaged_limb']       = COLORS.DB05,
-    ['ui_health_ok_limb']            = COLORS.DB08,
-    ['ui_health_fine_limb']          = COLORS.DB10,
-
     -- Changelog Menu
     ['ui_changelog_version'] = COLORS.DB05,
     ['ui_changelog_additions'] = COLORS.DB16,
