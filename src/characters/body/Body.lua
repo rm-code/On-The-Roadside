@@ -97,21 +97,17 @@ end
 -- Initializes the Body instance.
 -- @tparam string id          The creature's id.
 -- @tparam number hp          The creature's health points.
--- @tparam number bloodVolume The creature's maximum blood volume.
 -- @tparam table  tags        The creature's tags.
 -- @tparam table  sizes       A table containing the creature's sizes mapped to its stances.
 -- @tparam Equipment equipment The creature's equipment.
 -- @tparam Inventory inventory The creature's inventory.
 -- @tparam table bodyParts A table containing the creature's body parts.
 --
-function Body:initialize( id, hp, bloodVolume, tags, sizes, bodyParts, equipment, inventory )
+function Body:initialize( id, hp, tags, sizes, bodyParts, equipment, inventory )
     self.id = id
 
     self.currentHP = hp
     self.maximumHP = hp
-
-    self.maxBloodVolume = bloodVolume
-    self.curBloodVolume = bloodVolume
 
     self.tags = tags
     self.sizes = sizes
@@ -173,14 +169,6 @@ end
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
-
----
--- Returns the current amount of blood volume the body has.
--- @treturn number The current amount of blood.
---
-function Body:getBloodVolume()
-    return self.curBloodVolume
-end
 
 ---
 -- Returns the creature's equipment.

@@ -86,7 +86,7 @@ local function assembleBody( template )
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
     local equipment = createEquipment( inventory, template )
 
-    return Body( template.id, template.hp, template.bloodVolume, template.tags, template.size, template.bodyparts, equipment, inventory )
+    return Body( template.id, template.hp, template.tags, template.size, template.bodyparts, equipment, inventory )
 end
 
 -- ------------------------------------------------
@@ -122,7 +122,7 @@ function BodyFactory.load( savedbody )
 
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
     local equipment = createEquipment( inventory, template )
-    local body = Body( template.id, savedbody.hp, template.bloodVolume, template.tags, template.size, equipment, inventory )
+    local body = Body( template.id, savedbody.hp, template.tags, template.size, equipment, inventory )
 
     for effect, _ in pairs( savedbody.statusEffects ) do
         body:getStatusEffects():add({ effect })

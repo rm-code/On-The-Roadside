@@ -1,6 +1,5 @@
 return {
     id = 'human',
-    bloodVolume = 5,
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
     hp = 8,

@@ -1,6 +1,5 @@
 return {
     id = 'dog',
-    bloodVolume = 3,
     defaultCarryWeight = 20,
     defaultCarryVolume = 5,
     hp = 4,
