@@ -1,5 +1,5 @@
 return {
-    id = 'human',
+    id = 'body_human',
     defaultCarryWeight = 100,
     defaultCarryVolume = 10,
     size = {

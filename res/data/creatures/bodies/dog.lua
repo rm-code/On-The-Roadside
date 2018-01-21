@@ -1,5 +1,5 @@
 return {
-    id = 'dog',
+    id = 'body_dog',
     defaultCarryWeight = 20,
     defaultCarryVolume = 5,
     size = {

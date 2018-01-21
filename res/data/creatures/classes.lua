@@ -2,7 +2,7 @@ return {
     {
         id = 'class_stalker',
         body = {
-            'human'
+            'body_human'
         },
         stats = {
             hp = 8
@@ -11,7 +11,7 @@ return {
     {
         id = 'class_bandit',
         body = {
-            'human'
+            'body_human'
         },
         stats = {
             hp = 5
@@ -20,7 +20,7 @@ return {
     {
         id = 'class_dog',
         body = {
-            'dog'
+            'body_dog'
         },
         stats = {
             hp = 4

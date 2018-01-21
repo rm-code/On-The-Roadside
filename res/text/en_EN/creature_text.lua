@@ -2,8 +2,8 @@ local locale = {};
 locale.identifier = 'en_EN';
 
 locale.strings = {
-    ['human'] = "Human",
-    ['dog']   = "Dog",
+    ['body_human'] = "Human",
+    ['body_dog'] = "Dog",
 
     -- Classes
     ['class_stalker'] = "Stalker",
