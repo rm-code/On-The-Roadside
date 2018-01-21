@@ -13,16 +13,17 @@
 -- ------------------------------------------------
 
 local Log = require( 'src.util.Log' )
-local Class = require( 'lib.Middleclass' )
+local Observable = require( 'src.util.Observable' )
 local StatusEffects = require( 'src.characters.body.StatusEffects' )
 local Armor = require( 'src.items.Armor' )
 local Util = require( 'src.util.Util' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Body = Class( 'Body' )
+local Body = Observable:subclass( 'Body' )
 
 -- ------------------------------------------------
 -- Constants
@@ -104,6 +105,8 @@ end
 -- @tparam table bodyParts A table containing the creature's body parts.
 --
 function Body:initialize( id, hp, tags, sizes, bodyParts, equipment, inventory )
+    Observable.initialize( self )
+
     self.id = id
 
     self.currentHP = hp
@@ -148,6 +151,8 @@ function Body:hit( damage, _ )
     if self.currentHP <= 0 then
         self.statusEffects:add({ STATUS_EFFECTS.DEAD })
     end
+
+    self:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_body_hit' ), Translator.getText( bodyPart.name ), damage ), 'WARNING' )
 
     Log.debug( string.format( "Attack hits body with %d of damage (%s), New hp: %s!", damage, bodyPart.name, self.currentHP ), 'Body' )
 end

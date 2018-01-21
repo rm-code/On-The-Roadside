@@ -286,6 +286,15 @@ function Character:serialize()
     return t
 end
 
+---
+-- Receives events by observed objects.
+-- @tparam string event The event type.
+-- @tparam varags ... Additional parameters to pass along.
+--
+function Character:receive( event, ... )
+    self.tile:publish( event, self.tile, ... )
+end
+
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
@@ -508,6 +517,7 @@ end
 --
 function Character:setBody( body )
     self.body = body
+    self.body:observe( self )
 end
 
 ----
