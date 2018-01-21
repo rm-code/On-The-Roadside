@@ -127,7 +127,7 @@ local function checkForHits( index, projectile, tile )
         remove = hitWorldObject( projectile, tile, tile:getWorldObject() )
     end
 
-    if projectile:hasReachedTarget() then
+    if not remove and projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
         hitTile( tile, projectile )
         remove = true
