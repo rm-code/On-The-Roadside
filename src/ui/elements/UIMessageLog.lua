@@ -51,7 +51,7 @@ local function generateTextObject( textObject, messages, coloredTextTable, width
     local height = 0
     for i = 1, #messages do
         coloredTextTable[1] = selectColor( i, messages )
-        coloredTextTable[2] = messages[i].text
+        coloredTextTable[2] = string.format( '[%d] %s', messages[i].id, messages[i].text )
 
         -- Identical messages get merged. We append the amount of merged messages to the text.
         if messages[i].count > 1 then
@@ -76,15 +76,19 @@ local function mergeMessages( msg, messages )
     return false
 end
 
-local function registerMessage( msg, messages )
+local function registerMessage( msg, id, messages )
     local merged = mergeMessages( msg, messages )
 
     if not merged then
+        id = id + 1
+        msg.id = id
         messages[#messages + 1] = msg
         if #messages > MAX_MESSAGES then
             table.remove( messages, 1 )
         end
     end
+
+    return id
 end
 
 -- ------------------------------------------------
@@ -103,6 +107,7 @@ function UIMessageLog:initialize()
     self.messages = {}
     self.colorTextTable = {}
 
+    self.messageID = 0
     self.verticalOffset = 0
 end
 
@@ -119,7 +124,7 @@ end
 function UIMessageLog:update()
     if not MessageQueue.isEmpty() then
         local tw, _ = TexturePacks.getTileDimensions()
-        registerMessage( MessageQueue.dequeue(), self.messages, self.textObject, self.colorTextTable )
+        self.messageID = registerMessage( MessageQueue.dequeue(), self.messageID, self.messages, self.textObject, self.colorTextTable )
         self.verticalOffset = generateTextObject( self.textObject, self.messages, self.colorTextTable, (self.w-1) * tw )
     end
 end
