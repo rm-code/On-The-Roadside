@@ -17,7 +17,7 @@ return {
     },
     bodyparts = {
         {
-            name = 'head',
+            name = 'bodypart_head',
             damageModifier = 2.0,
             equipment = 'equip_head',
             effects = {
@@ -25,22 +25,22 @@ return {
             }
         },
         {
-            name = 'torso',
+            name = 'bodypart_torso',
             damageModifier = 1.0,
             equipment = 'equip_torso'
         },
         {
-            name = 'hands',
+            name = 'bodypart_hands',
             damageModifier = 1.0,
             equipment = 'equip_hands'
         },
         {
-            name = 'legs',
+            name = 'bodypart_legs',
             damageModifier = 1.0,
             equipment = 'equip_legs'
         },
         {
-            name = 'feet',
+            name = 'bodypart_feet',
             damageModifier = 1.0,
             equipment = 'equip_feet'
         }

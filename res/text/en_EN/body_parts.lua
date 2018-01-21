@@ -2,9 +2,9 @@ local locale = {};
 locale.identifier = 'en_EN';
 
 locale.strings = {
-    ['head'] = "Head",
-    ['legs'] = "Legs",
-    ['torso'] = "Torso",
+    ['bodypart_head'] = "Head",
+    ['bodypart_legs'] = "Legs",
+    ['bodypart_torso'] = "Torso",
 
     ['equip_head'] = "Head",
     ['equip_mouth'] = "Mouth",
