@@ -5,6 +5,8 @@ locale.strings = {
     ['bodypart_head'] = "Head",
     ['bodypart_legs'] = "Legs",
     ['bodypart_torso'] = "Torso",
+    ['bodypart_hands'] = "Hands",
+    ['bodypart_feet'] = "Feet",
 
     ['equip_head'] = "Head",
     ['equip_mouth'] = "Mouth",
