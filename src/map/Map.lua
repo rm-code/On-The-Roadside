@@ -9,7 +9,6 @@
 local Observable = require( 'src.util.Observable' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
-local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
