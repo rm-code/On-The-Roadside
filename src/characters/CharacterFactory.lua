@@ -198,7 +198,7 @@ function CharacterFactory.newCharacter( factionType )
     local character = Character( classID )
 
     local bodyType = Util.pickRandomValue( class.body )
-    if bodyType == 'human' then
+    if bodyType == 'body_human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
         character:setName( generateName( nationality ))
