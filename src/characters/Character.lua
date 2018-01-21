@@ -11,7 +11,6 @@ local Log = require( 'src.util.Log' )
 local Queue = require('src.util.Queue')
 local Bresenham = require( 'lib.Bresenham' )
 local Util = require( 'src.util.Util' )
-local MessageQueue = require( 'src.util.MessageQueue' )
 local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
@@ -107,7 +106,7 @@ end
 -- @tparam Character self The character instance to use.
 --
 local function handleDeath( self )
-    MessageQueue.enqueue( string.format( Translator.getText( 'msg_character_death' ), self:getName() ), 'DANGER' )
+    self.tile:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_character_death' ), self:getName() ), 'DANGER' )
 
     self:getEquipment():dropAllItems( self.tile )
     self:getInventory():dropAllItems( self.tile )
@@ -187,7 +186,7 @@ function Character:enqueueAction( newAction )
         return true
     end
 
-    MessageQueue.enqueue( string.format( Translator.getText( 'msg_character_no_ap_left' )), 'DANGER' )
+    self.tile:publish( 'MESSAGE_LOG_EVENT', Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
     Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' )
     return false
 end

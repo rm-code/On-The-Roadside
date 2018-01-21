@@ -2,7 +2,6 @@ local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Util = require( 'src.util.Util' )
-local MessageQueue = require( 'src.util.MessageQueue' )
 local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
@@ -58,7 +57,7 @@ end
 ---
 --
 local function hitCharacter( tile, projectile )
-    MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_character' ), tile:getCharacter():getName() ), 'WARNING' )
+    tile:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_hit_character' ), tile:getCharacter():getName() ), 'WARNING' )
     Log.debug( 'Projectile hit character', 'ProjectileManager' )
     hitTile( tile, projectile )
     return true
@@ -88,7 +87,7 @@ local function hitWorldObject( projectile, tile, worldObject )
             tile = projectile:getPreviousTile();
         end
 
-        MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
+        tile:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
         hitTile( tile, projectile )
         return true
     end
@@ -99,7 +98,7 @@ local function hitWorldObject( projectile, tile, worldObject )
     local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
     projectile:setEnergy( energy );
 
-    MessageQueue.enqueue( string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
+    tile:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
 
     -- Apply the damage to the tile and only remove it if the energy is 0.
     hitTile( tile, projectile )

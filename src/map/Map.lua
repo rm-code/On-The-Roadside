@@ -9,6 +9,7 @@
 local Observable = require( 'src.util.Observable' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -50,6 +51,19 @@ local function addNeighbours( self, tiles )
     end
 end
 
+---
+-- Observers each tile so the map can receive events from them.
+-- @tparam Map   self  The map instance to use.
+-- @tparam table tiles A table containing all of the Map's tiles.
+--
+local function observeTiles( self, tiles )
+    for x = 1, #tiles do
+        for y = 1, #tiles[x] do
+            tiles[x][y]:observe( self )
+        end
+    end
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -68,6 +82,7 @@ function Map:initialize( tiles, width, height )
     self.height = height
 
     addNeighbours( self, self.tiles )
+    observeTiles( self, self.tiles )
 end
 
 ---
@@ -141,6 +156,10 @@ function Map:update()
             end
         end
     end
+end
+
+function Map:receive( event, ... )
+    self:publish( event, ... )
 end
 
 function Map:serialize()

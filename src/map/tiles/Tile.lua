@@ -6,14 +6,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local Observable = require( 'src.util.Observable' )
 local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Tile = Class( 'Tile' )
+local Tile = Observable:subclass( 'Tile' )
 
 -- ------------------------------------------------
 -- Constants
@@ -37,6 +37,8 @@ local DEFAULT_HEIGHT = 10
 -- @tparam  boolean spawn    Wether this tile is valid for spawning.
 --
 function Tile:initialize( x, y, id, cost, passable, spawn )
+    Observable.initialize( self )
+
     self.x = x
     self.y = y
 
