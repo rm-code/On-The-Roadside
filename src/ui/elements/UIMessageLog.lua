@@ -23,7 +23,7 @@ local UIMessageLog = UIElement:subclass( 'UIMessageLog' )
 -- ------------------------------------------------
 
 local UI_GRID_WIDTH  = 16
-local UI_GRID_HEIGHT = 12
+local UI_GRID_HEIGHT = 30
 
 local MAX_MESSAGES = 100
 
