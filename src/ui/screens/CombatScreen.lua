@@ -112,4 +112,8 @@ function CombatScreen:close()
     self.combatState:close()
 end
 
+function CombatScreen:resize( _, _ )
+    self.userInterface:resize()
+end
+
 return CombatScreen

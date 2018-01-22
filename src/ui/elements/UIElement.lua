@@ -121,6 +121,14 @@ function UIElement:getWidth()
 end
 
 ---
+-- Updates this UIElement's height.
+-- @tparam number The new height.
+--
+function UIElement:setHeight( height )
+    self.h = height
+end
+
+---
 -- Returns the UIElement's height.
 -- @treturn number The height.
 --

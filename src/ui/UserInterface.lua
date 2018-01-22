@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local UIElement = require( 'src.ui.elements.UIElement' )
 local Log = require( 'src.util.Log' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
@@ -19,7 +19,7 @@ local UIMessageLog = require( 'src.ui.elements.UIMessageLog' )
 -- Module
 -- ------------------------------------------------
 
-local UserInterface = Class( 'UserInterface' )
+local UserInterface = UIElement:subclass( 'UserInterface' )
 
 -- ------------------------------------------------
 -- Constants
@@ -42,6 +42,11 @@ local function drawDebugInfo( mouseX, mouseY, debug )
     end
 end
 
+local function getPositionAndDimensions()
+    local sw, sh = GridHelper.getScreenGridDimensions()
+    return sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, sh
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -52,20 +57,25 @@ end
 -- @tparam CameraHandler camera A camera object used to move the map.
 --
 function UserInterface:initialize( game, camera )
+    local px, py, rx, ry, w, h = getPositionAndDimensions()
+    UIElement.initialize( self, px, py, rx, ry, w, h )
+
     self.game = game
     self.map = game:getMap()
     self.factions = game:getFactions()
     self.camera = camera
 
-    local sw, sh = GridHelper.getScreenGridDimensions()
-    self.background = UIBackground( sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, sh )
+    self.background = UIBackground( px, py, rx, ry, w, h )
+    self.characterInfo = UICharacterInfo( px, py )
+    self.tileInfo = UITileInfo( px, py, 0, self.characterInfo:getHeight() )
+    self.msgLog = UIMessageLog( px, py, 0, self.characterInfo:getHeight() + self.tileInfo:getHeight() )
 
-    self.characterInfo = UICharacterInfo()
-    self.tileInfo = UITileInfo()
+    self:addChild( self.background )
+    self:addChild( self.characterInfo )
+    self:addChild( self.tileInfo )
+    self:addChild( self.msgLog )
 
     self.mouseX, self.mouseY = 0, 0
-
-    self.msgLog = UIMessageLog()
 
     self.debug = false
 end
@@ -93,6 +103,13 @@ end
 
 function UserInterface:toggleDebugInfo()
     self.debug = not self.debug
+end
+
+function UserInterface:resize()
+    local px, py, _, _, _, _ = getPositionAndDimensions()
+    self:setOrigin( px, py )
+
+    self.msgLog:resize()
 end
 
 return UserInterface

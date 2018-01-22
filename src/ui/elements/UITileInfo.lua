@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local UIElement = require( 'src.ui.elements.UIElement' )
-local GridHelper = require( 'src.util.GridHelper' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
 
@@ -21,7 +20,7 @@ local UITileInfo = UIElement:subclass( 'UITileInfo' )
 -- ------------------------------------------------
 
 local UI_GRID_WIDTH = 16
-local UI_GRID_HEIGHT = 8
+local UI_GRID_HEIGHT = 11
 
 local MAX_ITEMS_DISPLAYED = 5
 
@@ -106,9 +105,8 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function UITileInfo:initialize()
-    local sw, _ = GridHelper.getScreenGridDimensions()
-    UIElement.initialize( self, sw - UI_GRID_WIDTH, UI_GRID_HEIGHT, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+function UITileInfo:initialize( ox, oy, rx, ry )
+    UIElement.initialize( self, ox, oy, rx, ry, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
     self.textObject = love.graphics.newText( TexturePacks.getFont():get() )
     self.colorTable = {}

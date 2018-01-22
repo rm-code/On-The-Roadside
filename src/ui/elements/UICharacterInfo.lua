@@ -228,9 +228,8 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function UICharacterInfo:initialize()
-    local sw, _ = GridHelper.getScreenGridDimensions()
-    UIElement.initialize( self, sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+function UICharacterInfo:initialize( ox, oy )
+    UIElement.initialize( self, ox, oy, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
     self.textObject = love.graphics.newText( TexturePacks.getFont():get() )
     self.colorTable = {}

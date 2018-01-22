@@ -24,7 +24,6 @@ local UIMessageLog = UIElement:subclass( 'UIMessageLog' )
 -- ------------------------------------------------
 
 local UI_GRID_WIDTH  = 16
-local UI_GRID_HEIGHT = 30
 
 local MAX_MESSAGES = 100
 
@@ -102,9 +101,9 @@ local function registerMessage( msg, id, messages )
     return id
 end
 
-local function getVerticalPosition( y, th, offset )
+local function getVerticalPosition( y, h, th, offset )
     if Settings.getInvertedMessageLog() then
-        return (y + UI_GRID_HEIGHT) * th - offset
+        return (y + h) * th - offset
     end
     return y * th
 end
@@ -113,11 +112,11 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function UIMessageLog:initialize()
-    local sw, sh = GridHelper.getScreenGridDimensions()
-    UIElement.initialize( self, sw - UI_GRID_WIDTH, sh - UI_GRID_HEIGHT, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+function UIMessageLog:initialize( ox, oy, rx, ry )
+    local _, sh = GridHelper.getScreenGridDimensions()
+    UIElement.initialize( self, ox, oy, rx, ry, UI_GRID_WIDTH, sh - ry )
 
-    self.background = UIBackground( self.ax, self.ay, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.background = UIBackground( self.ax, self.ay, 0, 0, UI_GRID_WIDTH, self.h )
     self:addChild( self.background )
 
     self.textObject = love.graphics.newText( TexturePacks.getFont():get() )
@@ -134,8 +133,8 @@ function UIMessageLog:draw()
 
     self.background:draw()
 
-    love.graphics.setScissor( self.ax * tw, self.ay * th, UI_GRID_WIDTH * tw, UI_GRID_HEIGHT * th )
-    love.graphics.draw( self.textObject, (self.ax+1) * tw, getVerticalPosition( self.ay, th, self.verticalOffset ))
+    love.graphics.setScissor( self.ax * tw, self.ay * th, UI_GRID_WIDTH * tw, self.h * th )
+    love.graphics.draw( self.textObject, (self.ax+1) * tw, getVerticalPosition( self.ay, self.h, th, self.verticalOffset ))
     love.graphics.setScissor()
 end
 
@@ -145,6 +144,11 @@ function UIMessageLog:update()
         self.messageID = registerMessage( MessageQueue.dequeue(), self.messageID, self.messages, self.textObject, self.colorTextTable )
         self.verticalOffset = generateTextObject( self.textObject, self.messages, self.colorTextTable, (self.w-1) * tw )
     end
+end
+
+function UIMessageLog:resize()
+    local _, sh = GridHelper.getScreenGridDimensions()
+    self:setHeight( sh - self.ry )
 end
 
 return UIMessageLog
