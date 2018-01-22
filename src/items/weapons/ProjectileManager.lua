@@ -57,7 +57,6 @@ end
 ---
 --
 local function hitCharacter( tile, projectile )
-    tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_character' ), tile:getCharacter():getName() ), 'WARNING' )
     Log.debug( 'Projectile hit character', 'ProjectileManager' )
     hitTile( tile, projectile )
     return true
