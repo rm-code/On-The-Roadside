@@ -18,6 +18,9 @@ locale.strings = {
     ['ui_worldobject_info_lootable'] = "lootable",
     ['ui_worldobject_info_destructible'] = ", destructible",
     ['ui_worldobject_info_indestructible'] = ", indestructible",
+    ['ui_faction_allied'] = 'Allied',
+    ['ui_faction_neutral'] = 'Neutral',
+    ['ui_faction_enemy'] = 'Enemy',
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",

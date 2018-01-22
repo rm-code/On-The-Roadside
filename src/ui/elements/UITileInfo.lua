@@ -19,8 +19,13 @@ local UITileInfo = UIElement:subclass( 'UITileInfo' )
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
+
 local UI_GRID_WIDTH = 16
-local UI_GRID_HEIGHT = 11
+local UI_GRID_HEIGHT = 13
+
+local UI_CHARACTER_INFO = 3
+local UI_ITEM_INFO = 5
 
 local MAX_ITEMS_DISPLAYED = 5
 
@@ -44,6 +49,38 @@ local function addToTextObject( textObject, colorTable, x, y, color, text )
     return textObject:getDimensions()
 end
 
+local function showCharacterInfo( textObject, colorTable, x, y, character )
+    -- FACTION
+    if character:getFaction():getType() == FACTIONS.ALLIED then
+        x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_success' ), Translator.getText( 'ui_faction_allied' ))
+    elseif character:getFaction():getType() == FACTIONS.NEUTRAL then
+        x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), Translator.getText( 'ui_faction_neutral' ))
+    elseif character:getFaction():getType() == FACTIONS.ENEMY then
+        x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_error' ), Translator.getText( 'ui_faction_enemy' ))
+    end
+
+    -- FACTION;
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), '; ' )
+
+    -- FACTION; CLASS
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getCreatureClass() ))
+
+    -- FACTION; CLASS (HP: xx)
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), ' (' .. Translator.getText( 'ui_hp' ) .. character:getHealthPoints() .. ')')
+end
+
+local function showItems( textObject, colorTable, x, y, items )
+    for i, item in ipairs( items ) do
+        if i > MAX_ITEMS_DISPLAYED then
+            addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), string.format( Translator.getText( 'ui_tile_info_moreitems' ), #items - MAX_ITEMS_DISPLAYED ))
+            break
+        end
+
+        addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( item:getID() ))
+        y = y + textObject:getHeight()
+    end
+end
+
 ---
 -- Draws some information of the tile the mouse is currently hovering over.
 -- @tparam Text   textObject The Text object to modify.
@@ -62,15 +99,13 @@ local function inspectTile( textObject, colorTable, tile )
     end
     y = y + textObject:getHeight() + textObject:getHeight()
 
-    local items = tile:getInventory():getItems()
-    for i, item in ipairs( tile:getInventory():getItems() ) do
-        if i > MAX_ITEMS_DISPLAYED then
-            addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), string.format( Translator.getText( 'ui_tile_info_moreitems' ), #items - MAX_ITEMS_DISPLAYED ))
-            break
-        end
+    local _, th = TexturePacks.getTileDimensions()
+    if tile:isOccupied() then
+        showCharacterInfo( textObject, colorTable, x, UI_CHARACTER_INFO * th, tile:getCharacter() )
+    end
 
-        addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( item:getID() ))
-        y = y + textObject:getHeight()
+    if not tile:getInventory():isEmpty() then
+        showItems( textObject, colorTable, x, UI_ITEM_INFO * th, tile:getInventory():getItems() )
     end
 end
 
