@@ -10,6 +10,7 @@ local Character = require( 'src.characters.Character' )
 local BodyFactory = require( 'src.characters.body.BodyFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
 local Util = require( 'src.util.Util' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -202,6 +203,8 @@ function CharacterFactory.newCharacter( factionType )
         local nationality = chooseNationality()
         character:setNationality( nationality )
         character:setName( generateName( nationality ))
+    else
+        character:setName( Translator.getText( classID ))
     end
 
     character:setBody( BodyFactory.create( bodyType, class.stats ))
