@@ -13,7 +13,6 @@ local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
 local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
 local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
 local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
-local GridHelper = require( 'src.util.GridHelper' )
 
 -- ------------------------------------------------
 -- Module
