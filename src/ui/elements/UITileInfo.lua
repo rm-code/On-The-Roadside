@@ -97,7 +97,6 @@ local function inspectTile( textObject, colorTable, tile )
     else
         addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_error' ), Translator.getText( 'ui_tile_info_impassable' ))
     end
-    y = y + textObject:getHeight() + textObject:getHeight()
 
     local _, th = TexturePacks.getTileDimensions()
     if tile:isOccupied() then
