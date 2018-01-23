@@ -106,8 +106,6 @@ end
 -- @tparam Character self The character instance to use.
 --
 local function handleDeath( self )
-    self.tile:publish( 'MESSAGE_LOG_EVENT', self.tile, string.format( Translator.getText( 'msg_character_death' ), self:getName() ), 'DANGER' )
-
     self:getEquipment():dropAllItems( self.tile )
     self:getInventory():dropAllItems( self.tile )
     self.tile:removeCharacter()

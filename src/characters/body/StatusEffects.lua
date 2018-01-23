@@ -8,14 +8,15 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local Observable = require( 'src.util.Observable' )
+local Translator = require( 'src.util.Translator' )
 local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local StatusEffects = Class( 'StatusEffects' )
+local StatusEffects = Observable:subclass( 'StatusEffects' )
 
 -- ------------------------------------------------
 -- Constants
@@ -50,6 +51,7 @@ end
 -- Initializes a new StatusEffects instance.
 --
 function StatusEffects:initialize()
+    Observable.initialize( self )
     self.active = {}
 end
 
@@ -67,6 +69,8 @@ function StatusEffects:add( effects )
 
         -- Only apply status effect if it isn't active already.
         if not self.active[effect] then
+            self:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_status_effect' ), Translator.getText( effect )), 'WARNING' )
+
             Log.debug( 'Apply status effect ' .. effect )
             self.active[effect] = true
         end

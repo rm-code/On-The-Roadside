@@ -121,6 +121,7 @@ function Body:initialize( id, hp, tags, sizes, bodyParts, equipment, inventory )
     self.bodyParts = bodyParts
 
     self.statusEffects = StatusEffects()
+    self.statusEffects:observe( self )
 end
 
 -- ------------------------------------------------
@@ -145,14 +146,14 @@ function Body:hit( damage, _ )
     -- Apply the damage to the hp.
     self.currentHP = self.currentHP - damage
 
+    self:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_body_hit' ), Translator.getText( bodyPart.name ), damage ), 'WARNING' )
+
     handleCriticalHits( self.statusEffects, damage, bodyPart.effects )
 
     -- Kill the character if health drops below zero.
     if self.currentHP <= 0 then
         self.statusEffects:add({ STATUS_EFFECTS.DEAD })
     end
-
-    self:publish( 'MESSAGE_LOG_EVENT', string.format( Translator.getText( 'msg_body_hit' ), Translator.getText( bodyPart.name ), damage ), 'WARNING' )
 
     Log.debug( string.format( "Attack hits body with %d of damage (%s), New hp: %s!", damage, bodyPart.name, self.currentHP ), 'Body' )
 end
@@ -169,6 +170,15 @@ function Body:serialize()
         ['statusEffects'] = self.statusEffects:serialize()
     }
     return t
+end
+
+---
+-- Receives events by observed objects.
+-- @tparam string event The event type.
+-- @tparam varags ... Additional parameters to pass along.
+--
+function Body:receive( event, ... )
+    self:publish( event, ... )
 end
 
 -- ------------------------------------------------

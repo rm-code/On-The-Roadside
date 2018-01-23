@@ -11,7 +11,8 @@ locale.strings = {
     ['class_dog'] = "Dog",
 
     -- Status Effects
-    ['blind'] = 'Blindness'
+    ['blind'] = 'blind',
+    ['dead'] = 'dead'
 }
 
 return locale;
