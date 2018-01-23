@@ -154,6 +154,7 @@ return {
     -- ==============================
     -- Creatures
     -- ==============================
-    ['body_human'] = { stand =   2, crouch =  32, prone =  23 },
-    ['body_dog']   = { stand = 101, crouch = 101, prone = 101 },
+    ['class_stalker'] = { stand = 2, crouch = 32, prone = 23 },
+    ['class_bandit'] = { stand = 3, crouch = 32, prone = 23 },
+    ['class_dog'] = { stand = 101, crouch = 101, prone = 101 },
 }
