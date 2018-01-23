@@ -208,19 +208,19 @@ end
 -- @tparam table colorTable The table to use for adding colored text.
 -- @tparam table mode       The currently selected weapon mode.
 --
-local function drawWeaponMode( textObject, colorTable, mode )
+local function drawWeaponMode( textObject, colorTable, mode, dmg )
     local tw, _ = TexturePacks.getGlyphDimensions()
     local y = 80
-    addToTextObject( textObject, colorTable, WEAPON_COLUMN_MODE    * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'MODE'    )
-    addToTextObject( textObject, colorTable, WEAPON_COLUMN_AP      * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'AP'      )
-    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ACC     * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'ACC'     )
-    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ATTACKS * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'ATTACKS' )
+    addToTextObject( textObject, colorTable, WEAPON_COLUMN_MODE    * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'MODE' )
+    addToTextObject( textObject, colorTable, WEAPON_COLUMN_AP      * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'AP'   )
+    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ACC     * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'ACC'  )
+    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ATTACKS * tw, y, TexturePacks.getColor( 'ui_text_dark' ), 'DMG'  )
 
     y = 96
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_MODE    * tw, y, TexturePacks.getColor( 'ui_text' ), mode.name     )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_AP      * tw, y, TexturePacks.getColor( 'ui_text' ), mode.cost     )
     addToTextObject( textObject, colorTable, WEAPON_COLUMN_ACC     * tw, y, TexturePacks.getColor( 'ui_text' ), mode.accuracy )
-    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ATTACKS * tw, y, TexturePacks.getColor( 'ui_text' ), mode.attacks  )
+    addToTextObject( textObject, colorTable, WEAPON_COLUMN_ATTACKS * tw, y, TexturePacks.getColor( 'ui_text' ), string.format( '%dx%d', mode.attacks, dmg ))
 end
 
 -- ------------------------------------------------
@@ -253,7 +253,7 @@ function UICharacterInfo:update( state, map, camera, character )
 
     drawWeaponName( self.textObject, self.colorTable, character:getWeapon() )
     drawAmmunitionInfo( self.textObject, self.colorTable, character:getInventory(), character:getWeapon() )
-    drawWeaponMode( self.textObject, self.colorTable, character:getWeapon():getAttackMode() )
+    drawWeaponMode( self.textObject, self.colorTable, character:getWeapon():getAttackMode(), character:getWeapon():getDamage() )
 end
 
 return UICharacterInfo
