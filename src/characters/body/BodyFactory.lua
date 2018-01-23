@@ -123,11 +123,14 @@ function BodyFactory.load( savedbody )
 
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
     local equipment = createEquipment( inventory, template )
-    local body = Body( template.id, savedbody.hp, template.tags, template.size, equipment, inventory )
+    local body = Body( template.id, savedbody.hp, template.tags, template.size, template.bodyparts, equipment, inventory )
 
     for effect, _ in pairs( savedbody.statusEffects ) do
         body:getStatusEffects():add({ effect })
     end
+
+    body:getInventory():loadItems( savedbody.inventory )
+    body:getEquipment():load( savedbody.equipment )
 
     return body
 end
