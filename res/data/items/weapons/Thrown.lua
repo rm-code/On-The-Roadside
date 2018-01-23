@@ -19,6 +19,7 @@ return {
             {
                 name       = "Throw",
                 cost       = 3,
+                attacks    = 1,
                 damageType = 'explosive'
             }
         },
@@ -48,6 +49,7 @@ return {
             {
                 name       = "Throw",
                 cost       = 6,
+                attacks    = 1,
                 damageType = 'piercing'
             }
         },
