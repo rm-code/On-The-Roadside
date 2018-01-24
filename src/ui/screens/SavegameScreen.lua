@@ -105,6 +105,27 @@ local function createSaveGameEntry( lx, ly, index, item, folder )
     return button
 end
 
+---
+-- Returns a list of all directories in the save directory sorted by their
+-- last modification time.
+-- @tparam string subdir The save directory to load from.
+-- @tparam table A sorted sequence containing the name of each save folder.
+--
+local function loadFiles( savedir )
+    local saveDirectories = {}
+
+    for _, item in pairs( love.filesystem.getDirectoryItems( savedir )) do
+        if love.filesystem.isDirectory( savedir .. '/' .. item ) then
+            saveDirectories[#saveDirectories + 1] = item
+        end
+    end
+
+    table.sort( saveDirectories, function( a, b )
+        return love.filesystem.getLastModified( savedir .. '/' .. a ) > love.filesystem.getLastModified( savedir .. '/' .. b )
+    end)
+
+    return saveDirectories
+end
 
 local function createButtons()
     local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
@@ -112,16 +133,11 @@ local function createButtons()
 
     local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
-    -- Create entries for last five savegames.
-    local items = love.filesystem.getDirectoryItems( SaveHandler.getSaveFolder() )
+    local items = loadFiles( SaveHandler.getSaveFolder() )
     local counter = 0
-
-    for i = #items, 1, -1 do
-        local item = items[i]
-        if love.filesystem.isDirectory( SaveHandler.getSaveFolder() .. '/' .. item ) then
-            counter = counter + 1
-            buttonList:addChild( createSaveGameEntry( lx, ly, counter, item, SaveHandler.getSaveFolder() .. '/' .. item ))
-        end
+    for i = 1, #items do
+        counter = counter + 1
+        buttonList:addChild( createSaveGameEntry( lx, ly, counter, items[i], SaveHandler.getSaveFolder() .. '/' .. items[i] ))
     end
 
     buttonList:addChild( createBackButton( lx, ly ))
