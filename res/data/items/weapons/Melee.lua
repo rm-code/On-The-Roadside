@@ -71,7 +71,7 @@ return {
             'creature'
         },
         subType    = "Melee",
-        damage     = 3,
+        damage     = 2,
         reloadable = false,
         sound      = 'MELEE',
         mode = {

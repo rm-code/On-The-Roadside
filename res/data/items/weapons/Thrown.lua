@@ -18,7 +18,7 @@ return {
         mode = {
             {
                 name       = "Throw",
-                cost       = 3,
+                cost       = 10,
                 attacks    = 1,
                 damageType = 'explosive'
             }
@@ -48,7 +48,7 @@ return {
         mode = {
             {
                 name       = "Throw",
-                cost       = 6,
+                cost       = 8,
                 attacks    = 1,
                 damageType = 'piercing'
             }
