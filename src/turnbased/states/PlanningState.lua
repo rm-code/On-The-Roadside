@@ -91,7 +91,7 @@ local function handleOtherActions( input, stateManager, inputStateHandler, facti
         stateManager:push( 'execution', factions, character )
         return true
     elseif input == 'open_health_screen' then
-        ScreenManager.push( 'health', character )
+        ScreenManager.push( 'playerInfo', character )
         return true
     end
 

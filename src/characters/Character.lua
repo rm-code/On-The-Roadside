@@ -11,6 +11,7 @@ local Log = require( 'src.util.Log' )
 local Queue = require('src.util.Queue')
 local Bresenham = require( 'lib.Bresenham' )
 local Util = require( 'src.util.Util' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -115,7 +116,9 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize()
+function Character:initialize( classID )
+    self.creatureClass = classID
+
     self.actionPoints = DEFAULT_ACTION_POINTS
     self.actions = Queue()
 
@@ -181,6 +184,7 @@ function Character:enqueueAction( newAction )
         return true
     end
 
+    self.tile:publish( 'MESSAGE_LOG_EVENT', self.tile, Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
     Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' )
     return false
 end
@@ -261,22 +265,12 @@ function Character:canSee( target )
 end
 
 ---
--- Updates the character once. This should be used to update status effects and
--- other things which should happen once per round.
---
-function Character:tickOneTurn()
-    self.body:tickOneTurn()
-    if self:isDead() then
-        handleDeath( self )
-    end
-end
-
----
 -- Serializes the Character instance.
 -- @treturn table The serialized character instance.
 --
 function Character:serialize()
     local t = {
+        ['class'] = self.creatureClass,
         ['name'] = self.name,
         ['actionPoints'] = self.actionPoints,
         ['accuracy'] = self.accuracy,
@@ -288,6 +282,15 @@ function Character:serialize()
         ['y'] = self.tile:getY()
     }
     return t
+end
+
+---
+-- Receives events by observed objects.
+-- @tparam string event The event type.
+-- @tparam varags ... Additional parameters to pass along.
+--
+function Character:receive( event, ... )
+    self.tile:publish( event, self.tile, ... )
 end
 
 -- ------------------------------------------------
@@ -335,6 +338,14 @@ function Character:getBody()
 end
 
 ---
+-- Returns the character's class type.
+-- @treturn string The character's class.
+--
+function Character:getCreatureClass()
+    return self.creatureClass
+end
+
+---
 -- Returns the faction the character belongs to.
 -- @treturn Faction The Faction object.
 --
@@ -364,6 +375,22 @@ end
 --
 function Character:getFOV()
     return self.fov
+end
+
+---
+-- Returns the creature's health.
+-- @treturn number The current health points.
+--
+function Character:getHealthPoints()
+    return self.body:getHealthPoints()
+end
+
+---
+-- Returns the creature's maximum health.
+-- @treturn number The maximum health points.
+--
+function Character:getMaximumHealthPoints()
+    return self.body:getMaximumHealthPoints()
 end
 
 ---
@@ -488,6 +515,7 @@ end
 --
 function Character:setBody( body )
     self.body = body
+    self.body:observe( self )
 end
 
 ----

@@ -2,19 +2,30 @@ local locale = {};
 locale.identifier = 'en_EN';
 
 locale.strings = {
-    ['ui_tile'] = "Tile: ",
+    -- User interface
+    ['ui_class'] = "Class: ",
+    ['ui_ap'] = "AP: ",
+    ['ui_hp'] = "HP: ",
     ['ui_weapon'] = "Weapon: ",
     ['ui_ammo'] = "Ammo: ",
-    ['ui_mode'] = "Mode: ",
     ['ui_win'] = "All enemies are dead. You won!\n\nPress any key to continue...",
     ['ui_lose'] = "Your team is dead. You lose!\n\nPress any key to continue...",
+    ['ui_tile_info_passable'] = "passable",
+    ['ui_tile_info_impassable'] = "impassable",
+    ['ui_tile_info_moreitems'] = "... %d additional items",
+    ['ui_worldobject_info_climbable'] = "climbable",
+    ['ui_worldobject_info_openable'] = "openable",
+    ['ui_worldobject_info_lootable'] = "lootable",
+    ['ui_worldobject_info_destructible'] = ", destructible",
+    ['ui_worldobject_info_indestructible'] = ", indestructible",
+    ['ui_faction_allied'] = 'Allied',
+    ['ui_faction_neutral'] = 'Neutral',
+    ['ui_faction_enemy'] = 'Enemy',
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",
     ['ui_healthscreen_name'] = "Name: ",
-    ['ui_healthscreen_limb'] = "Limb",
-    ['ui_healthscreen_bleeding'] = "Bleeding",
-    ['ui_healthscreen_status'] = "Status",
+    ['ui_healthscreen_status'] = "Status: ",
 
     -- Main Menu buttons
     ['ui_main_menu_new_game'] = "New",
@@ -36,6 +47,7 @@ locale.strings = {
     ['ui_settings_ingame_editor'] = "Activate Map Editor:",
     ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
     ['ui_settings_mouse_panning'] = "Mouse Panning:",
+    ['ui_settings_invert_messagelog'] = "Invert message log:",
     ['ui_keybindings'] = "Edit Keybindings",
 
     -- Keybindings

@@ -100,4 +100,13 @@ function Util.clamp( min, val, max )
     return math.max( min, math.min( val, max ))
 end
 
+---
+-- Picks a random value from a tbl. Works only with sequences.
+-- @tparam table tbl The table to select from.
+-- @treturn The randomly picked value.
+--
+function Util.pickRandomValue( tbl )
+    return tbl[love.math.random( #tbl )]
+end
+
 return Util

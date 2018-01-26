@@ -18,6 +18,7 @@ local StateManager = require( 'src.turnbased.StateManager' )
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 local Faction = require( 'src.characters.Faction' )
 local Settings = require( 'src.Settings' )
+local MessageQueue = require( 'src.util.MessageQueue' )
 
 -- ------------------------------------------------
 -- Module
@@ -57,7 +58,6 @@ end
 -- ------------------------------------------------
 
 function CombatState:initialize( playerFaction, savegame )
-    self.observations = {}
     self.states = {
         execution = require( 'src.turnbased.states.ExecutionState' ),
         planning  = require( 'src.turnbased.states.PlanningState' )
@@ -78,8 +78,8 @@ function CombatState:initialize( playerFaction, savegame )
         self.factions:findFaction( FACTIONS.ENEMY   ):loadCharacters( savegame.factions[FACTIONS.ENEMY]   )
         self.factions:findFaction( FACTIONS.NEUTRAL ):loadCharacters( savegame.factions[FACTIONS.NEUTRAL] )
     else
-        self.factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10, 'human' )
-        self.factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5, 'dog'   )
+        self.factions:findFaction( FACTIONS.ENEMY   ):addCharacters( 10 )
+        self.factions:findFaction( FACTIONS.NEUTRAL ):addCharacters(  5 )
     end
 
     self.factions:findFaction( FACTIONS.ENEMY   ):spawnCharacters( self.map )
@@ -101,8 +101,9 @@ function CombatState:initialize( playerFaction, savegame )
     ProjectileManager.init( self.map )
     ExplosionManager.init( self.map )
 
-    -- Register obsersvations.
-    self.observations[#self.observations + 1] = self.map:observe( self.factions )
+    -- Register observations.
+    self.map:observe( self )
+    self.map:observe( self.factions )
 
     -- Free memory if possible.
     collectgarbage( 'collect' )
@@ -124,6 +125,15 @@ function CombatState:update( dt )
     if not self.factions:findFaction( FACTIONS.ENEMY ):hasLivingCharacters() then
         ScreenManager.pop()
         ScreenManager.push( 'gameover', self.factions:getPlayerFaction(), true )
+    end
+end
+
+function CombatState:receive( event, ... )
+    if event == 'MESSAGE_LOG_EVENT' then
+        local origin, msg, type = ...
+        if self.factions:getPlayerFaction():canSee( origin ) then
+            MessageQueue.enqueue( msg, type )
+        end
     end
 end
 

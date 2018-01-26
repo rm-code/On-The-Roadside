@@ -14,7 +14,7 @@ function searchUses {
   printf "==> Searching for unused templates in ${GRAY}%s.lua${CLR}\n" $1
 
   while read p; do
-    count=$(grep -rw --color --exclude-dir=tests --exclude-dir=.git $p . | wc -l)
+    count=$(grep -rw --color --exclude=CHANGELOG.md --exclude-dir=tests --exclude-dir=.git --exclude-dir=lib $p . | wc -l)
 
     if [ $count -eq 1 ]
     then
@@ -36,6 +36,7 @@ searchUses "res/text/en_EN/body_parts" strings
 searchUses "res/text/en_EN/creature_text" strings
 searchUses "res/text/en_EN/inventory_text" strings
 searchUses "res/text/en_EN/item_text" strings
+searchUses "res/text/en_EN/messages_text" strings
 searchUses "res/text/en_EN/tiles_text" strings
 searchUses "res/text/en_EN/ui_text" strings
 searchUses "res/text/en_EN/worldobjects_text" strings

@@ -43,6 +43,7 @@ function love.load( args )
     info[#info + 1] = string.format( "Title: '%s'", getTitle() )
     info[#info + 1] = string.format( "Version: %s", getVersion() )
     info[#info + 1] = string.format( "LOVE Version: %d.%d.%d (%s)", love.getVersion() )
+    info[#info + 1] = string.format( "OS: %s", love.system.getOS() )
     info[#info + 1] = string.format( "Resolution: %dx%d\n", love.graphics.getDimensions() )
 
     info[#info + 1] = "---- RENDERER  ---- "
@@ -65,7 +66,6 @@ function love.load( args )
         combat      = require( 'src.ui.screens.CombatScreen'      ),
         inventory   = require( 'src.ui.screens.InventoryScreen'   ),
         help        = require( 'src.ui.screens.HelpScreen'        ),
-        health      = require( 'src.ui.screens.HealthScreen'      ),
         gamescreen  = require( 'src.ui.screens.GameScreen'        ),
         gameover    = require( 'src.ui.screens.GameOverScreen'    ),
         loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
@@ -80,6 +80,7 @@ function love.load( args )
         editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  ),
         keybindingeditor = require( 'src.ui.screens.KeybindingScreen' ),
         keybindingmodal = require( 'src.ui.screens.KeybindingModal' ),
+        playerInfo = require( 'src.ui.screens.PlayerInfo' ),
     }
 
     ScreenManager.init( screens, 'bootloading' )

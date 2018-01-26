@@ -137,7 +137,7 @@ end
 --
 local function selectCharacterTile( tile )
     local character = tile:getCharacter()
-    return TexturePacks.getSprite( character:getBody():getID(), character:getStance() )
+    return TexturePacks.getSprite( character:getCreatureClass(), character:getStance() )
 end
 
 ---

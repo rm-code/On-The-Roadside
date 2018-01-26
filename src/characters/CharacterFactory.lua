@@ -1,13 +1,22 @@
-local Log = require( 'src.util.Log' );
-local Character = require( 'src.characters.Character' );
-local BodyFactory = require( 'src.characters.body.BodyFactory' );
-local ItemFactory = require('src.items.ItemFactory');
+---
+-- @module CharacterFactory
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Character = require( 'src.characters.Character' )
+local BodyFactory = require( 'src.characters.body.BodyFactory' )
+local ItemFactory = require( 'src.items.ItemFactory' )
+local Util = require( 'src.util.Util' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local CharacterFactory = {};
+local CharacterFactory = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -16,7 +25,10 @@ local CharacterFactory = {};
 local FACTIONS = require( 'src.constants.FACTIONS' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
-local NAME_FILE = 'res.data.Names'
+
+local CREATURE_CLASSES = require( 'res.data.creatures.classes' )
+local CREATURE_GROUPS = require( 'res.data.creatures.groups' )
+local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
     { id = 'german',  weight = 10 },
     { id = 'russian', weight =  3 },
@@ -28,20 +40,11 @@ local NATIONALITY = {
 -- Local Variables
 -- ------------------------------------------------
 
-local names
 local nationalityWeight
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
-
----
--- Load all names from the specified file.
--- @tparam string path The path pointing to the file to load.
---
-local function loadNames( path )
-    return require( path )
-end
 
 ---
 -- Calculates the total weight of all nationalities used for their random
@@ -73,22 +76,31 @@ local function chooseNationality()
 end
 
 ---
+-- Select a random name from the templates for the specified nationality.
+-- @tparam string nationality The nationality to generate a name for.
+-- @treturn name The generated name.
+--
+local function generateName( nationality )
+    return CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )]
+end
+
+---
 -- Loads the character's weapon and adds ammunition to his inventory.
--- @param weapon    (Weapon) The weapon to load.
--- @param inventory (Container)    The inventory to create ammunition for.
+-- @tparam Weapon weapon The weapon to load.
+-- @tparam Inventory inventory The inventory to create ammunition for.
 --
 local function createAmmunition( weapon, inventory )
     -- Load the weapon.
-    local amount = weapon:getMagazine():getCapacity();
+    local amount = weapon:getMagazine():getCapacity()
     for _ = 1, amount do
-        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
-        weapon:getMagazine():addRound( round );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() )
+        weapon:getMagazine():addRound( round )
     end
 
     -- Add twice the amount of ammunition to the inventory.
     for _ = 1, amount * 2 do
-        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() );
-        inventory:addItem( round );
+        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() )
+        inventory:addItem( round )
     end
 end
 
@@ -98,10 +110,10 @@ end
 -- @tparam string    factionType The type of faction this character is created for.
 --
 local function createEquipment( character, factionType )
-    local body = character:getBody();
-    local equipment = body:getEquipment();
+    local body = character:getBody()
+    local equipment = body:getEquipment()
     local inventory = body:getInventory()
-    local tags = body:getTags();
+    local tags = body:getTags()
 
     for _, slot in pairs( equipment:getSlots() ) do
         -- The player's characters should start mainly with guns. Shurikens, grenades
@@ -124,12 +136,34 @@ local function createEquipment( character, factionType )
 
     local weapon = character:getWeapon()
     if weapon:isReloadable() then
-        createAmmunition( weapon, inventory );
+        createAmmunition( weapon, inventory )
     elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
-        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
-        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
-        inventory:addItem( ItemFactory.createItem( weapon:getID() ));
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ))
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ))
+        inventory:addItem( ItemFactory.createItem( weapon:getID() ))
     end
+end
+
+---
+-- Searches and returns a body type for a specific class.
+-- @tparam string classID The class id to look for.
+-- @tparam string The body type for the provided class.
+--
+local function findClass( classID )
+    for _, class in ipairs( CREATURE_CLASSES ) do
+        if class.id == classID then
+            return class
+        end
+    end
+end
+
+---
+-- Picks a random creature class based on the faction.
+-- @tparam string factionID The faction id to select from.
+-- @treturn string The class id.
+--
+local function pickCreatureClass( factionID )
+    return Util.pickRandomValue( CREATURE_GROUPS[factionID] )
 end
 
 -- ------------------------------------------------
@@ -137,44 +171,46 @@ end
 -- ------------------------------------------------
 
 function CharacterFactory.init()
-    Log.debug( "Load Creature-Names:" )
-    names = loadNames( NAME_FILE )
-
     nationalityWeight = calculateNationalitiesWeight()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character()
+    local character = Character( savedCharacter.class )
 
     character:setName( savedCharacter.name )
-    character:setActionPoints( savedCharacter.actionPoints );
-    character:setAccuracy( savedCharacter.accuracy );
-    character:setThrowingSkill( savedCharacter.throwingSkill );
-    character:setStance( savedCharacter.stance );
-    character:setFinishedTurn( savedCharacter.finishedTurn );
+    character:setActionPoints( savedCharacter.actionPoints )
+    character:setAccuracy( savedCharacter.accuracy )
+    character:setThrowingSkill( savedCharacter.throwingSkill )
+    character:setStance( savedCharacter.stance )
+    character:setFinishedTurn( savedCharacter.finishedTurn )
 
-    local body = BodyFactory.load( savedCharacter.body );
-    character:setBody( body );
+    local body = BodyFactory.load( savedCharacter.body )
+    character:setBody( body )
 
     -- TODO Remove hack for saving / loading characters
     character:setSavedPosition( savedCharacter.x, savedCharacter.y )
 
-    return character;
+    return character
 end
 
-function CharacterFactory.newCharacter( type, factionType )
-    local character = Character()
+function CharacterFactory.newCharacter( factionType )
+    local classID = pickCreatureClass( factionType )
+    local class = findClass( classID )
+    local character = Character( classID )
 
-    if type == 'human' then
+    local bodyType = Util.pickRandomValue( class.body )
+    if bodyType == 'body_human' then
         local nationality = chooseNationality()
         character:setNationality( nationality )
-        character:setName( names[nationality][love.math.random( #names[nationality] )])
+        character:setName( generateName( nationality ))
+    else
+        character:setName( Translator.getText( classID ))
     end
 
-    character:setBody( BodyFactory.create( type ));
+    character:setBody( BodyFactory.create( bodyType, class.stats ))
     createEquipment( character, factionType )
 
-    return character;
+    return character
 end
 
-return CharacterFactory;
+return CharacterFactory

@@ -29,10 +29,10 @@ local COLUMN_2 = 10
 local COLUMN_3 = 22
 local COLUMN_4 = 30
 
-local WEAPON_COLUMN_MODE    =  0
-local WEAPON_COLUMN_AP      = 20
-local WEAPON_COLUMN_ACC     = 25
-local WEAPON_COLUMN_ATTACKS = 30
+local WEAPON_COLUMN_MODE =  0
+local WEAPON_COLUMN_AP   = 20
+local WEAPON_COLUMN_ACC  = 25
+local WEAPON_COLUMN_DMG  = 30
 
 local VERTICAL_DESCRIPTION_OFFSET = 12
 
@@ -100,15 +100,15 @@ local function addWeaponInformation( self, text, item, tw, th )
         text:add({ self.valueColor, ammo },    COLUMN_2 * tw, 4 * th )
     end
 
-    text:add({ self.typeColor, 'MODE' },    WEAPON_COLUMN_MODE    * tw, 6 * th )
-    text:add({ self.typeColor, 'AP' },      WEAPON_COLUMN_AP      * tw, 6 * th )
-    text:add({ self.typeColor, 'ACC' },     WEAPON_COLUMN_ACC     * tw, 6 * th )
-    text:add({ self.typeColor, 'ATTACKS' }, WEAPON_COLUMN_ATTACKS * tw, 6 * th )
+    text:add({ self.typeColor, 'MODE' }, WEAPON_COLUMN_MODE * tw, 6 * th )
+    text:add({ self.typeColor, 'AP' }, WEAPON_COLUMN_AP * tw, 6 * th )
+    text:add({ self.typeColor, 'ACC' }, WEAPON_COLUMN_ACC * tw, 6 * th )
+    text:add({ self.typeColor, 'DMG' }, WEAPON_COLUMN_DMG * tw, 6 * th )
     for i, mode in ipairs( item:getModes() ) do
-        text:add({ self.valueColor, mode.name },     WEAPON_COLUMN_MODE    * tw, (6+i) * th )
-        text:add({ self.valueColor, mode.cost },     WEAPON_COLUMN_AP      * tw, (6+i) * th )
-        text:add({ self.valueColor, mode.accuracy }, WEAPON_COLUMN_ACC     * tw, (6+i) * th )
-        text:add({ self.valueColor, mode.attacks  }, WEAPON_COLUMN_ATTACKS * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.name }, WEAPON_COLUMN_MODE * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.cost }, WEAPON_COLUMN_AP * tw, (6+i) * th )
+        text:add({ self.valueColor, mode.accuracy }, WEAPON_COLUMN_ACC * tw, (6+i) * th )
+        text:add({ self.valueColor, string.format( '%dx%d', mode.attacks, item:getDamage() )}, WEAPON_COLUMN_DMG * tw, (6+i) * th )
     end
 end
 

@@ -109,6 +109,14 @@ function Equipment:getItem( type )
     end
 end
 
+function Equipment:getSlot( id )
+    for _, slot in pairs ( self.slots ) do
+        if slot:getID() == id then
+            return slot
+        end
+    end
+end
+
 function Equipment:getSlots()
     return self.slots
 end

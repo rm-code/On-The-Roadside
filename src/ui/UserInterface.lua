@@ -6,82 +6,30 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local UIElement = require( 'src.ui.elements.UIElement' )
 local Log = require( 'src.util.Log' )
-local Translator = require( 'src.util.Translator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
-local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
-local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
-local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
+local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
+local UITileInfo = require( 'src.ui.elements.UITileInfo' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
+local GridHelper = require( 'src.util.GridHelper' )
+local UIMessageLog = require( 'src.ui.elements.UIMessageLog' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local UserInterface = Class( 'UserInterface' )
+local UserInterface = UIElement:subclass( 'UserInterface' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
+local UI_GRID_WIDTH = 16
 
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
-
----
--- Draws some information of the tile the mouse is currently hovering over.
--- @tparam number mouseX The mouse cursor's position along the x-axis.
--- @tparam number mouseY The mouse cursor's position along the y-axis.
--- @tparam Map    map    The map to inspect.
---
-local function inspectTile( mouseX, mouseY, map )
-    local font = TexturePacks.getFont()
-    local tw, th = TexturePacks.getTileDimensions()
-
-    local x, y = tw, love.graphics.getHeight() - th * 6
-    local tile = map:getTileAt( mouseX, mouseY )
-
-    if not tile then
-        return
-    end
-
-    love.graphics.print( Translator.getText( 'ui_tile' ), x, y )
-
-    local sw = font:measureWidth( Translator.getText( 'ui_tile' ))
-    if tile:hasWorldObject() then
-        love.graphics.print( Translator.getText( tile:getWorldObject():getID() ), x + sw, y )
-    else
-        love.graphics.print( Translator.getText( tile:getID() ), x + sw, y )
-    end
-end
-
-local function drawWeaponInfo( inventory, weapon )
-    local font = TexturePacks.getFont()
-    local tw, th = TexturePacks.getTileDimensions()
-
-    if weapon then
-        love.graphics.print( Translator.getText( 'ui_weapon' ), tw, love.graphics.getHeight() - th * 4 )
-        love.graphics.print( Translator.getText( weapon:getID() ), tw + font:measureWidth( Translator.getText( 'ui_weapon' )), love.graphics.getHeight() - th * 4 )
-
-        -- If the weapon is reloadable we show the current ammo in the magazine,
-        -- the maximum capacity of the magazine and the total amount of ammo
-        -- on the character.
-        if weapon:isReloadable() then
-            local magazine = weapon:getMagazine()
-            local total = inventory:countItems( ITEM_TYPES.AMMO, magazine:getCaliber() )
-
-            local text = string.format( ' %d/%d (%d)', magazine:getNumberOfRounds(), magazine:getCapacity(), total )
-            love.graphics.print( Translator.getText( 'ui_ammo' ), tw, love.graphics.getHeight() - th * 3 )
-            love.graphics.print( text, tw + font:measureWidth( Translator.getText( 'ui_ammo' )), love.graphics.getHeight() - th * 3 )
-        end
-
-        love.graphics.print( Translator.getText( 'ui_mode' ), tw, love.graphics.getHeight() - th * 2 )
-        love.graphics.print( weapon:getAttackMode().name, tw + font:measureWidth( Translator.getText( 'ui_mode' )), love.graphics.getHeight() - th * 2 )
-    end
-end
 
 local function drawDebugInfo( mouseX, mouseY, debug )
     local tw, th = TexturePacks.getTileDimensions()
@@ -94,42 +42,9 @@ local function drawDebugInfo( mouseX, mouseY, debug )
     end
 end
 
-local function drawActionPoints( game, camera, character )
-    local font = TexturePacks.getFont()
-    local tw, th = TexturePacks.getTileDimensions()
-    local apString = 'AP: ' .. character:getActionPoints()
-
-    love.graphics.print( apString, tw, love.graphics.getHeight() - th * 5 )
-
-    -- Hide the cost display during the turn's execution.
-    if game:getState():isInstanceOf( ExecutionState ) then
-        return
-    end
-
-    local mode = game:getState():getInputMode()
-    local tile = game:getMap():getTileAt( camera:getMouseWorldGridPosition() )
-    local cost
-
-    if tile then
-        if mode:isInstanceOf( AttackInput ) then
-            cost = mode:getPredictedAPCost( character )
-        elseif mode:isInstanceOf( InteractionInput ) then
-            cost = mode:getPredictedAPCost( tile, character )
-        elseif mode:isInstanceOf( MovementInput ) and mode:hasPath() then
-            cost = mode:getPredictedAPCost()
-        end
-    end
-
-    if cost then
-        local costString, costOffset = ' - ' .. cost, font:measureWidth( apString )
-        TexturePacks.setColor( 'ui_ap_cost' )
-        love.graphics.print( costString, tw + costOffset, love.graphics.getHeight() - th * 5 )
-
-        local resultString, resultOffset = ' = ' .. character:getActionPoints() - cost, font:measureWidth( apString .. costString )
-        TexturePacks.setColor( 'ui_ap_cost_result' )
-        love.graphics.print( resultString, tw + resultOffset, love.graphics.getHeight() - th * 5 )
-    end
-    TexturePacks.resetColor()
+local function getPositionAndDimensions()
+    local sw, sh = GridHelper.getScreenGridDimensions()
+    return sw - UI_GRID_WIDTH, 0, 0, 0, UI_GRID_WIDTH, sh
 end
 
 -- ------------------------------------------------
@@ -142,10 +57,23 @@ end
 -- @tparam CameraHandler camera A camera object used to move the map.
 --
 function UserInterface:initialize( game, camera )
+    local px, py, rx, ry, w, h = getPositionAndDimensions()
+    UIElement.initialize( self, px, py, rx, ry, w, h )
+
     self.game = game
     self.map = game:getMap()
     self.factions = game:getFactions()
     self.camera = camera
+
+    self.background = UIBackground( px, py, rx, ry, w, h )
+    self.characterInfo = UICharacterInfo( px, py )
+    self.tileInfo = UITileInfo( px, py, 0, self.characterInfo:getHeight() )
+    self.msgLog = UIMessageLog( px, py, 0, self.characterInfo:getHeight() + self.tileInfo:getHeight() )
+
+    self:addChild( self.background )
+    self:addChild( self.characterInfo )
+    self:addChild( self.tileInfo )
+    self:addChild( self.msgLog )
 
     self.mouseX, self.mouseY = 0, 0
 
@@ -155,22 +83,33 @@ end
 function UserInterface:draw()
     drawDebugInfo( self.mouseX, self.mouseY, self.debug )
 
-    local character = self.factions:getFaction():getCurrentCharacter()
     if self.factions:getFaction():isAIControlled() then
         return
     end
 
-    drawActionPoints( self.game, self.camera, character )
-    inspectTile( self.mouseX, self.mouseY, self.map )
-    drawWeaponInfo( character:getInventory(), character:getWeapon() )
+    self.background:draw()
+    self.characterInfo:draw()
+    self.tileInfo:draw()
+    self.msgLog:draw()
 end
 
 function UserInterface:update()
     self.mouseX, self.mouseY = self.camera:getMouseWorldGridPosition()
+
+    self.characterInfo:update( self.game:getState(), self.map, self.camera, self.factions:getFaction():getCurrentCharacter() )
+    self.tileInfo:update( self.mouseX, self.mouseY, self.map )
+    self.msgLog:update()
 end
 
 function UserInterface:toggleDebugInfo()
     self.debug = not self.debug
+end
+
+function UserInterface:resize()
+    local px, py, _, _, _, _ = getPositionAndDimensions()
+    self:setOrigin( px, py )
+
+    self.msgLog:resize()
 end
 
 return UserInterface

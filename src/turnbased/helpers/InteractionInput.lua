@@ -49,7 +49,7 @@ end
 function InteractionInput:request( target, character )
     -- Check health of enemy characters.
     if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
-        ScreenManager.push( 'health', target:getCharacter() )
+        ScreenManager.push( 'playerInfo', target:getCharacter() )
         return true
     end
 

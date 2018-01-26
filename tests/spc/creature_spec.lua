@@ -1,6 +1,6 @@
 describe( 'Creature template spec', function()
     local TGFParser   =  require( 'lib.TGFParser' );
-    local FILE_PATH   = 'res/data/creatures/';
+    local FILE_PATH   = 'res/data/creatures/bodies/';
 
     local function getDirectoryItems( dir )
         local i, t = 0, {};

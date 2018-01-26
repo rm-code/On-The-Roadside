@@ -148,6 +148,9 @@ return {
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
     ['ui_text_dark'] = COLORS.DB25,
+    ['ui_text_success'] = COLORS.DB09,
+    ['ui_text_warning'] = COLORS.DB05,
+    ['ui_text_error'] = COLORS.DB27,
 
     ['ui_help_section'] = COLORS.DB24,
 
@@ -167,9 +170,6 @@ return {
     ['ui_inventory_drag_bg'] = COLORS.DB01,
     ['ui_inventory_drag_text'] = COLORS.DB20,
 
-    ['ui_ap_cost'] = COLORS.DB27,
-    ['ui_ap_cost_result'] = COLORS.DB10,
-
     ['ui_shot_valid']               = COLORS.DB09,
     ['ui_shot_potentially_blocked'] = COLORS.DB05,
     ['ui_shot_blocked']             = COLORS.DB27,
@@ -183,12 +183,6 @@ return {
     ['ui_path_ap_med']  = COLORS.DB05,
     ['ui_path_ap_low']  = COLORS.DB27,
 
-    ['ui_health_destroyed_limb']     = COLORS.DB24,
-    ['ui_health_badly_damaged_limb'] = COLORS.DB27,
-    ['ui_health_damaged_limb']       = COLORS.DB05,
-    ['ui_health_ok_limb']            = COLORS.DB08,
-    ['ui_health_fine_limb']          = COLORS.DB10,
-
     -- Changelog Menu
     ['ui_changelog_version'] = COLORS.DB05,
     ['ui_changelog_additions'] = COLORS.DB16,
@@ -196,6 +190,14 @@ return {
     ['ui_changelog_fixes'] = COLORS.DB16,
     ['ui_changelog_other'] = COLORS.DB16,
     ['ui_changelog_text'] = COLORS.DB25,
+
+    ['ui_character_name'] = COLORS.DB17,
+
+    -- Message log
+    ['ui_msg_info'] = COLORS.DB25,
+    ['ui_msg_important'] = COLORS.DB08,
+    ['ui_msg_warning']  = COLORS.DB05,
+    ['ui_msg_danger']  = COLORS.DB27,
 
     -- ==============================
     -- MAP EDITOR

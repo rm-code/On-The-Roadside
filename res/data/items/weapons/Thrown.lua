@@ -12,17 +12,18 @@ return {
             'humanoid'
         },
         subType    = "Thrown",
-        damage     = 80,
+        damage     = 5,
         reloadable = false,
-        range      = 10,
         sound      = 'MELEE',
         mode = {
             {
                 name       = "Throw",
-                cost       = 3,
+                cost       = 10,
+                attacks    = 1,
                 damageType = 'explosive'
             }
         },
+        range = 10,
         effects = {
             explosive    = { blastRadius = 2 },
             customSprite = { sprite = "weapon_m67_grenade" }
@@ -41,17 +42,18 @@ return {
             'humanoid'
         },
         subType    = "Thrown",
-        damage     = 24,
+        damage     = 3,
         reloadable = false,
-        range      = 10,
         sound      = 'MELEE',
         mode = {
             {
                 name       = "Throw",
-                cost       = 6,
+                cost       = 8,
+                attacks    = 1,
                 damageType = 'piercing'
             }
         },
+        range = 10,
         effects = {
             customSprite = { sprite = "weapon_shuriken" }
         }

@@ -2,6 +2,7 @@ local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Util = require( 'src.util.Util' )
+local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,22 +30,16 @@ local map;
 ---
 -- Removes a projectile from the world and hits a tile with the projectile
 -- damage.
--- @param index      (number)     The index of the projectile to remove.
--- @param remove     (boolean)    Wether to remove the projectile or not.
 -- @param tile       (Tile)       The tile to hit.
 -- @param projectile (Projectile) The projectile to remove.
 --
-local function hitTile( index, remove, tile, projectile )
-    if remove then
-        queue:removeProjectile( index );
-    end
-
+local function hitTile( tile, projectile )
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-        ExplosionManager.register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() );
-        return;
+        ExplosionManager.register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
+        return
     end
 
-    tile:hit( projectile:getDamage() * ( projectile:getEnergy() / 100 ), projectile:getDamageType() );
+    tile:hit( projectile:getDamage() * ( projectile:getEnergy() / 100 ), projectile:getDamageType() )
 end
 
 ---
@@ -61,22 +56,23 @@ end
 
 ---
 --
-local function hitCharacter( index, remove, tile, projectile )
+local function hitCharacter( tile, projectile )
     Log.debug( 'Projectile hit character', 'ProjectileManager' )
-    hitTile( index, remove, tile, projectile )
+    hitTile( tile, projectile )
+    return true
 end
 
 ---
 -- Handles how to proceed if the projectile hits a world object.
--- @param index       (number)      The id of the projectile which will be used for removing it.
 -- @param projectile  (Projectile)  The projectile to handle.
 -- @param tile        (Tile)        The tile to check.
 -- @param worldObject (WorldObject) The world object to check.
+-- @treturn boolean Wether to remove the projectile or not.
 --
-local function hitWorldObject( index, projectile, tile, worldObject )
+local function hitWorldObject( projectile, tile, worldObject )
     if projectile:getHeight() > worldObject:getHeight() then
         Log.debug( 'Projectile flies over world object', 'ProjectileManager' )
-        return
+        return false
     end
 
     -- Remove projectiles when they hit indestructible world objects.
@@ -90,8 +86,9 @@ local function hitWorldObject( index, projectile, tile, worldObject )
             tile = projectile:getPreviousTile();
         end
 
-        hitTile( index, true, tile, projectile );
-        return;
+        tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
+        hitTile( tile, projectile )
+        return true
     end
 
     Log.debug( 'Projectile hit destructible world object', 'ProjectileManager' )
@@ -100,9 +97,11 @@ local function hitWorldObject( index, projectile, tile, worldObject )
     local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
     projectile:setEnergy( energy );
 
+    tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
+
     -- Apply the damage to the tile and only remove it if the energy is 0.
-    hitTile( index, energy <= 0, tile, projectile );
-    return;
+    hitTile( tile, projectile )
+    return energy <= 0
 end
 
 ---
@@ -112,22 +111,29 @@ end
 -- @param tile       (Tile)       The tile to check.
 -- @param character  (Character)  The character who fired this projectile.
 --
-local function checkForHits( index, projectile, tile, character )
+local function checkForHits( index, projectile, tile )
     -- Stop movement and remove the projectile if it has reached the map border.
     if not tile then
-        queue:removeProjectile( index );
-        return;
+        queue:removeProjectile( index )
+        return
     end
+
+    local remove = false
 
     if tile:isOccupied() then
-        hitCharacter( index, true, tile, projectile )
+        remove = hitCharacter( tile, projectile )
     elseif tile:hasWorldObject() then
-        hitWorldObject( index, projectile, tile, tile:getWorldObject(), character );
+        remove = hitWorldObject( projectile, tile, tile:getWorldObject() )
     end
 
-    if projectile:hasReachedTarget() then
+    if not remove and projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
-        hitTile( index, true, tile, projectile )
+        hitTile( tile, projectile )
+        remove = true
+    end
+
+    if remove then
+        queue:removeProjectile( index )
     end
 end
 
@@ -167,7 +173,7 @@ function ProjectileManager.update( dt )
             projectile:updateTile( map );
             Messenger.publish( 'PROJECTILE_MOVED', projectile );
 
-            checkForHits( i, projectile, projectile:getTile(), queue:getCharacter() );
+            checkForHits( i, projectile, projectile:getTile() )
         end
     end
 end
