@@ -1,3 +1,27 @@
+# Version 0.14.0.1489 - 2018-01-26
+
+## Additions
+- Added a new user interface overlay which contains detailed information about the currently selected creature and the tile the mouse cursor is hovering over.
+- Added message log which displays information about what is going on in the game. It only shows events which can be seen by the player's faction. The direction of the message log can be inverted in the options screen.
+- Added creature classes (Stalker, Bandit, ...) as a basis for more detailed creatures in the future.
+- Added creature groups to determine which creatures to spawn for each team. For example dogs can now spawn on the enemy team.
+- Added new health system which re-introduces health points and has a simplified body model. There is a chance for status effects like blindness to occur on critical hits.
+- Added new image font.
+- Added sprites that are based on a creature's class rather than its body type. This allows us to bring back the "bad knight" sprite for bandits.
+
+## Removals
+- Removed health screen. It has been replaced by the new player info screen.
+
+## Fixes
+- Fixed tiles being hit twice by a projectile on some occasions.
+- Fixed savegames not being sorted correctly. Savegames are now sorted by the time of their creation.
+
+## Other Changes
+- Changed item stats in inventory to include damage values for weapons.
+
+
+
+
 # Version 0.13.1.1413 - 2017-12-28
 
 ## Fixes
