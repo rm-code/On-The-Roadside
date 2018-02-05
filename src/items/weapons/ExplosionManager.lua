@@ -128,11 +128,9 @@ function ExplosionManager.update( dt )
     if explosionLayout and timer <= 0 then
         -- Notify anyone who cares.
         Messenger.publish( 'EXPLOSION', explosionLayout[explosionIndex] );
-        -- Damage the hit tiles. The damage is the base damage minus a random
-        -- value in the range of [1, 10% of damage] multiplied by the distance
-        -- to the source of the explosion.
+        -- Damage the hit tiles.
         for tile, damage in pairs( explosionLayout[explosionIndex] ) do
-            tile:hit( damage - love.math.random( damage * 0.1 ) * explosionIndex, DAMAGE_TYPES.EXPLOSIVE );
+            tile:hit( damage, DAMAGE_TYPES.EXPLOSIVE )
         end
         -- Advance the step index.
         explosionIndex = explosionIndex + 1;
