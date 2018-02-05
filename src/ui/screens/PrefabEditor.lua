@@ -70,6 +70,8 @@ local function createWorldObjectSelector( objectTemplates, tool )
         local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         if template.openable then
             tmp:setIcon( id, 'closed' )
+        elseif template.connections then
+            tmp:setIcon( id, 'default' )
         else
             tmp:setIcon( id )
         end
