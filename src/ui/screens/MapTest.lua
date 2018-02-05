@@ -14,6 +14,7 @@ local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Map = require( 'src.map.Map' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -71,6 +72,12 @@ function MapTest:keypressed( _, scancode )
     if scancode == 'escape' then
         ScreenManager.pop()
     end
+
+    self.camera:input( Settings.mapInput( scancode ), true )
+end
+
+function MapTest:keyreleased( _, scancode )
+    self.camera:input( Settings.mapInput( scancode ), false )
 end
 
 return MapTest
