@@ -88,7 +88,7 @@ function OverlayPainter:initialize( game, camera )
     self.camera = camera
 
     self.particleLayer = ParticleLayer()
-    self.pulser = Pulser( 4, 80, 80 )
+    self.pulser = Pulser( 2, 0.2, 0.6 )
     self.coneOverlay = ConeOverlay( self.game, self.pulser, self.camera )
     self.pathOverlay = PathOverlay( self.game, self.pulser )
 
