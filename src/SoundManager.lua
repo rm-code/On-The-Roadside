@@ -18,14 +18,14 @@ local function stopBeforePlaying( source )
 end
 
 function SoundManager.loadResources()
-    SOUNDS.DOOR           = love.audio.newSource( 'res/sounds/door.wav' );
-    SOUNDS.SELECT         = love.audio.newSource( 'res/sounds/select.wav' );
-    SOUNDS.ASSAULT_RIFLE  = love.audio.newSource( 'res/sounds/ar.wav' );
-    SOUNDS.SHOTGUN        = love.audio.newSource( 'res/sounds/ar.wav' );
-    SOUNDS.CLIMB          = love.audio.newSource( 'res/sounds/climb.wav' );
-    SOUNDS.EXPLODE        = love.audio.newSource( 'res/sounds/explosion.wav' );
-    SOUNDS.ROCKET_LAUNCHER = love.audio.newSource( 'res/sounds/rocket.wav' );
-    SOUNDS.MELEE          = love.audio.newSource( 'res/sounds/melee.wav' );
+    SOUNDS.DOOR           = love.audio.newSource( 'res/sounds/door.wav', 'static' )
+    SOUNDS.SELECT         = love.audio.newSource( 'res/sounds/select.wav', 'static' )
+    SOUNDS.ASSAULT_RIFLE  = love.audio.newSource( 'res/sounds/ar.wav', 'static' )
+    SOUNDS.SHOTGUN        = love.audio.newSource( 'res/sounds/ar.wav', 'static' )
+    SOUNDS.CLIMB          = love.audio.newSource( 'res/sounds/climb.wav', 'static' )
+    SOUNDS.EXPLODE        = love.audio.newSource( 'res/sounds/explosion.wav', 'static' )
+    SOUNDS.ROCKET_LAUNCHER = love.audio.newSource( 'res/sounds/rocket.wav', 'static' )
+    SOUNDS.MELEE          = love.audio.newSource( 'res/sounds/melee.wav', 'static' )
 end
 
 Messenger.observe( 'ACTION_DOOR', function()
