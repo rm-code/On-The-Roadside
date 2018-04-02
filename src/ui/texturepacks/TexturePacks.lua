@@ -112,7 +112,7 @@ local function loadPacks( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
         local path = sourceFolder .. item .. '/'
-        if love.filesystem.isDirectory( path ) then
+        if love.filesystem.getInfo( path, 'directory' ) then
             local success, tpack = load( path )
 
             if success then
@@ -152,7 +152,7 @@ end
 --
 local function copyDefaultTexturePack()
     -- Abort if the texture pack exists already.
-    if love.filesystem.isDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME ) then
+    if love.filesystem.getInfo( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME, 'directory' ) then
         return
     end
 

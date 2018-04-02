@@ -115,7 +115,7 @@ local function loadFiles( savedir )
     local saveDirectories = {}
 
     for _, item in pairs( love.filesystem.getDirectoryItems( savedir )) do
-        if love.filesystem.isDirectory( savedir .. '/' .. item ) then
+        if love.filesystem.getInfo( savedir .. '/' .. item, 'directory' ) then
             saveDirectories[#saveDirectories + 1] = item
         end
     end

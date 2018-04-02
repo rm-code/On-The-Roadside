@@ -65,7 +65,7 @@ local function load( dir )
     local subdirectories = love.filesystem.getDirectoryItems( dir )
     for i, subdir in ipairs( subdirectories ) do
         local path = dir .. subdir .. '/'
-        if love.filesystem.isDirectory( path ) then
+        if love.filesystem.getInfo( path, 'directory' ) then
             local files = love.filesystem.getDirectoryItems( path )
 
             -- Loads all the other text files for this locale.
