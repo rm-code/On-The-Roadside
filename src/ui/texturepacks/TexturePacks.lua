@@ -177,7 +177,7 @@ function TexturePacks.load()
     loadPacks( TEXTURE_PACK_FOLDER )
 
     -- Creates the mods folder if it doesn't exist.
-    if not love.filesystem.exists( MOD_TEXTURE_PACK_FOLDER ) then
+    if not love.filesystem.getInfo( MOD_TEXTURE_PACK_FOLDER ) then
         love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER )
     end
 
