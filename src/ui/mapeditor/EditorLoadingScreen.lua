@@ -69,7 +69,7 @@ local function generateOutlines( x, y )
 end
 
 local function isValidFile( path )
-    if not love.filesystem.isFile( path ) then
+    if not love.filesystem.getInfo( path, 'file' ) then
         return
     end
 

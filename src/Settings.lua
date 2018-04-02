@@ -86,7 +86,7 @@ end
 --
 function Settings.load()
     -- Create settings file if it doesn't exist yet.
-    if not love.filesystem.isFile( FILE_NAME ) then
+    if not love.filesystem.getInfo( FILE_NAME, 'file' ) then
         create()
     elseif Compressor.load( FILE_NAME ).version ~= DEFAULT_SETTINGS.version then
         Log.warn( 'Detected outdated settings file => Replacing with default settings!', 'Settings' )
