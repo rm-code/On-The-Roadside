@@ -32,9 +32,7 @@ local TGFParser = {
 -- Line iterator
 -- ------------------------------------------------
 
--- TODO love.filesystem.lines is currently bugged on Mac OS 10.13
--- therefore we have to use a quick workaround
--- local lines = love and love.filesystem.lines or io.lines;
+local lines = love and love.filesystem.lines or io.lines;
 
 -- ------------------------------------------------
 -- Local Functions
@@ -53,26 +51,11 @@ local function loadFile( path )
     local target = nodes;
 
     -- Change the target table once the '#' separator is reached.
-    -- TODO love.filesystem.lines is currently bugged on Mac OS 10.13
-    -- therefore we have to use a quick workaround
-
-    if love then
-        local str = love.filesystem.read(path)
-        for line in str:gmatch("[^\r\n]+") do
-            if line == '#' then
-                target = edges;
-            else
-                target[#target + 1] = line;
-            end
-        end
-    else
-        -- Change the target table once the '#' separator is reached.
-        for line in io.lines( path ) do
-            if line == '#' then
-                target = edges;
-            else
-                target[#target + 1] = line;
-            end
+    for line in lines( path ) do
+        if line == '#' then
+            target = edges;
+        else
+            target[#target + 1] = line;
         end
     end
 
