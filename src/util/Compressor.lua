@@ -20,7 +20,7 @@ local Compressor = {}
 
 function Compressor.save( t, path )
     local rawstring = Serialize( t )
-    local compressedData = love.math.compress( rawstring )
+    local compressedData = love.data.compress( 'data', 'lz4', rawstring )
     assert( love.filesystem.write( path, compressedData ))
 end
 
@@ -30,7 +30,7 @@ function Compressor.load( path )
     assert( compressedData, errorMessage )
 
     -- Decompress and return the loaded lua file.
-    local rawstring = love.math.decompress( compressedData, 'lz4' )
+    local rawstring = love.data.decompress( 'string', 'lz4', compressedData )
 
     -- Print a warning if it can't be loaded and return false.
     local result, error = load( rawstring )
