@@ -14,7 +14,9 @@ local StandUp = require( 'src.characters.actions.StandUp' )
 local Crouch = require( 'src.characters.actions.Crouch' )
 local LieDown = require( 'src.characters.actions.LieDown' )
 local OpenInventory = require( 'src.characters.actions.OpenInventory' )
+
 local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
+local MovementInput = require( 'src.turnbased.helpers.MovementInput' )
 local InteractionInput = require( 'src.turnbased.helpers.InteractionInput' )
 
 -- ------------------------------------------------
@@ -116,9 +118,9 @@ function PlanningState:initialize( stateManager )
     self.stateManager = stateManager
 
     local inputStates = {
-        attack = require( 'src.turnbased.helpers.AttackInput' ),
-        movement = require( 'src.turnbased.helpers.MovementInput' ),
-        interaction = require( 'src.turnbased.helpers.InteractionInput' )
+        attack = AttackInput,
+        movement = MovementInput,
+        interaction = InteractionInput
     }
 
     self.inputStateHandler = StateManager( inputStates )
