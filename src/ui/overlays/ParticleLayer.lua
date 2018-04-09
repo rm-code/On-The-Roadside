@@ -43,24 +43,24 @@ function ParticleLayer:initialize()
         local tile = projectile:getTile()
         if tile then
             if projectile:getEffects():hasCustomSprite() then
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 255, 255, 255, 255, 1500, projectile:getEffects():getCustomSprite() )
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 1.0, 1.0, 1.0, 1.0, 2.5, projectile:getEffects():getCustomSprite() )
             elseif projectile:getEffects():isExplosive() then
-                local col = love.math.random( 150, 255 )
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), col, col, col, love.math.random( 100, 255 ), 500 )
+                local col = love.math.random( 0.59, 1.0 )
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), col, col, col, love.math.random( 0.59, 1.0 ), 1.0 )
             else
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 223, 113,  38, 200, 500 )
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 0.87450, 0.44313, 0.14901, 0.78, 0.5 )
             end
         end
     end)
 
     Messenger.observe( 'EXPLOSION', function( ... )
         local generation = ...
-        for tile, life in pairs( generation ) do
-            local r = 255
-            local g = love.math.random( 100, 200 )
+        for tile, _ in pairs( generation ) do
+            local r = 0.9
+            local g = love.math.random( 0.39, 0.58 )
             local b = 0
-            local a = love.math.random( 200, 255 )
-            local fade = 500 / math.min( 3, love.math.random( life ))
+            local a = love.math.random( 0.78, 0.9 )
+            local fade = math.max( 0.95, love.math.random( 2.5 ))
             addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
         end
     end)
