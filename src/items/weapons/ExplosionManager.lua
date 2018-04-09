@@ -1,5 +1,6 @@
 local Bresenham = require( 'lib.Bresenham' );
 local Messenger = require( 'src.Messenger' );
+local SoundManager = require( 'src.SoundManager' )
 local Util = require( 'src.util.Util' );
 
 -- ------------------------------------------------
@@ -128,6 +129,8 @@ function ExplosionManager.update( dt )
     if explosionLayout and timer <= 0 then
         -- Notify anyone who cares.
         Messenger.publish( 'EXPLOSION', explosionLayout[explosionIndex] );
+        SoundManager.play( 'sound_explode')
+
         -- Damage the hit tiles.
         for tile, damage in pairs( explosionLayout[explosionIndex] ) do
             tile:hit( damage, DAMAGE_TYPES.EXPLOSIVE )

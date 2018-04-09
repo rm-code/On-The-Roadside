@@ -14,7 +14,7 @@ return {
         subType    = "Melee",
         damage     = 5,
         reloadable = false,
-        sound      = 'MELEE',
+        sound      = 'sound_melee',
         mode = {
             {
                 name       = "Slash",
@@ -47,7 +47,7 @@ return {
         subType    = "Melee",
         damage     = 4,
         reloadable = false,
-        sound      = 'MELEE',
+        sound      = 'sound_melee',
         mode = {
             {
                 name       = "Single",
@@ -73,7 +73,7 @@ return {
         subType    = "Melee",
         damage     = 2,
         reloadable = false,
-        sound      = 'MELEE',
+        sound      = 'sound_melee',
         mode = {
             {
                 name = "Bite",

@@ -9,7 +9,7 @@
 local Class = require( 'lib.Middleclass' )
 local Projectile = require( 'src.items.weapons.Projectile' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
-local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -55,7 +55,7 @@ function ThrownProjectileQueue:initialize( character, tx, ty, th )
     self.projectiles[self.index] = projectile
 
     -- Play sound.
-    Messenger.publish( 'SOUND_ATTACK', self.weapon )
+    SoundManager.play( self.weapon:getSound() )
 end
 
 ---

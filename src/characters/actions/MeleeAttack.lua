@@ -7,7 +7,7 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
-local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,7 +31,7 @@ function MeleeAttack:perform()
     local weapon = self.character:getWeapon()
     self.target:hit( weapon:getDamage(), weapon:getDamageType() )
 
-    Messenger.publish( 'SOUND_ATTACK', weapon )
+    SoundManager.play( weapon:getSound() )
     return true
 end
 

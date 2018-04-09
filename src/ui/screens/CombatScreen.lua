@@ -10,6 +10,7 @@ local Camera = require( 'src.ui.Camera' )
 local UserInterface = require( 'src.ui.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Settings = require( 'src.Settings' )
 
@@ -43,6 +44,7 @@ function CombatScreen:initialize( playerFaction, savegame )
             return
         end
         self.camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
+        SoundManager.play( 'sound_select' )
     end)
 
     self.observations[#self.observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )

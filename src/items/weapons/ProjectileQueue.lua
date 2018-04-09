@@ -10,7 +10,7 @@ local Class = require( 'lib.Middleclass' )
 local Projectile = require( 'src.items.weapons.Projectile' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
 local Queue = require( 'src.util.Queue' )
-local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -48,7 +48,7 @@ local function spawnProjectile( queue, character, weapon, shots, projectiles, tx
     local projectile = Projectile( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
 
     -- Play sound and remove the round from the magazine.
-    Messenger.publish( 'SOUND_ATTACK', weapon )
+    SoundManager.play( weapon:getSound() )
     weapon:getMagazine():removeRound()
 
     -- Spawn projectiles for the spread shot.

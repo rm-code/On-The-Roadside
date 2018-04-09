@@ -37,13 +37,13 @@ function BootLoadingScreen:initialize()
     local startTime = love.timer.getTime()
 
     TexturePacks.load()
+    SoundManager.load()
 
     ItemFactory.loadTemplates()
     TileFactory.loadTemplates()
     BodyFactory.loadTemplates()
     WorldObjectFactory.loadTemplates()
     BehaviorTreeFactory.loadTemplates()
-    SoundManager.loadResources()
 
     CharacterFactory.init()
 
