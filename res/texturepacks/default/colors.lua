@@ -39,7 +39,8 @@ COLORS.DB29  = { 0.843137, 0.482353, 0.729412 }
 COLORS.DB30  = { 0.560784, 0.592157, 0.290196 }
 COLORS.DB31  = { 0.541176, 0.435294, 0.188235 }
 
-COLORS.RESET = { 1.000000, 1.000000, 1.000000 }
+COLORS.RESET      = { 1.0, 1.0, 1.0, 1.0 }
+COLORS.BACKGROUND = { 0.0, 0.0, 0.0, 1.0 }
 
 return {
     -- ==============================
@@ -224,6 +225,6 @@ return {
     -- ==============================
     -- SYSTEM
     -- ==============================
-    ['sys_background'] = { 0, 0, 0, 255 },
+    ['sys_background'] = COLORS.BACKGROUND,
     ['sys_reset'] = COLORS.RESET -- Should not be changed!
 }
