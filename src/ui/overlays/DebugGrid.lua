@@ -37,18 +37,18 @@ function DebugGrid.draw()
     for x = 0, sw - 1 do
         for y = 0, sh - 1 do
             if mod( x, tileWidth ) == 0 and mod( y, tileHeight ) == 0 then
-                love.graphics.setColor( 100, 100, 100, 80 )
+                TexturePacks.setColor( 'sys_debug_grid' )
                 love.graphics.rectangle( 'line', x, y, tileWidth, tileHeight )
             end
 
             if mod( x, glyphWidth ) == 0 and mod( y, glyphHeight ) == 0 then
-                love.graphics.setColor( 100, 100, 100, 60 )
+                TexturePacks.setColor( 'sys_debug_grid' )
                 love.graphics.rectangle( 'line', x, y, glyphWidth, glyphHeight )
             end
         end
     end
 
-    love.graphics.setColor( 255, 255, 255, 255 )
+    TexturePacks.resetColor()
 end
 
 

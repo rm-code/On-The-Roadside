@@ -63,7 +63,8 @@ function LayoutCanvas:draw()
     local tw, th = TexturePacks.getTileDimensions()
 
     -- Draws a translucent grid.
-    love.graphics.setColor( 100, 100, 100, 100 )
+    TexturePacks.setColor( 'sys_debug_grid' )
+
     for x = 1, self.grid.mapwidth do
         for y = 1, self.grid.mapheight do
             love.graphics.rectangle( 'line', x * tw, y * th, tw, th )
@@ -88,7 +89,7 @@ function LayoutCanvas:draw()
         end
     end
 
-    love.graphics.setColor( 255, 255, 255, 255 )
+    TexturePacks.resetColor()
 end
 
 ---

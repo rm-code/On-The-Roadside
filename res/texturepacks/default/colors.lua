@@ -41,6 +41,7 @@ COLORS.DB31  = { 0.541176, 0.435294, 0.188235 }
 
 COLORS.RESET      = { 1.0, 1.0, 1.0, 1.0 }
 COLORS.BACKGROUND = { 0.0, 0.0, 0.0, 1.0 }
+COLORS.DEBUG_GRID = { 0.2, 0.2, 0.2, 0.3 }
 
 return {
     -- ==============================
@@ -222,9 +223,11 @@ return {
     ['parcel_xl'] = COLORS.DB02,
     ['ingame_editor_grid_lines'] = COLORS.DB14,
 
-    -- ==============================
-    -- SYSTEM
-    -- ==============================
+    -- ============================================================
+    -- SYSTEM - These values shouldn't be changed!
+    -- ============================================================
+
     ['sys_background'] = COLORS.BACKGROUND,
-    ['sys_reset'] = COLORS.RESET -- Should not be changed!
+    ['sys_debug_grid'] = COLORS.DEBUG_GRID,
+    ['sys_reset'] = COLORS.RESET
 }
