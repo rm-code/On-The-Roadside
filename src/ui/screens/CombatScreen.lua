@@ -46,13 +46,6 @@ function CombatScreen:initialize( playerFaction, savegame )
         self.camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
         SoundManager.play( 'sound_select' )
     end)
-
-    self.observations[#self.observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
-        if not self.combatState:getFactions():getPlayerFaction():canSee( character:getTile() ) then
-            return
-        end
-        self.camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
-    end)
 end
 
 function CombatScreen:draw()
