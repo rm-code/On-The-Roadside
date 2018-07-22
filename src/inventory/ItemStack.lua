@@ -99,6 +99,10 @@ function ItemStack:getItemType()
     return self.items[#self.items]:getItemType()
 end
 
+function ItemStack:getSubType()
+    return self.items[#self.items]:getSubType()
+end
+
 function ItemStack:getDescriptionID()
     return self.items[#self.items]:getDescriptionID()
 end

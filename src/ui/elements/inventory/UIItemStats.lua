@@ -10,6 +10,7 @@ local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
 local UIScrollArea = require( 'src.ui.elements.UIScrollArea' )
+local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -166,6 +167,10 @@ function UIItemStats:draw()
 end
 
 function UIItemStats:setItem( item )
+    if item:isInstanceOf( ItemStack ) then
+        item = item:getItem()
+    end
+
     self.stats = assembleText( self, item )
     addDescriptionArea( self, item )
 end
