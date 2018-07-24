@@ -19,6 +19,7 @@ local Log = {}
 
 local FILE_NAME = 'latest.log'
 
+local INFO_PREFIX    = '[INFO]'
 local DEBUG_PREFIX   = '[DEBUG]'
 local WARNING_PREFIX = '[WARNING]'
 local ERROR_PREFIX   = '[ERROR]'
@@ -94,6 +95,16 @@ end
 --
 function Log.print( str, caller )
     write( str, caller, '' )
+    appendlineBreak()
+end
+
+---
+-- Logs a informational message.
+-- @tparam string str    The message to log.
+-- @tparam string caller The module which sent the message.
+--
+function Log.info( str, caller )
+    write( str, caller, INFO_PREFIX )
     appendlineBreak()
 end
 
