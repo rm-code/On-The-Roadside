@@ -86,13 +86,17 @@ function love.load( args )
     ScreenManager.init( screens, 'bootloading' )
 
     letterbox = Letterbox()
+
+    if debugGrid then
+        debugGrid = DebugGrid()
+    end
 end
 
 function love.draw()
     ScreenManager.draw()
 
     if debugGrid then
-        DebugGrid.draw()
+        debugGrid:draw()
     end
 
     letterbox.draw()
