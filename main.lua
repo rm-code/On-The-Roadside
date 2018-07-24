@@ -19,13 +19,41 @@ local DEBUG_GRID_FLAG       = '-g'
 local DEBUG_FULLSCREEN_FLAG = '-f'
 local DEBUG_WINDOWED_FLAG   = '-w'
 
+local SCREENS = {
+    bootloading      = require( 'src.ui.screens.BootLoadingScreen'     ),
+    mainmenu         = require( 'src.ui.screens.MainMenu'              ),
+    ingamemenu       = require( 'src.ui.screens.IngameCombatMenu'      ),
+    options          = require( 'src.ui.screens.OptionsScreen'         ),
+    changelog        = require( 'src.ui.screens.ChangelogScreen'       ),
+    combat           = require( 'src.ui.screens.CombatScreen'          ),
+    inventory        = require( 'src.ui.screens.InventoryScreen'       ),
+    help             = require( 'src.ui.screens.HelpScreen'            ),
+    gamescreen       = require( 'src.ui.screens.GameScreen'            ),
+    gameover         = require( 'src.ui.screens.GameOverScreen'        ),
+    loadgame         = require( 'src.ui.screens.SavegameScreen'        ),
+    confirm          = require( 'src.ui.screens.ConfirmationModal'     ),
+    information      = require( 'src.ui.screens.InformationModal'      ),
+    inputdialog      = require( 'src.ui.screens.InputDialog'           ),
+    maptest          = require( 'src.ui.screens.MapTest'               ),
+    mapeditor        = require( 'src.ui.screens.MapEditor'             ),
+    mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'         ),
+    prefabeditor     = require( 'src.ui.screens.PrefabEditor'          ),
+    prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'      ),
+    editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen' ),
+    keybindingeditor = require( 'src.ui.screens.KeybindingScreen'      ),
+    keybindingmodal  = require( 'src.ui.screens.KeybindingModal'       ),
+    playerInfo       = require( 'src.ui.screens.PlayerInfo'            ),
+}
+
 -- ------------------------------------------------
--- Callbacks
+-- Local Functions
 -- ------------------------------------------------
 
-function love.load( args )
-    Log.init()
-
+---
+-- Iterates over any provided command line arguments and activates the proper
+-- mechanics.
+--
+local function handleCommandLineArguments( args )
     for _, arg in pairs( args ) do
         if arg == DEBUG_OUTPUT_FLAG then
             Log.setDebugActive( true )
@@ -37,7 +65,12 @@ function love.load( args )
             love.window.setFullscreen( false )
         end
     end
+end
 
+---
+-- Prints some information about the game and the player's system.
+--
+local function printGameInfo()
     local info = {}
     info[#info + 1] = "==================="
     info[#info + 1] = string.format( "Title: '%s'", getTitle() )
@@ -56,37 +89,25 @@ function love.load( args )
     for _, line in ipairs( info ) do
         Log.print( line )
     end
+end
 
-    local screens = {
-        bootloading = require( 'src.ui.screens.BootLoadingScreen' ),
-        mainmenu    = require( 'src.ui.screens.MainMenu'          ),
-        ingamemenu  = require( 'src.ui.screens.IngameCombatMenu'  ),
-        options     = require( 'src.ui.screens.OptionsScreen'     ),
-        changelog   = require( 'src.ui.screens.ChangelogScreen'   ),
-        combat      = require( 'src.ui.screens.CombatScreen'      ),
-        inventory   = require( 'src.ui.screens.InventoryScreen'   ),
-        help        = require( 'src.ui.screens.HelpScreen'        ),
-        gamescreen  = require( 'src.ui.screens.GameScreen'        ),
-        gameover    = require( 'src.ui.screens.GameOverScreen'    ),
-        loadgame    = require( 'src.ui.screens.SavegameScreen'    ),
-        confirm     = require( 'src.ui.screens.ConfirmationModal' ),
-        information = require( 'src.ui.screens.InformationModal'  ),
-        inputdialog = require( 'src.ui.screens.InputDialog'       ),
-        maptest          = require( 'src.ui.screens.MapTest'                ),
-        mapeditor        = require( 'src.ui.screens.MapEditor'              ),
-        mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'          ),
-        prefabeditor     = require( 'src.ui.screens.PrefabEditor'           ),
-        prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'       ),
-        editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen'  ),
-        keybindingeditor = require( 'src.ui.screens.KeybindingScreen' ),
-        keybindingmodal = require( 'src.ui.screens.KeybindingModal' ),
-        playerInfo = require( 'src.ui.screens.PlayerInfo' ),
-    }
+-- ------------------------------------------------
+-- Callbacks
+-- ------------------------------------------------
 
-    ScreenManager.init( screens, 'bootloading' )
+function love.load( args )
+    Log.init()
+
+    handleCommandLineArguments( args )
+
+    printGameInfo()
+
+    ScreenManager.init( SCREENS, 'bootloading' )
 
     letterbox = Letterbox()
 
+    -- Create the actual debug grid, if the debug grid flag was set via command
+    -- line arguments.
     if debugGrid then
         debugGrid = DebugGrid()
     end
