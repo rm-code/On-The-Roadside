@@ -227,6 +227,9 @@ function love.errhand( msg )
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
 
+    -- Save a copy of the log to the crash dump folder.
+    Log.saveCrashDump()
+
     local function draw()
         local pos = love.window.toPixels(70)
         love.graphics.clear(love.graphics.getBackgroundColor())

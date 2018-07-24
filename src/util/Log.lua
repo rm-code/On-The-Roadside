@@ -19,6 +19,9 @@ local Log = {}
 
 local FILE_NAME = 'latest.log'
 
+local CRASH_FOLDER = 'crash_dumps/'
+local CRASH_FILE_NAME = '%s%s_crash.log'
+
 local INFO_PREFIX    = '[INFO]'
 local DEBUG_PREFIX   = '[DEBUG]'
 local WARNING_PREFIX = '[WARNING]'
@@ -155,6 +158,14 @@ end
 --
 function Log.getDebugActive()
     return active
+end
+
+---
+-- Saves a copy of the latest.log to the crash dump folder and timestamps it.
+--
+function Log.saveCrashDump()
+    love.filesystem.createDirectory( CRASH_FOLDER )
+    assert( love.filesystem.write( string.format( CRASH_FILE_NAME, CRASH_FOLDER, os.time() ), love.filesystem.read( FILE_NAME )))
 end
 
 return Log
