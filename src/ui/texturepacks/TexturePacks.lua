@@ -30,6 +30,7 @@ local DEFAULT = {
     NAME = 'default',
     INFO = 'info.lua',
     COLORS = 'colors.lua',
+    WARNING = 'README.txt',
     SPRITES = 'sprites.lua',
     IMAGEFONT = 'imagefont.png',
     SPRITESHEET = 'spritesheet.png',
@@ -151,12 +152,7 @@ end
 -- Copies the default texture pack to the mods folder in the user's save directory.
 --
 local function copyDefaultTexturePack()
-    -- Abort if the texture pack exists already.
-    if love.filesystem.getInfo( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME, 'directory' ) then
-        return
-    end
-
-    Log.info( "Copying default texture pack to mod folder!", 'TexturePacks' )
+    Log.info( "Copying default texture pack to mod folder", 'TexturePacks' )
 
     love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME )
 
@@ -166,6 +162,7 @@ local function copyDefaultTexturePack()
     copyFile( source, target, DEFAULT.INFO )
     copyFile( source, target, DEFAULT.COLORS )
     copyFile( source, target, DEFAULT.SPRITES )
+    copyFile( source, target, DEFAULT.WARNING )
     copyFile( source, target, DEFAULT.IMAGEFONT )
     copyFile( source, target, DEFAULT.SPRITESHEET )
 end
