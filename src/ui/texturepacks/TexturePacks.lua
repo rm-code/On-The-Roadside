@@ -30,6 +30,7 @@ local DEFAULT = {
     NAME = 'default',
     INFO = 'info.lua',
     COLORS = 'colors.lua',
+    WARNING = 'README.txt',
     SPRITES = 'sprites.lua',
     IMAGEFONT = 'imagefont.png',
     SPRITESHEET = 'spritesheet.png',
@@ -112,7 +113,7 @@ local function loadPacks( sourceFolder )
     local count = 0
     for _, item in ipairs( love.filesystem.getDirectoryItems( sourceFolder )) do
         local path = sourceFolder .. item .. '/'
-        if love.filesystem.isDirectory( path ) then
+        if love.filesystem.getInfo( path, 'directory' ) then
             local success, tpack = load( path )
 
             if success then
@@ -127,7 +128,7 @@ local function loadPacks( sourceFolder )
                     end
 
                     count = count + 1
-                    Log.print( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
+                    Log.info( string.format( '  %3d. %s', count, name ), 'TexturePacks' )
                 else
                     Log.warn( string.format( 'A texture pack with the id "%s" already exists. The duplicate will be ignored.', name ), 'TexturePacks' )
                 end
@@ -151,10 +152,7 @@ end
 -- Copies the default texture pack to the mods folder in the user's save directory.
 --
 local function copyDefaultTexturePack()
-    -- Abort if the texture pack exists already.
-    if love.filesystem.isDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME ) then
-        return
-    end
+    Log.info( "Copying default texture pack to mod folder", 'TexturePacks' )
 
     love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER .. DEFAULT.NAME )
 
@@ -164,6 +162,7 @@ local function copyDefaultTexturePack()
     copyFile( source, target, DEFAULT.INFO )
     copyFile( source, target, DEFAULT.COLORS )
     copyFile( source, target, DEFAULT.SPRITES )
+    copyFile( source, target, DEFAULT.WARNING )
     copyFile( source, target, DEFAULT.IMAGEFONT )
     copyFile( source, target, DEFAULT.SPRITESHEET )
 end
@@ -173,19 +172,15 @@ end
 -- ------------------------------------------------
 
 function TexturePacks.load()
-    Log.print( "Load Default Texture Packs:", 'TexturePacks' )
-    loadPacks( TEXTURE_PACK_FOLDER )
-
     -- Creates the mods folder if it doesn't exist.
-    if not love.filesystem.exists( MOD_TEXTURE_PACK_FOLDER ) then
+    if not love.filesystem.getInfo( MOD_TEXTURE_PACK_FOLDER ) then
         love.filesystem.createDirectory( MOD_TEXTURE_PACK_FOLDER )
     end
 
-    Log.print( "Load External Texture Packs:", 'TexturePacks' )
-    loadPacks( MOD_TEXTURE_PACK_FOLDER )
-
-    Log.debug( "Copying default texture pack to mod folder!" )
     copyDefaultTexturePack()
+
+    Log.info( "Load Texture Packs:", 'TexturePacks' )
+    loadPacks( MOD_TEXTURE_PACK_FOLDER )
 end
 
 -- ------------------------------------------------

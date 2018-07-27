@@ -25,13 +25,14 @@ function LayoutBrush:initialize( template )
     self.x, self.y = 0, 0
 end
 
+-- TODO replace hardcoded colors
 function LayoutBrush:draw()
     local tw, th = TexturePacks.getTileDimensions()
     if self.mode == 'draw' then
-        love.graphics.setColor( 255, 0, 255, 100 )
+        love.graphics.setColor( 1.0, 0, 1.0, 0.4 )
         love.graphics.rectangle( 'line', self.x * tw, self.y * th, self.template.PARCEL_WIDTH * tw, self.template.PARCEL_HEIGHT * th )
     else
-        love.graphics.setColor( 200, 0, 0, 100 )
+        love.graphics.setColor( 0.8, 0, 0, 0.4 )
         love.graphics.rectangle( 'fill', self.x * tw, self.y * th, tw, th )
     end
     TexturePacks.resetColor()

@@ -1,55 +1,76 @@
-local Log = require( 'src.util.Log' );
-local Messenger = require( 'src.Messenger' );
+---
+-- @module SoundManager
+--
 
-local SoundManager = {};
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
 
-local SOUNDS = {}
+local Log = require( 'src.util.Log' )
+
+-- ------------------------------------------------
+-- Module
+-- ------------------------------------------------
+
+local SoundManager = {}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local SOUNDFILES_FOLDER = 'res/sounds/'
+local INFO_FILE_NAME = 'info'
+
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
+
+local sounds = {}
+
+-- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
 
 ---
--- Stops a source if it is currently playing.
--- @param source (Source) The source to stop.
--- @return       (Source) The stopped source.
+-- Loads sound files from the provided path.
+-- @tparam string path The path to check for sounds.
 --
-local function stopBeforePlaying( source )
-    if source:isPlaying() then
-        source:stop();
+local function load( path )
+    local info = require( path .. INFO_FILE_NAME )
+    if not info then
+        return false
     end
-    return source;
+
+    local count = 0
+    for id, source in pairs( info.sounds ) do
+        local filepath = SOUNDFILES_FOLDER .. source.file
+        if love.filesystem.getInfo( filepath, 'file' ) then
+            sounds[id] = love.audio.newSource( filepath, source.type )
+
+            count = count + 1
+            Log.print( string.format( '  %3d. %s', count, id ), 'SoundManager' )
+        else
+            Log.warn( string.format( 'Source file "%s" for id "%s" couldn\'t be found', source.file, id ), 'SoundManager' )
+        end
+    end
 end
 
-function SoundManager.loadResources()
-    SOUNDS.DOOR           = love.audio.newSource( 'res/sounds/door.wav' );
-    SOUNDS.SELECT         = love.audio.newSource( 'res/sounds/select.wav' );
-    SOUNDS.ASSAULT_RIFLE  = love.audio.newSource( 'res/sounds/ar.wav' );
-    SOUNDS.SHOTGUN        = love.audio.newSource( 'res/sounds/ar.wav' );
-    SOUNDS.CLIMB          = love.audio.newSource( 'res/sounds/climb.wav' );
-    SOUNDS.EXPLODE        = love.audio.newSource( 'res/sounds/explosion.wav' );
-    SOUNDS.ROCKET_LAUNCHER = love.audio.newSource( 'res/sounds/rocket.wav' );
-    SOUNDS.MELEE          = love.audio.newSource( 'res/sounds/melee.wav' );
+-- ------------------------------------------------
+-- Public Functions
+-- ------------------------------------------------
+
+function SoundManager.load()
+    Log.print( "Loading Sounds:", 'SoundManager' )
+    load( SOUNDFILES_FOLDER )
 end
 
-Messenger.observe( 'ACTION_DOOR', function()
-    love.audio.play( SOUNDS.DOOR );
-end)
-
-Messenger.observe( 'SOUND_CLIMB', function()
-    love.audio.play( SOUNDS.CLIMB );
-end)
-
-Messenger.observe( 'SOUND_ATTACK', function( weapon )
-    if not SOUNDS[weapon:getSound()] then
-        Log.warn( string.format( 'Sound file for %s doesn\'t exist', weapon:getID() ));
-        return;
+function SoundManager.play( id )
+    if not sounds[id] then
+        Log.warn( string.format( 'A sound with the id "%s" couldn\'t be found', id ), 'SoundManager' )
+        return
     end
-    love.audio.play( stopBeforePlaying( SOUNDS[weapon:getSound()] ));
-end)
 
-Messenger.observe( 'SWITCH_CHARACTERS', function()
-    love.audio.play( SOUNDS.SELECT );
-end)
+    sounds[id]:play()
+end
 
-Messenger.observe( 'EXPLOSION', function()
-    love.audio.play( SOUNDS.EXPLODE );
-end)
-
-return SoundManager;
+return SoundManager

@@ -52,6 +52,8 @@ local DEFAULT_SETTINGS = {
     }
 }
 
+local WARNING_TEXT = 'Replacing outdated settings file (v%d) with current default settings (v%d)!'
+
 -- ------------------------------------------------
 -- Private Variables
 -- ------------------------------------------------
@@ -82,18 +84,29 @@ function Settings.save()
 end
 
 ---
--- Loads the settings from the file.
+-- Tries to load a settings file. If the file doesn't exist already, it will be
+-- created. If the loaded settings file has an outdated version, it will be
+-- replaced with the current default settings.
 --
 function Settings.load()
     -- Create settings file if it doesn't exist yet.
-    if not love.filesystem.isFile( FILE_NAME ) then
-        create()
-    elseif Compressor.load( FILE_NAME ).version ~= DEFAULT_SETTINGS.version then
-        Log.warn( 'Detected outdated settings file => Replacing with default settings!', 'Settings' )
+    if not love.filesystem.getInfo( FILE_NAME, 'file' ) then
         create()
     end
 
+    -- Load current settings.
     settings = Compressor.load( FILE_NAME )
+
+    -- Replace settings if we find an outdated version.
+    if settings.version ~= DEFAULT_SETTINGS.version then
+        Log.warn( string.format( WARNING_TEXT, settings.version, DEFAULT_SETTINGS.version ), 'Settings' )
+
+        -- Create and load the new settings file.
+        create()
+        settings = Compressor.load( FILE_NAME )
+    end
+
+    Log.info( string.format( 'Loaded game settings (v%d)', settings.version ), 'Settings' )
 end
 
 ---

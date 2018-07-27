@@ -9,7 +9,6 @@ local MapPainter = require( 'src.ui.MapPainter' )
 local Camera = require( 'src.ui.Camera' )
 local UserInterface = require( 'src.ui.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
-local Messenger = require( 'src.Messenger' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Settings = require( 'src.Settings' )
 
@@ -36,21 +35,6 @@ function CombatScreen:initialize( playerFaction, savegame )
 
     self.userInterface = UserInterface( self.combatState, self.camera )
     self.overlayPainter = OverlayPainter( self.combatState, self.camera )
-
-    self.observations = {}
-    self.observations[#self.observations + 1] = Messenger.observe( 'SWITCH_CHARACTERS', function( character )
-        if not self.combatState:getFactions():getPlayerFaction():canSee( character:getTile() ) then
-            return
-        end
-        self.camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
-    end)
-
-    self.observations[#self.observations + 1] = Messenger.observe( 'CHARACTER_MOVED', function( character )
-        if not self.combatState:getFactions():getPlayerFaction():canSee( character:getTile() ) then
-            return
-        end
-        self.camera:setTargetPosition( character:getTile():getX() * tw, character:getTile():getY() * th )
-    end)
 end
 
 function CombatScreen:draw()
@@ -106,9 +90,6 @@ function CombatScreen:mousefocus( f )
 end
 
 function CombatScreen:close()
-    for i = 1, #self.observations do
-        Messenger.remove( self.observations[i] )
-    end
     self.combatState:close()
 end
 

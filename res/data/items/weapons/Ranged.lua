@@ -12,7 +12,7 @@ return {
             'humanoid'
         },
         subType    = "Ranged",
-        sound      = 'ASSAULT_RIFLE',
+        sound      = 'sound_assault_rifle',
         damage     = 3,
         reloadable = true,
         mode = {
@@ -47,7 +47,7 @@ return {
             'humanoid'
         },
         subType    = "Ranged",
-        sound      = 'ROCKET_LAUNCHER',
+        sound      = 'sound_rocket_launcher',
         damage     = 8,
         reloadable = true,
         mode = {
@@ -75,7 +75,7 @@ return {
             'humanoid'
         },
         subType    = "Ranged",
-        sound      = 'SHOTGUN',
+        sound      = 'sound_shotgun',
         damage     = 2,
         reloadable = true,
         mode = {

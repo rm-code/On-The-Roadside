@@ -8,7 +8,6 @@
 
 local Class = require( 'lib.Middleclass' )
 local Node = require( 'src.util.Node' )
-local Messenger = require( 'src.Messenger' )
 local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
@@ -82,7 +81,6 @@ function Factions:nextFaction()
             if current:isDead() then
                 return self:getFaction():nextCharacter()
             end
-            Messenger.publish( 'SWITCH_CHARACTERS', current )
             return current
         end
 

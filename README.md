@@ -1,7 +1,7 @@
 # On The Roadside
 
-[![Version](https://img.shields.io/badge/Version-0.14.0.1489-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)
-[![LOVE](https://img.shields.io/badge/L%C3%96VE-0.10.2-EA316E.svg)](http://love2d.org/)
+[![Version](https://img.shields.io/badge/Version-0.15.0.1521-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)
+[![LOVE](https://img.shields.io/badge/L%C3%96VE-11.0-EA316E.svg)](http://love2d.org/)
 [![Build Status](https://travis-ci.com/rm-code/On-The-Roadside.svg?token=q3rLXeyGTBN9VB2zsWMr&branch=develop)](https://travis-ci.com/rm-code/On-The-Roadside)
 
 _On the Roadside_ is a turn-based strategy game in which you take control of a squad of mercenaries fighting for survival in a world shaped by unknown forces. It currently is in the very _early stages_ of development.
@@ -22,3 +22,7 @@ _On the Roadside_ is a turn-based strategy game in which you take control of a s
 
 ### Please note
 This game is still in early stages of development by a one-man team ([@rm-code](https://twitter.com/rm_code)). I'm developing this game on my own in my free time and while I'm determined to make it as good and complete as possible there is no guarantee that it will ever be completed. That's why currently I am using the "pay what you want option" - If you decide that my work is worth your hard earned cash, you are a lovely person and I like you <3
+
+### Generating the Documentation
+
+OTR uses LuaDoc to generate a documentation. By default the documentation will be generated in a `../docs` folder.

@@ -44,7 +44,7 @@ function SaveHandler.save( t, name )
     Log.print( 'Created savegame: ' .. name, 'SaveHandler' )
 
     -- Create the saves folder it doesn't exist already.
-    if not love.filesystem.exists( SAVE_FOLDER ) then
+    if not love.filesystem.getInfo( SAVE_FOLDER ) then
         love.filesystem.createDirectory( SAVE_FOLDER )
     end
 

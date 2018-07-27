@@ -10,7 +10,7 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
-local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -35,7 +35,7 @@ function ClimbOver:perform()
     self.target:setCharacter( self.character )
     self.character:setTile( self.target )
 
-    Messenger.publish( 'SOUND_CLIMB' )
+    SoundManager.play( 'sound_climb' )
     return true
 end
 

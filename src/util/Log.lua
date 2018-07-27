@@ -19,6 +19,10 @@ local Log = {}
 
 local FILE_NAME = 'latest.log'
 
+local CRASH_FOLDER = 'crash_dumps/'
+local CRASH_FILE_NAME = '%s%s_crash.log'
+
+local INFO_PREFIX    = '[INFO]'
 local DEBUG_PREFIX   = '[DEBUG]'
 local WARNING_PREFIX = '[WARNING]'
 local ERROR_PREFIX   = '[ERROR]'
@@ -98,6 +102,16 @@ function Log.print( str, caller )
 end
 
 ---
+-- Logs a informational message.
+-- @tparam string str    The message to log.
+-- @tparam string caller The module which sent the message.
+--
+function Log.info( str, caller )
+    write( str, caller, INFO_PREFIX )
+    appendlineBreak()
+end
+
+---
 -- Logs a warning message.
 -- @tparam string str    The message to log.
 -- @tparam string caller The module which sent the message.
@@ -144,6 +158,14 @@ end
 --
 function Log.getDebugActive()
     return active
+end
+
+---
+-- Saves a copy of the latest.log to the crash dump folder and timestamps it.
+--
+function Log.saveCrashDump()
+    love.filesystem.createDirectory( CRASH_FOLDER )
+    assert( love.filesystem.write( string.format( CRASH_FILE_NAME, CRASH_FOLDER, os.time() ), love.filesystem.read( FILE_NAME )))
 end
 
 return Log

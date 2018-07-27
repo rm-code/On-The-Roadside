@@ -8,13 +8,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
+local Class = require( 'lib.Middleclass' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local DebugGrid = {}
+local DebugGrid = Class( 'DebugGrid' )
 
 -- ------------------------------------------------
 -- Private Functions
@@ -28,28 +29,34 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
-function DebugGrid.draw()
-    local sw, sh = love.graphics.getDimensions()
+function DebugGrid:initialize()
+    self.canvas = love.graphics.newCanvas( love.graphics.getDimensions() )
+    self.canvas:renderTo( function()
+        local sw, sh = love.graphics.getDimensions()
 
-    local tileWidth, tileHeight = TexturePacks.getTileDimensions()
-    local glyphWidth, glyphHeight = TexturePacks.getGlyphDimensions()
+        local tileWidth, tileHeight = TexturePacks.getTileDimensions()
+        local glyphWidth, glyphHeight = TexturePacks.getGlyphDimensions()
 
-    for x = 0, sw - 1 do
-        for y = 0, sh - 1 do
-            if mod( x, tileWidth ) == 0 and mod( y, tileHeight ) == 0 then
-                love.graphics.setColor( 100, 100, 100, 80 )
-                love.graphics.rectangle( 'line', x, y, tileWidth, tileHeight )
-            end
+        for x = 0, sw - 1 do
+            for y = 0, sh - 1 do
+                if mod( x, tileWidth ) == 0 and mod( y, tileHeight ) == 0 then
+                    TexturePacks.setColor( 'sys_debug_grid' )
+                    love.graphics.rectangle( 'line', x, y, tileWidth, tileHeight )
+                end
 
-            if mod( x, glyphWidth ) == 0 and mod( y, glyphHeight ) == 0 then
-                love.graphics.setColor( 100, 100, 100, 60 )
-                love.graphics.rectangle( 'line', x, y, glyphWidth, glyphHeight )
+                if mod( x, glyphWidth ) == 0 and mod( y, glyphHeight ) == 0 then
+                    TexturePacks.setColor( 'sys_debug_grid' )
+                    love.graphics.rectangle( 'line', x, y, glyphWidth, glyphHeight )
+                end
             end
         end
-    end
 
-    love.graphics.setColor( 255, 255, 255, 255 )
+        TexturePacks.resetColor()
+    end)
 end
 
+function DebugGrid:draw()
+    love.graphics.draw( self.canvas, 0, 0 )
+end
 
 return DebugGrid

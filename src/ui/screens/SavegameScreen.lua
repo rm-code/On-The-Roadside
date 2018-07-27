@@ -91,7 +91,7 @@ local function createSaveGameEntry( lx, ly, index, item, folder )
     -- the version of the game at which they were created and their creation date.
     local str = string.format( '%2d. %s', index, item )
     str = Util.rightPadString( str, 36, ' ')
-    str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getLastModified( folder )))
+    str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getInfo( folder ).modtime ))
 
     local function callback()
         if version == getVersion() then
@@ -115,13 +115,13 @@ local function loadFiles( savedir )
     local saveDirectories = {}
 
     for _, item in pairs( love.filesystem.getDirectoryItems( savedir )) do
-        if love.filesystem.isDirectory( savedir .. '/' .. item ) then
+        if love.filesystem.getInfo( savedir .. '/' .. item, 'directory' ) then
             saveDirectories[#saveDirectories + 1] = item
         end
     end
 
     table.sort( saveDirectories, function( a, b )
-        return love.filesystem.getLastModified( savedir .. '/' .. a ) > love.filesystem.getLastModified( savedir .. '/' .. b )
+        return love.filesystem.getInfo( savedir .. '/' .. a ).modtime > love.filesystem.getInfo( savedir .. '/' .. b ).modtime
     end)
 
     return saveDirectories

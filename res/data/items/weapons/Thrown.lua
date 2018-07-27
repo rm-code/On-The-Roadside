@@ -14,7 +14,7 @@ return {
         subType    = "Thrown",
         damage     = 5,
         reloadable = false,
-        sound      = 'MELEE',
+        sound      = 'sound_thrown',
         mode = {
             {
                 name       = "Throw",
@@ -44,7 +44,7 @@ return {
         subType    = "Thrown",
         damage     = 3,
         reloadable = false,
-        sound      = 'MELEE',
+        sound      = 'sound_thrown',
         mode = {
             {
                 name       = "Throw",

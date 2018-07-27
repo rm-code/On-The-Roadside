@@ -8,7 +8,7 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
-local Messenger = require( 'src.Messenger' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -30,7 +30,7 @@ function Open:perform()
     assert( not targetObject:isPassable(), 'Target tile needs to be impassable!' )
     assert( self.target:isAdjacent( self.character:getTile() ), 'Character has to be adjacent to the target tile!' )
 
-    Messenger.publish( 'ACTION_DOOR' )
+    SoundManager.play( 'sound_door' )
 
     -- Update the WorldObject.
     targetObject:setPassable( true )

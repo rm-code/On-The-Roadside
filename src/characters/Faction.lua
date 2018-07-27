@@ -9,7 +9,6 @@
 local Class = require( 'lib.Middleclass' )
 local Log = require( 'src.util.Log' )
 local Node = require( 'src.util.Node' )
-local Messenger = require( 'src.Messenger' )
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
 local Character = require( 'src.characters.Character' )
 
@@ -160,7 +159,6 @@ function Faction:selectCharacter( character )
             self.active = node
             self.active:getObject():activate()
 
-            Messenger.publish( 'SWITCH_CHARACTERS', self.active:getObject() )
             break
         end
         node = node:getNext()
@@ -254,7 +252,6 @@ function Faction:nextCharacter()
         if not character:isDead() then
             previousCharacter:deactivate()
             character:activate()
-            Messenger.publish( 'SWITCH_CHARACTERS', character )
             return character
         end
     end
@@ -272,7 +269,6 @@ function Faction:prevCharacter()
         if not character:isDead() then
             previousCharacter:activate()
             character:deactivate()
-            Messenger.publish( 'SWITCH_CHARACTERS', character )
             return character
         end
     end
