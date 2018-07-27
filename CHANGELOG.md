@@ -1,3 +1,30 @@
+# Version 0.15.0.1521 - 2018-07-27 (LÖVE 11.0)
+
+## Additions
+- Added functionality for saving log files to a folder in the safe directory when the game crashes.
+
+## Fixes
+- Fixed sprites not showing for connectable world objects in the map editor.
+- Fixed camera panning not working on the map editor's map testing screen.
+- Fixed crash caused by weapon stacks in the inventory screen.
+
+## Removals
+- Removed automatic camera tracking of moving characters (will be re-implemented in future versions).
+- Removed automatic camera movement when selecting a different character (will be re-implemented in future versions).
+- Removed hardcoded strings from help screen.
+
+## Other Changes
+- Changed targeted LÖVE version to 11.0 "Mysterious Mysteries".
+- Changed the way audio sources are loaded, stored and played.
+- Changed speed and transparency of pulsating overlays (movement paths, hit cones, ...).
+- Changed explosion damage to fixed instead of random values.
+- Changed how default texture pack is loaded.
+    - The default texture pack is always copied to the mods folder at the start of the game.
+    - The default texture pack is loaded directly from the mods folder.
+
+
+
+
 # Version 0.14.0.1489 - 2018-01-26
 
 ## Additions
