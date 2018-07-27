@@ -26,38 +26,38 @@ local HELP_TEXT = {
         color = 'ui_help_section',
         children = {
             'NOTE: Characters can also be selected by right-clicking on them!',
-            { 'prev_character',        'Select previous character' },
-            { 'next_character',        'Select next character'     },
-            { 'end_turn',              'End turn'                  },
-            { 'open_inventory_screen', 'Open inventory'            },
-            { 'open_health_screen',    'Open health panel'         }
+            { 'prev_character'        },
+            { 'next_character'        },
+            { 'end_turn'              },
+            { 'open_inventory_screen' },
+            { 'open_health_screen'    }
         }
     },
     {
         text = 'WEAPONS',
         color = 'ui_help_section',
         children = {
-            { 'next_weapon_mode',     'Select previous firing mode' },
-            { 'prev_weapon_mode',     'Select next firing mode'     },
-            { 'action_reload_weapon', 'Reload current weapon'       }
+            { 'next_weapon_mode'     },
+            { 'prev_weapon_mode'     },
+            { 'action_reload_weapon' }
         }
     },
     {
         text = 'STANCES',
         color = 'ui_help_section',
         children = {
-            { 'action_stand',  'Change stance to Stand'  },
-            { 'action_crouch', 'Change stance to Crouch' },
-            { 'action_prone',  'Change stance to Prone'  }
+            { 'action_stand'  },
+            { 'action_crouch' },
+            { 'action_prone'  }
         }
     },
     {
         text = 'INPUT',
         color = 'ui_help_section',
         children = {
-            { 'attack_mode',      'Switch to Attack Mode'                                      },
-            { 'movement_mode',    'Switch to Movement Mode'                                    },
-            { 'interaction_mode', 'Switch to Interaction Mode (e.g. to open barrels or doors)' }
+            { 'attack_mode'      },
+            { 'movement_mode'    },
+            { 'interaction_mode' }
         }
     }
 }
@@ -85,7 +85,7 @@ local function assembleText()
             offset = offset + 1
             if type( HELP_TEXT[i].children[j] ) == 'table' then
                 text:addf( Settings.getKeybinding( HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
-                text:addf( HELP_TEXT[i].children[j][2], (UI_GRID_WIDTH-2) * tw, 'left', 10*tw, offset * th )
+                text:addf( Translator.getText( HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 10*tw, offset * th )
             else
                 text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
             end
