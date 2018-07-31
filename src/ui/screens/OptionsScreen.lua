@@ -19,6 +19,7 @@ local UISelectField = require( 'src.ui.elements.UISelectField' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Settings = require( 'src.Settings' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
+local UIMenuTitle = require( 'src.ui.elements.UIMenuTitle' )
 
 -- ------------------------------------------------
 -- Module
@@ -31,59 +32,12 @@ local OptionsScreen = Screen:subclass( 'OptionsScreen' )
 -- ------------------------------------------------
 
 local TITLE_POSITION = 2
-local TITLE_STRING = {
-    "  @@@@    @@@@@@@   @@@@@@@  @@@    @@@@    @@   @@    @@@@@  ",
-    "@@@@@@@@  @@@@@@@@  @@@@@@@  @@@  @@@@@@@@  @@@  @@@  @@@@@@@ ",
-    "@@!  @@@  @@!  @@@    @@!    @@!  @@!  @@@  @@!@ @@@  !@@     ",
-    "!@!  @!@  !@!  @!@    !@!    !@!  !@!  @!@  !@!!@!@!  !@!     ",
-    "@!@  !@!  @!@@!@!     @!!    !!@  @!@  !@!  @!@ !!@!  !!@@!!  ",
-    "!@!  !!!  !!@!!!      !!!    !!!  !@!  !!!  !@!  !!!   !!@!!! ",
-    "!!:  !!!  !!:         !!:    !!:  !!:  !!!  !!:  !!!       !:!",
-    ":!:  !:!  :!:         :!:    :!:  :!:  !:!  :!:  !:!      !:! ",
-    ":!:::!!:   ::          ::     ::  :!:::!!:   ::   ::  ::!:::: ",
-    "  :!::      :           :      :    :!::      :    :   :::..  "
-}
-
 local BUTTON_LIST_WIDTH = 20
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
-
----
--- Creates the ASCII title at the top of the page.
---
-local function createTitle()
-    local font = TexturePacks.getFont():get()
-    local title = love.graphics.newText( font )
-    for i, line in ipairs( TITLE_STRING ) do
-        local coloredtext = {}
-        for w in string.gmatch( line, '.' ) do
-            if w == '@' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                coloredtext[#coloredtext + 1] = 'O'
-            elseif w == '!' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
-                coloredtext[#coloredtext + 1] = w
-            else
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
-                coloredtext[#coloredtext + 1] = w
-            end
-            title:add( coloredtext, 0, i * font:getHeight() )
-        end
-    end
-    return title
-end
-
----
--- Draws the ASCII title at the top of the page at a grid aligned position.
---
-local function drawTitle( title )
-    local cx, _ = GridHelper.centerElement( GridHelper.pixelsToGrid( title:getWidth(), title:getHeight() * #TITLE_STRING ))
-    local tw, _ = TexturePacks.getTileDimensions()
-    love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
-end
 
 ---
 -- Closes the OptionsScreen and displays a confirmation dialog if any
@@ -389,7 +343,7 @@ end
 function OptionsScreen:initialize()
     Settings.load()
 
-    self.title = createTitle()
+    self.title = UIMenuTitle( Translator.getText( 'ui_title_options' ), TITLE_POSITION )
     self.buttonList = createUIList()
 
     self.container = UIContainer()
@@ -409,7 +363,7 @@ end
 -- Draws the OptionsScreen.
 --
 function OptionsScreen:draw()
-    drawTitle( self.title )
+    self.title:draw()
 
     self.container:draw()
 
