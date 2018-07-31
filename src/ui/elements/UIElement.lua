@@ -154,4 +154,18 @@ function UIElement:hasFocus()
     return self.focus
 end
 
+---
+-- Draws the bounding boxes of the UIElement and all of its children as white
+-- rectangles for debugging purposes.
+-- @tparam number tw The game's tile width.
+-- @tparam number th The game's tile height.
+--
+function UIElement:drawBoundingBox( tw, th )
+    love.graphics.rectangle( 'line', self.ax * tw, self.ay * th, self.w * tw, self.h * th )
+
+    for i = 1, #self.children do
+        self.children[i]:drawBoundingBox( tw, tw )
+    end
+end
+
 return UIElement
