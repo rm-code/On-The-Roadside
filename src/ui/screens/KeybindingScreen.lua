@@ -16,6 +16,7 @@ local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local Util = require( 'src.util.Util' )
+local UIMenuTitle = require( 'src.ui.elements.UIMenuTitle' )
 
 -- ------------------------------------------------
 -- Module
@@ -27,6 +28,7 @@ local KeybindingScreen = Screen:subclass( 'KeybindingScreen' )
 -- Constants
 -- ------------------------------------------------
 
+local TITLE_POSITION = 2
 local BUTTON_LIST_WIDTH = 20
 local BUTTON_LIST_Y = 20
 
@@ -157,6 +159,8 @@ function KeybindingScreen:initialize()
     self.container:register( self.buttonList )
 
     self.footer = UICopyrightFooter()
+
+    self.title = UIMenuTitle( Translator.getText( 'ui_title_controls' ), TITLE_POSITION )
 end
 
 ---
@@ -172,6 +176,7 @@ end
 function KeybindingScreen:draw()
     self.container:draw()
     self.footer:draw()
+    self.title:draw()
 end
 
 ---
