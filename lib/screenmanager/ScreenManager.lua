@@ -339,8 +339,8 @@ end
 -- @param istouch (boolean) True if the mouse button press originated from a
 --                           touchscreen touch-press.
 --
-function ScreenManager.mousepressed( x, y, button, istouch )
-    ScreenManager.peek():mousepressed( x, y, button, istouch )
+function ScreenManager.mousepressed( x, y, button, istouch, presses )
+    ScreenManager.peek():mousepressed( x, y, button, istouch, presses )
 end
 
 ---
@@ -354,8 +354,8 @@ end
 -- @param istouch (boolean) True if the mouse button release originated from a
 --                           touchscreen touch-release.
 --
-function ScreenManager.mousereleased( x, y, button, istouch )
-    ScreenManager.peek():mousereleased( x, y, button, istouch )
+function ScreenManager.mousereleased( x, y, button, istouch, presses )
+    ScreenManager.peek():mousereleased( x, y, button, istouch, presses )
 end
 
 ---
