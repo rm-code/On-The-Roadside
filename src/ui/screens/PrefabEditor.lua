@@ -49,6 +49,8 @@ local function createTileSelector( tileTemplates, tool )
 
         local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         tmp:setIcon( id )
+        tmp:setIconColorID( id )
+
         tileSelector:addChild( tmp )
 
         counter = counter + 1
@@ -75,6 +77,8 @@ local function createWorldObjectSelector( objectTemplates, tool )
         else
             tmp:setIcon( id )
         end
+        tmp:setIconColorID( id )
+
         objectSelector:addChild( tmp )
 
         counter = counter + 1
