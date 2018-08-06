@@ -69,11 +69,11 @@ function CombatScreen:keypressed( key, scancode, isrepeat )
     end
 
     self.combatState:keypressed( key, scancode, isrepeat )
-    self.camera:input( Settings.mapInput( scancode ), true )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), true )
 end
 
 function CombatScreen:keyreleased( _, scancode )
-    self.camera:input( Settings.mapInput( scancode ), false )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), false )
 end
 
 function CombatScreen:mousepressed( _, _, button )

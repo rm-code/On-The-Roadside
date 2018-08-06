@@ -63,9 +63,11 @@ end
 
 ---
 -- Initialises the KeybindingModal.
+-- @tparam string mode
 -- @tparam string action
 --
-function KeybindingModal:initialize( action )
+function KeybindingModal:initialize( mode, action )
+    self.mode = mode
     self.action = action
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -97,7 +99,7 @@ function KeybindingModal:keypressed( _, scancode )
         return
     end
 
-    ScreenManager.publish( 'CHANGED_KEYBINDING', scancode, self.action )
+    ScreenManager.publish( 'CHANGED_KEYBINDING', scancode, self.mode, self.action )
     ScreenManager.pop()
 end
 

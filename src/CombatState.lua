@@ -155,7 +155,7 @@ function CombatState:keypressed( _, scancode, _ )
     if self.factions:getFaction():isAIControlled() or self.stateManager:blocksInput() then
         return
     end
-    self.stateManager:input( Settings.mapInput( scancode ))
+    self.stateManager:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ))
 end
 
 function CombatState:mousepressed( mx, my, button )

@@ -73,11 +73,11 @@ function MapTest:keypressed( _, scancode )
         ScreenManager.pop()
     end
 
-    self.camera:input( Settings.mapInput( scancode ), true )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), true )
 end
 
 function MapTest:keyreleased( _, scancode )
-    self.camera:input( Settings.mapInput( scancode ), false )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), false )
 end
 
 return MapTest

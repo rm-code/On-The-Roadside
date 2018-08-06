@@ -29,29 +29,29 @@ local KeybindingScreen = Screen:subclass( 'KeybindingScreen' )
 -- ------------------------------------------------
 
 local TITLE_POSITION = 2
-local BUTTON_LIST_WIDTH = 20
+local BUTTON_LIST_WIDTH = 25
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
 
-local function createKeybinding( lx, ly, action )
+local function createKeybinding( lx, ly, mode, action )
     -- The function to call when the button is activated.
     local function callback()
-        ScreenManager.push( 'keybindingmodal', action )
+        ScreenManager.push( 'keybindingmodal', mode, action )
     end
 
     -- Get the text representation for each key and a proper name for the action.
-    local keyText = Settings.getKeybinding( action )
-    local actionText = Translator.getText( action )
+    local keyText = Settings.getKeybinding( mode, action )
+    local actionText = string.format( '[%s] %s:', mode, Translator.getText( action ))
 
     -- Pad the action text with whitespace and place the key text at the end.
     -- This allows us to align the action name on the left and the key on the
     -- right. The width is determined by the button list's width which is
     -- multiplied by two because a character in the font is half the size of
     -- a grid space.
-    local text = Util.rightPadString( actionText .. ':', BUTTON_LIST_WIDTH * 2 - #keyText, ' ' ) .. keyText
+    local text = Util.rightPadString( actionText, BUTTON_LIST_WIDTH * 2 - #keyText, ' ' ) .. keyText
 
     -- Create the UIButton.
     return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, text, 'left' )
@@ -124,24 +124,24 @@ local function createUIList()
     local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
     -- Create the UIElements and add them to the list.
-    buttonList:addChild(  createKeybinding( lx, ly, 'action_stand' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'action_crouch' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'action_prone' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'action_reload_weapon' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'next_weapon_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'prev_weapon_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'movement_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'attack_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'interaction_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'next_character' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'prev_character' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'end_turn' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'open_inventory_screen' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'open_health_screen' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'pan_camera_left' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'pan_camera_right' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'pan_camera_up' ))
-    buttonList:addChild(  createKeybinding( lx, ly, 'pan_camera_down' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_stand' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_crouch' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_prone' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_reload_weapon' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'next_weapon_mode' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'prev_weapon_mode' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'movement_mode' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'attack_mode' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'interaction_mode' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'next_character' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'prev_character' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'end_turn' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'open_inventory_screen' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'open_health_screen' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_left' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ))
+    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ))
     buttonList:addChild( createApplyButton( lx, ly ))
     buttonList:addChild(  createBackButton( lx, ly ))
 
@@ -215,8 +215,8 @@ end
 
 function KeybindingScreen:receive( event, ... )
     if event == 'CHANGED_KEYBINDING' then
-        local action, scancode = ...
-        Settings.setKeybinding( action, scancode )
+        local scancode, mode, action = ...
+        Settings.setKeybinding( mode, scancode, action )
         self:initialize()
     end
 end

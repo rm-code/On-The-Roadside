@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 5,
+    version = 6,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -31,28 +31,33 @@ local DEFAULT_SETTINGS = {
         invertedMessageLog = false,
     },
     controls = {
-        ['x']      = 'action_stand',
-        ['c']      = 'action_crouch',
-        ['v']      = 'action_prone',
-        ['r']      = 'action_reload_weapon',
-        ['.']      = 'next_weapon_mode',
-        [',']      = 'prev_weapon_mode',
-        ['m']      = 'movement_mode',
-        ['a']      = 'attack_mode',
-        ['e']      = 'interaction_mode',
-        ['tab']    = 'next_character',
-        ['lshift'] = 'prev_character',
-        ['return'] = 'end_turn',
-        ['i']      = 'open_inventory_screen',
-        ['h']      = 'open_health_screen',
-        ['left']   = 'pan_camera_left',
-        ['right']  = 'pan_camera_right',
-        ['up']     = 'pan_camera_up',
-        ['down']   = 'pan_camera_down'
+        combat = {
+            ['x']      = 'action_stand',
+            ['c']      = 'action_crouch',
+            ['v']      = 'action_prone',
+            ['r']      = 'action_reload_weapon',
+            ['.']      = 'next_weapon_mode',
+            [',']      = 'prev_weapon_mode',
+            ['m']      = 'movement_mode',
+            ['a']      = 'attack_mode',
+            ['e']      = 'interaction_mode',
+            ['tab']    = 'next_character',
+            ['lshift'] = 'prev_character',
+            ['return'] = 'end_turn',
+            ['i']      = 'open_inventory_screen',
+            ['h']      = 'open_health_screen',
+            ['left']   = 'pan_camera_left',
+            ['right']  = 'pan_camera_right',
+            ['up']     = 'pan_camera_up',
+            ['down']   = 'pan_camera_down'
+        }
     }
 }
 
 local WARNING_TEXT = 'Replacing outdated settings file (v%d) with current default settings (v%d)!'
+
+Settings.INPUTLAYOUTS = {}
+Settings.INPUTLAYOUTS.COMBAT = 'combat'
 
 -- ------------------------------------------------
 -- Private Variables
@@ -112,8 +117,8 @@ end
 ---
 -- Maps a scancode to a control action.
 --
-function Settings.mapInput( scancode )
-    return settings.controls[scancode]
+function Settings.mapInput( mode, scancode )
+    return settings.controls[mode][scancode]
 end
 
 -- ------------------------------------------------
@@ -128,8 +133,8 @@ function Settings.getIngameEditor()
     return settings.general.mapeditor
 end
 
-function Settings.getKeybinding( saction )
-    for scancode, action in pairs( settings.controls ) do
+function Settings.getKeybinding( mode, saction )
+    for scancode, action in pairs( settings.controls[mode] ) do
         if action == saction then
             return love.keyboard.getKeyFromScancode( scancode )
         end
@@ -160,19 +165,21 @@ end
 --
 function Settings.hasChanged()
     local oldSettings = Compressor.load( FILE_NAME )
-    for section, content in pairs( oldSettings ) do
-        if type( content ) == 'table' then
-            for key, value in pairs( content ) do
-                if settings[section][key] ~= value then
-                    return true
-                end
-            end
-        else
-            if settings[section] ~= content then
+
+    for section, content in pairs( oldSettings.general ) do
+        if settings.general[section] ~= content then
+            return true
+        end
+    end
+
+    for layout, content in pairs( oldSettings.controls ) do
+        for key, value in pairs( content ) do
+            if settings.controls[layout][key] ~= value then
                 return true
             end
         end
     end
+
     return false
 end
 
@@ -204,11 +211,11 @@ function Settings.setTexturepack( ntexturepack )
     settings.general.texturepack = ntexturepack
 end
 
-function Settings.setKeybinding( scancode, saction )
-    for oldscancode, action in pairs( settings.controls ) do
+function Settings.setKeybinding( mode, scancode, saction )
+    for oldscancode, action in pairs( settings.controls[mode] ) do
         if action == saction then
-            settings.controls[oldscancode] = nil
-            settings.controls[scancode] = action
+            settings.controls[mode][oldscancode] = nil
+            settings.controls[mode][scancode] = action
             return
         end
     end

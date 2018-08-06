@@ -84,7 +84,7 @@ local function assembleText()
         for j = 1, #HELP_TEXT[i].children do
             offset = offset + 1
             if type( HELP_TEXT[i].children[j] ) == 'table' then
-                text:addf( Settings.getKeybinding( HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
+                text:addf( Settings.getKeybinding( Settings.INPUTLAYOUTS.COMBAT, HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
                 text:addf( Translator.getText( HELP_TEXT[i].children[j][1] ), (UI_GRID_WIDTH-2) * tw, 'left', 10*tw, offset * th )
             else
                 text:addf( HELP_TEXT[i].children[j], (UI_GRID_WIDTH-2) * tw, 'left', 4*tw, offset * th )
