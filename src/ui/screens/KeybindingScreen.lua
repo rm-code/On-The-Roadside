@@ -17,6 +17,7 @@ local UIButton = require( 'src.ui.elements.UIButton' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local Util = require( 'src.util.Util' )
 local UIMenuTitle = require( 'src.ui.elements.UIMenuTitle' )
+local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 
 -- ------------------------------------------------
 -- Module
@@ -30,13 +31,14 @@ local KeybindingScreen = Screen:subclass( 'KeybindingScreen' )
 
 local TITLE_POSITION = 2
 local BUTTON_LIST_WIDTH = 25
+local BUTTON_LIST_HEIGHT = 10
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
 
-local function createKeybinding( lx, ly, mode, action )
+local function createKeybinding( mode, action )
     -- The function to call when the button is activated.
     local function callback()
         ScreenManager.push( 'keybindingmodal', mode, action )
@@ -54,7 +56,7 @@ local function createKeybinding( lx, ly, mode, action )
     local text = Util.rightPadString( actionText, BUTTON_LIST_WIDTH * 2 - #keyText, ' ' ) .. keyText
 
     -- Create the UIButton.
-    return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, text, 'left' )
+    return UIButton( 0, 0, 0, 0, BUTTON_LIST_WIDTH, 1, callback, text, 'left' )
 end
 
 ---
@@ -67,9 +69,9 @@ end
 
 ---
 -- Creates a button which allows the user to apply the new settings.
--- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
--- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
--- @treturn UIButton           The newly created UIButton.
+-- @tparam  number   lx The parent's absolute coordinates along the x-axis.
+-- @tparam  number   ly The parent's absolute coordinates along the y-axis.
+-- @treturn UIButton    The newly created UIButton.
 --
 local function createApplyButton( lx, ly )
     -- The function to call when the button is activated.
@@ -101,9 +103,9 @@ end
 
 ---
 -- Creates a button which allows the user to return to the main menu.
--- @tparam  number       lx    The parent's absolute coordinates along the x-axis.
--- @tparam  number       ly    The parent's absolute coordinates along the y-axis.
--- @treturn UIButton           The newly created UIButton.
+-- @tparam  number   lx The parent's absolute coordinates along the x-axis.
+-- @tparam  number   ly The parent's absolute coordinates along the y-axis.
+-- @treturn UIButton    The newly created UIButton.
 --
 local function createBackButton( lx, ly )
     -- The function to call when the button is activated.
@@ -118,30 +120,44 @@ end
 ---
 -- Creates a vertical list containing all the ui elements.
 --
-local function createUIList()
+local function createPaginatedKeybindingList()
     local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
     local ly = BUTTON_LIST_Y
-    local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+    local buttonList = UIPaginatedList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, BUTTON_LIST_HEIGHT )
 
     -- Create the UIElements and add them to the list.
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_stand' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_crouch' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_prone' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'action_reload_weapon' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'next_weapon_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'prev_weapon_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'movement_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'attack_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'interaction_mode' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'next_character' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'prev_character' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'end_turn' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'open_inventory_screen' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'open_health_screen' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_left' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ))
-    buttonList:addChild(  createKeybinding( lx, ly, Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ))
+    local items = {
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_stand' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_crouch' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_prone' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_reload_weapon' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'next_weapon_mode' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'prev_weapon_mode' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'movement_mode' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'attack_mode' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'interaction_mode' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'next_character' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'prev_character' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'end_turn' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_inventory_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_health_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_left' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ),
+    }
+
+    buttonList:setItems( items )
+
+    return buttonList
+end
+
+local function createButtonList()
+    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+    local ly = BUTTON_LIST_Y + BUTTON_LIST_HEIGHT + 1
+
+    local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+
     buttonList:addChild( createApplyButton( lx, ly ))
     buttonList:addChild(  createBackButton( lx, ly ))
 
@@ -153,9 +169,12 @@ end
 -- ------------------------------------------------
 
 function KeybindingScreen:initialize()
-    self.buttonList = createUIList()
-
     self.container = UIContainer()
+
+    self.paginatedList = createPaginatedKeybindingList()
+    self.buttonList = createButtonList()
+
+    self.container:register( self.paginatedList )
     self.container:register( self.buttonList )
 
     self.footer = UICopyrightFooter()
@@ -174,7 +193,10 @@ end
 -- Draws the OptionsScreen.
 --
 function KeybindingScreen:draw()
-    self.container:draw()
+    self.paginatedList:draw()
+    self.paginatedList:drawBoundingBox( 16, 16 )
+    self.buttonList:draw()
+
     self.footer:draw()
     self.title:draw()
 end
@@ -187,6 +209,10 @@ function KeybindingScreen:keypressed( _, scancode )
 
     if scancode == 'escape' then
         close()
+    end
+
+    if scancode == 'tab' then
+        self.container:next()
     end
 
     if scancode == 'up' then
