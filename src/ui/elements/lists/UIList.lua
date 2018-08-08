@@ -16,6 +16,22 @@ local Util = require( 'src.util.Util' )
 local UIList = UIElement:subclass( 'UIList' )
 
 -- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
+
+local function scrollItem( current, children, cursor, direction )
+    if current then
+        current:setFocus( false )
+        cursor = Util.wrap( 1, cursor + direction, #children )
+    else
+        cursor = 1
+    end
+    children[cursor]:setFocus( true )
+
+    return cursor
+end
+
+-- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
@@ -25,23 +41,11 @@ function UIList:initialize( ox, oy, rx, ry, w, h )
 end
 
 function UIList:prev()
-    if self.children[self.cursor] then
-        self.children[self.cursor]:setFocus( false )
-        self.cursor = Util.wrap( 1, self.cursor - 1, #self.children )
-    else
-        self.cursor = 1
-    end
-    self.children[self.cursor]:setFocus( true )
+    self.cursor = scrollItem( self:getActiveElement(), self.children, self.cursor, -1 )
 end
 
 function UIList:next()
-    if self.children[self.cursor] then
-        self.children[self.cursor]:setFocus( false )
-        self.cursor = Util.wrap( 1, self.cursor + 1, #self.children )
-    else
-        self.cursor = 1
-    end
-    self.children[self.cursor]:setFocus( true )
+    self.cursor = scrollItem( self:getActiveElement(), self.children, self.cursor, 1 )
 end
 
 -- ------------------------------------------------
