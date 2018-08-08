@@ -7,6 +7,7 @@
 -- ------------------------------------------------
 
 local UIElement = require( 'src.ui.elements.UIElement' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -26,7 +27,7 @@ end
 function UIList:prev()
     if self.children[self.cursor] then
         self.children[self.cursor]:setFocus( false )
-        self.cursor = self.cursor <= 1 and #self.children or self.cursor - 1
+        self.cursor = Util.wrap( 1, self.cursor - 1, #self.children )
     else
         self.cursor = 1
     end
@@ -36,7 +37,7 @@ end
 function UIList:next()
     if self.children[self.cursor] then
         self.children[self.cursor]:setFocus( false )
-        self.cursor = self.cursor >= #self.children and 1 or self.cursor + 1
+        self.cursor = Util.wrap( 1, self.cursor + 1, #self.children )
     else
         self.cursor = 1
     end
