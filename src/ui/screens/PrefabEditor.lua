@@ -11,7 +11,6 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
@@ -19,6 +18,7 @@ local PrefabCanvas = require( 'src.ui.mapeditor.PrefabCanvas' )
 local PrefabBrush = require( 'src.ui.mapeditor.PrefabBrush' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 
 -- ------------------------------------------------
 -- Module
@@ -39,50 +39,50 @@ local SELECTOR_HEIGHT = 10
 
 local function createTileSelector( tileTemplates, tool )
     local lx, ly = 1, 1
-    local tileSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+    local tileSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
-    local counter = 0
+    local buttons = {}
     for id, template in pairs( tileTemplates ) do
         local function callback()
             tool:setBrush( template, 'tile' )
         end
 
-        local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
-        tmp:setIcon( id )
-        tmp:setIconColorID( id )
+        local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
+        button:setIcon( id )
+        button:setIconColorID( id )
 
-        tileSelector:addChild( tmp )
-
-        counter = counter + 1
+        buttons[#buttons + 1] = button
     end
+
+    tileSelector:setItems( buttons )
 
     return tileSelector
 end
 
 local function createWorldObjectSelector( objectTemplates, tool )
     local lx, ly = 1, SELECTOR_HEIGHT + 2
-    local objectSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+    local objectSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
-    local counter = 0
+    local buttons = {}
     for id, template in pairs( objectTemplates ) do
         local function callback()
             tool:setBrush( template, 'worldObject' )
         end
 
-        local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
+        local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         if template.openable then
-            tmp:setIcon( id, 'closed' )
+            button:setIcon( id, 'closed' )
         elseif template.connections then
-            tmp:setIcon( id, 'default' )
+            button:setIcon( id, 'default' )
         else
-            tmp:setIcon( id )
+            button:setIcon( id )
         end
-        tmp:setIconColorID( id )
+        button:setIconColorID( id )
 
-        objectSelector:addChild( tmp )
-
-        counter = counter + 1
+        buttons[#buttons + 1] = button
     end
+
+    objectSelector:setItems( buttons )
 
     return objectSelector
 end
