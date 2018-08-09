@@ -197,8 +197,15 @@ function UIPaginatedList:scrollPage( direction )
         self.pages[self.currentPage][self.cursor]:setFocus( false )
     end
 
+    -- Stop at the first and the last page.
     self.currentPage = Util.clamp( 1, self.currentPage + direction, self.maxPages )
 
+    -- Prevent cursor from jumping to an item that doesn't exist on the last page.
+    -- This can happen for example if the last page only has four items, but the
+    -- cursor was focused on the ninth item on the second to last page.
+    self.cursor = Util.clamp( 1, self.cursor, #self.pages[self.currentPage] )
+
+    -- Focus the item at the cursor's position on the new page.
     self.pages[self.currentPage][self.cursor]:setFocus( true )
 end
 
