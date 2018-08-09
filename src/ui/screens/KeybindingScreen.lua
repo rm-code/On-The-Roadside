@@ -194,7 +194,6 @@ end
 --
 function KeybindingScreen:draw()
     self.paginatedList:draw()
-    self.paginatedList:drawBoundingBox( 16, 16 )
     self.buttonList:draw()
 
     self.footer:draw()
