@@ -111,7 +111,7 @@ function UIContainer:mousecommand( cmd )
     if not self.current then
         return
     end
-    self.list[self.current]:command( cmd )
+    self.list[self.current]:mousecommand( cmd )
 end
 
 return UIContainer

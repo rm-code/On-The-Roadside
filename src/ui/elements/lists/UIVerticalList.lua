@@ -77,4 +77,8 @@ function UIVerticalList:command( cmd )
     end
 end
 
+function UIVerticalList:mousecommand( cmd )
+    self:getActiveElement():command( cmd )
+end
+
 return UIVerticalList
