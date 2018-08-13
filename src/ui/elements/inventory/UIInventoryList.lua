@@ -42,6 +42,10 @@ local function populateItemList( self )
     end
 end
 
+---
+-- Creates the storage info which shows details about the weight and volume stats
+-- of the creature's inventory.
+--
 local function generateStorageInfo( self )
     local infoText = string.format( 'W: %0.1f/%0.1f V: %0.1f/%0.1f', self.inventory:getWeight(), self.inventory:getWeightLimit(), self.inventory:getVolume(), self.inventory:getVolumeLimit() )
     self:addChild( UILabel( self.ax, self.ay, 0, 0, self.w, 1, infoText, 'ui_text_dim' ))
@@ -52,7 +56,7 @@ end
 -- ------------------------------------------------
 
 ---
--- Creates a new UIEquipmentList instance.
+-- Creates a new UIInventoryList instance.
 --
 function UIInventoryList:initialize( px, py, x, y, w, h, inventory )
     UIElement.initialize( self, px, py, x, y, w, h )
@@ -61,11 +65,17 @@ function UIInventoryList:initialize( px, py, x, y, w, h, inventory )
     self:refresh()
 end
 
+---
+-- Recreates the inventory list.
+--
 function UIInventoryList:refresh()
     populateItemList( self )
     generateStorageInfo( self )
 end
 
+---
+-- Draws the inventory list.
+--
 function UIInventoryList:draw()
     for _, item in ipairs( self.children ) do
         item:draw()
@@ -102,6 +112,11 @@ function UIInventoryList:drop( item )
     return false
 end
 
+---
+-- Returns the Item the mouse cursor is currently over. Note that the Item is
+-- actually wrapped into an UIInventoryItem.
+-- @treturn Item The item under the mouse cursor.
+--
 function UIInventoryList:getItemBelowCursor()
     for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
@@ -110,6 +125,11 @@ function UIInventoryList:getItemBelowCursor()
     end
 end
 
+---
+-- Checks if an item fits into the creature's inventory.
+-- @tparam  Item    item The item to check for.
+-- @treturn boolean      True if the item fits, false otherwise.
+--
 function UIInventoryList:doesFit( item )
     return self.inventory:doesFit( item:getWeight(), item:getVolume() )
 end
