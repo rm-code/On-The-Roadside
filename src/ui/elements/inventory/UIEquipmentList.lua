@@ -1,4 +1,7 @@
 ---
+-- The UIEquipmentList is a specialised list on the inventory screen that takes
+-- care of drawing a creature's equipment slots and the equipped items therein.
+--
 -- @module UIEquipmentList
 --
 
@@ -22,17 +25,24 @@ local UIEquipmentList = UIElement:subclass( 'UIEquipmentList' )
 -- ------------------------------------------------
 
 ---
--- Iterates over all equipment slots an UIEquipmentSlot for them and stores
--- them based on their sort order.
+-- Creates UIEquipmentSlots for each EquipmentSlot in a creature's body and
+-- stores it in a list.
 -- @treturn table A sequence containing the UIEquipmentSlots.
 --
 local function populateItemList( self )
     local nList = {}
+
+    -- Iterate over all equipment slots in the creature's body.
     for _, slot in pairs( self.equipment:getSlots() ) do
+        -- Map each slot to a UIEquipmentSlot object.
         local uiItem = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
+
+        -- Add the UIEquipmentSlot to the newly created list and add it to
+        -- the UIEquipmentList as a child (@see UIElement).
         nList[slot:getSortOrder()] = uiItem
         self:addChild( uiItem )
     end
+
     return nList
 end
 
@@ -52,14 +62,14 @@ function UIEquipmentList:initialize( px, py, x, y, w, h, character )
 end
 
 ---
--- Recreates the item list.
+-- Recreates the equipment list.
 --
 function UIEquipmentList:refresh()
     self.list = populateItemList( self )
 end
 
 ---
--- Draws the list.
+-- Draws the equipment slots.
 --
 function UIEquipmentList:draw()
     for _, slot in ipairs( self.list ) do
@@ -118,6 +128,10 @@ function UIEquipmentList:drop( item, origin )
     return success
 end
 
+---
+-- Returns the equipment slot the mouse is currently hovering over.
+-- @treturn UIEquipmentSlot The slot the mouse is currently over.
+--
 function UIEquipmentList:getSlotBelowCursor()
     for _, uiItem in ipairs( self.list ) do
         if uiItem:isMouseOver() then
@@ -126,6 +140,12 @@ function UIEquipmentList:getSlotBelowCursor()
     end
 end
 
+---
+-- Returns the equipment item the mouse is currently hovering over. Note that
+-- the item is actually located within the EquipmentSlot object which itself
+-- is wrapped inside of a UIEquipmentSlot instance.
+-- @treturn Item The item the mouse is currently over.
+--
 function UIEquipmentList:getItemBelowCursor()
     for _, uiItem in ipairs( self.list ) do
         if uiItem:isMouseOver() then
@@ -134,12 +154,24 @@ function UIEquipmentList:getItemBelowCursor()
     end
 end
 
+---
+-- Highlights the UIEquipmentSlot(s) in which the specified Item fits.
+-- @tparam Item nitem The item to highlight slots for.
+--
 function UIEquipmentList:highlight( nitem )
     for _, uiItem in ipairs( self.list ) do
         uiItem:matchesType( nitem )
     end
 end
 
+---
+-- Checks if an item fits into the UIEquipmentSlot currently located under the
+-- mouse cursor. If the mouse isn't hovering over a slot the function returns
+-- false.
+-- @tparam  Item    item The item to check for.
+-- @treturn boolean      True if the item fits. False if it doesn't or the mouse isn't
+--                        hovering over an UIEquipmentSlot.
+--
 function UIEquipmentList:doesFit( item )
     local slot = self:getSlotBelowCursor()
     if not slot then
