@@ -118,15 +118,11 @@ local function createBackButton( lx, ly )
 end
 
 ---
--- Creates a vertical list containing all the ui elements.
+-- Creates a sequence containing all the keybinding buttons.
+-- @treturn table A sequence containing the UIButtons for the keybinding list.
 --
-local function createPaginatedKeybindingList()
-    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
-    local ly = BUTTON_LIST_Y
-    local buttonList = UIPaginatedList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, BUTTON_LIST_HEIGHT )
-
-    -- Create the UIElements and add them to the list.
-    local items = {
+local function getKeyButtonList()
+    return {
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_stand' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_crouch' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'action_prone' ),
@@ -146,8 +142,17 @@ local function createPaginatedKeybindingList()
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ),
     }
+end
 
-    buttonList:setItems( items )
+---
+-- Creates a vertical list containing all the ui elements.
+--
+local function createPaginatedKeybindingList()
+    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+    local ly = BUTTON_LIST_Y
+    local buttonList = UIPaginatedList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, BUTTON_LIST_HEIGHT )
+
+    buttonList:setItems( getKeyButtonList() )
 
     return buttonList
 end
@@ -242,7 +247,7 @@ function KeybindingScreen:receive( event, ... )
     if event == 'CHANGED_KEYBINDING' then
         local scancode, mode, action = ...
         Settings.setKeybinding( mode, scancode, action )
-        self:initialize()
+        self.paginatedList:setItems( getKeyButtonList() )
     end
 end
 
