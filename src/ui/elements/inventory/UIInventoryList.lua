@@ -1,4 +1,7 @@
 ---
+-- The UIInventoryList is a specialised list on the inventory screen that takes
+-- care of drawing all items a creature currently carries around in its invenory.
+--
 -- @module UIInventoryList
 --
 
@@ -20,22 +23,28 @@ local UIInventoryList = UIElement:subclass( 'UIInventoryList' )
 -- Private Methods
 -- ------------------------------------------------
 
+---
+-- Creates UIInventoryItems for each Item in a creature's inventory and
+-- stores it as a children of the UIInventoryList.
+-- @treturn table A sequence containing the UIInventoryItems.
+--
 local function populateItemList( self )
-    local nList = {}
+    -- Clear current children.
+    self.children = {}
+
+    -- Iterate over all items in the creature's inventory.
     for offset, item in ipairs( self.inventory:getItems() ) do
-        -- Spawn elements at the list's position but offset them vertically.
-        local uiItem = UIInventoryItem( self.ax, self.ay, 0, offset, self.w, 1, item )
-        self:addChild( uiItem )
-        nList[#nList + 1] = uiItem
+        -- Map each Item to an UIInventoryItem object. The UIInventoryItem is spawned at the
+        -- UIInventoryList's absolute position but offset vertically based on its positon in
+        -- the inventory.
+        local uiInventoryItem = UIInventoryItem( self.ax, self.ay, 0, offset, self.w, 1, item )
+        self:addChild( uiInventoryItem )
     end
-    return nList
 end
 
 local function generateStorageInfo( self )
     local infoText = string.format( 'W: %0.1f/%0.1f V: %0.1f/%0.1f', self.inventory:getWeight(), self.inventory:getWeightLimit(), self.inventory:getVolume(), self.inventory:getVolumeLimit() )
-    local info = UILabel( self.ax, self.ay, 0, 0, self.w, 1, infoText, 'ui_text_dim' )
-    self:addChild( info )
-    return info
+    self:addChild( UILabel( self.ax, self.ay, 0, 0, self.w, 1, infoText, 'ui_text_dim' ))
 end
 
 -- ------------------------------------------------
@@ -53,19 +62,18 @@ function UIInventoryList:initialize( px, py, x, y, w, h, inventory )
 end
 
 function UIInventoryList:refresh()
-    self.list = populateItemList( self )
-    self.info = generateStorageInfo( self )
+    populateItemList( self )
+    generateStorageInfo( self )
 end
 
 function UIInventoryList:draw()
-    for _, item in ipairs( self.list ) do
+    for _, item in ipairs( self.children ) do
         item:draw()
     end
-    self.info:draw()
 end
 
 function UIInventoryList:drag( rmb, fullstack )
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
             local item = uiItem:drag( rmb, fullstack )
             self.inventory:removeItem( item )
@@ -76,7 +84,7 @@ function UIInventoryList:drag( rmb, fullstack )
 end
 
 function UIInventoryList:drop( item )
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
             local success = self.inventory:insertItem( item, uiItem:getItem() )
             if success then
@@ -95,7 +103,7 @@ function UIInventoryList:drop( item )
 end
 
 function UIInventoryList:getItemBelowCursor()
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
             return uiItem:getItem()
         end
