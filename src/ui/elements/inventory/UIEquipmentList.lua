@@ -159,8 +159,8 @@ end
 -- @tparam Item nitem The item to highlight slots for.
 --
 function UIEquipmentList:highlight( nitem )
-    for _, uiItem in ipairs( self.list ) do
-        uiItem:matchesType( nitem )
+    for _, uiEquipmentSlot in ipairs( self.list ) do
+        uiEquipmentSlot:highlight( nitem )
     end
 end
 
