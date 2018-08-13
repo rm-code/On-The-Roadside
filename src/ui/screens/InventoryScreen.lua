@@ -382,6 +382,7 @@ end
 function InventoryScreen:mousepressed( _, _, button )
     if button == 2 then
         selectItem( self.lists, self.itemStats )
+        return
     end
     drag( button, self.lists, self.dragboard, self.itemStats )
 end
