@@ -36,11 +36,11 @@ local function populateItemList( self )
     -- Iterate over all equipment slots in the creature's body.
     for _, slot in pairs( self.equipment:getSlots() ) do
         -- Map each slot to a UIEquipmentSlot object.
-        local uiItem = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
+        local uiEquipmentSlot = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
 
         -- Add the UIEquipmentSlot to the list's children (@see UIElement) and
         -- use its sort order to find the correct position.
-        self:addChild( uiItem, slot:getSortOrder() )
+        self:addChild( uiEquipmentSlot, slot:getSortOrder() )
     end
 end
 
@@ -70,8 +70,8 @@ end
 -- Draws the equipment slots.
 --
 function UIEquipmentList:draw()
-    for _, slot in ipairs( self.children ) do
-        slot:draw()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        uiEquipmentSlot:draw()
     end
 end
 
@@ -80,16 +80,18 @@ end
 -- @treturn UIEquipmentSlot The UIEquipmentSlot containing the actual item.
 --
 function UIEquipmentList:drag()
-    for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
-            local item = self.equipment:removeItem( uiItem:getSlot() )
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver()
+        and uiEquipmentSlot:getSlot():containsItem()
+        and not uiEquipmentSlot:getSlot():getItem():isPermanent() then
+            local item = self.equipment:removeItem( uiEquipmentSlot:getSlot() )
 
             if item:isInstanceOf( Container ) then
                 self.character:getInventory():dropItems( self.character:getTile() )
             end
 
             self:refresh()
-            return item, self.equipment, uiItem:getSlot()
+            return item, self.equipment, uiEquipmentSlot:getSlot()
         end
     end
 end
@@ -109,9 +111,9 @@ function UIEquipmentList:drop( item, origin )
     end
 
     local success = false
-    for _, uiItem in ipairs( self.children ) do
-        local slot = uiItem:getSlot()
-        if uiItem:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        local slot = uiEquipmentSlot:getSlot()
+        if uiEquipmentSlot:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
             if slot:containsItem() then
                 local tmp = self.equipment:removeItem( slot )
                 success = self.equipment:addItem( slot, item )
@@ -131,9 +133,9 @@ end
 -- @treturn UIEquipmentSlot The slot the mouse is currently over.
 --
 function UIEquipmentList:getSlotBelowCursor()
-    for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() then
-            return uiItem:getSlot()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver() then
+            return uiEquipmentSlot:getSlot()
         end
     end
 end
@@ -145,9 +147,9 @@ end
 -- @treturn Item The item the mouse is currently over.
 --
 function UIEquipmentList:getItemBelowCursor()
-    for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() then
-            return uiItem:getSlot():getItem()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver() then
+            return uiEquipmentSlot:getSlot():getItem()
         end
     end
 end
@@ -171,11 +173,11 @@ end
 --                        hovering over an UIEquipmentSlot.
 --
 function UIEquipmentList:doesFit( item )
-    local slot = self:getSlotBelowCursor()
-    if not slot then
+    local uiEquipmentSlot = self:getSlotBelowCursor()
+    if not uiEquipmentSlot then
         return false
     end
-    return item:isSameType( slot:getItemType(), slot:getSubType() )
+    return item:isSameType( uiEquipmentSlot:getItemType(), uiEquipmentSlot:getSubType() )
 end
 
 return UIEquipmentList
