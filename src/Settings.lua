@@ -55,6 +55,7 @@ local DEFAULT_SETTINGS = {
 }
 
 local WARNING_TEXT = 'Replacing outdated settings file (v%d) with current default settings (v%d)!'
+local UNASSIGNED_SCANCODE = 'unassigned'
 
 Settings.INPUTLAYOUTS = {}
 Settings.INPUTLAYOUTS.COMBAT = 'combat'
@@ -139,7 +140,7 @@ function Settings.getKeybinding( mode, saction )
             return love.keyboard.getKeyFromScancode( scancode )
         end
     end
-    return 'unassigned'
+    return UNASSIGNED_SCANCODE
 end
 
 function Settings.getLocale()
@@ -213,7 +214,7 @@ end
 
 function Settings.setKeybinding( mode, scancode, saction )
     -- If the action is not assigned to a scancode yet we can set it directly.
-    if Settings.getKeybinding( mode, saction ) == 'unassigned' then
+    if Settings.getKeybinding( mode, saction ) == UNASSIGNED_SCANCODE then
         settings.controls[mode][scancode] = saction
         return
     end
