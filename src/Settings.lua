@@ -212,6 +212,15 @@ function Settings.setTexturepack( ntexturepack )
 end
 
 function Settings.setKeybinding( mode, scancode, saction )
+    -- If the action is not assigned to a scancode yet we can set it directly.
+    if Settings.getKeybinding( mode, saction ) == 'unassigned' then
+        settings.controls[mode][scancode] = saction
+        return
+    end
+
+    -- If the action is already mapped to a scancode, we have to remove the old
+    -- mapping (or else both keys would work for the same action), before we can
+    -- assign the new one.
     for oldscancode, action in pairs( settings.controls[mode] ) do
         if action == saction then
             settings.controls[mode][oldscancode] = nil
