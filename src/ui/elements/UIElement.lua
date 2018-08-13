@@ -55,11 +55,25 @@ function UIElement:initialize( ox, oy, rx, ry, w, h )
     self.h  = h
 end
 
-function UIElement:addChild( child )
+---
+-- Adds a new UIElement to the list of children.
+--
+-- NOTE: If you use custom indexes you should make sure that you don't break the
+-- sequence (1, 2, 3, ... n). Trying to iterate over an array with can have
+-- unforeseen consequences in Lua.
+--
+-- @tparam UIElement child The UIElement to add as a child.
+-- @tparam number    index A custom index to use (optional).
+--
+function UIElement:addChild( child, index )
     if not child:isInstanceOf( UIElement ) then
         error( 'Children of a UIElement must be derived from the UIElement class themselves.' )
     end
-    self.children[#self.children + 1] = child
+
+    -- Create a new index or use the one provided as a parameter.
+    index = index or #self.children + 1
+
+    self.children[index] = child
 end
 
 ---

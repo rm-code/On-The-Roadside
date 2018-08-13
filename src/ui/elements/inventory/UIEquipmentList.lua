@@ -30,20 +30,18 @@ local UIEquipmentList = UIElement:subclass( 'UIEquipmentList' )
 -- @treturn table A sequence containing the UIEquipmentSlots.
 --
 local function populateItemList( self )
-    local nList = {}
+    -- Clear current children.
+    self.children = {}
 
     -- Iterate over all equipment slots in the creature's body.
     for _, slot in pairs( self.equipment:getSlots() ) do
         -- Map each slot to a UIEquipmentSlot object.
         local uiItem = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
 
-        -- Add the UIEquipmentSlot to the newly created list and add it to
-        -- the UIEquipmentList as a child (@see UIElement).
-        nList[slot:getSortOrder()] = uiItem
-        self:addChild( uiItem )
+        -- Add the UIEquipmentSlot to the list's children (@see UIElement) and
+        -- use its sort order to find the correct position.
+        self:addChild( uiItem, slot:getSortOrder() )
     end
-
-    return nList
 end
 
 -- ------------------------------------------------
@@ -65,14 +63,14 @@ end
 -- Recreates the equipment list.
 --
 function UIEquipmentList:refresh()
-    self.list = populateItemList( self )
+    populateItemList( self )
 end
 
 ---
 -- Draws the equipment slots.
 --
 function UIEquipmentList:draw()
-    for _, slot in ipairs( self.list ) do
+    for _, slot in ipairs( self.children ) do
         slot:draw()
     end
 end
@@ -82,7 +80,7 @@ end
 -- @treturn UIEquipmentSlot The UIEquipmentSlot containing the actual item.
 --
 function UIEquipmentList:drag()
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
             local item = self.equipment:removeItem( uiItem:getSlot() )
 
@@ -111,7 +109,7 @@ function UIEquipmentList:drop( item, origin )
     end
 
     local success = false
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         local slot = uiItem:getSlot()
         if uiItem:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
             if slot:containsItem() then
@@ -133,7 +131,7 @@ end
 -- @treturn UIEquipmentSlot The slot the mouse is currently over.
 --
 function UIEquipmentList:getSlotBelowCursor()
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
             return uiItem:getSlot()
         end
@@ -147,7 +145,7 @@ end
 -- @treturn Item The item the mouse is currently over.
 --
 function UIEquipmentList:getItemBelowCursor()
-    for _, uiItem in ipairs( self.list ) do
+    for _, uiItem in ipairs( self.children ) do
         if uiItem:isMouseOver() then
             return uiItem:getSlot():getItem()
         end
@@ -159,7 +157,7 @@ end
 -- @tparam Item nitem The item to highlight slots for.
 --
 function UIEquipmentList:highlight( nitem )
-    for _, uiEquipmentSlot in ipairs( self.list ) do
+    for _, uiEquipmentSlot in ipairs( self.children ) do
         uiEquipmentSlot:highlight( nitem )
     end
 end
