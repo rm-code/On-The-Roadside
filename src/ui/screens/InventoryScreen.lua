@@ -388,15 +388,14 @@ function InventoryScreen:mousepressed( _, _, button )
 end
 
 function InventoryScreen:mousereleased( _, _, _ )
-    if not self.dragboard:hasDragContext() then
+    if self.dragboard:hasDragContext() then
+        local list = getListBelowCursor( self.lists )
+        self.dragboard:drop( list )
+
+        -- Refresh lists in case volumes have changed.
+        refreshLists( self.lists )
         return
     end
-
-    local list = getListBelowCursor( self.lists )
-    self.dragboard:drop( list )
-
-    -- Refresh lists in case volumes have changed.
-    refreshLists( self.lists )
 
     self.itemStats:command( 'activate' )
 end
