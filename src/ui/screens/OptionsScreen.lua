@@ -177,10 +177,6 @@ local function createIngameEditorOption( lx, ly )
     -- The function to call when the value of the UISelectField changes.
     local function callback( val )
         Settings.setIngameEditor( val )
-
-        if val then
-            ScreenManager.push( 'information', Translator.getText( 'ui_settings_ingame_editor_active' ))
-        end
     end
 
     -- Search the value corresponding to the currently selected option or
