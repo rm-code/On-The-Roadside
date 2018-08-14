@@ -61,7 +61,7 @@ local function createButtons()
 
     -- Only show map editor if it has been activated in the options.
     if Settings.getIngameEditor() then
-        local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
+        local mapEditorButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'prefabeditor' ) end, Translator.getText( 'ui_main_menu_mapeditor' ))
         buttonList:addChild( mapEditorButton )
     end
 
