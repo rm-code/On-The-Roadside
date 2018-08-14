@@ -198,11 +198,11 @@ function PrefabEditor:keypressed( _, scancode )
         self.tool:decrease()
     end
 
-    if scancode == 'd' then
+    if action == 'mode_draw' then
         self.tool:setMode( 'draw' )
-    elseif scancode == 'e' then
+    elseif action == 'mode_erase' then
         self.tool:setMode( 'erase' )
-    elseif scancode == 'f' then
+    elseif action == 'mode_fill' then
         self.tool:setMode( 'fill' )
     end
 
