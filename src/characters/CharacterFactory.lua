@@ -11,6 +11,7 @@ local BodyFactory = require( 'src.characters.body.BodyFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
 local Util = require( 'src.util.Util' )
 local Translator = require( 'src.util.Translator' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -114,6 +115,8 @@ local function createEquipment( character, factionType )
     local equipment = body:getEquipment()
     local inventory = body:getInventory()
     local tags = body:getTags()
+
+    Log.debug( string.format( 'Creating equipment [class: %s, id: %s, faction: %s]', character:getCreatureClass(), body:getID(), factionType ), 'CharacterFactory' )
 
     for _, slot in pairs( equipment:getSlots() ) do
         -- The player's characters should start mainly with guns. Shurikens, grenades
