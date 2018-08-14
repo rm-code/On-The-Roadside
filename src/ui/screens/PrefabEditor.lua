@@ -206,7 +206,7 @@ function PrefabEditor:keypressed( _, scancode )
         self.tool:setMode( 'fill' )
     end
 
-    if scancode == 'h' then
+    if action == 'hide_worldobjects' then
         self.canvas:toggleObjects()
     end
 

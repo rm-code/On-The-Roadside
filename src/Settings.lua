@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 9,
+    version = 10,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -57,6 +57,7 @@ local DEFAULT_SETTINGS = {
             ['d']      = 'mode_draw',
             ['e']      = 'mode_erase',
             ['f']      = 'mode_fill',
+            ['h']      = 'hide_worldobjects',
             ['left']   = 'pan_camera_left',
             ['right']  = 'pan_camera_right',
             ['up']     = 'pan_camera_up',
