@@ -141,6 +141,17 @@ local function getKeyButtonList()
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ),
+
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'increase_tool_size' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'decrease_tool_size' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'mode_draw' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'mode_erase' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'mode_fill' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'hide_worldobjects' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'pan_camera_left' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'pan_camera_right' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'pan_camera_up' ),
+        createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'pan_camera_down' ),
     }
 end
 

@@ -71,6 +71,13 @@ locale.strings = {
     ['pan_camera_down'] = "Move camera down",
     ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
 
+    ['increase_tool_size'] = "Increase tool size",
+    ['decrease_tool_size'] = "Decrease tool size",
+    ['mode_draw'] = "Select drawing tool",
+    ['mode_erase'] = "Select eraser tool",
+    ['mode_fill'] = "Select filling tool",
+    ['hide_worldobjects'] = "Hide object layer",
+
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",
     ['ui_mapeditor_load'] = "Load Layout",
