@@ -187,11 +187,14 @@ end
 function PrefabEditor:keypressed( _, scancode )
     if scancode == 'escape' then
         ScreenManager.push( 'prefabeditormenu', self.canvas )
+        return
     end
 
-    if scancode == ']' then
+    local action = Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode )
+
+    if action == 'increase_tool_size' then
         self.tool:increase()
-    elseif scancode == '/' then
+    elseif action == 'decrease_tool_size' then
         self.tool:decrease()
     end
 
@@ -218,7 +221,7 @@ function PrefabEditor:keypressed( _, scancode )
     if self.uiContainer:hasFocus() then
         self.uiContainer:command( scancode )
     else
-        self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode ), true )
+        self.camera:input( action, true )
     end
 end
 

@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 7,
+    version = 8,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -52,6 +52,8 @@ local DEFAULT_SETTINGS = {
             ['down']   = 'pan_camera_down'
         },
         prefabeditor = {
+            [']']      = 'increase_tool_size',
+            ['/']      = 'decrease_tool_size',
             ['left']   = 'pan_camera_left',
             ['right']  = 'pan_camera_right',
             ['up']     = 'pan_camera_up',
