@@ -21,11 +21,11 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 10,
+    version = 11,
     general = {
         fullscreen = true,
         locale = 'en_EN',
-        mapeditor = false,
+        mapeditor = true,
         texturepack = 'default',
         mousepanning = false,
         invertedMessageLog = false,
