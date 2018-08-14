@@ -130,8 +130,8 @@ end
 
 ---
 -- Creates a new Camera instance.
--- @tparam  number mw The map's width.
--- @tparam  number mh The map's height.
+-- @tparam  number mw The horizontal boundary in which to contain the camera.
+-- @tparam  number mh The vertical boundary in which to contain the camera.
 -- @tparam  number tw The width of the tiles used for map drawing.
 -- @tparam  number th The height of the tiles used for map drawing.
 -- @treturn Camera A new instance of the Camera class.
@@ -232,6 +232,16 @@ end
 --
 function Camera:setTargetPosition( nx, ny )
     self.tx, self.ty = nx, ny
+end
+
+---
+-- Updates the camera's boundaries.
+-- @tparam  number mw The horizontal boundary in which to contain the camera.
+-- @tparam  number mh The vertical boundary in which to contain the camera.
+--
+function Camera:setBounds( w, h )
+    self.mw = w
+    self.mh = h
 end
 
 -- ------------------------------------------------

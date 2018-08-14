@@ -33,6 +33,13 @@ local PrefabEditor = Screen:subclass( 'PrefabEditor' )
 local SELECTOR_WIDTH  = 10
 local SELECTOR_HEIGHT = 10
 
+local CANVAS_SIZES = {
+    'XS',
+    'S',
+    'M',
+    'L',
+    'XL'
+}
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
@@ -87,6 +94,25 @@ local function createWorldObjectSelector( objectTemplates, tool )
     return objectSelector
 end
 
+local function createCanvasSelector( canvas, camera )
+    local lx, ly = 1, 2 * ( SELECTOR_HEIGHT + 2 )
+    local canvasSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+
+    local buttons = {}
+    for i = 1, #CANVAS_SIZES do
+        local function callback()
+            canvas:setSize( CANVAS_SIZES[i] )
+            camera:setBounds( canvas:getWidth(), canvas:getHeight() )
+        end
+
+        buttons[#buttons + 1] = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, CANVAS_SIZES[i], 'left' )
+    end
+
+    canvasSelector:setItems( buttons )
+
+    return canvasSelector
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -107,9 +133,12 @@ function PrefabEditor:initialize()
     local objectTemplates = WorldObjectFactory.getTemplates()
     self.objectSelector = createWorldObjectSelector( objectTemplates, self.tool )
 
+    self.canvasSelector = createCanvasSelector( self.canvas, self.camera )
+
     self.uiContainer = UIContainer()
     self.uiContainer:register( self.tileSelector )
     self.uiContainer:register( self.objectSelector )
+    self.uiContainer:register( self.canvasSelector )
 end
 
 function PrefabEditor:receive( event, ... )
@@ -125,6 +154,7 @@ function PrefabEditor:draw()
 
     self.tileSelector:draw()
     self.objectSelector:draw()
+    self.canvasSelector:draw()
 
     self.camera:attach()
     self.canvas:draw()
@@ -170,23 +200,6 @@ function PrefabEditor:keypressed( _, scancode )
         self.tool:setMode( 'erase' )
     elseif scancode == 'f' then
         self.tool:setMode( 'fill' )
-    end
-
-    if scancode == '1' then
-        self.canvas:setSize( 'XS' )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '2' then
-        self.canvas:setSize( 'S'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '3' then
-        self.canvas:setSize( 'M'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '4' then
-        self.canvas:setSize( 'L'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '5' then
-        self.canvas:setSize( 'XL' )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
     end
 
     if scancode == 'h' then
