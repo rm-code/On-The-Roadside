@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 6,
+    version = 7,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -50,6 +50,12 @@ local DEFAULT_SETTINGS = {
             ['right']  = 'pan_camera_right',
             ['up']     = 'pan_camera_up',
             ['down']   = 'pan_camera_down'
+        },
+        prefabeditor = {
+            ['left']   = 'pan_camera_left',
+            ['right']  = 'pan_camera_right',
+            ['up']     = 'pan_camera_up',
+            ['down']   = 'pan_camera_down'
         }
     }
 }
@@ -59,6 +65,7 @@ local UNASSIGNED_SCANCODE = 'unassigned'
 
 Settings.INPUTLAYOUTS = {}
 Settings.INPUTLAYOUTS.COMBAT = 'combat'
+Settings.INPUTLAYOUTS.PREFAB_EDITOR = 'prefabeditor'
 
 -- ------------------------------------------------
 -- Private Variables

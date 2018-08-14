@@ -114,4 +114,18 @@ function UIContainer:mousecommand( cmd )
     self.list[self.current]:mousecommand( cmd )
 end
 
+---
+-- Checks if the UIContainer has focus. This is the case if one of the
+-- registered UIElements has focus.
+-- @treturn boolean True if one of the UIElements has focus, false otherwise.
+--
+function UIContainer:hasFocus()
+    for i = 1, #self.list do
+        if self.list[i]:hasFocus() then
+            return true
+        end
+    end
+    return false
+end
+
 return UIContainer

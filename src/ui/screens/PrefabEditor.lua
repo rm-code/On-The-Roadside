@@ -19,6 +19,7 @@ local PrefabBrush = require( 'src.ui.mapeditor.PrefabBrush' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -213,7 +214,16 @@ function PrefabEditor:keypressed( _, scancode )
     if scancode == 'return' then
         self.uiContainer:command( 'activate' )
     end
-    self.uiContainer:command( scancode )
+
+    if self.uiContainer:hasFocus() then
+        self.uiContainer:command( scancode )
+    else
+        self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode ), true )
+    end
+end
+
+function PrefabEditor:keyreleased( _, scancode )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode ), false )
 end
 
 function PrefabEditor:mousemoved()
