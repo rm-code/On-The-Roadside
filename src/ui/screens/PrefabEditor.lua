@@ -145,6 +145,7 @@ end
 function PrefabEditor:receive( event, ... )
     if event == 'LOAD_LAYOUT' then
         self.canvas:load( ... )
+        self.camera:setBounds( self.canvas:getWidth(), self.canvas:getHeight() )
     end
 end
 
