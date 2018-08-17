@@ -186,23 +186,21 @@ end
 
 ---
 -- Creates an empty tile grid.
--- @tparam  number w The width of the grid in parcels.
--- @tparam  number h The height of the grid in parcels.
+-- @tparam  number w The grid's width in tiles.
+-- @tparam  number h The grid's height in tiles.
 -- @treturn table    The new tile grid.
--- @treturn number   The new tile grid's width in tiles.
--- @treturn number   The new tile grid's height in height.
 --
 local function createTileGrid( w, h )
     local tiles = {}
-    for x = 1, w * PARCEL_SIZE.WIDTH do
+    for x = 1, w do
         tiles[x] = {}
-        for y = 1, h * PARCEL_SIZE.HEIGHT do
+        for y = 1, h do
             -- TODO Better algorithm for placing ground tiles.
             local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
             tiles[x][y] = TileFactory.create( x, y, id )
         end
     end
-    return tiles, w * PARCEL_SIZE.WIDTH, h * PARCEL_SIZE.HEIGHT
+    return tiles
 end
 
 ---
@@ -266,8 +264,10 @@ function ProceduralMapGenerator:initialize( layout )
     self.parcelGrid = ParcelGrid( self.layout.mapwidth, self.layout.mapheight )
     self.parcelGrid:createNeighbours()
 
+    self.width, self.height = self.layout.mapwidth * PARCEL_SIZE.WIDTH, self.layout.mapheight * PARCEL_SIZE.HEIGHT
+
     -- The actual tile map.
-    self.tileGrid, self.width, self.height = createTileGrid( self.layout.mapwidth, self.layout.mapheight )
+    self.tileGrid = createTileGrid( self.width, self.height )
 
     -- Spawnpoints.
     self.spawnpoints = {
