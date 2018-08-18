@@ -258,7 +258,7 @@ end
 --
 function ProceduralMapGenerator:initialize( layout )
     -- Use specific layout or select a random one.
-    self.layout = layout or layouts[love.math.random( #layouts )]
+    self.layout = layout or Util.pickRandomValue( layouts )
 
     -- Generate empty parcel grid.
     self.parcelGrid = ParcelGrid( self.layout.mapwidth, self.layout.mapheight )
