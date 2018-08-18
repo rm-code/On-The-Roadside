@@ -68,14 +68,10 @@ end
 -- @tparam Prefab prefab   The prefab to place.
 -- @tparam number px       The starting coordinates along the x-axis for this prefab.
 -- @tparam number py       The starting coordinates along the y-axis for this prefab.
--- @tparam number rotate   The rotation to apply to the prefab before placing it.
 --
-local function placePrefab( tileGrid, prefab, px, py, rotate )
-    local tiles = prefab.grid
-
-    if rotate then
-        tiles = ArrayRotation.rotate( tiles, rotate )
-    end
+local function placePrefab( tileGrid, prefab, px, py )
+    -- Rotate prefab randomly.
+    local tiles = ArrayRotation.rotate( prefab.grid, love.math.random( 0, 3 ))
 
     for tx = 1, #tiles do
         for ty = 1, #tiles[tx] do
@@ -87,26 +83,6 @@ local function placePrefab( tileGrid, prefab, px, py, rotate )
                 tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
             end
         end
-    end
-end
-
----
--- Determines a random rotation for a certain parcel layout.
--- @tparam  number pw The parcel's width.
--- @tparam  number ph The parcel's height.
--- @treturn number    The rotation direction [0, 3].
---
-local function rotateParcels( pw, ph )
-    -- Square parcels can be rotated in all directions.
-    if pw == ph then
-        return love.math.random( 0, 3 )
-    end
-
-    -- Handle rotation for rectangular parcels.
-    if pw < ph then
-        return love.math.random() > 0.5 and 1 or 3
-    elseif pw > ph then
-        return love.math.random() > 0.5 and 0 or 2
     end
 end
 
@@ -128,10 +104,8 @@ local function fillParcels( tileGrid, parcelGrid, parcels )
 
             local prefab = PrefabLoader.getPrefab( type )
             if prefab then
-                local rotation = rotateParcels( definition.w, definition.h )
-
                 -- Place tiles and worldobjects.
-                placePrefab( tileGrid, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
+                placePrefab( tileGrid, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT )
             end
         end
     end
