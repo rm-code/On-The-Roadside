@@ -65,23 +65,25 @@ end
 
 ---
 -- Places the tiles and world objects belonging to this prefab.
--- @tparam table  tileGrid The tile grid to place the prefab on.
--- @tparam Prefab prefab   The prefab to place.
--- @tparam number px       The starting coordinates along the x-axis for this prefab.
--- @tparam number py       The starting coordinates along the y-axis for this prefab.
+-- @tparam Map    map    The map to place the prefab on.
+-- @tparam Prefab prefab The prefab to place.
+-- @tparam number px     The starting coordinates along the x-axis for this prefab.
+-- @tparam number py     The starting coordinates along the y-axis for this prefab.
 --
-local function placePrefab( tileGrid, prefab, px, py )
+local function placePrefab( map, prefab, px, py )
     -- Rotate prefab randomly.
     local tiles = ArrayRotation.rotate( prefab.grid, love.math.random( 0, 3 ))
 
     for tx = 1, #tiles do
         for ty = 1, #tiles[tx] do
+            local mapX, mapY = tx + px, ty + py
+
             if tiles[tx][ty].tile then
-                tileGrid[tx + px][ty + py] = TileFactory.create( tx + px, ty + py, tiles[tx][ty].tile )
+                map:setTileAt( mapX, mapY, TileFactory.create( mapX, mapY, tiles[tx][ty].tile ))
             end
 
             if tiles[tx][ty].worldObject then
-                tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
+                -- tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
             end
         end
     end
@@ -90,11 +92,11 @@ end
 ---
 -- Iterates over the parcel definitions for this map layout and tries to
 -- place prefabs for each of them.
--- @tparam table      tileGrid   The tile grid to place the prefab on.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to fill.
 -- @tparam table      parcels    The parcel definitions.
 --
-local function fillParcels( tileGrid, parcelGrid, parcels )
+local function fillParcels( map, parcelGrid, parcels )
     for type, definitions in pairs( parcels ) do
         Log.debug( string.format( 'Placing %s parcels.', type ), 'ProceduralMapGenerator' )
 
@@ -106,7 +108,7 @@ local function fillParcels( tileGrid, parcelGrid, parcels )
             local prefab = PrefabLoader.getPrefab( type )
             if prefab then
                 -- Place tiles and worldobjects.
-                placePrefab( tileGrid, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT )
+                placePrefab( map, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT )
             end
         end
     end
@@ -160,22 +162,17 @@ local function spawnRoads( parcelGrid, tileGrid )
 end
 
 ---
--- Creates an empty tile grid.
--- @tparam  number w The grid's width in tiles.
--- @tparam  number h The grid's height in tiles.
--- @treturn table    The new tile grid.
+-- Fills the map randomly with dirt and grass tiles.
+-- @tparam Map map The map to fill.
 --
-local function createTileGrid( w, h )
-    local tiles = {}
-    for x = 1, w do
-        tiles[x] = {}
-        for y = 1, h do
+local function fillMap( map, width, height )
+    for x = 1, width do
+        for y = 1, height do
             -- TODO Better algorithm for placing ground tiles.
             local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
-            tiles[x][y] = TileFactory.create( x, y, id )
+            map:setTileAt( x, y, TileFactory.create( x, y, id ))
         end
     end
-    return tiles
 end
 
 ---
@@ -246,11 +243,6 @@ function ProceduralMapGenerator:createMap( layout )
     self.parcelGrid = ParcelGrid( self.layout.mapwidth, self.layout.mapheight )
     self.parcelGrid:createNeighbours()
 
-    self.width, self.height = self.layout.mapwidth * PARCEL_SIZE.WIDTH, self.layout.mapheight * PARCEL_SIZE.HEIGHT
-
-    -- The actual tile map.
-    self.tileGrid = createTileGrid( self.width, self.height )
-
     -- Spawnpoints.
     self.spawnpoints = {
         allied = {},
@@ -258,13 +250,14 @@ function ProceduralMapGenerator:createMap( layout )
         enemy = {}
     }
 
-    fillParcels( self.tileGrid, self.parcelGrid, self.layout.prefabs )
+    fillMap( map, map:getDimensions() )
+    fillParcels( map, self.parcelGrid, self.layout.prefabs )
 
-    spawnRoads( self.parcelGrid, self.tileGrid )
-    spawnFoliage( self.parcelGrid, self.tileGrid )
+    -- spawnRoads( self.parcelGrid, self.tileGrid )
+    -- spawnFoliage( self.parcelGrid, self.tileGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
 
-    map:setTiles( self.tileGrid )
+    map:initGrid() -- TODO remove
     map:setSpawnpoints( self.spawnpoints )
 
     return map

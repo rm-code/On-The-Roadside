@@ -231,12 +231,19 @@ end
 -- ------------------------------------------------
 
 ---
--- Sets the tiles for this map and initializes them.
--- @tparam table  tiles  A table containing all of the Map's tiles.
+-- Sets a tile to a specific position on the tile layer.
+-- @tparam number x    The target position along the x-axis.
+-- @tparam number y    The target position along the y-axis.
+-- @tparam Tile   tile The tile to set to the grid.
 --
-function Map:setTiles( tiles )
-    self.tiles = tiles
+function Map:setTileAt( x, y, tile )
+    self.tiles[x][y] = tile
+end
 
+---
+-- TODO remove!
+--
+function Map:initGrid()
     addNeighbours( self, self.tiles )
     observeTiles( self, self.tiles )
 end
