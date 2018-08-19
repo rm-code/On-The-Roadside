@@ -55,15 +55,6 @@ function Tile:addNeighbours( neighbours )
 end
 
 ---
--- Adds a world object to this tile and marks it for a drawing update.
--- @tparam WorldObject worldObject The WorldObject to add.
---
-function Tile:addWorldObject( worldObject )
-    self.worldObject = worldObject
-    self:setDirty( true )
-end
-
----
 -- Hits the tile with a certain amount of damage. The tile will distribute
 -- the damage to any character or world object which it contains.
 -- @tparam number damage     The damage the tile receives.
@@ -72,8 +63,8 @@ end
 function Tile:hit( damage, damageType )
     if self:isOccupied() then
         self.character:hit( damage, damageType )
-    elseif self:hasWorldObject() and self.worldObject:isDestructible() then
-        self.worldObject:damage( damage, damageType )
+    elseif self:hasWorldObject() and self:getWorldObject():isDestructible() then
+        self:getWorldObject():damage( damage, damageType )
     end
 end
 
@@ -82,14 +73,6 @@ end
 --
 function Tile:removeCharacter()
     self.character = nil
-    self:setDirty( true )
-end
-
----
--- Removes the worldObject from this tile and marks it for updating.
---
-function Tile:removeWorldObject()
-    self.worldObject = nil
     self:setDirty( true )
 end
 
@@ -105,7 +88,7 @@ function Tile:serialize()
     }
 
     if self:hasWorldObject() then
-        t.worldObject = self.worldObject:serialize()
+        t.worldObject = self:getWorldObject():serialize()
     end
 
     if not self.inventory:isEmpty() then
@@ -167,8 +150,8 @@ end
 -- @treturn number The height of this tile.
 --
 function Tile:getHeight()
-    if self.worldObject then
-        return self.worldObject:getHeight()
+    if self:getWorldObject() then
+        return self:getWorldObject():getHeight()
     elseif self.character then
         return self.character:getHeight()
     end
@@ -181,22 +164,6 @@ end
 --
 function Tile:getID()
     return self.id
-end
-
----
--- Returns the world object located on this tile.
--- @treturn WorldObject The WorldObject.
---
-function Tile:getWorldObject()
-    return self.worldObject
-end
-
----
--- Checks if the tile has a world object.
--- @treturn boolean True if a WorldObject is located on the tile.
---
-function Tile:hasWorldObject()
-    return self.worldObject ~= nil
 end
 
 ---
@@ -233,7 +200,7 @@ end
 --
 function Tile:isPassable()
     if self.passable and self:hasWorldObject() then
-        return self.worldObject:isPassable()
+        return self:getWorldObject():isPassable()
     end
     return self.passable
 end

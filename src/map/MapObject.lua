@@ -46,6 +46,14 @@ function MapObject:getTile()
     return self.map:getTileAt( self.x, self.y )
 end
 
+function MapObject:getWorldObject()
+    return self.map:getWorldObjectAt( self.x, self.y )
+end
+
+function MapObject:hasWorldObject()
+    return self.map:getWorldObjectAt( self.x, self.y ) ~= nil
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
