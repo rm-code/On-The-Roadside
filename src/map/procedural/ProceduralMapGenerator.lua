@@ -83,7 +83,7 @@ local function placePrefab( map, prefab, px, py )
             end
 
             if tiles[tx][ty].worldObject then
-                -- tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
+                map:setWorldObjectAt( mapX, mapY, WorldObjectFactory.create( tiles[tx][ty].worldObject ))
             end
         end
     end
@@ -116,10 +116,10 @@ end
 
 ---
 -- Spawns trees in designated parcels.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to read the parcel definitions from.
--- @tparam table      tileGrid   The tile grid to fill.
 --
-local function spawnFoliage( parcelGrid, tileGrid )
+local function spawnFoliage( map, parcelGrid )
     parcelGrid:iterate( function( parcel, x, y )
         if parcel:getType() ~= 'FOLIAGE' then
             return
@@ -128,12 +128,13 @@ local function spawnFoliage( parcelGrid, tileGrid )
         local n = parcel:countNeighbours()
 
         local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
-        for w = 1, PARCEL_SIZE.WIDTH do
-            for h = 1, PARCEL_SIZE.HEIGHT do
+        for px = 1, PARCEL_SIZE.WIDTH do
+            for py = 1, PARCEL_SIZE.HEIGHT do
+                local mapX, mapY = tx + px, ty + py
 
                 -- Increase density based on count of neighbouring foliage tiles.
                 if love.math.random() < n/10 then
-                    tileGrid[tx + w][ty + h]:addWorldObject( WorldObjectFactory.create( 'worldobject_tree' ))
+                    map:setWorldObjectAt( mapX, mapY, WorldObjectFactory.create( 'worldobject_tree' ))
                 end
             end
         end
@@ -255,7 +256,7 @@ function ProceduralMapGenerator:createMap( layout )
     fillParcels( map, self.parcelGrid, self.layout.prefabs )
 
     spawnRoads( map, self.parcelGrid )
-    -- spawnFoliage( self.parcelGrid, self.tileGrid )
+    spawnFoliage( map, self.parcelGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
 
     map:initGrid() -- TODO remove

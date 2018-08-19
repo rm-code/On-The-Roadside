@@ -241,6 +241,16 @@ function Map:setTileAt( x, y, tile )
 end
 
 ---
+-- Sets a worldObject to a specific position on the worldObject layer.
+-- @tparam number      x The target position along the x-axis.
+-- @tparam number      y The target position along the y-axis.
+-- @tparam WorldObject   The worldObject to set to the grid.
+--
+function Map:setWorldObjectAt( x, y, worldObject )
+    self.worldObjects[x][y] = worldObject
+end
+
+---
 -- TODO remove!
 --
 function Map:initGrid()
