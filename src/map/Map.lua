@@ -68,20 +68,15 @@ end
 -- ------------------------------------------------
 
 ---
--- Initialises the Map by linking all tiles to their neighbours.
--- @tparam table  tiles  A table containing all of the Map's tiles.
+-- Initializes a new Map instance.
 -- @tparam number width  The Map's width.
 -- @tparam number height The Map's height.
 --
-function Map:initialize( tiles, width, height )
+function Map:initialize( width, height )
     Observable.initialize( self )
 
-    self.tiles = tiles
     self.width = width
     self.height = height
-
-    addNeighbours( self, self.tiles )
-    observeTiles( self, self.tiles )
 end
 
 ---
@@ -198,6 +193,21 @@ end
 --
 function Map:getDimensions()
     return self.width, self.height
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+---
+-- Sets the tiles for this map and initializes them.
+-- @tparam table  tiles  A table containing all of the Map's tiles.
+--
+function Map:setTiles( tiles )
+    self.tiles = tiles
+
+    addNeighbours( self, self.tiles )
+    observeTiles( self, self.tiles )
 end
 
 ---

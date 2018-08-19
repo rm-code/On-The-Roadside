@@ -16,6 +16,7 @@ local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local Util = require( 'src.util.Util' )
 local Compressor = require( 'src.util.Compressor' )
+local Map = require( 'src.map.Map' )
 
 -- ------------------------------------------------
 -- Module
@@ -227,12 +228,19 @@ end
 -- ------------------------------------------------
 
 ---
--- Initializes the ProceduralMapGenerator instance.
--- @tparam table layout The layout definition to use for map creation (optional).
+-- Creates a new procedural map
+-- @tparam  table layout The layout definition to use for map creation (optional).
+-- @treturn Map          The newly generated map.
 --
-function ProceduralMapGenerator:initialize( layout )
+function ProceduralMapGenerator:createMap( layout )
     -- Use specific layout or select a random one.
     self.layout = layout or Util.pickRandomValue( layouts )
+
+    -- Calculate the size of the tile grid.
+    self.width, self.height = self.layout.mapwidth * PARCEL_SIZE.WIDTH, self.layout.mapheight * PARCEL_SIZE.HEIGHT
+
+    -- Create an empty map.
+    local map = Map( self.width, self.height )
 
     -- Generate empty parcel grid.
     self.parcelGrid = ParcelGrid( self.layout.mapwidth, self.layout.mapheight )
@@ -255,35 +263,11 @@ function ProceduralMapGenerator:initialize( layout )
     spawnRoads( self.parcelGrid, self.tileGrid )
     spawnFoliage( self.parcelGrid, self.tileGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
-end
 
--- ------------------------------------------------
--- Getters
--- ------------------------------------------------
+    map:setTiles( self.tileGrid )
+    map:setSpawnpoints( self.spawnpoints )
 
----
--- Returns the spawnpoints for the generated map.
--- @treturn table The spawns for this map.
---
-function ProceduralMapGenerator:getSpawnpoints()
-    return self.spawnpoints
-end
-
----
--- Returns the tile grid of the map.
--- @treturn table The tile grid of this map.
---
-function ProceduralMapGenerator:getTiles()
-    return self.tileGrid
-end
-
----
--- Returns the dimensions of the map in tiles.
--- @treturn number The new tile grid's width in tiles.
--- @treturn number The new tile grid's height in height.
---
-function ProceduralMapGenerator:getTileGridDimensions()
-    return self.width, self.height
+    return map
 end
 
 return ProceduralMapGenerator
