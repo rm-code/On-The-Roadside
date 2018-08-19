@@ -75,6 +75,21 @@ local function observeTiles( self, tiles )
     end
 end
 
+---
+-- Creates an empty two dimensional array.
+-- @return table The newly created grid.
+--
+local function createEmptyGrid( width, height )
+    local grid = {}
+    for x = 1, width do
+        for y = 1, height do
+            grid[x] = grid[x] or {}
+            grid[x][y] = nil
+        end
+    end
+    return grid
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -86,6 +101,10 @@ end
 --
 function Map:initialize( width, height )
     Observable.initialize( self )
+
+    self.tiles        = createEmptyGrid( width, height )
+    self.worldObjects = createEmptyGrid( width, height )
+    self.characters   = createEmptyGrid( width, height )
 
     self.width = width
     self.height = height
