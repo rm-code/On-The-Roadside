@@ -27,7 +27,7 @@ function Walk:perform()
     local current = self.character:getTile()
 
     assert( self.target:isPassable(), 'Target tile has to be passable!' )
-    assert( not self.target:isOccupied(), 'Target tile must not be occupied by another character!' )
+    assert( not self.target:hasCharacter(), 'Target tile must not be occupied by another character!' )
     assert( self.target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' )
 
     self.character:move( self.target:getPosition() )

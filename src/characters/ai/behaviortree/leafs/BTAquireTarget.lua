@@ -42,7 +42,7 @@ function BTAquireTarget:traverse( ... )
     local enemies = {}
     for i = 1, #tiles do
         local tile = tiles[i]
-        if tile:isOccupied()
+        if tile:hasCharacter()
         and not tile:getCharacter():isDead()
         and tile:getCharacter():getFaction():getType() ~= FACTIONS.NEUTRAL
         and tile:getCharacter():getFaction():getType() ~= character:getFaction():getType() then

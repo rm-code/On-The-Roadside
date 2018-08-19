@@ -146,7 +146,7 @@ function Map:findSpawnPoint( faction )
         local spawn = self.spawnpoints[faction][index]
 
         local tile = self:getTileAt( spawn.x, spawn.y )
-        if tile:isSpawn() and tile:isPassable() and not tile:isOccupied() then
+        if tile:isSpawn() and tile:isPassable() and not tile:hasCharacter() then
             return tile
         end
     end

@@ -21,7 +21,7 @@ local BTRandomMovement = BTLeaf:subclass( 'BTRandomMovement' )
 -- ------------------------------------------------
 
 local function generatePath( target, character )
-    if target and target:isPassable() and not target:isOccupied() then
+    if target and target:isPassable() and not target:hasCharacter() then
         return PathFinder.generatePath( character:getTile(), target, character:getStance() )
     end
 end
@@ -44,7 +44,7 @@ function BTRandomMovement:traverse( ... )
     end
 
     local target = tiles[love.math.random( 1, #tiles )]
-    if target and target:isPassable() and not target:isOccupied() then
+    if target and target:isPassable() and not target:hasCharacter() then
         local path = generatePath( target, character )
         if path then
             local success = path:generateActions( character )

@@ -48,7 +48,7 @@ end
 --
 function InteractionInput:request( target, character )
     -- Check health of enemy characters.
-    if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
+    if target:hasCharacter() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
         ScreenManager.push( 'playerInfo', target:getCharacter() )
         return true
     end
@@ -73,7 +73,7 @@ function InteractionInput:request( target, character )
     end
 
     -- Handle interactions with other characters.
-    if target:isOccupied() then
+    if target:hasCharacter() then
         if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
             character:enqueueAction( OpenInventory( character, target ))
             return true

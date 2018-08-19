@@ -61,19 +61,11 @@ end
 -- @tparam string damageType The type of damage the tile is hit with.
 --
 function Tile:hit( damage, damageType )
-    if self:isOccupied() then
-        self.character:hit( damage, damageType )
+    if self:hasCharacter() then
+        self:getCharacter():hit( damage, damageType )
     elseif self:hasWorldObject() and self:getWorldObject():isDestructible() then
         self:getWorldObject():damage( damage, damageType )
     end
-end
-
----
--- Removes the character from this tile and marks it for updating.
---
-function Tile:removeCharacter()
-    self.character = nil
-    self:setDirty( true )
 end
 
 ---
@@ -101,14 +93,6 @@ end
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
-
----
--- Returns the character standing on this tile.
--- @treturn Character The character standing on the tile.
---
-function Tile:getCharacter()
-    return self.character
-end
 
 ---
 -- Returns the tile's unique spriteID.
@@ -152,8 +136,8 @@ end
 function Tile:getHeight()
     if self:getWorldObject() then
         return self:getWorldObject():getHeight()
-    elseif self.character then
-        return self.character:getHeight()
+    elseif self:getCharacter() then
+        return self:getCharacter():getHeight()
     end
     return DEFAULT_HEIGHT
 end
@@ -187,14 +171,6 @@ function Tile:isDirty()
 end
 
 ---
--- Checks if the tile has a character on it.
--- @treturn boolean True a character is standing on the tile.
---
-function Tile:isOccupied()
-    return self.character ~= nil
-end
-
----
 -- Checks if the tile is passable.
 -- @treturn boolean True if the tile is passable.
 --
@@ -216,15 +192,6 @@ end
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
-
----
--- Sets a character for this tile and marks the tile for updating.
--- @tparam Character character The character to add.
---
-function Tile:setCharacter( character )
-    self.character = character
-    self:setDirty( true )
-end
 
 ---
 -- Sets the dirty state of the tile.

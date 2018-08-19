@@ -120,7 +120,7 @@ local function checkForHits( index, projectile, tile )
 
     local remove = false
 
-    if tile:isOccupied() then
+    if tile:hasCharacter() then
         remove = hitCharacter( tile, projectile )
     elseif tile:hasWorldObject() then
         remove = hitWorldObject( projectile, tile, tile:getWorldObject() )

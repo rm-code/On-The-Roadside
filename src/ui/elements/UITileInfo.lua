@@ -99,7 +99,7 @@ local function inspectTile( textObject, colorTable, tile )
     end
 
     local _, th = TexturePacks.getTileDimensions()
-    if tile:isOccupied() then
+    if tile:hasCharacter() then
         showCharacterInfo( textObject, colorTable, x, UI_CHARACTER_INFO * th, tile:getCharacter() )
     end
 

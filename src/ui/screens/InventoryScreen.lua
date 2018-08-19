@@ -173,7 +173,7 @@ local function createTargetInventoryList(  x, y, character, target, lists, listL
         id, inventory = 'inventory_base', target
     elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
         id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()
-    elseif target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
+    elseif target:hasCharacter() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
         id, inventory = 'inventory_character', target:getCharacter():getInventory()
     else
         id, inventory = 'inventory_tile_inventory', target:getInventory()
