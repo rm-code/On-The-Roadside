@@ -33,7 +33,6 @@ function ClimbOver:perform()
 
     current:removeCharacter()
     self.target:setCharacter( self.character )
-    self.character:setTile( self.target )
 
     SoundManager.play( 'sound_climb' )
     return true

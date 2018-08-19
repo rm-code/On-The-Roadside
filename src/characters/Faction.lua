@@ -113,7 +113,6 @@ function Faction:spawnCharacters( map )
         end
 
         map:setCharacterAt( tile:getX(), tile:getY(), character )
-        character:setTile( tile )
         character:setMap( map )
     end)
 end

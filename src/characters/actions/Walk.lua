@@ -34,7 +34,6 @@ function Walk:perform()
     -- give it a reference to the new tile.
     current:removeCharacter()
     self.target:setCharacter( self.character )
-    self.character:setTile( self.target )
     return true
 end
 

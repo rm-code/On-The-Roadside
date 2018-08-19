@@ -42,6 +42,10 @@ function MapObject:getMap()
     return self.map
 end
 
+function MapObject:getTile()
+    return self.map:getTileAt( self.x, self.y )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------

@@ -106,9 +106,9 @@ end
 -- @tparam Character self The character instance to use.
 --
 local function handleDeath( self )
-    self:getEquipment():dropAllItems( self.tile )
-    self:getInventory():dropAllItems( self.tile )
-    self.tile:removeCharacter()
+    self:getEquipment():dropAllItems( self:getTile() )
+    self:getInventory():dropAllItems( self:getTile() )
+    self:getTile():removeCharacter()
     resetFOV( self.fov )
 end
 
@@ -186,7 +186,7 @@ function Character:enqueueAction( newAction )
         return true
     end
 
-    self.tile:publish( 'MESSAGE_LOG_EVENT', self.tile, Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
+    self:getTile():publish( 'MESSAGE_LOG_EVENT', self:getTile(), Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
     Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' )
     return false
 end
@@ -220,8 +220,8 @@ function Character:generateFOV()
     resetFOV( self.fov )
 
     local range = self.body:getStatusEffects():isBlind() and 1 or self:getViewRange()
-    local list = Util.getTilesInCircle( self.map, self.tile, range )
-    local sx, sy = self.tile:getPosition()
+    local list = Util.getTilesInCircle( self.map, self:getTile(), range )
+    local sx, sy = self:getTile():getPosition()
 
     for _, tile in ipairs( list ) do
         local tx, ty = tile:getPosition()
@@ -280,8 +280,8 @@ function Character:serialize()
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
         ['body'] = self.body:serialize(),
-        ['x'] = self.tile:getX(),
-        ['y'] = self.tile:getY()
+        ['x'] = self:getX(),
+        ['y'] = self:getY()
     }
     return t
 end
@@ -292,7 +292,7 @@ end
 -- @tparam varags ... Additional parameters to pass along.
 --
 function Character:receive( event, ... )
-    self.tile:publish( event, self.tile, ... )
+    self:getTile():publish( event, self:getTile(), ... )
 end
 
 -- ------------------------------------------------
@@ -436,14 +436,6 @@ function Character:getThrowingSkill()
 end
 
 ---
--- Gets the character's tile.
--- @treturn Tile The tile the character is located on.
---
-function Character:getTile()
-    return self.tile
-end
-
----
 -- Returns the total amount of action points.
 -- @treturn number The total amount of action points.
 --
@@ -542,14 +534,6 @@ end
 --
 function Character:setNationality( nationality )
     self.nationality = nationality
-end
-
----
--- Sets the character's tile.
--- @tparam Tile tile The tile to set the character to.
---
-function Character:setTile( tile )
-    self.tile = tile
 end
 
 ---
