@@ -108,7 +108,7 @@ end
 local function handleDeath( self )
     self:getEquipment():dropAllItems( self:getTile() )
     self:getInventory():dropAllItems( self:getTile() )
-    self:getTile():removeCharacter()
+    self.map:removeCharacter( self.x, self.y, self )
     resetFOV( self.fov )
 end
 

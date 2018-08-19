@@ -216,9 +216,33 @@ function Map:serialize()
     return t
 end
 
+---
+-- Removes a Character from a specific position on the character layer.
+-- @tparam number    x         The target position along the x-axis.
+-- @tparam number    y         The target position along the y-axis.
+-- @tparam Character character The character to remove from the grid.
+--
+function Map:removeCharacter( x, y, character )
+    if character ~= self.characters[x][y] then
+        error( string.format( 'Character at position (%s, %s) does not match the character to remove.', x, y ))
+    end
+
+    self.characters[x][y] = nil
+end
+
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
+
+---
+-- Returns the Character at the given coordinates.
+-- @tparam  number    x The position along the x-axis.
+-- @tparam  number    y The position along the y-axis.
+-- @treturn Character   The Character at the given position.
+--
+function Map:getCharacterAt( x, y )
+    return self.characters[x] and self.characters[x][y]
+end
 
 ---
 -- Returns the Tile at the given coordinates.
