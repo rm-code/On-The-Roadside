@@ -22,32 +22,44 @@ local Map = Observable:subclass( 'Map' )
 
 local DIRECTION = require( 'src.constants.DIRECTION' )
 
+local DIRECTION_MODIFIERS = {
+    [DIRECTION.NORTH]      = { x =  0, y = -1 },
+    [DIRECTION.SOUTH]      = { x =  0, y =  1 },
+    [DIRECTION.EAST]       = { x =  1, y =  0 },
+    [DIRECTION.WEST]       = { x = -1, y =  0 },
+    [DIRECTION.NORTH_EAST] = { x =  1, y = -1 },
+    [DIRECTION.NORTH_WEST] = { x = -1, y = -1 },
+    [DIRECTION.SOUTH_EAST] = { x =  1, y =  1 },
+    [DIRECTION.SOUTH_WEST] = { x = -1, y =  1 }
+}
+
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
 
 ---
 -- Gives each tile a reference to its neighbours.
--- @tparam Map   self  The map instance to use.
--- @tparam table tiles A table containing all of the Map's tiles.
+-- @tparam Map    self The map instance to use.
+-- @tparam number x    The tile position along the x-axis.
+-- @tparam number y    The tile position along the y-axis.
 --
-local function addNeighbours( self, tiles )
-    for x = 1, #tiles do
-        for y = 1, #tiles[x] do
-            local neighbours = {}
-
-            neighbours[DIRECTION.NORTH]      = self:getTileAt( x    , y - 1 )
-            neighbours[DIRECTION.SOUTH]      = self:getTileAt( x    , y + 1 )
-            neighbours[DIRECTION.NORTH_EAST] = self:getTileAt( x + 1, y - 1 )
-            neighbours[DIRECTION.NORTH_WEST] = self:getTileAt( x - 1, y - 1 )
-            neighbours[DIRECTION.SOUTH_EAST] = self:getTileAt( x + 1, y + 1 )
-            neighbours[DIRECTION.SOUTH_WEST] = self:getTileAt( x - 1, y + 1 )
-            neighbours[DIRECTION.EAST]       = self:getTileAt( x + 1, y     )
-            neighbours[DIRECTION.WEST]       = self:getTileAt( x - 1, y     )
-
-            tiles[x][y]:addNeighbours( neighbours )
-        end
+local function createTileNeighbours( self, x, y )
+    local neighbours = {}
+    for direction, modifier in ipairs( DIRECTION_MODIFIERS ) do
+        neighbours[direction] = self:getTileAt( x + modifier.x, y + modifier.y )
     end
+    return neighbours
+end
+
+---
+-- Gives each tile a reference to its neighbours.
+-- @tparam Map self The map instance to use.
+--
+local function addNeighbours( self )
+    self:iterate( function( tile, x, y )
+        -- Create tile neighbours
+        tile:addNeighbours( createTileNeighbours( self, x, y ))
+    end)
 end
 
 ---
