@@ -267,6 +267,15 @@ function Character:canSee( target )
 end
 
 ---
+-- Moves the character to the new position on the map.
+-- @tparam number x The target position along the x-axis.
+-- @tparam number y The target position along the y-axis.
+--
+function Character:move( x, y )
+    self.map:setCharacterAt( x, y, self )
+end
+
+---
 -- Serializes the Character instance.
 -- @treturn table The serialized character instance.
 --

@@ -260,6 +260,18 @@ end
 -- @tparam Character     The character to set to the grid.
 --
 function Map:setCharacterAt( x, y, character )
+    -- Remove character from old position if necessary.
+    local oldX, oldY = character:getPosition()
+    if oldX and oldY then
+        self.characters[oldX][oldY] = nil
+    end
+
+    -- Make sure the grid space is empty.
+    if self.characters[x][y] ~= nil then
+        error( string.format( 'Target position (%s, %s) is already occupied by a character.', x, y ))
+    end
+
+    -- Add character to new position.
     self.characters[x][y] = character
 
     character:setPosition( x, y )
