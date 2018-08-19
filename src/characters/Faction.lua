@@ -112,7 +112,7 @@ function Faction:spawnCharacters( map )
             tile = map:findSpawnPoint( self.type )
         end
 
-        tile:setCharacter( character )
+        map:setCharacterAt( tile:getX(), tile:getY(), character )
         character:setTile( tile )
         character:setMap( map )
     end)

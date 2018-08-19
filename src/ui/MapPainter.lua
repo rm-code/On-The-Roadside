@@ -97,10 +97,11 @@ end
 -- Selects a color which to use when a tile is drawn based on its contents.
 -- @tparam  Tile        tile        The tile to choose a color for.
 -- @tparam  WorldObject worldObject The worldobject to choose a color for.
+-- @tparam  Character   character   A character to choose a color for.
 -- @tparam  Faction     faction     The faction to draw for.
 -- @treturn table                   A table containing RGBA values.
 --
-local function selectTileColor( tile, worldObject, faction )
+local function selectTileColor( tile, worldObject, character, faction )
     -- If there is a faction we check which tiles are currently seen and highlight
     -- the active character.
     if faction then
@@ -109,14 +110,14 @@ local function selectTileColor( tile, worldObject, faction )
             return TexturePacks.getColor( 'tile_unseen' )
         end
 
-        -- Highlight activate character.
-        if tile:getCharacter() == faction:getCurrentCharacter() then
-            return TexturePacks.getColor( COLORS[tile:getCharacter():getFaction():getType()].ACTIVE )
+        -- Highlight activated character.
+        if character == faction:getCurrentCharacter() then
+            return TexturePacks.getColor( COLORS[character:getFaction():getType()].ACTIVE )
         end
     end
 
-    if tile:isOccupied() then
-        return TexturePacks.getColor( COLORS[tile:getCharacter():getFaction():getType()].INACTIVE )
+    if character then
+        return TexturePacks.getColor( COLORS[character:getFaction():getType()].INACTIVE )
     end
 
     if not tile:getInventory():isEmpty() then
@@ -132,12 +133,11 @@ local function selectTileColor( tile, worldObject, faction )
 end
 
 ---
--- Selects the tile for drawing a tile occupied by a character.
--- @tparam  Tile tile The tile to pick a sprite for.
--- @treturn Quad      A quad pointing to the sprite on the active tileset.
+-- Selects the sprite for drawing a character.
+-- @tparam  Character character The character to choose a sprite for.
+-- @treturn Quad                A quad pointing to the sprite on the active tileset.
 --
-local function selectCharacterTile( tile )
-    local character = tile:getCharacter()
+local function selectCharacterTile( character )
     return TexturePacks.getSprite( character:getCreatureClass(), character:getStance() )
 end
 
@@ -195,12 +195,13 @@ end
 -- Selects a sprite from the tileset based on the contents of a tile.
 -- @tparam  Tile        tile        The tile to choose a sprite for.
 -- @tparam  WorldObject worldObject The worldObject to choose a sprite for.
+-- @tparam  Character   character   A character to choose a sprite for.
 -- @tparam  Faction     faction     The faction to draw for.
 -- @treturn Quad                    A quad pointing to a sprite on the tileset.
 --
-local function selectTileSprite( tile, worldObject, faction )
-    if tile:isOccupied() and faction and faction:canSee( tile ) then
-        return selectCharacterTile( tile )
+local function selectTileSprite( tile, worldObject, character, faction )
+    if character and faction and faction:canSee( tile ) then
+        return selectCharacterTile( character )
     end
 
     if not tile:getInventory():isEmpty() then
@@ -224,10 +225,10 @@ end
 --
 local function updateSpritebatch( spritebatch, map, faction )
     local tw, th = TexturePacks.getTileDimensions()
-    map:iterate( function( x, y, tile, worldObject )
+    map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
-            spritebatch:setColor( selectTileColor( tile, worldObject, faction ))
-            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, faction ), x * tw, y * th )
+            spritebatch:setColor( selectTileColor( tile, worldObject, character, faction ))
+            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)

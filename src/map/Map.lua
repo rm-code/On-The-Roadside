@@ -130,7 +130,7 @@ end
 function Map:iterate( callback )
     for x = 1, self.width do
         for y = 1, self.height do
-            callback( x, y, self.tiles[x][y], self.worldObjects[x][y] )
+            callback( x, y, self.tiles[x][y], self.worldObjects[x][y], self.characters[x][y] )
         end
     end
 end
@@ -252,6 +252,16 @@ end
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
+
+---
+-- Sets a Character to a specific position on the character layer.
+-- @tparam number      x The target position along the x-axis.
+-- @tparam number      y The target position along the y-axis.
+-- @tparam Character     The character to set to the grid.
+--
+function Map:setCharacterAt( x, y, character )
+    self.characters[x][y] = character
+end
 
 ---
 -- Sets a tile to a specific position on the tile layer.
