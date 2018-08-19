@@ -143,10 +143,10 @@ end
 ---
 -- Spawns roads in designated parcels.
 -- TODO Replace with prefab based system.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to read the parcel definitions from.
--- @tparam table      tileGrid   The tile grid to fill.
 --
-local function spawnRoads( parcelGrid, tileGrid )
+local function spawnRoads( map, parcelGrid )
     parcelGrid:iterate( function( parcel, x, y )
         if parcel:getType() ~= 'ROAD' then
             return
@@ -155,7 +155,8 @@ local function spawnRoads( parcelGrid, tileGrid )
         local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
         for w = 1, PARCEL_SIZE.WIDTH do
             for h = 1, PARCEL_SIZE.HEIGHT do
-                tileGrid[tx + w][ty + h] = TileFactory.create( tx + w, ty + h, 'tile_asphalt' )
+                local mapX, mapY = tx + w, ty + h
+                map:setTileAt( mapX, mapY, TileFactory.create( mapX, mapY, 'tile_asphalt' ))
             end
         end
     end)
@@ -253,7 +254,7 @@ function ProceduralMapGenerator:createMap( layout )
     fillMap( map, map:getDimensions() )
     fillParcels( map, self.parcelGrid, self.layout.prefabs )
 
-    -- spawnRoads( self.parcelGrid, self.tileGrid )
+    spawnRoads( map, self.parcelGrid )
     -- spawnFoliage( self.parcelGrid, self.tileGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
 
