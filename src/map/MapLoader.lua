@@ -23,17 +23,6 @@ local MapLoader = Class( 'MapLoader' )
 -- ------------------------------------------------
 
 ---
--- Recreates a tile.
--- @tparam number x  The tile's location along the x-axis.
--- @tparam number y  The tile's location along the y-axis.
--- @tparam string id The id of the tile to create.
--- @treturn Tile The loaded tile.
---
-local function recreateTile( x, y, id )
-    return TileFactory.create( x, y, id )
-end
-
----
 -- Recreates a world object.
 -- @tparam  string      id           The id of the world object to create.
 -- @tparam  number      hp           The world object's hit points.
@@ -62,7 +51,7 @@ local function loadSavedTiles( savedTiles )
     local loadedTiles = {}
     for _, tile in ipairs( savedTiles ) do
         -- Recreate the tile.
-        local recreatedTile = recreateTile( tile.x, tile.y, tile.id )
+        local recreatedTile = TileFactory.create( tile.x, tile.y, tile.id )
 
         -- Recreate any worldobject that was located on the tile.
         if tile.worldObject then
