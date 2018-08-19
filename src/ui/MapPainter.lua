@@ -85,7 +85,7 @@ local CONNECTION_BITMASK = {
 --
 local function initSpritebatch( map, spritebatch )
     local tw, th = TexturePacks.getTileDimensions()
-    map:iterate( function( tile, x, y )
+    map:iterate( function( x, y, tile, _ )
         local id = spritebatch:add( TexturePacks.getSprite( 'tile_empty' ), x * tw, y * th )
         tile:setSpriteID( id )
         tile:setDirty( true )
@@ -95,11 +95,12 @@ end
 
 ---
 -- Selects a color which to use when a tile is drawn based on its contents.
--- @tparam  Tile      tile      The tile to choose a color for.
--- @tparam  Faction   faction   The faction to draw for.
--- @treturn table               A table containing RGBA values.
+-- @tparam  Tile        tile        The tile to choose a color for.
+-- @tparam  WorldObject worldObject The worldobject to choose a color for.
+-- @tparam  Faction     faction     The faction to draw for.
+-- @treturn table                   A table containing RGBA values.
 --
-local function selectTileColor( tile, faction )
+local function selectTileColor( tile, worldObject, faction )
     -- If there is a faction we check which tiles are currently seen and highlight
     -- the active character.
     if faction then
@@ -123,8 +124,8 @@ local function selectTileColor( tile, faction )
         return TexturePacks.getColor( items[1]:getID() )
     end
 
-    if tile:hasWorldObject() then
-        return TexturePacks.getColor( tile:getWorldObject():getID() )
+    if worldObject then
+        return TexturePacks.getColor( worldObject:getID() )
     end
 
     return TexturePacks.getColor( tile:getID() )
@@ -179,24 +180,21 @@ local function selectWorldObjectSprite( worldObject, tile )
     -- Check if the world object sprite connects to adjacent sprites.
     local connections = worldObject:getConnections()
     if connections then
-        local neighbours = tile:getNeighbours()
-        local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
-                       checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
-                       checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
-                       checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
-        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
+        -- FIXME
+        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[0] )
     end
 
     return TexturePacks.getSprite( worldObject:getID() )
 end
 
 ---
--- Selects a sprite from the tileset based on the tile and its contents.
--- @tparam  Tile    tile    The tile to choose a sprite for.
--- @tparam  Faction faction The faction to draw for.
--- @treturn Quad            A quad pointing to a sprite on the tileset.
+-- Selects a sprite from the tileset based on the contents of a tile.
+-- @tparam  Tile        tile        The tile to choose a sprite for.
+-- @tparam  WorldObject worldObject The worldObject to choose a sprite for.
+-- @tparam  Faction     faction     The faction to draw for.
+-- @treturn Quad                    A quad pointing to a sprite on the tileset.
 --
-local function selectTileSprite( tile, faction )
+local function selectTileSprite( tile, worldObject, faction )
     if tile:isOccupied() and faction and faction:canSee( tile ) then
         return selectCharacterTile( tile )
     end
@@ -206,8 +204,8 @@ local function selectTileSprite( tile, faction )
         return TexturePacks.getSprite( items[1]:getID() )
     end
 
-    if tile:hasWorldObject() then
-        return selectWorldObjectSprite( tile:getWorldObject(), tile )
+    if worldObject then
+        return selectWorldObjectSprite( worldObject, tile )
     end
 
     return TexturePacks.getSprite( tile:getID() )
@@ -222,10 +220,10 @@ end
 --
 local function updateSpritebatch( spritebatch, map, faction )
     local tw, th = TexturePacks.getTileDimensions()
-    map:iterate( function( tile, x, y )
+    map:iterate( function( x, y, tile, worldObject )
         if tile:isDirty() then
-            spritebatch:setColor( selectTileColor( tile, faction ))
-            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * tw, y * th )
+            spritebatch:setColor( selectTileColor( tile, worldObject, faction ))
+            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)

@@ -117,7 +117,7 @@ end
 function Map:iterate( callback )
     for x = 1, self.width do
         for y = 1, self.height do
-            callback( self.tiles[x][y], x, y )
+            callback( x, y, self.tiles[x][y], self.worldObjects[x][y] )
         end
     end
 end
