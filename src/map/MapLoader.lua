@@ -51,7 +51,7 @@ local function loadSavedTiles( savedTiles )
     local loadedTiles = {}
     for _, tile in ipairs( savedTiles ) do
         -- Recreate the tile.
-        local recreatedTile = TileFactory.create( tile.x, tile.y, tile.id )
+        local recreatedTile = TileFactory.create( tile.id )
 
         -- Recreate any worldobject that was located on the tile.
         if tile.worldObject then

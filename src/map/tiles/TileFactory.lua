@@ -62,15 +62,13 @@ end
 
 ---
 -- Creates a tile of a certain id at the given coordinates.
--- @tparam  number  x   The tile's coordinate along the x-axis.
--- @tparam  number  y   The tile's coordinate along the y-axis.
--- @tparam  string  id  The id of Tile to create.
--- @treturn Tile        The newly created Tile.
+-- @tparam  string id The id of Tile to create.
+-- @treturn Tile      The newly created Tile.
 --
-function TileFactory.create( x, y, id )
+function TileFactory.create( id )
     local template = tiles[id]
     assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ))
-    return Tile( x, y, template.id, template.movementCost, template.passable, template.spawn )
+    return Tile( template.id, template.movementCost, template.passable, template.spawn )
 end
 
 ---

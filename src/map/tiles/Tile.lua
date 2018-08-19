@@ -6,14 +6,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Observable = require( 'src.util.Observable' )
+local MapObject = require( 'src.map.MapObject' )
 local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Tile = Observable:subclass( 'Tile' )
+local Tile = MapObject:subclass( 'Tile' )
 
 -- ------------------------------------------------
 -- Constants
@@ -29,18 +29,13 @@ local DEFAULT_HEIGHT = 10
 
 ---
 -- Creates a new instance of the Tile class.
--- @tparam  number  x        The grid position along the x-axis.
--- @tparam  number  y        The grid position along the y-axis.
 -- @tparam  string  id       The tile's id.
 -- @tparam  number  cost     The amount of AP it costs to traverse this tile.
 -- @tparam  boolean passable Wether this tile can be traversed.
 -- @tparam  boolean spawn    Wether this tile is valid for spawning.
 --
-function Tile:initialize( x, y, id, cost, passable, spawn )
-    Observable.initialize( self )
-
-    self.x = x
-    self.y = y
+function Tile:initialize( id, cost, passable, spawn )
+    MapObject.initialize( self )
 
     self.id = id
     self.cost = cost
@@ -158,15 +153,6 @@ function Tile:getNeighbours()
 end
 
 ---
--- Returns the tile's grid position.
--- @treturn number The tile's position along the x-axis of the grid.
--- @treturn number The tile's position along the y-axis of the grid.
---
-function Tile:getPosition()
-    return self.x, self.y
-end
-
----
 -- Gets the tile's inventory.
 -- @treturn Inventory The tile's inventory.
 --
@@ -203,22 +189,6 @@ end
 --
 function Tile:getWorldObject()
     return self.worldObject
-end
-
----
--- Returns the tile's grid position along the x-axis.
--- @treturn number The tile's position along the x-axis of the grid.
---
-function Tile:getX()
-    return self.x
-end
-
----
--- Returns the tile's grid position along the y-axis.
--- @treturn number The tile's position along the y-axis of the grid.
---
-function Tile:getY()
-    return self.y
 end
 
 ---

@@ -79,7 +79,7 @@ local function placePrefab( map, prefab, px, py )
             local mapX, mapY = tx + px, ty + py
 
             if tiles[tx][ty].tile then
-                map:setTileAt( mapX, mapY, TileFactory.create( mapX, mapY, tiles[tx][ty].tile ))
+                map:setTileAt( mapX, mapY, TileFactory.create( tiles[tx][ty].tile ))
             end
 
             if tiles[tx][ty].worldObject then
@@ -157,7 +157,7 @@ local function spawnRoads( map, parcelGrid )
         for w = 1, PARCEL_SIZE.WIDTH do
             for h = 1, PARCEL_SIZE.HEIGHT do
                 local mapX, mapY = tx + w, ty + h
-                map:setTileAt( mapX, mapY, TileFactory.create( mapX, mapY, 'tile_asphalt' ))
+                map:setTileAt( mapX, mapY, TileFactory.create( 'tile_asphalt' ))
             end
         end
     end)
@@ -172,7 +172,7 @@ local function fillMap( map, width, height )
         for y = 1, height do
             -- TODO Better algorithm for placing ground tiles.
             local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
-            map:setTileAt( x, y, TileFactory.create( x, y, id ))
+            map:setTileAt( x, y, TileFactory.create( id ))
         end
     end
 end
@@ -259,7 +259,7 @@ function ProceduralMapGenerator:createMap( layout )
     spawnFoliage( map, self.parcelGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
 
-    map:initGrid() -- TODO remove
+    map:initializeGrid() -- TODO remove
     map:setSpawnpoints( self.spawnpoints )
 
     return map

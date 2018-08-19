@@ -6,14 +6,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local MapObject = require( 'src.map.MapObject' )
 local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local WorldObject = Class( 'WorldObject' )
+local WorldObject = MapObject:subclass( 'WorldObject' )
 
 -- ------------------------------------------------
 -- Public Methods
@@ -24,6 +24,8 @@ local WorldObject = Class( 'WorldObject' )
 -- @tparam table template The WorldObject's template.
 --
 function WorldObject:initialize( template )
+    MapObject.initialize( self )
+
     self.id = template.id
     self.height = template.size
     self.interactionCost = template.interactionCost

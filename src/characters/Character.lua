@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local MapObject = require( 'src.map.MapObject' )
 local Log = require( 'src.util.Log' )
 local Queue = require('src.util.Queue')
 local Bresenham = require( 'lib.Bresenham' )
@@ -17,7 +17,7 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local Character = Class( 'Character' )
+local Character = MapObject:subclass( 'Character' )
 
 -- ------------------------------------------------
 -- Constants
@@ -117,6 +117,8 @@ end
 -- ------------------------------------------------
 
 function Character:initialize( classID )
+    MapObject.initialize( self )
+
     self.creatureClass = classID
 
     self.actionPoints = DEFAULT_ACTION_POINTS
@@ -524,14 +526,6 @@ end
 --
 function Character:setFaction( faction )
     self.faction = faction
-end
-
----
--- Sets the map the character is currently on.
--- @tparam Map map The map to set for this character.
---
-function Character:setMap( map )
-    self.map = map
 end
 
 ---

@@ -261,6 +261,9 @@ end
 --
 function Map:setCharacterAt( x, y, character )
     self.characters[x][y] = character
+
+    character:setPosition( x, y )
+    character:setMap( self )
 end
 
 ---
@@ -271,6 +274,9 @@ end
 --
 function Map:setTileAt( x, y, tile )
     self.tiles[x][y] = tile
+
+    tile:setPosition( x, y )
+    tile:setMap( self )
 end
 
 ---
@@ -281,12 +287,15 @@ end
 --
 function Map:setWorldObjectAt( x, y, worldObject )
     self.worldObjects[x][y] = worldObject
+
+    worldObject:setPosition( x, y )
+    worldObject:setMap( self )
 end
 
 ---
 -- TODO remove!
 --
-function Map:initGrid()
+function Map:initializeGrid()
     addNeighbours( self )
 
     observeTiles( self, self.tiles )
