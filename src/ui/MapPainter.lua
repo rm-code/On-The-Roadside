@@ -150,8 +150,8 @@ end
 -- @treturn number             The value indicating a match (0 if the world object doesn't match).
 --
 local function checkConnection( connections, neighbour, value )
-    if neighbour and neighbour:hasWorldObject() then
-        local group = neighbour:getWorldObject():getGroup()
+    if neighbour then
+        local group = neighbour:getGroup()
         if group then
             for i = 1, #connections do
                 if connections[i] == group then
@@ -164,11 +164,11 @@ local function checkConnection( connections, neighbour, value )
 end
 
 ---
--- Selects the tile to use for drawing a worldobject.
--- @tparam  WorldObject worldObject The worldobject to pick a sprite for.
+-- Selects the sprite to use for drawing a worldObject.
+-- @tparam  WorldObject worldObject The worldObject to pick a sprite for.
 -- @treturn Quad                    A quad pointing to the sprite on the active tileset.
 --
-local function selectWorldObjectSprite( worldObject, tile )
+local function selectWorldObjectSprite( worldObject )
     if worldObject:isOpenable() then
         if worldObject:isPassable() then
             return TexturePacks.getSprite( worldObject:getID(), 'open' )
@@ -180,8 +180,12 @@ local function selectWorldObjectSprite( worldObject, tile )
     -- Check if the world object sprite connects to adjacent sprites.
     local connections = worldObject:getConnections()
     if connections then
-        -- FIXME
-        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[0] )
+        local neighbours = worldObject:getNeighbours()
+        local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
+                       checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
+                       checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
+                       checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
+        return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
     end
 
     return TexturePacks.getSprite( worldObject:getID() )
@@ -205,7 +209,7 @@ local function selectTileSprite( tile, worldObject, faction )
     end
 
     if worldObject then
-        return selectWorldObjectSprite( worldObject, tile )
+        return selectWorldObjectSprite( worldObject )
     end
 
     return TexturePacks.getSprite( tile:getID() )

@@ -37,7 +37,6 @@ local DIRECTION_MODIFIERS = {
 -- Private Methods
 -- ------------------------------------------------
 
----
 -- Gives each tile a reference to its neighbours.
 -- @tparam Map    self The map instance to use.
 -- @tparam number x    The tile position along the x-axis.
@@ -51,14 +50,28 @@ local function createTileNeighbours( self, x, y )
     return neighbours
 end
 
+local function createWorldObjectNeighbours( self, x, y )
+    local neighbours = {}
+    for direction, modifier in ipairs( DIRECTION_MODIFIERS ) do
+        neighbours[direction] = self:getWorldObjectAt( x + modifier.x, y + modifier.y )
+    end
+    return neighbours
+end
+
 ---
--- Gives each tile a reference to its neighbours.
+-- Creates neighbours for tiles and worldobjects.
 -- @tparam Map self The map instance to use.
 --
 local function addNeighbours( self )
-    self:iterate( function( tile, x, y )
+    self:iterate( function( x, y, tile, worldObject )
         -- Create tile neighbours
         tile:addNeighbours( createTileNeighbours( self, x, y ))
+
+        -- Create worldObject neighbours
+        -- Note: Not every grid space will be occupied by a world object!
+        if worldObject then
+            worldObject:setNeighbours( createWorldObjectNeighbours( self, x, y ))
+        end
     end)
 end
 
@@ -218,6 +231,16 @@ function Map:getTileAt( x, y )
 end
 
 ---
+-- Returns the WorldObject at the given coordinates.
+-- @tparam  number      x The position along the x-axis.
+-- @tparam  number      y The position along the y-axis.
+-- @treturn WorldObject   The WorldObject at the given position.
+--
+function Map:getWorldObjectAt( x, y )
+    return self.worldObjects[x] and self.worldObjects[x][y]
+end
+
+---
 -- Returns the map's dimensions.
 -- @treturn number The map's width.
 -- @treturn number The map's height.
@@ -254,7 +277,8 @@ end
 -- TODO remove!
 --
 function Map:initGrid()
-    addNeighbours( self, self.tiles )
+    addNeighbours( self )
+
     observeTiles( self, self.tiles )
 end
 

@@ -195,6 +195,14 @@ function WorldObject:getConnections()
 end
 
 ---
+-- Returns a table containing this worldObject's neighbours.
+-- @treturn table A table containing the neighbouring worldObjects.
+--
+function WorldObject:getNeighbours()
+    return self.neighbours
+end
+
+---
 -- Checks wether the WorldObject is destructible.
 -- @treturn boolean True if the WorldObject is destructible.
 --
@@ -230,6 +238,15 @@ end
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
+
+---
+-- Adds a table containing the neighbouring worldObjects.
+-- Note that some neighbours might be nil.
+-- @tparam table neighbours A table containing the neighbouring worldObjects.
+--
+function WorldObject:setNeighbours( neighbours )
+    self.neighbours = neighbours
+end
 
 ---
 -- Sets the WorldObject's blocksVision attribute.
