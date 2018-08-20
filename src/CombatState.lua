@@ -121,7 +121,7 @@ end
 function CombatState:receive( event, ... )
     if event == 'MESSAGE_LOG_EVENT' then
         local origin, msg, type = ...
-        if self.factions:getPlayerFaction():canSee( origin ) then
+        if origin:isSeenBy( FACTIONS.ALLIED ) then
             MessageQueue.enqueue( msg, type )
         end
     end

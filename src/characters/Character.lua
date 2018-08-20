@@ -89,11 +89,13 @@ end
 
 ---
 -- Clears the list of seen tiles and marks them for a drawing update.
--- @tparam table fov The table containing the tiles the character can see.
+-- @tparam table  fov         The table containing the tiles the character can see.
+-- @tparam string factionType The faction's id as defined in the faction constants.
 --
-local function resetFOV( fov )
+local function resetFOV( fov, factionType )
     for target, _ in pairs( fov ) do
         target:setDirty( true )
+        target:decrementFactionFOV( factionType )
         fov[target] = nil
     end
 end
@@ -107,7 +109,7 @@ local function handleDeath( self )
     self:getEquipment():dropAllItems( self:getTile() )
     self:getInventory():dropAllItems( self:getTile() )
     self.map:removeCharacter( self.x, self.y, self )
-    resetFOV( self.fov )
+    resetFOV( self.fov, self:getFaction():getType() )
 end
 
 -- ------------------------------------------------
@@ -160,6 +162,12 @@ end
 -- @tparam Tile target The target-tile.
 --
 function Character:addSeenTile( target )
+    -- Update the faction FOV for the tile if it hasn't been seen by this
+    -- character already.
+    if not self.fov[target] then
+        target:incrementFactionFOV( self:getFaction():getType() )
+    end
+
     self.fov[target] = true
 end
 
@@ -212,7 +220,7 @@ end
 -- the blocksVision attribute set to true.
 --
 function Character:generateFOV()
-    resetFOV( self.fov )
+    resetFOV( self.fov, self:getFaction():getType() )
 
     local range = self.body:getStatusEffects():isBlind() and 1 or self:getViewRange()
     local list = Util.getTilesInCircle( self.map, self:getTile(), range )

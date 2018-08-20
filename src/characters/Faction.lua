@@ -116,21 +116,6 @@ function Faction:spawnCharacters( map )
 end
 
 ---
--- Checks if any of the characters in this Faction can see the target tile.
--- @tparam  Tile    target The tile to check visibility for.
--- @treturn boolean        Wether a character can see this tile.
---
-function Faction:canSee( tile )
-    local node = self.root
-    while node do
-        if node:getObject():canSee( tile ) then
-            return true
-        end
-        node = node:getNext()
-    end
-end
-
----
 -- Deactivates this Faction right before it is deselected.
 --
 function Faction:deactivate()

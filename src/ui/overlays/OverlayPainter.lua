@@ -28,6 +28,12 @@ local ExecutionState = require( 'src.turnbased.states.ExecutionState' )
 local OverlayPainter = Class( 'OverlayPainter' )
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.FACTIONS' )
+
+-- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
 
@@ -61,7 +67,7 @@ end
 local function drawParticles( tileset, tw, th, particleLayer, game )
     for x, row in pairs( particleLayer:getParticleGrid() ) do
         for y, particle in pairs( row ) do
-            if game:getFactions():getPlayerFaction():canSee( game:getMap():getTileAt( x, y )) then
+            if game:getMap():getTileAt( x, y ):isSeenBy( FACTIONS.ALLIED ) then
                 love.graphics.setColor( particle:getColors() )
                 if particle:getSprite() then
                     love.graphics.draw( tileset:getSpritesheet(), tileset:getSprite( particle:getSprite() ), x * tw, y * th )

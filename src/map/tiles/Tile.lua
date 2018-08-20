@@ -19,6 +19,7 @@ local Tile = MapObject:subclass( 'Tile' )
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
 local WEIGHT_LIMIT = 1000
 local VOLUME_LIMIT = 1000
 local DEFAULT_HEIGHT = 10
@@ -42,6 +43,12 @@ function Tile:initialize( id, cost, passable, spawn )
     self.passable = passable
     self.spawn = spawn
 
+    self.factionFOV = {
+        [FACTIONS.ALLIED] = 0,
+        [FACTIONS.NEUTRAL] = 0,
+        [FACTIONS.ENEMY] = 0
+    }
+
     self.inventory = Inventory( WEIGHT_LIMIT, VOLUME_LIMIT )
 end
 
@@ -57,6 +64,22 @@ function Tile:hit( damage, damageType )
     elseif self:hasWorldObject() and self:getWorldObject():isDestructible() then
         self:getWorldObject():damage( damage, damageType )
     end
+end
+
+---
+-- Increments the faction FOV for a particular faction.
+-- @tparam string factionType The faction's id as defined in the faction constants.
+--
+function Tile:incrementFactionFOV( factionType )
+    self.factionFOV[factionType] = self.factionFOV[factionType] + 1
+end
+
+---
+-- Decrements the faction FOV for a particular faction.
+-- @tparam string factionType The faction's id as defined in the faction constants.
+--
+function Tile:decrementFactionFOV( factionType )
+    self.factionFOV[factionType] = self.factionFOV[factionType] - 1
 end
 
 ---
@@ -166,6 +189,14 @@ end
 --
 function Tile:isSpawn()
     return self.spawn
+end
+
+---
+-- Determines wether the tile is seen by a certain faction.
+-- @treturn boolean True if the tile is seen by at least one character.
+--
+function Tile:isSeenBy( factionType )
+    return self.factionFOV[factionType] > 0
 end
 
 -- ------------------------------------------------

@@ -106,7 +106,7 @@ local function selectTileColor( tile, worldObject, character, faction )
     -- the active character.
     if faction then
         -- Dim tiles hidden from the player.
-        if not faction:canSee( tile ) then
+        if not tile:isSeenBy( faction:getType() ) then
             return TexturePacks.getColor( 'tile_unseen' )
         end
 
@@ -200,7 +200,7 @@ end
 -- @treturn Quad                    A quad pointing to a sprite on the tileset.
 --
 local function selectTileSprite( tile, worldObject, character, faction )
-    if character and faction and faction:canSee( tile ) then
+    if character and tile:isSeenBy( faction:getType() ) then
         return selectCharacterTile( character )
     end
 
