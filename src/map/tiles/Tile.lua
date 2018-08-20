@@ -46,15 +46,6 @@ function Tile:initialize( id, cost, passable, spawn )
 end
 
 ---
--- Adds a table containing the neighbouring tiles. Note that some tiles might
--- be nil.
--- @tparam table neighbours A table containing the neighbouring tiles.
---
-function Tile:addNeighbours( neighbours )
-    self.neighbours = neighbours
-end
-
----
 -- Hits the tile with a certain amount of damage. The tile will distribute
 -- the damage to any character or world object which it contains.
 -- @tparam number damage     The damage the tile receives.
@@ -112,14 +103,6 @@ function Tile:getMovementCost( stance )
 end
 
 ---
--- Returns a table containing this tile's neighbours.
--- @treturn table A table containing the neighbouring tiles.
---
-function Tile:getNeighbours()
-    return self.neighbours
-end
-
----
 -- Gets the tile's inventory.
 -- @treturn Inventory The tile's inventory.
 --
@@ -155,7 +138,7 @@ end
 -- @treturn boolean True if the tiles are adjacent to each other.
 --
 function Tile:isAdjacent( tile )
-    for _, neighbour in pairs( self.neighbours ) do
+    for _, neighbour in pairs( self:getNeighbours() ) do
         if neighbour == tile then
             return true
         end

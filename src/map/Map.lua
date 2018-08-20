@@ -9,6 +9,8 @@
 local Observable = require( 'src.util.Observable' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
+local Tile = require( 'src.map.tiles.Tile' )
+local WorldObject = require( 'src.map.worldobjects.WorldObject' )
 
 -- ------------------------------------------------
 -- Module
@@ -37,10 +39,12 @@ local DIRECTION_MODIFIERS = {
 -- Private Methods
 -- ------------------------------------------------
 
--- Gives each tile a reference to its neighbours.
+---
+-- Compiles a list of all neighbouring tiles around a certain coordinate.
 -- @tparam Map    self The map instance to use.
 -- @tparam number x    The tile position along the x-axis.
 -- @tparam number y    The tile position along the y-axis.
+-- @treturn table      A list of all neighbouring tiles.
 --
 local function createTileNeighbours( self, x, y )
     local neighbours = {}
@@ -50,29 +54,19 @@ local function createTileNeighbours( self, x, y )
     return neighbours
 end
 
+---
+-- Compiles a list of all neighbouring worldObjects around a certain coordinate.
+-- @tparam Map    self The map instance to use.
+-- @tparam number x    The tile position along the x-axis.
+-- @tparam number y    The tile position along the y-axis.
+-- @treturn table      A list of all neighbouring worldObjects.
+--
 local function createWorldObjectNeighbours( self, x, y )
     local neighbours = {}
     for direction, modifier in ipairs( DIRECTION_MODIFIERS ) do
         neighbours[direction] = self:getWorldObjectAt( x + modifier.x, y + modifier.y )
     end
     return neighbours
-end
-
----
--- Creates neighbours for tiles and worldobjects.
--- @tparam Map self The map instance to use.
---
-local function addNeighbours( self )
-    self:iterate( function( x, y, tile, worldObject )
-        -- Create tile neighbours
-        tile:addNeighbours( createTileNeighbours( self, x, y ))
-
-        -- Create worldObject neighbours
-        -- Note: Not every grid space will be occupied by a world object!
-        if worldObject then
-            worldObject:setNeighbours( createWorldObjectNeighbours( self, x, y ))
-        end
-    end)
 end
 
 ---
@@ -273,6 +267,21 @@ function Map:getDimensions()
     return self.width, self.height
 end
 
+---
+-- Returns the neighbours around a specific position.
+-- @tparam number    x      The position along the x-axis.
+-- @tparam number    y      The position along the y-axis.
+-- @tparam MapObject object The map object to return neighbours for.
+--
+function Map:getNeighbours( x, y, object )
+    if object:isInstanceOf( Tile ) then
+        return createTileNeighbours( self, x, y )
+    elseif object:isInstanceOf( WorldObject ) then
+        return createWorldObjectNeighbours( self, x, y )
+    end
+    error( 'Not a valid object to get neighbours for!' )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
@@ -332,8 +341,6 @@ end
 -- TODO remove!
 --
 function Map:initializeGrid()
-    addNeighbours( self )
-
     observeTiles( self, self.tiles )
 end
 

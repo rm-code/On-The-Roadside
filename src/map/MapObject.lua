@@ -62,6 +62,10 @@ function MapObject:hasWorldObject()
     return self.map:getWorldObjectAt( self.x, self.y ) ~= nil
 end
 
+function MapObject:getNeighbours()
+    return self.map:getNeighbours( self.x, self.y, self )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
