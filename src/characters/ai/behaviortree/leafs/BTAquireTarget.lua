@@ -28,20 +28,9 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 function BTAquireTarget:traverse( ... )
     local blackboard, character = ...
 
-    local tiles = {}
-
-    -- Get the character's FOV and store the tiles in a sequence for easier access.
-    local fov = character:getFOV()
-    for _, rx in pairs( fov ) do
-        for _, target in pairs( rx ) do
-            tiles[#tiles + 1] = target
-        end
-    end
-
     -- Get all characters visible to this character.
     local enemies = {}
-    for i = 1, #tiles do
-        local tile = tiles[i]
+    for tile in pairs( character:getFOV() ) do
         if tile:hasCharacter()
         and not tile:getCharacter():isDead()
         and tile:getCharacter():getFaction():getType() ~= FACTIONS.NEUTRAL

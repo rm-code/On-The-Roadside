@@ -55,7 +55,7 @@ local function markSeenTiles( cx, cy, counter, self, falloff )
     local height = self:getHeight() - (counter+1) * falloff
     if height <= target:getHeight() then
         -- Add tile to this character's FOV.
-        self:addSeenTile( cx, cy, target )
+        self:addSeenTile( target )
 
         -- Mark tile for drawing update.
         target:setDirty( true )
@@ -92,11 +92,9 @@ end
 -- @tparam table fov The table containing the tiles the character can see.
 --
 local function resetFOV( fov )
-    for x, row in pairs( fov ) do
-        for y, target in pairs( row ) do
-            target:setDirty( true )
-            fov[x][y] = nil
-        end
+    for target, _ in pairs( fov ) do
+        target:setDirty( true )
+        fov[target] = nil
     end
 end
 
@@ -159,13 +157,10 @@ end
 
 ---
 -- Adds a tile to this character's FOV.
--- @tparam number tx     The target-tile's position along the x-axis.
--- @tparam number ty     The target-tile's position along the y-axis.
--- @tparam Tile   target The target-tile.
+-- @tparam Tile target The target-tile.
 --
-function Character:addSeenTile( tx, ty, target )
-    self.fov[tx] = self.fov[tx] or {}
-    self.fov[tx][ty] = target
+function Character:addSeenTile( target )
+    self.fov[target] = true
 end
 
 ---
@@ -259,11 +254,7 @@ end
 -- @treturn boolean        Wether the character sees the tile.
 --
 function Character:canSee( target )
-    local tx, ty = target:getPosition()
-    if not self.fov[tx] then
-        return false
-    end
-    return self.fov[tx][ty] ~= nil
+    return self.fov[target] == true
 end
 
 ---
