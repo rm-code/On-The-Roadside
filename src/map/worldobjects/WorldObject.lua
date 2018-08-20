@@ -62,6 +62,8 @@ end
 function WorldObject:serialize()
     local t = {
         ['id'] = self.id,
+        ['x'] = self.x,
+        ['y'] = self.y,
         ['hp'] = self.hp,
         ['passable'] = self.passable,
         ['blocksVision'] = self.blocksVision

@@ -190,9 +190,6 @@ function CharacterFactory.loadCharacter( savedCharacter )
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )
 
-    -- TODO Remove hack for saving / loading characters
-    character:setSavedPosition( savedCharacter.x, savedCharacter.y )
-
     return character
 end
 

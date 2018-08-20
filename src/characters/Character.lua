@@ -289,8 +289,8 @@ function Character:serialize()
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
         ['body'] = self.body:serialize(),
-        ['x'] = self:getX(),
-        ['y'] = self:getY()
+        ['x'] = self.x,
+        ['y'] = self.y
     }
     return t
 end
@@ -568,15 +568,6 @@ end
 --
 function Character:setStance( stance )
     self.stance = stance
-end
-
--- TODO Remove hack for saving / loading characters
-function Character:getSavedPosition()
-    return self.savedX, self.savedY
-end
-
-function Character:setSavedPosition( x, y )
-    self.savedX, self.savedY = x, y
 end
 
 return Character

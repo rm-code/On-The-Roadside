@@ -101,8 +101,7 @@ end
 --
 function Faction:spawnCharacters( map )
     self:iterate( function( character )
-        local sx, sy = character:getSavedPosition()
-        character:setSavedPosition( nil, nil )
+        local sx, sy = nil, nil
 
         local tile
 

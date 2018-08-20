@@ -194,22 +194,6 @@ function Map:receive( event, ... )
     self:publish( event, ... )
 end
 
-function Map:serialize()
-    local t = {
-        width = self.width,
-        height = self.height,
-        tiles = {}
-    }
-
-    for x = 1, #self.tiles do
-        for y = 1, #self.tiles[x] do
-            table.insert( t.tiles, self.tiles[x][y]:serialize() )
-        end
-    end
-
-    return t
-end
-
 ---
 -- Removes a Character from a specific position on the character layer.
 -- @tparam number    x         The target position along the x-axis.
@@ -350,6 +334,38 @@ end
 --
 function Map:setSpawnpoints( spawnpoints )
     self.spawnpoints = spawnpoints
+end
+
+-- ------------------------------------------------
+-- Serialization
+-- ------------------------------------------------
+
+---
+-- Serializes the Map instance.
+-- @treturn table The serialized character instance.
+--
+function Map:serialize()
+    local t = {
+        ['width'] = self.width,
+        ['height'] = self.height,
+        ['tiles'] = {},
+        ['worldObjects'] = {},
+        ['characters'] = {}
+    }
+
+    self:iterate( function( _, _, tile, worldObject, character )
+        t.tiles[#t.tiles + 1] = tile:serialize()
+
+        if worldObject then
+            t.worldObjects[#t.worldObjects + 1] = worldObject:serialize()
+        end
+
+        if character then
+            t.characters[#t.characters + 1] = character:serialize()
+        end
+    end)
+
+    return t
 end
 
 return Map

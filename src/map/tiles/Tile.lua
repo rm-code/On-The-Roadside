@@ -70,10 +70,6 @@ function Tile:serialize()
         ['y'] = self.y
     }
 
-    if self:hasWorldObject() then
-        t.worldObject = self:getWorldObject():serialize()
-    end
-
     if not self.inventory:isEmpty() then
         t['inventory'] = self.inventory:serialize()
     end
