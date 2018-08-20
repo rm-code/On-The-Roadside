@@ -6,14 +6,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Log = require( 'src.util.Log' );
+local Log = require( 'src.util.Log' )
 local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local SaveHandler = {};
+local SaveHandler = {}
 
 -- ------------------------------------------------
 -- Constants
@@ -75,4 +75,4 @@ function SaveHandler.getSaveFolder()
     return SAVE_FOLDER
 end
 
-return SaveHandler;
+return SaveHandler
