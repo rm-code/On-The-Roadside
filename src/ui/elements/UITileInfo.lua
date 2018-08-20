@@ -152,17 +152,30 @@ function UITileInfo:draw()
 end
 
 function UITileInfo:update( mouseX, mouseY, map )
-    self.textObject:clear()
-
     local tile = map:getTileAt( mouseX, mouseY )
+
+    -- Clear the text object and do not update if the mouse currently isn't
+    -- hovering over a map tile.
     if not tile then
+        self.tile = nil
+        self.textObject:clear()
         return
     end
 
-    if tile:hasWorldObject() then
-        inspectWorldObject( self.textObject, self.colorTable, tile:getWorldObject() )
+    -- Only update the text object if the target has changed to a new tile.
+    if tile == self.tile then
+        return
+    end
+
+    -- Clear text object and store the new target as the current tile.
+    self.textObject:clear()
+    self.tile = tile
+
+    -- Update text object.
+    if self.tile:hasWorldObject() then
+        inspectWorldObject( self.textObject, self.colorTable, self.tile:getWorldObject() )
     else
-        inspectTile( self.textObject, self.colorTable, tile )
+        inspectTile( self.textObject, self.colorTable, self.tile )
     end
 end
 
