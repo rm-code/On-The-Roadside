@@ -70,19 +70,6 @@ local function createWorldObjectNeighbours( self, x, y )
 end
 
 ---
--- Observers each tile so the map can receive events from them.
--- @tparam Map   self  The map instance to use.
--- @tparam table tiles A table containing all of the Map's tiles.
---
-local function observeTiles( self, tiles )
-    for x = 1, #tiles do
-        for y = 1, #tiles[x] do
-            tiles[x][y]:observe( self )
-        end
-    end
-end
-
----
 -- Creates an empty two dimensional array.
 -- @return table The newly created grid.
 --
@@ -293,6 +280,8 @@ function Map:setCharacterAt( x, y, character )
 
     character:setPosition( x, y )
     character:setMap( self )
+
+    character:observe( self )
 end
 
 ---
@@ -306,6 +295,8 @@ function Map:setTileAt( x, y, tile )
 
     tile:setPosition( x, y )
     tile:setMap( self )
+
+    tile:observe( self )
 end
 
 ---
@@ -319,13 +310,8 @@ function Map:setWorldObjectAt( x, y, worldObject )
 
     worldObject:setPosition( x, y )
     worldObject:setMap( self )
-end
 
----
--- TODO remove!
---
-function Map:initializeGrid()
-    observeTiles( self, self.tiles )
+    worldObject:observe( self )
 end
 
 ---

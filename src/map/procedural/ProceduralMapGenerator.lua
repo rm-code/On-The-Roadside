@@ -259,7 +259,6 @@ function ProceduralMapGenerator:createMap( layout )
     spawnFoliage( map, self.parcelGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
 
-    map:initializeGrid() -- TODO remove
     map:setSpawnpoints( self.spawnpoints )
 
     return map
