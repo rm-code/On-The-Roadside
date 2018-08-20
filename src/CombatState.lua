@@ -9,7 +9,6 @@
 local Class = require( 'lib.Middleclass' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local MapLoader = require( 'src.map.MapLoader' )
-local Map = require( 'src.map.Map' )
 local Factions = require( 'src.characters.Factions' )
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' )
@@ -37,11 +36,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- ------------------------------------------------
 
 local function loadMap( savedMap )
-    local loader = MapLoader()
-    local tiles, mw, mh = loader:recreateMap( savedMap )
-    local map = Map( mw, mh )
-    map:setTiles( tiles )
-    return map
+    return MapLoader():recreateMap( savedMap )
 end
 
 local function createMap()
