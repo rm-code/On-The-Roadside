@@ -98,6 +98,11 @@ local function inspectTile( textObject, colorTable, tile )
         addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_error' ), Translator.getText( 'ui_tile_info_impassable' ))
     end
 
+    -- Check if the tile is seen by the player's faction.
+    if not tile:isSeenBy( FACTIONS.ALLIED ) then
+        return
+    end
+
     local _, th = TexturePacks.getTileDimensions()
     if tile:hasCharacter() then
         showCharacterInfo( textObject, colorTable, x, UI_CHARACTER_INFO * th, tile:getCharacter() )
