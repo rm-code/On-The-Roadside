@@ -267,7 +267,7 @@ function Map:setCharacterAt( x, y, character )
     -- Remove character from old position if necessary.
     local oldX, oldY = character:getPosition()
     if oldX and oldY then
-        self.characters[oldX][oldY] = nil
+        self:removeCharacter( oldX, oldY, character )
     end
 
     -- Make sure the grid space is empty.
