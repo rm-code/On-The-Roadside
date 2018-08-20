@@ -20,7 +20,7 @@ local SaveHandler = {}
 -- ------------------------------------------------
 
 local SAVE_FOLDER = 'saves'
-local COMPRESSED_SAVE = 'compressed.data'
+local COMPRESSED_SAVE = 'game.data'
 local VERSION_FILE = 'version.data'
 
 -- ------------------------------------------------
