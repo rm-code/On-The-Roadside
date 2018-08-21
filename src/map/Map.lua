@@ -135,48 +135,10 @@ function Map:findSpawnPoint( faction )
 end
 
 ---
--- Updates the map. This resets the visibility attribute for all visible
--- tiles and marks them for a drawing update. It also replaces destroyed
--- WorldObjects with their debris types or removes them completely.
+-- Receives events published by Observables.
+-- @tparam string event A string by which the message can be identified.
+-- @tparam varargs ...  Multiple parameters to push to the receiver.
 --
-function Map:update()
-    for x = 1, #self.tiles do
-        for y = 1, #self.tiles[x] do
-            local tile = self.tiles[x][y]
-            if tile:hasWorldObject() and tile:getWorldObject():isDestroyed() then
-                -- Create items from the destroyed object.
-                for _, drop in ipairs( tile:getWorldObject():getDrops() ) do
-                    local id, tries, chance = drop.id, drop.tries, drop.chance
-                    for _ = 1, tries do
-                        if love.math.random( 100 ) < chance then
-                            local item = ItemFactory.createItem( id )
-                            tile:getInventory():addItem( item )
-                        end
-                    end
-                end
-
-                -- If the world object was a container drop the items in it.
-                if tile:getWorldObject():isContainer() and not tile:getWorldObject():getInventory():isEmpty() then
-                    local items = tile:getWorldObject():getInventory():getItems()
-                    for _, item in pairs( items ) do
-                        tile:getInventory():addItem( item )
-                    end
-                end
-
-                -- If the world object has a debris object, place that on the tile.
-                if tile:getWorldObject():getDebrisID() then
-                    local nobj = WorldObjectFactory.create( tile:getWorldObject():getDebrisID() )
-                    tile:removeWorldObject()
-                    tile:addWorldObject( nobj )
-                else
-                    tile:removeWorldObject()
-                end
-                self:publish( 'TILE_UPDATED', tile )
-            end
-        end
-    end
-end
-
 function Map:receive( event, ... )
     self:publish( event, ... )
 end
@@ -193,6 +155,57 @@ function Map:removeCharacter( x, y, character )
     end
 
     self.characters[x][y] = nil
+end
+
+---
+-- Removes a WorldObject from a specific position on the worldObject layer.
+-- @tparam number      x           The target position along the x-axis.
+-- @tparam number      y           The target position along the y-axis.
+-- @tparam WorldObject worldObject The worldObject to remove from the grid.
+--
+function Map:removeWorldObject( x, y, worldObject )
+    if worldObject ~= self.worldObjects[x][y] then
+        error( string.format( 'WorldObject at position (%s, %s) does not match the WorldObject to remove.', x, y ))
+    end
+
+    self.worldObjects[x][y] = nil
+end
+
+---
+-- Destroys a WorldObject at a specific position on the worldObject layer.
+-- @tparam number      x           The target position along the x-axis.
+-- @tparam number      y           The target position along the y-axis.
+-- @tparam WorldObject worldObject The worldObject to destroy.
+--
+function Map:destroyWorldObject( x, y, worldObject )
+    local tile = self:getTileAt( x, y )
+
+    -- Create items from the destroyed object.
+    for _, drop in ipairs( worldObject:getDrops() ) do
+        local id, tries, chance = drop.id, drop.tries, drop.chance
+        for _ = 1, tries do
+            if love.math.random( 100 ) < chance then
+                tile:getInventory():addItem( ItemFactory.createItem( id ))
+            end
+        end
+    end
+
+    -- If the world object is a container, drop any contained items.
+    if worldObject:isContainer() and not worldObject:getInventory():isEmpty() then
+        for _, item in pairs( worldObject:getInventory():getItems() ) do
+            tile:getInventory():addItem( item )
+        end
+    end
+
+    -- Remove the object from the map.
+    self:removeWorldObject( x, y, worldObject )
+
+    -- Place a debris object if the destroyed world object has one.
+    if worldObject:getDebrisID() then
+        self:setWorldObjectAt( x, y, WorldObjectFactory.create( worldObject:getDebrisID() ))
+    end
+
+    self:publish( 'TILE_UPDATED', tile )
 end
 
 -- ------------------------------------------------
@@ -306,6 +319,11 @@ end
 -- @tparam WorldObject   The worldObject to set to the grid.
 --
 function Map:setWorldObjectAt( x, y, worldObject )
+    -- Make sure the grid space is empty.
+    if self.worldObjects[x][y] ~= nil then
+        error( string.format( 'Target position (%s, %s) is already occupied by a WorldObject.', x, y ))
+    end
+
     self.worldObjects[x][y] = worldObject
 
     worldObject:setPosition( x, y )

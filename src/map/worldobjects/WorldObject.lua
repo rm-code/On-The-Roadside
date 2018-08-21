@@ -53,6 +53,10 @@ end
 --
 function WorldObject:damage( dmg )
     self.hp = self.hp - dmg
+
+    if self.destructible and self.hp <= 0 then
+        self.map:destroyWorldObject( self.x, self.y, self )
+    end
 end
 
 ---

@@ -100,8 +100,6 @@ function CombatState:initialize( playerFaction, savegame )
 end
 
 function CombatState:update( dt )
-    self.map:update()
-
     -- Update AI if current faction is AI controlled.
     if self.factions:getFaction():isAIControlled() and not self.stateManager:blocksInput() then
         self.sadisticAIDirector:update( dt )
