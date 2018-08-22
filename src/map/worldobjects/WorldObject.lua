@@ -245,6 +245,8 @@ end
 --
 function WorldObject:setBlocksVision( blocksVision )
     self.blocksVision = blocksVision
+
+    self:publish( 'TILE_UPDATED', self:getTile() )
 end
 
 ---
