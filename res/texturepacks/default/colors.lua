@@ -47,6 +47,7 @@ return {
     -- ==============================
     -- TILES
     -- ==============================
+    ['tile_empty']       = COLORS.DB00,
     ['tile_unseen']      = COLORS.DB01,
 
     ['tile_asphalt']     = COLORS.DB25,
@@ -209,6 +210,7 @@ return {
     -- ==============================
     -- MAP EDITOR
     -- ==============================
+    ['ui_prefab_editor_brush'] = COLORS.DB25,
 
     ['parcel_spawns_friendly'] = COLORS.DB09,
     ['parcel_spawns_neutral'] = COLORS.DB08,

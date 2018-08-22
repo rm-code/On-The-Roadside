@@ -14,12 +14,14 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
-local PrefabCanvas = require( 'src.ui.mapeditor.PrefabCanvas' )
-local PrefabBrush = require( 'src.ui.mapeditor.PrefabBrush' )
+local PrefabCanvas = require( 'src.map.editor.PrefabCanvas' )
+local DrawingBrush = require( 'src.map.editor.DrawingBrush' )
+local EraserTool = require( 'src.map.editor.EraserTool' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
-local GridHelper = require( 'src.util.GridHelper' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 local Settings = require( 'src.Settings' )
+local GridHelper = require( 'src.util.GridHelper' )
+local Brush = require( 'src.map.editor.Brush' )
 
 -- ------------------------------------------------
 -- Module
@@ -41,18 +43,42 @@ local CANVAS_SIZES = {
     'L',
     'XL'
 }
+
+-- ------------------------------------------------
+-- Private Variables
+-- ------------------------------------------------
+
+local icons
+
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
-local function createTileSelector( tileTemplates, tool )
+local function cacheIcons( worldObjectTemplates )
+    local nicons = {}
+    for id, template in pairs( worldObjectTemplates ) do
+        if template.openable then
+            nicons[id] = { id, 'closed' }
+        elseif template.connections then
+            nicons[id] = { id, 'default' }
+        else
+            nicons[id] = { id }
+        end
+    end
+    return nicons
+end
+
+local function createTileSelector( tileTemplates, brush )
     local lx, ly = 1, 1
     local tileSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
     local buttons = {}
     for id, template in pairs( tileTemplates ) do
         local function callback()
-            tool:setBrush( template, 'tile' )
+            brush:setTemplate( template )
+            brush:setLayer( 'tile' )
+            brush:setIcon( id )
+            brush:setIconColorID( id )
         end
 
         local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
@@ -67,24 +93,21 @@ local function createTileSelector( tileTemplates, tool )
     return tileSelector
 end
 
-local function createWorldObjectSelector( objectTemplates, tool )
+local function createWorldObjectSelector( objectTemplates, brush )
     local lx, ly = 1, SELECTOR_HEIGHT + 2
     local objectSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
     local buttons = {}
     for id, template in pairs( objectTemplates ) do
         local function callback()
-            tool:setBrush( template, 'worldObject' )
+            brush:setTemplate( template )
+            brush:setLayer( 'worldObject' )
+            brush:setIcon( unpack( icons[id] ))
+            brush:setIconColorID( id )
         end
 
         local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
-        if template.openable then
-            button:setIcon( id, 'closed' )
-        elseif template.connections then
-            button:setIcon( id, 'default' )
-        else
-            button:setIcon( id )
-        end
+        button:setIcon( unpack( icons[id] ))
         button:setIconColorID( id )
 
         buttons[#buttons + 1] = button
@@ -119,6 +142,8 @@ end
 -- ------------------------------------------------
 
 function PrefabEditor:initialize()
+    icons = cacheIcons( WorldObjectFactory.getTemplates() )
+
     love.filesystem.createDirectory( 'mods/maps/prefabs' )
     love.mouse.setVisible( true )
 
@@ -126,13 +151,14 @@ function PrefabEditor:initialize()
 
     self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
 
-    self.tool = PrefabBrush()
+    self.brush = Brush()
+    self.tool = DrawingBrush()
 
     local tileTemplates = TileFactory.getTemplates()
-    self.tileSelector = createTileSelector( tileTemplates, self.tool )
+    self.tileSelector = createTileSelector( tileTemplates, self.brush )
 
     local objectTemplates = WorldObjectFactory.getTemplates()
-    self.objectSelector = createWorldObjectSelector( objectTemplates, self.tool )
+    self.objectSelector = createWorldObjectSelector( objectTemplates, self.brush )
 
     self.canvasSelector = createCanvasSelector( self.canvas, self.camera )
 
@@ -144,7 +170,7 @@ end
 
 function PrefabEditor:receive( event, ... )
     if event == 'LOAD_LAYOUT' then
-        self.canvas:load( ... )
+        self.canvas:deserialize( ... )
         self.camera:setBounds( self.canvas:getWidth(), self.canvas:getHeight() )
     end
 end
@@ -166,9 +192,11 @@ function PrefabEditor:draw()
     local  _, sh = GridHelper.getScreenGridDimensions()
     local tw, th = TexturePacks.getTileDimensions()
 
-    local template, type = self.tool:getBrush()
+    local template, type = self.brush:getTemplate(), self.brush:getLayer()
     if template then
+        TexturePacks.setColor( 'ui_prefab_editor_brush' )
         love.graphics.print( string.format( 'Selected brush: %s (%s)', Translator.getText( template.id ), type ), tw, (sh-1) * th )
+        TexturePacks.resetColor()
     end
 end
 
@@ -181,8 +209,15 @@ function PrefabEditor:update( dt )
 
     self.uiContainer:update()
 
+    self.canvas:update()
+
+    self.tool:setTemplate( self.brush:getTemplate() )
+    self.tool:setLayer( self.brush:getLayer() )
+    self.tool:setIcon( self.brush:getIcon() )
+    self.tool:setIconColorID( self.brush:getIconColorID() )
+
     self.tool:setPosition( self.camera:getMouseWorldGridPosition() )
-    self.tool:use( self.canvas, self.camera )
+    self.tool:use( self.canvas )
 end
 
 function PrefabEditor:keypressed( _, scancode )
@@ -194,17 +229,15 @@ function PrefabEditor:keypressed( _, scancode )
     local action = Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode )
 
     if action == 'increase_tool_size' then
-        self.tool:increase()
+        self.tool:increaseSize()
     elseif action == 'decrease_tool_size' then
-        self.tool:decrease()
+        self.tool:decreaseSize()
     end
 
     if action == 'mode_draw' then
-        self.tool:setMode( 'draw' )
+        self.tool = DrawingBrush()
     elseif action == 'mode_erase' then
-        self.tool:setMode( 'erase' )
-    elseif action == 'mode_fill' then
-        self.tool:setMode( 'fill' )
+        self.tool = EraserTool()
     end
 
     if action == 'hide_worldobjects' then

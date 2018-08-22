@@ -9,6 +9,7 @@ locale.strings = {
     -- ==============================
     -- TILES
     -- ==============================
+    ['tile_empty'] = 'Empty',
     ['tile_asphalt'] = 'Asphalt',
     ['tile_deep_water'] = 'Deep Water',
     ['tile_grass'] = 'Grass',
