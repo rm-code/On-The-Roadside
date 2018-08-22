@@ -84,7 +84,7 @@ end
 
 function UIInventoryList:drag( rmb, fullstack )
     for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() then
+        if uiItem:isInstanceOf( UIInventoryItem ) and uiItem:isMouseOver() then
             local item = uiItem:drag( rmb, fullstack )
             self.inventory:removeItem( item )
             self:refresh()
@@ -95,7 +95,7 @@ end
 
 function UIInventoryList:drop( item )
     for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() then
+        if uiItem:isInstanceOf( UIInventoryItem ) and uiItem:isMouseOver() then
             local success = self.inventory:insertItem( item, uiItem:getItem() )
             if success then
                 self:refresh()
@@ -119,7 +119,7 @@ end
 --
 function UIInventoryList:getItemBelowCursor()
     for _, uiItem in ipairs( self.children ) do
-        if uiItem:isMouseOver() then
+        if uiItem:isInstanceOf( UIInventoryItem ) and uiItem:isMouseOver() then
             return uiItem:getItem()
         end
     end
