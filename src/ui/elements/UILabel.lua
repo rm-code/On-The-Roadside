@@ -20,18 +20,19 @@ local UILabel = UIElement:subclass( 'UILabel' )
 -- Constructor
 -- ------------------------------------------------
 
-function UILabel:initialize( px, py, x, y, w, h, text, color )
+function UILabel:initialize( px, py, x, y, w, h, text, color, align )
     UIElement.initialize( self, px, py, x, y, w, h )
 
     self.text = text
     self.color = color or 'sys_reset'
+    self.align = align or 'left'
 end
 
 function UILabel:draw()
     local tw, th = TexturePacks.getTileDimensions()
 
     TexturePacks.setColor( self.color )
-    love.graphics.print( self.text, self.ax * tw, self.ay * th )
+    love.graphics.printf( self.text, self.ax * tw, self.ay * th, self.w * tw, self.align )
     TexturePacks.resetColor()
 end
 

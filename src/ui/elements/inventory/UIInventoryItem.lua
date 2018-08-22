@@ -35,7 +35,7 @@ local function createInfo( self )
     if self.item:isInstanceOf( ItemStack ) and self.item:getItemCount() > 1 then
         count = self.item:getItemCount()
     end
-    self.amount = UILabel( self.ax, self.ay, self.w-2, 0, self.w, 1, count, 'ui_equipment_item' )
+    self.amount = UILabel( self.ax, self.ay, 0, 0, self.w, 1, count, 'ui_equipment_item', 'right' )
     self:addChild( self.amount )
 end
 
