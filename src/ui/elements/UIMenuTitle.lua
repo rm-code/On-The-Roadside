@@ -33,9 +33,9 @@ local function createTitle( titleDefinition )
     for i, line in ipairs( titleDefinition ) do
         local coloredtext = {}
         for w in string.gmatch( line, '.' ) do
-            if w == '@' then
+            if w == 'O' then
                 coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                coloredtext[#coloredtext + 1] = 'O'
+                coloredtext[#coloredtext + 1] = w
             elseif w == '!' then
                 coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
                 coloredtext[#coloredtext + 1] = w
