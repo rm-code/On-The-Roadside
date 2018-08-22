@@ -2,7 +2,7 @@ return {
     {
         id = 'worldobject_chair',
         size = 15,
-        hp = 45,
+        hp = 10,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -20,7 +20,7 @@ return {
     {
         id = 'worldobject_toilet',
         size = 15,
-        hp = 65,
+        hp = 12,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -37,7 +37,7 @@ return {
     {
         id = 'worldobject_shower',
         size = 15,
-        hp = 35,
+        hp = 12,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -54,7 +54,7 @@ return {
     {
         id = 'worldobject_crate',
         size = 50,
-        hp = 110,
+        hp = 30,
         energyReduction = 50,
         destructible = true,
         blocksVision = true,
@@ -68,7 +68,7 @@ return {
     {
         id = 'worldobject_door',
         size = 100,
-        hp = 110,
+        hp = 40,
         interactionCost = {
             stand  = 3,
             crouch = 3,
@@ -88,7 +88,7 @@ return {
     {
         id = 'worldobject_fence',
         size = 35,
-        hp = 55,
+        hp = 14,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -109,7 +109,7 @@ return {
     {
         id = 'worldobject_fencegate',
         size = 40,
-        hp = 65,
+        hp = 15,
         interactionCost = {
             stand  = 3,
             crouch = 3,
@@ -144,7 +144,7 @@ return {
     {
         id = 'worldobject_table',
         size = 25,
-        hp = 65,
+        hp = 20,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -178,7 +178,7 @@ return {
     {
         id = 'worldobject_window',
         size = 100,
-        hp = 25,
+        hp = 1,
         energyReduction = 10,
         destructible = true,
         debrisID = 'worldobject_lowwall',
