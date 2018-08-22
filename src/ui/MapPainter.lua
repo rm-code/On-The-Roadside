@@ -90,7 +90,7 @@ local function initSpritebatch( map, spritebatch )
         tile:setSpriteID( id )
         tile:setDirty( true )
     end)
-    Log.debug( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
+    Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
 end
 
 ---
