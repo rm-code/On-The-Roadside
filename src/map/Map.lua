@@ -144,6 +144,20 @@ function Map:receive( event, ... )
 end
 
 ---
+-- Moves a Character from his current position to a new target position.
+-- @tparam number    x         The target position along the x-axis.
+-- @tparam number    y         The target position along the y-axis.
+-- @tparam Character character The character to move.
+--
+function Map:moveCharacter( x, y, character )
+    -- Remove character from old position.
+    self:removeCharacter( character:getX(), character:getY(), character )
+
+    -- Set character to new position.
+    self:setCharacterAt( x, y, character )
+end
+
+---
 -- Removes a Character from a specific position on the character layer.
 -- @tparam number    x         The target position along the x-axis.
 -- @tparam number    y         The target position along the y-axis.
@@ -277,12 +291,6 @@ end
 -- @tparam Character     The character to set to the grid.
 --
 function Map:setCharacterAt( x, y, character )
-    -- Remove character from old position if necessary.
-    local oldX, oldY = character:getPosition()
-    if oldX and oldY then
-        self:removeCharacter( oldX, oldY, character )
-    end
-
     -- Make sure the grid space is empty.
     if self.characters[x][y] ~= nil then
         error( string.format( 'Target position (%s, %s) is already occupied by a character.', x, y ))

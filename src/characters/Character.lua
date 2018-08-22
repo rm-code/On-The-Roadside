@@ -271,7 +271,7 @@ end
 -- @tparam number y The target position along the y-axis.
 --
 function Character:move( x, y )
-    self.map:setCharacterAt( x, y, self )
+    self.map:moveCharacter( x, y, self )
 end
 
 ---
