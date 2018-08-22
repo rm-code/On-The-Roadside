@@ -30,8 +30,9 @@ local UIMenuTitle = Class( 'UIMenuTitle' )
 local function createTitle( titleDefinition )
     local font = TexturePacks.getFont():get()
     local title = love.graphics.newText( font )
-    for i, line in ipairs( titleDefinition ) do
-        local coloredtext = {}
+    local coloredtext = {}
+
+    for _, line in ipairs( titleDefinition ) do
         for w in string.gmatch( line, '.' ) do
             if w == 'O' then
                 coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
@@ -43,9 +44,12 @@ local function createTitle( titleDefinition )
                 coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
                 coloredtext[#coloredtext + 1] = w
             end
-            title:add( coloredtext, 0, i * font:getHeight() )
         end
+        coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'tile_unseen' )
+        coloredtext[#coloredtext + 1] = '\n'
     end
+
+    title:add( coloredtext, 0, 0 )
     return title
 end
 
