@@ -272,6 +272,7 @@ end
 --
 function Character:move( x, y )
     self.map:moveCharacter( x, y, self )
+    self:publish( 'CHARACTER_MOVED', self:getTile() )
 end
 
 ---

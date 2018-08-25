@@ -11,12 +11,19 @@ local UserInterface = require( 'src.ui.elements.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Settings = require( 'src.Settings' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local CombatScreen = Screen:subclass( 'CombatScreen' )
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
 -- Public Methods
@@ -35,7 +42,22 @@ function CombatScreen:initialize( playerFaction, savegame )
 
     self.userInterface = UserInterface( self.combatState, self.camera )
     self.overlayPainter = OverlayPainter( self.combatState, self.camera )
+
+    self.combatState:getMap():observe( self )
 end
+
+function CombatScreen:receive( event, ... )
+    if event == 'CHARACTER_MOVED' then
+        local tile = ...
+        if not tile:isSeenBy( FACTIONS.ALLIED ) then
+            return
+        end
+        local tw, th = TexturePacks.getTileDimensions()
+        self.camera:setTargetPosition( tile:getX() * tw, tile:getY() * th )
+        return
+    end
+end
+
 
 function CombatScreen:draw()
     self.camera:attach()
