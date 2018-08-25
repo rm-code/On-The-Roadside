@@ -144,6 +144,8 @@ function Character:activate()
     end
     self:generateFOV()
     self:clearActions()
+
+    self:publish( 'CHARACTER_SELECTED', self:getTile() )
 end
 
 ---

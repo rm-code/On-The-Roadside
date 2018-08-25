@@ -56,6 +56,17 @@ function CombatScreen:receive( event, ... )
         self.camera:setTargetPosition( tile:getX() * tw, tile:getY() * th )
         return
     end
+
+    if event == 'CHARACTER_SELECTED' then
+        local tile = ...
+        if not tile:isSeenBy( FACTIONS.ALLIED ) then
+            return
+        end
+        local tw, th = TexturePacks.getTileDimensions()
+        self.camera:setTargetPosition( tile:getX() * tw, tile:getY() * th )
+        SoundManager.play( 'sound_select' )
+        return
+    end
 end
 
 
