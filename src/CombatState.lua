@@ -95,6 +95,9 @@ function CombatState:initialize( playerFaction, savegame )
     self.map:observe( self )
     self.map:observe( self.factions )
 
+    -- Clear the message queue.
+    MessageQueue.clear()
+
     -- Free memory if possible.
     collectgarbage( 'collect' )
 end
