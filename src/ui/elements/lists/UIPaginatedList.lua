@@ -59,7 +59,8 @@ local function fillPages( items, maximumPages, height, ax, ay )
 
     for i = 1, #items do
         currentPage[#currentPage + 1] = items[i]
-        items[i]:setRelativePosition( ax, ay + #currentPage-1 )
+        items[i]:setOrigin( ax, ay )
+        items[i]:setRelativePosition( 0, #currentPage-1 )
 
         -- Add the current page to the "pages" table if it is full or if we have
         -- added all the items to add.
@@ -179,9 +180,9 @@ end
 -- Creates the buttons to scroll through the pages.
 --
 function UIPaginatedList:addButtons()
-    self.buttonPrev = UIButton( 0, 0, self.ax + self.w-2, self.ay + self.h-1, 1, 1, function() self:scrollPage( -1 ) end )
+    self.buttonPrev = UIButton( self.ax, self.ay, self.w-2, self.h-1, 1, 1, function() self:scrollPage( -1 ) end )
     self.buttonPrev:setIcon( 'ui_prev_element' )
-    self.buttonNext = UIButton( 0, 0, self.ax + self.w-1, self.ay + self.h-1, 1, 1, function() self:scrollPage( 1 ) end )
+    self.buttonNext = UIButton( self.ax, self.ay, self.w-1, self.h-1, 1, 1, function() self:scrollPage( 1 ) end )
     self.buttonNext:setIcon( 'ui_next_element' )
 
     self:addChild( self.buttonPrev )
@@ -275,6 +276,22 @@ end
 function UIPaginatedList:setFocus( focus )
     UIPaginatedList.super.setFocus( self, focus )
     self.pages[self.currentPage][self.cursor]:setFocus( focus )
+end
+
+---
+-- Forwards changes to the origin of the paginated list to the children and
+-- all items on each page.
+-- @tparam number ox The new origin along the x-axis.
+-- @tparam number oy The new origin along the y-axis.
+--
+function UIPaginatedList:setOrigin( ox, oy )
+    UIPaginatedList.super.setOrigin( self, ox, oy )
+
+    for _, page in ipairs( self.pages ) do
+        for _, item in ipairs( page ) do
+            item:setOrigin( ox, oy )
+        end
+    end
 end
 
 return UIPaginatedList

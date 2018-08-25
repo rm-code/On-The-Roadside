@@ -262,4 +262,11 @@ function KeybindingScreen:receive( event, ... )
     end
 end
 
+function KeybindingScreen:resize( _, _ )
+    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
+
+    self.paginatedList:setOrigin( lx, BUTTON_LIST_Y )
+    self.buttonList:setOrigin( lx, BUTTON_LIST_Y + BUTTON_LIST_HEIGHT + 1 )
+end
+
 return KeybindingScreen
