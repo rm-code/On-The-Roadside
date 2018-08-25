@@ -31,7 +31,7 @@ local KeybindingScreen = Screen:subclass( 'KeybindingScreen' )
 
 local TITLE_POSITION = 2
 local BUTTON_LIST_WIDTH = 25
-local BUTTON_LIST_HEIGHT = 10
+local BUTTON_LIST_HEIGHT = 15
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
