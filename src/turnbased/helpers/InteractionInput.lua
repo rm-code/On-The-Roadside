@@ -47,12 +47,6 @@ end
 -- @treturn boolean             True if an action was created, false otherwise.
 --
 function InteractionInput:request( target, character )
-    -- Check health of enemy characters.
-    if target:hasCharacter() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
-        ScreenManager.push( 'playerInfo', target:getCharacter() )
-        return true
-    end
-
     -- Characters can only interact with adjacent tiles.
     if not target:isAdjacent( character:getTile() ) then
         return false
