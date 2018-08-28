@@ -197,7 +197,7 @@ end
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
     local class = findClass( classID )
-    local character = Character( classID )
+    local character = Character( classID, class.stats.ap )
 
     local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'body_human' then

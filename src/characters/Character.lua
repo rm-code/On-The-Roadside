@@ -23,8 +23,6 @@ local Character = MapObject:subclass( 'Character' )
 -- Constants
 -- ------------------------------------------------
 
-local DEFAULT_ACTION_POINTS = 40
-
 local STANCES = require( 'src.constants.STANCES' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
 
@@ -116,12 +114,14 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize( classID )
+function Character:initialize( classID, actionPoints )
     MapObject.initialize( self )
 
     self.creatureClass = classID
 
-    self.actionPoints = DEFAULT_ACTION_POINTS
+    self.maxActionPoints = actionPoints
+    self.actionPoints = actionPoints
+
     self.actions = Queue()
 
     self.fov = {}
@@ -240,7 +240,7 @@ end
 -- Resets the character's action points to the default value.
 --
 function Character:resetActionPoints()
-    self.actionPoints = DEFAULT_ACTION_POINTS
+    self.actionPoints = self.maxActionPoints
 end
 
 ---
@@ -451,7 +451,7 @@ end
 -- @treturn number The total amount of action points.
 --
 function Character:getMaxActionPoints()
-    return DEFAULT_ACTION_POINTS
+    return self.maxActionPoints
 end
 
 ---
