@@ -6,21 +6,21 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Log = require( 'src.util.Log' );
+local Log = require( 'src.util.Log' )
 local Compressor = require( 'src.util.Compressor' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local SaveHandler = {};
+local SaveHandler = {}
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
 local SAVE_FOLDER = 'saves'
-local COMPRESSED_SAVE = 'compressed.data'
+local COMPRESSED_SAVE = 'game.data'
 local VERSION_FILE = 'version.data'
 
 -- ------------------------------------------------
@@ -41,7 +41,7 @@ end
 -- ------------------------------------------------
 
 function SaveHandler.save( t, name )
-    Log.print( 'Created savegame: ' .. name, 'SaveHandler' )
+    Log.info( 'Created savegame: ' .. name, 'SaveHandler' )
 
     -- Create the saves folder it doesn't exist already.
     if not love.filesystem.getInfo( SAVE_FOLDER ) then
@@ -75,4 +75,4 @@ function SaveHandler.getSaveFolder()
     return SAVE_FOLDER
 end
 
-return SaveHandler;
+return SaveHandler

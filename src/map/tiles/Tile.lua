@@ -6,19 +6,20 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Observable = require( 'src.util.Observable' )
+local MapObject = require( 'src.map.MapObject' )
 local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local Tile = Observable:subclass( 'Tile' )
+local Tile = MapObject:subclass( 'Tile' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
 local WEIGHT_LIMIT = 1000
 local VOLUME_LIMIT = 1000
 local DEFAULT_HEIGHT = 10
@@ -29,43 +30,26 @@ local DEFAULT_HEIGHT = 10
 
 ---
 -- Creates a new instance of the Tile class.
--- @tparam  number  x        The grid position along the x-axis.
--- @tparam  number  y        The grid position along the y-axis.
 -- @tparam  string  id       The tile's id.
 -- @tparam  number  cost     The amount of AP it costs to traverse this tile.
 -- @tparam  boolean passable Wether this tile can be traversed.
 -- @tparam  boolean spawn    Wether this tile is valid for spawning.
 --
-function Tile:initialize( x, y, id, cost, passable, spawn )
-    Observable.initialize( self )
-
-    self.x = x
-    self.y = y
+function Tile:initialize( id, cost, passable, spawn )
+    MapObject.initialize( self )
 
     self.id = id
     self.cost = cost
     self.passable = passable
     self.spawn = spawn
 
+    self.factionFOV = {
+        [FACTIONS.ALLIED] = 0,
+        [FACTIONS.NEUTRAL] = 0,
+        [FACTIONS.ENEMY] = 0
+    }
+
     self.inventory = Inventory( WEIGHT_LIMIT, VOLUME_LIMIT )
-end
-
----
--- Adds a table containing the neighbouring tiles. Note that some tiles might
--- be nil.
--- @tparam table neighbours A table containing the neighbouring tiles.
---
-function Tile:addNeighbours( neighbours )
-    self.neighbours = neighbours
-end
-
----
--- Adds a world object to this tile and marks it for a drawing update.
--- @tparam WorldObject worldObject The WorldObject to add.
---
-function Tile:addWorldObject( worldObject )
-    self.worldObject = worldObject
-    self:setDirty( true )
 end
 
 ---
@@ -75,27 +59,27 @@ end
 -- @tparam string damageType The type of damage the tile is hit with.
 --
 function Tile:hit( damage, damageType )
-    if self:isOccupied() then
-        self.character:hit( damage, damageType )
-    elseif self:hasWorldObject() and self.worldObject:isDestructible() then
-        self.worldObject:damage( damage, damageType )
+    if self:hasCharacter() then
+        self:getCharacter():hit( damage, damageType )
+    elseif self:hasWorldObject() and self:getWorldObject():isDestructible() then
+        self:getWorldObject():damage( damage, damageType )
     end
 end
 
 ---
--- Removes the character from this tile and marks it for updating.
+-- Increments the faction FOV for a particular faction.
+-- @tparam string factionType The faction's id as defined in the faction constants.
 --
-function Tile:removeCharacter()
-    self.character = nil
-    self:setDirty( true )
+function Tile:incrementFactionFOV( factionType )
+    self.factionFOV[factionType] = self.factionFOV[factionType] + 1
 end
 
 ---
--- Removes the worldObject from this tile and marks it for updating.
+-- Decrements the faction FOV for a particular faction.
+-- @tparam string factionType The faction's id as defined in the faction constants.
 --
-function Tile:removeWorldObject()
-    self.worldObject = nil
-    self:setDirty( true )
+function Tile:decrementFactionFOV( factionType )
+    self.factionFOV[factionType] = self.factionFOV[factionType] - 1
 end
 
 ---
@@ -109,10 +93,6 @@ function Tile:serialize()
         ['y'] = self.y
     }
 
-    if self:hasWorldObject() then
-        t.worldObject = self.worldObject:serialize()
-    end
-
     if not self.inventory:isEmpty() then
         t['inventory'] = self.inventory:serialize()
     end
@@ -123,14 +103,6 @@ end
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
-
----
--- Returns the character standing on this tile.
--- @treturn Character The character standing on the tile.
---
-function Tile:getCharacter()
-    return self.character
-end
 
 ---
 -- Returns the tile's unique spriteID.
@@ -150,23 +122,6 @@ function Tile:getMovementCost( stance )
 end
 
 ---
--- Returns a table containing this tile's neighbours.
--- @treturn table A table containing the neighbouring tiles.
---
-function Tile:getNeighbours()
-    return self.neighbours
-end
-
----
--- Returns the tile's grid position.
--- @treturn number The tile's position along the x-axis of the grid.
--- @treturn number The tile's position along the y-axis of the grid.
---
-function Tile:getPosition()
-    return self.x, self.y
-end
-
----
 -- Gets the tile's inventory.
 -- @treturn Inventory The tile's inventory.
 --
@@ -181,10 +136,10 @@ end
 -- @treturn number The height of this tile.
 --
 function Tile:getHeight()
-    if self.worldObject then
-        return self.worldObject:getHeight()
-    elseif self.character then
-        return self.character:getHeight()
+    if self:getWorldObject() then
+        return self:getWorldObject():getHeight()
+    elseif self:getCharacter() then
+        return self:getCharacter():getHeight()
     end
     return DEFAULT_HEIGHT
 end
@@ -198,43 +153,11 @@ function Tile:getID()
 end
 
 ---
--- Returns the world object located on this tile.
--- @treturn WorldObject The WorldObject.
---
-function Tile:getWorldObject()
-    return self.worldObject
-end
-
----
--- Returns the tile's grid position along the x-axis.
--- @treturn number The tile's position along the x-axis of the grid.
---
-function Tile:getX()
-    return self.x
-end
-
----
--- Returns the tile's grid position along the y-axis.
--- @treturn number The tile's position along the y-axis of the grid.
---
-function Tile:getY()
-    return self.y
-end
-
----
--- Checks if the tile has a world object.
--- @treturn boolean True if a WorldObject is located on the tile.
---
-function Tile:hasWorldObject()
-    return self.worldObject ~= nil
-end
-
----
 -- Checks if a given tile is adjacent to this tile.
 -- @treturn boolean True if the tiles are adjacent to each other.
 --
 function Tile:isAdjacent( tile )
-    for _, neighbour in pairs( self.neighbours ) do
+    for _, neighbour in pairs( self:getNeighbours() ) do
         if neighbour == tile then
             return true
         end
@@ -250,20 +173,12 @@ function Tile:isDirty()
 end
 
 ---
--- Checks if the tile has a character on it.
--- @treturn boolean True a character is standing on the tile.
---
-function Tile:isOccupied()
-    return self.character ~= nil
-end
-
----
 -- Checks if the tile is passable.
 -- @treturn boolean True if the tile is passable.
 --
 function Tile:isPassable()
     if self.passable and self:hasWorldObject() then
-        return self.worldObject:isPassable()
+        return self:getWorldObject():isPassable()
     end
     return self.passable
 end
@@ -276,18 +191,17 @@ function Tile:isSpawn()
     return self.spawn
 end
 
+---
+-- Determines wether the tile is seen by a certain faction.
+-- @treturn boolean True if the tile is seen by at least one character.
+--
+function Tile:isSeenBy( factionType )
+    return self.factionFOV[factionType] > 0
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
-
----
--- Sets a character for this tile and marks the tile for updating.
--- @tparam Character character The character to add.
---
-function Tile:setCharacter( character )
-    self.character = character
-    self:setDirty( true )
-end
 
 ---
 -- Sets the dirty state of the tile.

@@ -101,8 +101,7 @@ end
 --
 function Faction:spawnCharacters( map )
     self:iterate( function( character )
-        local sx, sy = character:getSavedPosition()
-        character:setSavedPosition( nil, nil )
+        local sx, sy = character:getPosition()
 
         local tile
 
@@ -112,25 +111,8 @@ function Faction:spawnCharacters( map )
             tile = map:findSpawnPoint( self.type )
         end
 
-        tile:setCharacter( character )
-        character:setTile( tile )
-        character:setMap( map )
+        map:setCharacterAt( tile:getX(), tile:getY(), character )
     end)
-end
-
----
--- Checks if any of the characters in this Faction can see the target tile.
--- @tparam  Tile    target The tile to check visibility for.
--- @treturn boolean        Wether a character can see this tile.
---
-function Faction:canSee( tile )
-    local node = self.root
-    while node do
-        if node:getObject():canSee( tile ) then
-            return true
-        end
-        node = node:getNext()
-    end
 end
 
 ---

@@ -27,14 +27,10 @@ function Walk:perform()
     local current = self.character:getTile()
 
     assert( self.target:isPassable(), 'Target tile has to be passable!' )
-    assert( not self.target:isOccupied(), 'Target tile must not be occupied by another character!' )
+    assert( not self.target:hasCharacter(), 'Target tile must not be occupied by another character!' )
     assert( self.target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' )
 
-    -- Remove the character from the old tile, add it to the new one and
-    -- give it a reference to the new tile.
-    current:removeCharacter()
-    self.target:setCharacter( self.character )
-    self.character:setTile( self.target )
+    self.character:move( self.target:getPosition() )
     return true
 end
 

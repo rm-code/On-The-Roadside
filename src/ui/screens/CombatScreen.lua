@@ -7,16 +7,23 @@ local Screen = require( 'src.ui.screens.Screen' )
 local CombatState = require( 'src.CombatState' )
 local MapPainter = require( 'src.ui.MapPainter' )
 local Camera = require( 'src.ui.Camera' )
-local UserInterface = require( 'src.ui.UserInterface' )
+local UserInterface = require( 'src.ui.elements.UserInterface' )
 local OverlayPainter = require( 'src.ui.overlays.OverlayPainter' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Settings = require( 'src.Settings' )
+local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local CombatScreen = Screen:subclass( 'CombatScreen' )
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
 -- Public Methods
@@ -35,7 +42,33 @@ function CombatScreen:initialize( playerFaction, savegame )
 
     self.userInterface = UserInterface( self.combatState, self.camera )
     self.overlayPainter = OverlayPainter( self.combatState, self.camera )
+
+    self.combatState:getMap():observe( self )
 end
+
+function CombatScreen:receive( event, ... )
+    if event == 'CHARACTER_MOVED' then
+        local tile = ...
+        if not tile:isSeenBy( FACTIONS.ALLIED ) then
+            return
+        end
+        local tw, th = TexturePacks.getTileDimensions()
+        self.camera:setTargetPosition( tile:getX() * tw, tile:getY() * th )
+        return
+    end
+
+    if event == 'CHARACTER_SELECTED' then
+        local tile = ...
+        if not tile:isSeenBy( FACTIONS.ALLIED ) then
+            return
+        end
+        local tw, th = TexturePacks.getTileDimensions()
+        self.camera:setTargetPosition( tile:getX() * tw, tile:getY() * th )
+        SoundManager.play( 'sound_select' )
+        return
+    end
+end
+
 
 function CombatScreen:draw()
     self.camera:attach()
@@ -69,11 +102,11 @@ function CombatScreen:keypressed( key, scancode, isrepeat )
     end
 
     self.combatState:keypressed( key, scancode, isrepeat )
-    self.camera:input( Settings.mapInput( scancode ), true )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), true )
 end
 
 function CombatScreen:keyreleased( _, scancode )
-    self.camera:input( Settings.mapInput( scancode ), false )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), false )
 end
 
 function CombatScreen:mousepressed( _, _, button )

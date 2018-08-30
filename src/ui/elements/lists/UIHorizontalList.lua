@@ -60,4 +60,8 @@ function UIHorizontalList:command( cmd )
     end
 end
 
+function UIHorizontalList:mousecommand( cmd )
+    self:getActiveElement():command( cmd )
+end
+
 return UIHorizontalList

@@ -35,6 +35,13 @@ function MessageQueue.dequeue()
 end
 
 ---
+-- Clears the message queue of any old messages.
+--
+function MessageQueue.clear()
+    messages = {}
+end
+
+---
 -- Checks wether the message queue is empty.
 -- @treturn boolean True if the queue is empty.
 --

@@ -5,6 +5,7 @@ return {
             'body_human'
         },
         stats = {
+            ap = 40,
             hp = 8
         }
     },
@@ -14,6 +15,7 @@ return {
             'body_human'
         },
         stats = {
+            ap = 30,
             hp = 5
         }
     },
@@ -23,6 +25,7 @@ return {
             'body_dog'
         },
         stats = {
+            ap = 20,
             hp = 4
         }
     }

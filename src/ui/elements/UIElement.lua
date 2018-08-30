@@ -55,11 +55,25 @@ function UIElement:initialize( ox, oy, rx, ry, w, h )
     self.h  = h
 end
 
-function UIElement:addChild( child )
+---
+-- Adds a new UIElement to the list of children.
+--
+-- NOTE: If you use custom indexes you should make sure that you don't break the
+-- sequence (1, 2, 3, ... n). Trying to iterate over an array with can have
+-- unforeseen consequences in Lua.
+--
+-- @tparam UIElement child The UIElement to add as a child.
+-- @tparam number    index A custom index to use (optional).
+--
+function UIElement:addChild( child, index )
     if not child:isInstanceOf( UIElement ) then
         error( 'Children of a UIElement must be derived from the UIElement class themselves.' )
     end
-    self.children[#self.children + 1] = child
+
+    -- Create a new index or use the one provided as a parameter.
+    index = index or #self.children + 1
+
+    self.children[index] = child
 end
 
 ---
@@ -152,6 +166,20 @@ end
 --
 function UIElement:hasFocus()
     return self.focus
+end
+
+---
+-- Draws the bounding boxes of the UIElement and all of its children as white
+-- rectangles for debugging purposes.
+-- @tparam number tw The game's tile width.
+-- @tparam number th The game's tile height.
+--
+function UIElement:drawBoundingBox( tw, th )
+    love.graphics.rectangle( 'line', self.ax * tw, self.ay * th, self.w * tw, self.h * th )
+
+    for i = 1, #self.children do
+        self.children[i]:drawBoundingBox( tw, tw )
+    end
 end
 
 return UIElement

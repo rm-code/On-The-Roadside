@@ -147,12 +147,12 @@ function love.textinput( text )
     ScreenManager.textinput( text )
 end
 
-function love.mousepressed( mx, my, button, isTouch )
-    ScreenManager.mousepressed( mx, my, button, isTouch )
+function love.mousepressed( mx, my, button, isTouch, presses )
+    ScreenManager.mousepressed( mx, my, button, isTouch, presses )
 end
 
-function love.mousereleased( mx, my, button, isTouch )
-    ScreenManager.mousereleased( mx, my, button, isTouch )
+function love.mousereleased( mx, my, button, isTouch, presses )
+    ScreenManager.mousereleased( mx, my, button, isTouch, presses )
 end
 
 function love.mousefocus( f )

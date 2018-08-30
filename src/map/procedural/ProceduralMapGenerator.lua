@@ -16,6 +16,7 @@ local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local Util = require( 'src.util.Util' )
 local Compressor = require( 'src.util.Compressor' )
+local Map = require( 'src.map.Map' )
 
 -- ------------------------------------------------
 -- Module
@@ -64,60 +65,38 @@ end
 
 ---
 -- Places the tiles and world objects belonging to this prefab.
--- @tparam table  tileGrid The tile grid to place the prefab on.
--- @tparam Prefab prefab   The prefab to place.
--- @tparam number px       The starting coordinates along the x-axis for this prefab.
--- @tparam number py       The starting coordinates along the y-axis for this prefab.
--- @tparam number rotate   The rotation to apply to the prefab before placing it.
+-- @tparam Map    map    The map to place the prefab on.
+-- @tparam Prefab prefab The prefab to place.
+-- @tparam number px     The starting coordinates along the x-axis for this prefab.
+-- @tparam number py     The starting coordinates along the y-axis for this prefab.
 --
-local function placePrefab( tileGrid, prefab, px, py, rotate )
-    local tiles = prefab.grid
-
-    if rotate then
-        tiles = ArrayRotation.rotate( tiles, rotate )
-    end
+local function placePrefab( map, prefab, px, py )
+    -- Rotate prefab randomly.
+    local tiles = ArrayRotation.rotate( prefab.grid, love.math.random( 0, 3 ))
 
     for tx = 1, #tiles do
         for ty = 1, #tiles[tx] do
+            local mapX, mapY = tx + px, ty + py
+
             if tiles[tx][ty].tile then
-                tileGrid[tx + px][ty + py] = TileFactory.create( tx + px, ty + py, tiles[tx][ty].tile )
+                map:setTileAt( mapX, mapY, TileFactory.create( tiles[tx][ty].tile ))
             end
 
             if tiles[tx][ty].worldObject then
-                tileGrid[tx + px][ty + py]:addWorldObject( WorldObjectFactory.create( tiles[tx][ty].worldObject ))
+                map:setWorldObjectAt( mapX, mapY, WorldObjectFactory.create( tiles[tx][ty].worldObject ))
             end
         end
     end
 end
 
 ---
--- Determines a random rotation for a certain parcel layout.
--- @tparam  number pw The parcel's width.
--- @tparam  number ph The parcel's height.
--- @treturn number    The rotation direction [0, 3].
---
-local function rotateParcels( pw, ph )
-    -- Square parcels can be rotated in all directions.
-    if pw == ph then
-        return love.math.random( 0, 3 )
-    end
-
-    -- Handle rotation for rectangular parcels.
-    if pw < ph then
-        return love.math.random() > 0.5 and 1 or 3
-    elseif pw > ph then
-        return love.math.random() > 0.5 and 0 or 2
-    end
-end
-
----
 -- Iterates over the parcel definitions for this map layout and tries to
 -- place prefabs for each of them.
--- @tparam table      tileGrid   The tile grid to place the prefab on.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to fill.
 -- @tparam table      parcels    The parcel definitions.
 --
-local function fillParcels( tileGrid, parcelGrid, parcels )
+local function fillParcels( map, parcelGrid, parcels )
     for type, definitions in pairs( parcels ) do
         Log.debug( string.format( 'Placing %s parcels.', type ), 'ProceduralMapGenerator' )
 
@@ -128,10 +107,8 @@ local function fillParcels( tileGrid, parcelGrid, parcels )
 
             local prefab = PrefabLoader.getPrefab( type )
             if prefab then
-                local rotation = rotateParcels( definition.w, definition.h )
-
                 -- Place tiles and worldobjects.
-                placePrefab( tileGrid, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT, rotation )
+                placePrefab( map, prefab, x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT )
             end
         end
     end
@@ -139,10 +116,10 @@ end
 
 ---
 -- Spawns trees in designated parcels.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to read the parcel definitions from.
--- @tparam table      tileGrid   The tile grid to fill.
 --
-local function spawnFoliage( parcelGrid, tileGrid )
+local function spawnFoliage( map, parcelGrid )
     parcelGrid:iterate( function( parcel, x, y )
         if parcel:getType() ~= 'FOLIAGE' then
             return
@@ -151,12 +128,13 @@ local function spawnFoliage( parcelGrid, tileGrid )
         local n = parcel:countNeighbours()
 
         local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
-        for w = 1, PARCEL_SIZE.WIDTH do
-            for h = 1, PARCEL_SIZE.HEIGHT do
+        for px = 1, PARCEL_SIZE.WIDTH do
+            for py = 1, PARCEL_SIZE.HEIGHT do
+                local mapX, mapY = tx + px, ty + py
 
                 -- Increase density based on count of neighbouring foliage tiles.
                 if love.math.random() < n/10 then
-                    tileGrid[tx + w][ty + h]:addWorldObject( WorldObjectFactory.create( 'worldobject_tree' ))
+                    map:setWorldObjectAt( mapX, mapY, WorldObjectFactory.create( 'worldobject_tree' ))
                 end
             end
         end
@@ -166,10 +144,10 @@ end
 ---
 -- Spawns roads in designated parcels.
 -- TODO Replace with prefab based system.
+-- @tparam Map        map        The map to place the prefab on.
 -- @tparam ParcelGrid parcelGrid The parcel grid to read the parcel definitions from.
--- @tparam table      tileGrid   The tile grid to fill.
 --
-local function spawnRoads( parcelGrid, tileGrid )
+local function spawnRoads( map, parcelGrid )
     parcelGrid:iterate( function( parcel, x, y )
         if parcel:getType() ~= 'ROAD' then
             return
@@ -178,31 +156,25 @@ local function spawnRoads( parcelGrid, tileGrid )
         local tx, ty = x * PARCEL_SIZE.WIDTH, y * PARCEL_SIZE.HEIGHT
         for w = 1, PARCEL_SIZE.WIDTH do
             for h = 1, PARCEL_SIZE.HEIGHT do
-                tileGrid[tx + w][ty + h] = TileFactory.create( tx + w, ty + h, 'tile_asphalt' )
+                local mapX, mapY = tx + w, ty + h
+                map:setTileAt( mapX, mapY, TileFactory.create( 'tile_asphalt' ))
             end
         end
     end)
 end
 
 ---
--- Creates an empty tile grid.
--- @tparam  number w The width of the grid in parcels.
--- @tparam  number h The height of the grid in parcels.
--- @treturn table    The new tile grid.
--- @treturn number   The new tile grid's width in tiles.
--- @treturn number   The new tile grid's height in height.
+-- Fills the map randomly with dirt and grass tiles.
+-- @tparam Map map The map to fill.
 --
-local function createTileGrid( w, h )
-    local tiles = {}
-    for x = 1, w * PARCEL_SIZE.WIDTH do
-        tiles[x] = {}
-        for y = 1, h * PARCEL_SIZE.HEIGHT do
+local function fillMap( map, width, height )
+    for x = 1, width do
+        for y = 1, height do
             -- TODO Better algorithm for placing ground tiles.
             local id = love.math.random() > 0.7 and 'tile_soil' or 'tile_grass'
-            tiles[x][y] = TileFactory.create( x, y, id )
+            map:setTileAt( x, y, TileFactory.create( id ))
         end
     end
-    return tiles, w * PARCEL_SIZE.WIDTH, h * PARCEL_SIZE.HEIGHT
 end
 
 ---
@@ -255,19 +227,23 @@ end
 -- ------------------------------------------------
 
 ---
--- Initializes the ProceduralMapGenerator instance.
--- @tparam table layout The layout definition to use for map creation (optional).
+-- Creates a new procedural map
+-- @tparam  table layout The layout definition to use for map creation (optional).
+-- @treturn Map          The newly generated map.
 --
-function ProceduralMapGenerator:initialize( layout )
+function ProceduralMapGenerator:createMap( layout )
     -- Use specific layout or select a random one.
-    self.layout = layout or layouts[love.math.random( #layouts )]
+    self.layout = layout or Util.pickRandomValue( layouts )
+
+    -- Calculate the size of the tile grid.
+    self.width, self.height = self.layout.mapwidth * PARCEL_SIZE.WIDTH, self.layout.mapheight * PARCEL_SIZE.HEIGHT
+
+    -- Create an empty map.
+    local map = Map( self.width, self.height )
 
     -- Generate empty parcel grid.
     self.parcelGrid = ParcelGrid( self.layout.mapwidth, self.layout.mapheight )
     self.parcelGrid:createNeighbours()
-
-    -- The actual tile map.
-    self.tileGrid, self.width, self.height = createTileGrid( self.layout.mapwidth, self.layout.mapheight )
 
     -- Spawnpoints.
     self.spawnpoints = {
@@ -276,40 +252,16 @@ function ProceduralMapGenerator:initialize( layout )
         enemy = {}
     }
 
-    fillParcels( self.tileGrid, self.parcelGrid, self.layout.prefabs )
+    fillMap( map, map:getDimensions() )
+    fillParcels( map, self.parcelGrid, self.layout.prefabs )
 
-    spawnRoads( self.parcelGrid, self.tileGrid )
-    spawnFoliage( self.parcelGrid, self.tileGrid )
+    spawnRoads( map, self.parcelGrid )
+    spawnFoliage( map, self.parcelGrid )
     createSpawnPoints( self.spawnpoints, self.layout.spawns )
-end
 
--- ------------------------------------------------
--- Getters
--- ------------------------------------------------
+    map:setSpawnpoints( self.spawnpoints )
 
----
--- Returns the spawnpoints for the generated map.
--- @treturn table The spawns for this map.
---
-function ProceduralMapGenerator:getSpawnpoints()
-    return self.spawnpoints
-end
-
----
--- Returns the tile grid of the map.
--- @treturn table The tile grid of this map.
---
-function ProceduralMapGenerator:getTiles()
-    return self.tileGrid
-end
-
----
--- Returns the dimensions of the map in tiles.
--- @treturn number The new tile grid's width in tiles.
--- @treturn number The new tile grid's height in height.
---
-function ProceduralMapGenerator:getTileGridDimensions()
-    return self.width, self.height
+    return map
 end
 
 return ProceduralMapGenerator

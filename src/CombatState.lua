@@ -9,7 +9,6 @@
 local Class = require( 'lib.Middleclass' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local MapLoader = require( 'src.map.MapLoader' )
-local Map = require( 'src.map.Map' )
 local Factions = require( 'src.characters.Factions' )
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
 local ExplosionManager = require( 'src.items.weapons.ExplosionManager' )
@@ -37,20 +36,11 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- ------------------------------------------------
 
 local function loadMap( savedMap )
-    local loader = MapLoader()
-    local tiles, mw, mh = loader:recreateMap( savedMap )
-    return Map( tiles, mw, mh )
+    return MapLoader():recreateMap( savedMap )
 end
 
 local function createMap()
-    local generator = ProceduralMapGenerator()
-
-    local tiles = generator:getTiles()
-    local mw, mh = generator:getTileGridDimensions()
-
-    local map = Map( tiles, mw, mh )
-    map:setSpawnpoints( generator:getSpawnpoints() )
-    return map
+    return ProceduralMapGenerator():createMap()
 end
 
 -- ------------------------------------------------
@@ -105,13 +95,14 @@ function CombatState:initialize( playerFaction, savegame )
     self.map:observe( self )
     self.map:observe( self.factions )
 
+    -- Clear the message queue.
+    MessageQueue.clear()
+
     -- Free memory if possible.
     collectgarbage( 'collect' )
 end
 
 function CombatState:update( dt )
-    self.map:update()
-
     -- Update AI if current faction is AI controlled.
     if self.factions:getFaction():isAIControlled() and not self.stateManager:blocksInput() then
         self.sadisticAIDirector:update( dt )
@@ -131,7 +122,7 @@ end
 function CombatState:receive( event, ... )
     if event == 'MESSAGE_LOG_EVENT' then
         local origin, msg, type = ...
-        if self.factions:getPlayerFaction():canSee( origin ) then
+        if origin:isSeenBy( FACTIONS.ALLIED ) then
             MessageQueue.enqueue( msg, type )
         end
     end
@@ -155,7 +146,7 @@ function CombatState:keypressed( _, scancode, _ )
     if self.factions:getFaction():isAIControlled() or self.stateManager:blocksInput() then
         return
     end
-    self.stateManager:input( Settings.mapInput( scancode ))
+    self.stateManager:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ))
 end
 
 function CombatState:mousepressed( mx, my, button )

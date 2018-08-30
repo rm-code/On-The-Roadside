@@ -11,6 +11,7 @@ local BodyFactory = require( 'src.characters.body.BodyFactory' )
 local ItemFactory = require( 'src.items.ItemFactory' )
 local Util = require( 'src.util.Util' )
 local Translator = require( 'src.util.Translator' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -115,6 +116,8 @@ local function createEquipment( character, factionType )
     local inventory = body:getInventory()
     local tags = body:getTags()
 
+    Log.debug( string.format( 'Creating equipment [class: %s, id: %s, faction: %s]', character:getCreatureClass(), body:getID(), factionType ), 'CharacterFactory' )
+
     for _, slot in pairs( equipment:getSlots() ) do
         -- The player's characters should start mainly with guns. Shurikens, grenades
         -- and melee weapons should added as secondary weaponry.
@@ -183,12 +186,10 @@ function CharacterFactory.loadCharacter( savedCharacter )
     character:setThrowingSkill( savedCharacter.throwingSkill )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
+    character:setPosition( savedCharacter.x, savedCharacter. y )
 
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )
-
-    -- TODO Remove hack for saving / loading characters
-    character:setSavedPosition( savedCharacter.x, savedCharacter.y )
 
     return character
 end
@@ -196,7 +197,7 @@ end
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
     local class = findClass( classID )
-    local character = Character( classID )
+    local character = Character( classID, class.stats.ap )
 
     local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'body_human' then

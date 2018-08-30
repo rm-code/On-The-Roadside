@@ -1,9 +1,6 @@
 ---
 -- The BodyFactory is used to assemble the bodies of each creature in the game
 -- from their template files.
--- Each creature template needs to come with a .lua file containing general
--- stats such as the blood volume and the id of the creature and a .tgf file
--- which contains the layout of the body graph.
 --
 -- @module BodyFactory
 --

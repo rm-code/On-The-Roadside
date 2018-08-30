@@ -10,7 +10,6 @@ local Class = require( 'lib.Middleclass' )
 local Open = require( 'src.characters.actions.Open' )
 local Close = require( 'src.characters.actions.Close' )
 local OpenInventory = require( 'src.characters.actions.OpenInventory' )
-local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 
 -- ------------------------------------------------
 -- Module
@@ -47,12 +46,6 @@ end
 -- @treturn boolean             True if an action was created, false otherwise.
 --
 function InteractionInput:request( target, character )
-    -- Check health of enemy characters.
-    if target:isOccupied() and target:getCharacter():getFaction():getType() ~= character:getFaction():getType() then
-        ScreenManager.push( 'playerInfo', target:getCharacter() )
-        return true
-    end
-
     -- Characters can only interact with adjacent tiles.
     if not target:isAdjacent( character:getTile() ) then
         return false
@@ -73,7 +66,7 @@ function InteractionInput:request( target, character )
     end
 
     -- Handle interactions with other characters.
-    if target:isOccupied() then
+    if target:hasCharacter() then
         if target:getCharacter():getFaction():getType() == character:getFaction():getType() then
             character:enqueueAction( OpenInventory( character, target ))
             return true

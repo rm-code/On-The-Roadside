@@ -9,7 +9,6 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local Translator = require( 'src.util.Translator' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
-local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local SaveHandler = require( 'src.SaveHandler' )
 local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
@@ -17,6 +16,7 @@ local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local Util = require( 'src.util.Util' )
+local UIMenuTitle = require( 'src.ui.elements.UIMenuTitle' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,53 +29,12 @@ local SavegameScreen = Screen:subclass( 'SavegameScreen' )
 -- ------------------------------------------------
 
 local TITLE_POSITION = 2
-local TITLE_STRING = {
-    " @@@@@     @@@@@@   @@@  @@@  @@@@@@@    @@@@@  ",
-    "@@@@@@@   @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@ ",
-    "!@@       @@!  @@@  @@!  @@@  @@!       !@@     ",
-    "!@!       !@!  @!@  !@!  @!@  !@!       !@!     ",
-    "!!@@!!    @!@!@!@!  @!@  !@!  @!!!:!    !!@@!!  ",
-    " !!@!!!   !!!@!!!!  !@!  !!!  !!!!!:     !!@!!! ",
-    "     !:!  !!:  !!!  :!:  !!:  !!:            !:!",
-    "    !:!   :!:  !:!   ::!!::   :!:           !:! ",
-    "::!::::    ::   ::    !:::    ::!::!!   ::!:::: ",
-    " :::..      !    :     !:     :!:::::!   :::..  "
-}
-
 local BUTTON_LIST_WIDTH = 20
 local BUTTON_LIST_Y = 20
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
-
-local function createTitle()
-    local font = TexturePacks.getFont():get()
-    local title = love.graphics.newText( font )
-    for i, line in ipairs( TITLE_STRING ) do
-        local coloredtext = {}
-        for w in string.gmatch( line, '.' ) do
-            if w == '@' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                coloredtext[#coloredtext + 1] = 'O'
-            elseif w == '!' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
-                coloredtext[#coloredtext + 1] = w
-            else
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
-                coloredtext[#coloredtext + 1] = w
-            end
-            title:add( coloredtext, 0, i * font:getHeight() )
-        end
-    end
-    return title
-end
-
-local function drawTitle( title )
-    local cx, _ = GridHelper.centerElement( GridHelper.pixelsToGrid( title:getWidth(), title:getHeight() * #TITLE_STRING ))
-    local tw, _ = TexturePacks.getTileDimensions()
-    love.graphics.draw( title, cx * tw, TITLE_POSITION * TexturePacks.getFont():getGlyphHeight() )
-end
 
 local function createBackButton( lx, ly )
     local function callback()
@@ -149,7 +108,7 @@ end
 -- ------------------------------------------------
 
 function SavegameScreen:initialize()
-    self.title = createTitle()
+    self.title = UIMenuTitle( Translator.getText( 'ui_title_savegames'), TITLE_POSITION )
     self.buttonList = createButtons()
 
     self.container = UIContainer()
@@ -163,7 +122,7 @@ function SavegameScreen:update()
 end
 
 function SavegameScreen:draw()
-    drawTitle( self.title )
+    self.title:draw()
     self.container:draw()
     self.footer:draw()
 end

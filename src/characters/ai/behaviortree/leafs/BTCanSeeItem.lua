@@ -22,20 +22,9 @@ local BTCanSeeItem = BTLeaf:subclass( 'BTCanSeeItem' )
 function BTCanSeeItem:traverse( ... )
     local blackboard, character = ...
 
-    local tiles = {}
-
-    -- Get the character's FOV and store the tiles in a sequence for easier access.
-    local fov = character:getFOV()
-    for _, rx in pairs( fov ) do
-        for _, target in pairs( rx ) do
-            tiles[#tiles + 1] = target
-        end
-    end
-
-    -- Look for any items on those tiles.
+    -- Look for any items on the seen tiles.
     local items = {}
-    for i = 1, #tiles do
-        local tile = tiles[i]
+    for tile in pairs( character:getFOV() ) do
         if not tile:getInventory():isEmpty() then
             items[#items + 1] = tile
         end

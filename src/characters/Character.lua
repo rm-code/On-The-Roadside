@@ -6,7 +6,7 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local MapObject = require( 'src.map.MapObject' )
 local Log = require( 'src.util.Log' )
 local Queue = require('src.util.Queue')
 local Bresenham = require( 'lib.Bresenham' )
@@ -17,13 +17,11 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local Character = Class( 'Character' )
+local Character = MapObject:subclass( 'Character' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
-
-local DEFAULT_ACTION_POINTS = 40
 
 local STANCES = require( 'src.constants.STANCES' )
 local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
@@ -55,7 +53,7 @@ local function markSeenTiles( cx, cy, counter, self, falloff )
     local height = self:getHeight() - (counter+1) * falloff
     if height <= target:getHeight() then
         -- Add tile to this character's FOV.
-        self:addSeenTile( cx, cy, target )
+        self:addSeenTile( target )
 
         -- Mark tile for drawing update.
         target:setDirty( true )
@@ -89,14 +87,14 @@ end
 
 ---
 -- Clears the list of seen tiles and marks them for a drawing update.
--- @tparam table fov The table containing the tiles the character can see.
+-- @tparam table  fov         The table containing the tiles the character can see.
+-- @tparam string factionType The faction's id as defined in the faction constants.
 --
-local function resetFOV( fov )
-    for x, row in pairs( fov ) do
-        for y, target in pairs( row ) do
-            target:setDirty( true )
-            fov[x][y] = nil
-        end
+local function resetFOV( fov, factionType )
+    for target, _ in pairs( fov ) do
+        target:setDirty( true )
+        target:decrementFactionFOV( factionType )
+        fov[target] = nil
     end
 end
 
@@ -106,20 +104,24 @@ end
 -- @tparam Character self The character instance to use.
 --
 local function handleDeath( self )
-    self:getEquipment():dropAllItems( self.tile )
-    self:getInventory():dropAllItems( self.tile )
-    self.tile:removeCharacter()
-    resetFOV( self.fov )
+    self:getEquipment():dropAllItems( self:getTile() )
+    self:getInventory():dropAllItems( self:getTile() )
+    self.map:removeCharacter( self.x, self.y, self )
+    resetFOV( self.fov, self:getFaction():getType() )
 end
 
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize( classID )
+function Character:initialize( classID, actionPoints )
+    MapObject.initialize( self )
+
     self.creatureClass = classID
 
-    self.actionPoints = DEFAULT_ACTION_POINTS
+    self.maxActionPoints = actionPoints
+    self.actionPoints = actionPoints
+
     self.actions = Queue()
 
     self.fov = {}
@@ -142,6 +144,8 @@ function Character:activate()
     end
     self:generateFOV()
     self:clearActions()
+
+    self:publish( 'CHARACTER_SELECTED', self:getTile() )
 end
 
 ---
@@ -157,13 +161,16 @@ end
 
 ---
 -- Adds a tile to this character's FOV.
--- @tparam number tx     The target-tile's position along the x-axis.
--- @tparam number ty     The target-tile's position along the y-axis.
--- @tparam Tile   target The target-tile.
+-- @tparam Tile target The target-tile.
 --
-function Character:addSeenTile( tx, ty, target )
-    self.fov[tx] = self.fov[tx] or {}
-    self.fov[tx][ty] = target
+function Character:addSeenTile( target )
+    -- Update the faction FOV for the tile if it hasn't been seen by this
+    -- character already.
+    if not self.fov[target] then
+        target:incrementFactionFOV( self:getFaction():getType() )
+    end
+
+    self.fov[target] = true
 end
 
 ---
@@ -184,7 +191,7 @@ function Character:enqueueAction( newAction )
         return true
     end
 
-    self.tile:publish( 'MESSAGE_LOG_EVENT', self.tile, Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
+    self:getTile():publish( 'MESSAGE_LOG_EVENT', self:getTile(), Translator.getText( 'msg_character_no_ap_left' ), 'DANGER' )
     Log.debug( 'No AP left. Refused to add Action to Queue.', 'Character' )
     return false
 end
@@ -215,11 +222,11 @@ end
 -- the blocksVision attribute set to true.
 --
 function Character:generateFOV()
-    resetFOV( self.fov )
+    resetFOV( self.fov, self:getFaction():getType() )
 
     local range = self.body:getStatusEffects():isBlind() and 1 or self:getViewRange()
-    local list = Util.getTilesInCircle( self.map, self.tile, range )
-    local sx, sy = self.tile:getPosition()
+    local list = Util.getTilesInCircle( self.map, self:getTile(), range )
+    local sx, sy = self:getTile():getPosition()
 
     for _, tile in ipairs( list ) do
         local tx, ty = tile:getPosition()
@@ -233,7 +240,7 @@ end
 -- Resets the character's action points to the default value.
 --
 function Character:resetActionPoints()
-    self.actionPoints = DEFAULT_ACTION_POINTS
+    self.actionPoints = self.maxActionPoints
 end
 
 ---
@@ -257,11 +264,17 @@ end
 -- @treturn boolean        Wether the character sees the tile.
 --
 function Character:canSee( target )
-    local tx, ty = target:getPosition()
-    if not self.fov[tx] then
-        return false
-    end
-    return self.fov[tx][ty] ~= nil
+    return self.fov[target] == true
+end
+
+---
+-- Moves the character to the new position on the map.
+-- @tparam number x The target position along the x-axis.
+-- @tparam number y The target position along the y-axis.
+--
+function Character:move( x, y )
+    self.map:moveCharacter( x, y, self )
+    self:publish( 'CHARACTER_MOVED', self:getTile() )
 end
 
 ---
@@ -278,8 +291,8 @@ function Character:serialize()
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
         ['body'] = self.body:serialize(),
-        ['x'] = self.tile:getX(),
-        ['y'] = self.tile:getY()
+        ['x'] = self.x,
+        ['y'] = self.y
     }
     return t
 end
@@ -290,7 +303,7 @@ end
 -- @tparam varags ... Additional parameters to pass along.
 --
 function Character:receive( event, ... )
-    self.tile:publish( event, self.tile, ... )
+    self:getTile():publish( event, self:getTile(), ... )
 end
 
 -- ------------------------------------------------
@@ -434,19 +447,11 @@ function Character:getThrowingSkill()
 end
 
 ---
--- Gets the character's tile.
--- @treturn Tile The tile the character is located on.
---
-function Character:getTile()
-    return self.tile
-end
-
----
 -- Returns the total amount of action points.
 -- @treturn number The total amount of action points.
 --
 function Character:getMaxActionPoints()
-    return DEFAULT_ACTION_POINTS
+    return self.maxActionPoints
 end
 
 ---
@@ -527,14 +532,6 @@ function Character:setFaction( faction )
 end
 
 ---
--- Sets the map the character is currently on.
--- @tparam Map map The map to set for this character.
---
-function Character:setMap( map )
-    self.map = map
-end
-
----
 -- Sets a new name for this character.
 -- @tparam string nname The name to set for this character.
 --
@@ -548,14 +545,6 @@ end
 --
 function Character:setNationality( nationality )
     self.nationality = nationality
-end
-
----
--- Sets the character's tile.
--- @tparam Tile tile The tile to set the character to.
---
-function Character:setTile( tile )
-    self.tile = tile
 end
 
 ---
@@ -581,15 +570,6 @@ end
 --
 function Character:setStance( stance )
     self.stance = stance
-end
-
--- TODO Remove hack for saving / loading characters
-function Character:getSavedPosition()
-    return self.savedX, self.savedY
-end
-
-function Character:setSavedPosition( x, y )
-    self.savedX, self.savedY = x, y
 end
 
 return Character

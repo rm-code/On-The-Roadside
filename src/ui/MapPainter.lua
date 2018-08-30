@@ -85,37 +85,39 @@ local CONNECTION_BITMASK = {
 --
 local function initSpritebatch( map, spritebatch )
     local tw, th = TexturePacks.getTileDimensions()
-    map:iterate( function( tile, x, y )
+    map:iterate( function( x, y, tile, _ )
         local id = spritebatch:add( TexturePacks.getSprite( 'tile_empty' ), x * tw, y * th )
         tile:setSpriteID( id )
         tile:setDirty( true )
     end)
-    Log.debug( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
+    Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
 end
 
 ---
 -- Selects a color which to use when a tile is drawn based on its contents.
--- @tparam  Tile      tile      The tile to choose a color for.
--- @tparam  Faction   faction   The faction to draw for.
--- @treturn table               A table containing RGBA values.
+-- @tparam  Tile        tile        The tile to choose a color for.
+-- @tparam  WorldObject worldObject The worldobject to choose a color for.
+-- @tparam  Character   character   A character to choose a color for.
+-- @tparam  Faction     faction     The faction to draw for.
+-- @treturn table                   A table containing RGBA values.
 --
-local function selectTileColor( tile, faction )
+local function selectTileColor( tile, worldObject, character, faction )
     -- If there is a faction we check which tiles are currently seen and highlight
     -- the active character.
     if faction then
         -- Dim tiles hidden from the player.
-        if not faction:canSee( tile ) then
+        if not tile:isSeenBy( faction:getType() ) then
             return TexturePacks.getColor( 'tile_unseen' )
         end
 
-        -- Highlight activate character.
-        if tile:getCharacter() == faction:getCurrentCharacter() then
-            return TexturePacks.getColor( COLORS[tile:getCharacter():getFaction():getType()].ACTIVE )
+        -- Highlight activated character.
+        if character == faction:getCurrentCharacter() then
+            return TexturePacks.getColor( COLORS[character:getFaction():getType()].ACTIVE )
         end
     end
 
-    if tile:isOccupied() then
-        return TexturePacks.getColor( COLORS[tile:getCharacter():getFaction():getType()].INACTIVE )
+    if character then
+        return TexturePacks.getColor( COLORS[character:getFaction():getType()].INACTIVE )
     end
 
     if not tile:getInventory():isEmpty() then
@@ -123,20 +125,19 @@ local function selectTileColor( tile, faction )
         return TexturePacks.getColor( items[1]:getID() )
     end
 
-    if tile:hasWorldObject() then
-        return TexturePacks.getColor( tile:getWorldObject():getID() )
+    if worldObject then
+        return TexturePacks.getColor( worldObject:getID() )
     end
 
     return TexturePacks.getColor( tile:getID() )
 end
 
 ---
--- Selects the tile for drawing a tile occupied by a character.
--- @tparam  Tile tile The tile to pick a sprite for.
--- @treturn Quad      A quad pointing to the sprite on the active tileset.
+-- Selects the sprite for drawing a character.
+-- @tparam  Character character The character to choose a sprite for.
+-- @treturn Quad                A quad pointing to the sprite on the active tileset.
 --
-local function selectCharacterTile( tile )
-    local character = tile:getCharacter()
+local function selectCharacterTile( character )
     return TexturePacks.getSprite( character:getCreatureClass(), character:getStance() )
 end
 
@@ -149,8 +150,8 @@ end
 -- @treturn number             The value indicating a match (0 if the world object doesn't match).
 --
 local function checkConnection( connections, neighbour, value )
-    if neighbour and neighbour:hasWorldObject() then
-        local group = neighbour:getWorldObject():getGroup()
+    if neighbour then
+        local group = neighbour:getGroup()
         if group then
             for i = 1, #connections do
                 if connections[i] == group then
@@ -163,11 +164,11 @@ local function checkConnection( connections, neighbour, value )
 end
 
 ---
--- Selects the tile to use for drawing a worldobject.
--- @tparam  WorldObject worldObject The worldobject to pick a sprite for.
+-- Selects the sprite to use for drawing a worldObject.
+-- @tparam  WorldObject worldObject The worldObject to pick a sprite for.
 -- @treturn Quad                    A quad pointing to the sprite on the active tileset.
 --
-local function selectWorldObjectSprite( worldObject, tile )
+local function selectWorldObjectSprite( worldObject )
     if worldObject:isOpenable() then
         if worldObject:isPassable() then
             return TexturePacks.getSprite( worldObject:getID(), 'open' )
@@ -179,7 +180,7 @@ local function selectWorldObjectSprite( worldObject, tile )
     -- Check if the world object sprite connects to adjacent sprites.
     local connections = worldObject:getConnections()
     if connections then
-        local neighbours = tile:getNeighbours()
+        local neighbours = worldObject:getNeighbours()
         local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
                        checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
                        checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
@@ -191,14 +192,16 @@ local function selectWorldObjectSprite( worldObject, tile )
 end
 
 ---
--- Selects a sprite from the tileset based on the tile and its contents.
--- @tparam  Tile    tile    The tile to choose a sprite for.
--- @tparam  Faction faction The faction to draw for.
--- @treturn Quad            A quad pointing to a sprite on the tileset.
+-- Selects a sprite from the tileset based on the contents of a tile.
+-- @tparam  Tile        tile        The tile to choose a sprite for.
+-- @tparam  WorldObject worldObject The worldObject to choose a sprite for.
+-- @tparam  Character   character   A character to choose a sprite for.
+-- @tparam  Faction     faction     The faction to draw for.
+-- @treturn Quad                    A quad pointing to a sprite on the tileset.
 --
-local function selectTileSprite( tile, faction )
-    if tile:isOccupied() and faction and faction:canSee( tile ) then
-        return selectCharacterTile( tile )
+local function selectTileSprite( tile, worldObject, character, faction )
+    if character and tile:isSeenBy( faction:getType() ) then
+        return selectCharacterTile( character )
     end
 
     if not tile:getInventory():isEmpty() then
@@ -206,8 +209,8 @@ local function selectTileSprite( tile, faction )
         return TexturePacks.getSprite( items[1]:getID() )
     end
 
-    if tile:hasWorldObject() then
-        return selectWorldObjectSprite( tile:getWorldObject(), tile )
+    if worldObject then
+        return selectWorldObjectSprite( worldObject )
     end
 
     return TexturePacks.getSprite( tile:getID() )
@@ -222,10 +225,10 @@ end
 --
 local function updateSpritebatch( spritebatch, map, faction )
     local tw, th = TexturePacks.getTileDimensions()
-    map:iterate( function( tile, x, y )
+    map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
-            spritebatch:setColor( selectTileColor( tile, faction ))
-            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, faction ), x * tw, y * th )
+            spritebatch:setColor( selectTileColor( tile, worldObject, character, faction ))
+            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)

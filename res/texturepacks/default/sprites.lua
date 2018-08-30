@@ -143,6 +143,9 @@ return {
     ['ui_scrollbar_cursor']  = 180,
     ['ui_scrollbar_element'] = 180,
 
+    ['ui_prev_element'] = 18,
+    ['ui_next_element'] = 17,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================

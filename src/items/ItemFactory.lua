@@ -130,32 +130,27 @@ function ItemFactory.createRandomItem( tags, type, subType )
     for id, template in pairs( items ) do
         if template.itemType == type then
             if not subType or template.subType == subType then
+                -- Check if the creature's tags allow items of this type.
+                local whitelisted, blacklisted
+                for _, itemTag in ipairs( template.tags ) do
+                    whitelisted, blacklisted = false, false
+                    for _, creatureTag in ipairs( tags.whitelist ) do
+                        if itemTag == creatureTag then
+                            whitelisted = true
+                        end
+                    end
+                    for _, creatureTag in ipairs( tags.blacklist ) do
+                        if itemTag == creatureTag then
+                            blacklisted = true
+                        end
+                    end
+                    if not whitelisted or blacklisted then
+                        break
+                    end
+                end
 
-                if tags == 'all' then
+                if whitelisted and not blacklisted then
                     list[#list + 1] = id
-                else
-                    -- Check if the creature's tags allow items of this type.
-                    local whitelisted, blacklisted
-                    for _, itemTag in ipairs( template.tags ) do
-                        whitelisted, blacklisted = false, false
-                        for _, creatureTag in ipairs( tags.whitelist ) do
-                            if itemTag == creatureTag then
-                                whitelisted = true
-                            end
-                        end
-                        for _, creatureTag in ipairs( tags.blacklist ) do
-                            if itemTag == creatureTag then
-                                blacklisted = true
-                            end
-                        end
-                        if not whitelisted or blacklisted then
-                            break
-                        end
-                    end
-
-                    if whitelisted and not blacklisted then
-                        list[#list + 1] = id
-                    end
                 end
             end
         end

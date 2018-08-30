@@ -1,3 +1,50 @@
+# Version 0.16.0.1615 - 2018-08-30 (LÖVE 11.1)
+
+## Additions
+- Added paginated list UIElement.
+    - Replaced old keybinding list with new paginated lists.
+    - Replaced selectors in prefab editor with new paginated lists.
+- Added keybinding layouts to allow different bindings for the same key based on the game's context.
+- Added title to the keybinding screen.
+- Added selector for canvas sizes on prefab editor screen.
+- Added proper re-bindable controls for the prefab editor.
+- Added automatic camera tracking of moving characters (previously removed in 0.15.0.1521).
+- Added automatic camera movement when selecting a different character (previously removed in 0.15.0.1521).
+- Added class-based action point values.
+
+## Removals
+- Removed action to open health panel for enemy and neutral characters.
+
+## Fixes
+- Fixed huge performance issue with menu titles (especially noticeable on older systems).
+- Fixed crash after winning the game because the game tried to switch to the removed base screen.
+- Fixed tile info revealing stats of enemy characters which aren't visible to the player's characters.
+- Fixed rebinding of unassigned actions.
+- Fixed issue where equipment and inventory list weren't clearing their children properly.
+- Fixed right-click operation on inventory screen.
+- Fixed scroll bar for item description on inventory screen.
+- Fixed FOV not updating when a world object is opened.
+- Fixed flood filling tool in prefab editor.
+- Fixed camera scrolling on prefab editor screen.
+- Fixed faulty camera bounds after loading a prefab on prefab editor screen.
+- Fixed message log retaining old messages.
+
+## Other Changes
+- Changed targeted LÖVE version to 11.1 "Mysterious Mysteries".
+- Changed data structure of the game's combat map.
+- Changed FOV checks to be more efficient.
+    - Checking wether a faction can see a specific tile is roughly five times faster than before.
+    - Checking wether a character can see a specific tile is roughly three times as fast now.
+- Changed tile info to be more efficient by only updating it when necessary.
+- Changed world object hit points to fit the current weapon damage values.
+- Changed buttons in prefab editor to use correct icon colors.
+- Changed cursor in prefab editor to use icon and color of selected sprite.
+- Changed map editor to be visible in the main menu by default.
+- Changed map editor to start in prefab instead of layout editor mode.
+
+
+
+
 # Version 0.15.0.1521 - 2018-07-27 (LÖVE 11.0)
 
 ## Additions

@@ -57,10 +57,10 @@ local function fill( canvas, x, y, type, template, toFill )
         return
     end
 
-    fill( canvas, x-1, y, toFill )
-    fill( canvas, x+1, y, toFill )
-    fill( canvas, x, y-1, toFill )
-    fill( canvas, x, y+1, toFill )
+    fill( canvas, x-1, y, type, template, toFill )
+    fill( canvas, x+1, y, type, template, toFill )
+    fill( canvas, x, y-1, type, template, toFill )
+    fill( canvas, x, y+1, type, template, toFill )
 end
 
 -- ------------------------------------------------

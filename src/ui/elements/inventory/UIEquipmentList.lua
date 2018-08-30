@@ -1,4 +1,7 @@
 ---
+-- The UIEquipmentList is a specialised list on the inventory screen that takes
+-- care of drawing a creature's equipment slots and the equipped items therein.
+--
 -- @module UIEquipmentList
 --
 
@@ -22,18 +25,23 @@ local UIEquipmentList = UIElement:subclass( 'UIEquipmentList' )
 -- ------------------------------------------------
 
 ---
--- Iterates over all equipment slots an UIEquipmentSlot for them and stores
--- them based on their sort order.
+-- Creates UIEquipmentSlots for each EquipmentSlot in a creature's body and
+-- stores it in a list.
 -- @treturn table A sequence containing the UIEquipmentSlots.
 --
 local function populateItemList( self )
-    local nList = {}
+    -- Clear current children.
+    self.children = {}
+
+    -- Iterate over all equipment slots in the creature's body.
     for _, slot in pairs( self.equipment:getSlots() ) do
-        local uiItem = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
-        nList[slot:getSortOrder()] = uiItem
-        self:addChild( uiItem )
+        -- Map each slot to a UIEquipmentSlot object.
+        local uiEquipmentSlot = UIEquipmentSlot( self.ax, self.ay, 0, slot:getSortOrder(), self.w, 1, slot )
+
+        -- Add the UIEquipmentSlot to the list's children (@see UIElement) and
+        -- use its sort order to find the correct position.
+        self:addChild( uiEquipmentSlot, slot:getSortOrder() )
     end
-    return nList
 end
 
 -- ------------------------------------------------
@@ -52,18 +60,18 @@ function UIEquipmentList:initialize( px, py, x, y, w, h, character )
 end
 
 ---
--- Recreates the item list.
+-- Recreates the equipment list.
 --
 function UIEquipmentList:refresh()
-    self.list = populateItemList( self )
+    populateItemList( self )
 end
 
 ---
--- Draws the list.
+-- Draws the equipment slots.
 --
 function UIEquipmentList:draw()
-    for _, slot in ipairs( self.list ) do
-        slot:draw()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        uiEquipmentSlot:draw()
     end
 end
 
@@ -72,16 +80,18 @@ end
 -- @treturn UIEquipmentSlot The UIEquipmentSlot containing the actual item.
 --
 function UIEquipmentList:drag()
-    for _, uiItem in ipairs( self.list ) do
-        if uiItem:isMouseOver() and uiItem:getSlot():containsItem() and not uiItem:getSlot():getItem():isPermanent() then
-            local item = self.equipment:removeItem( uiItem:getSlot() )
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver()
+        and uiEquipmentSlot:getSlot():containsItem()
+        and not uiEquipmentSlot:getSlot():getItem():isPermanent() then
+            local item = self.equipment:removeItem( uiEquipmentSlot:getSlot() )
 
             if item:isInstanceOf( Container ) then
                 self.character:getInventory():dropItems( self.character:getTile() )
             end
 
             self:refresh()
-            return item, self.equipment, uiItem:getSlot()
+            return item, self.equipment, uiEquipmentSlot:getSlot()
         end
     end
 end
@@ -101,9 +111,9 @@ function UIEquipmentList:drop( item, origin )
     end
 
     local success = false
-    for _, uiItem in ipairs( self.list ) do
-        local slot = uiItem:getSlot()
-        if uiItem:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        local slot = uiEquipmentSlot:getSlot()
+        if uiEquipmentSlot:isMouseOver() and item:isSameType( slot:getItemType(), slot:getSubType() ) then
             if slot:containsItem() then
                 local tmp = self.equipment:removeItem( slot )
                 success = self.equipment:addItem( slot, item )
@@ -118,34 +128,56 @@ function UIEquipmentList:drop( item, origin )
     return success
 end
 
+---
+-- Returns the equipment slot the mouse is currently hovering over.
+-- @treturn UIEquipmentSlot The slot the mouse is currently over.
+--
 function UIEquipmentList:getSlotBelowCursor()
-    for _, uiItem in ipairs( self.list ) do
-        if uiItem:isMouseOver() then
-            return uiItem:getSlot()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver() then
+            return uiEquipmentSlot:getSlot()
         end
     end
 end
 
+---
+-- Returns the equipment item the mouse is currently hovering over. Note that
+-- the item is actually located within the EquipmentSlot object which itself
+-- is wrapped inside of a UIEquipmentSlot instance.
+-- @treturn Item The item the mouse is currently over.
+--
 function UIEquipmentList:getItemBelowCursor()
-    for _, uiItem in ipairs( self.list ) do
-        if uiItem:isMouseOver() then
-            return uiItem:getSlot():getItem()
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        if uiEquipmentSlot:isMouseOver() then
+            return uiEquipmentSlot:getSlot():getItem()
         end
     end
 end
 
+---
+-- Highlights the UIEquipmentSlot(s) in which the specified Item fits.
+-- @tparam Item nitem The item to highlight slots for.
+--
 function UIEquipmentList:highlight( nitem )
-    for _, uiItem in ipairs( self.list ) do
-        uiItem:matchesType( nitem )
+    for _, uiEquipmentSlot in ipairs( self.children ) do
+        uiEquipmentSlot:highlight( nitem )
     end
 end
 
+---
+-- Checks if an item fits into the UIEquipmentSlot currently located under the
+-- mouse cursor. If the mouse isn't hovering over a slot the function returns
+-- false.
+-- @tparam  Item    item The item to check for.
+-- @treturn boolean      True if the item fits. False if it doesn't or the mouse isn't
+--                        hovering over an UIEquipmentSlot.
+--
 function UIEquipmentList:doesFit( item )
-    local slot = self:getSlotBelowCursor()
-    if not slot then
+    local uiEquipmentSlot = self:getSlotBelowCursor()
+    if not uiEquipmentSlot then
         return false
     end
-    return item:isSameType( slot:getItemType(), slot:getSubType() )
+    return item:isSameType( uiEquipmentSlot:getItemType(), uiEquipmentSlot:getSubType() )
 end
 
 return UIEquipmentList

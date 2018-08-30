@@ -167,7 +167,7 @@ function PlanningState:selectTile( tile, button )
         return
     end
 
-    if button == 2 and tile:isOccupied() then
+    if button == 2 and tile:hasCharacter() then
         self.inputStateHandler:switch( 'movement' )
         self.factions:getFaction():selectCharacter( tile:getCharacter() )
         return

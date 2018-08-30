@@ -13,7 +13,6 @@ local Camera = require( 'src.ui.Camera' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerator' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local Map = require( 'src.map.Map' )
 local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
@@ -27,15 +26,7 @@ local MapTest = Screen:subclass( 'MapTest' )
 -- ------------------------------------------------
 
 local function createMap( layout )
-    local generator = ProceduralMapGenerator( layout )
-
-    local tiles = generator:getTiles()
-    local mw, mh = generator:getTileGridDimensions()
-
-    local map = Map( tiles, mw, mh )
-    map:setSpawnpoints( generator:getSpawnpoints() )
-
-    return map, mw, mh
+    return ProceduralMapGenerator():createMap( layout )
 end
 
 -- ------------------------------------------------
@@ -46,7 +37,8 @@ function MapTest:initialize( layout )
     ProceduralMapGenerator.load()
     PrefabLoader.load()
 
-    self.map, self.mw, self.mh = createMap( layout )
+    self.map = createMap( layout )
+    self.mw, self.mh = self.map:getDimensions()
     self.mapPainter = MapPainter( self.map )
     self.camera = Camera( self.mw, self.mh, TexturePacks.getTileDimensions() )
 end
@@ -73,11 +65,11 @@ function MapTest:keypressed( _, scancode )
         ScreenManager.pop()
     end
 
-    self.camera:input( Settings.mapInput( scancode ), true )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), true )
 end
 
 function MapTest:keyreleased( _, scancode )
-    self.camera:input( Settings.mapInput( scancode ), false )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), false )
 end
 
 return MapTest

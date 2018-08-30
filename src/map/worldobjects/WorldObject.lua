@@ -6,14 +6,14 @@
 -- Required Modules
 -- ------------------------------------------------
 
-local Class = require( 'lib.Middleclass' )
+local MapObject = require( 'src.map.MapObject' )
 local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
-local WorldObject = Class( 'WorldObject' )
+local WorldObject = MapObject:subclass( 'WorldObject' )
 
 -- ------------------------------------------------
 -- Public Methods
@@ -24,6 +24,8 @@ local WorldObject = Class( 'WorldObject' )
 -- @tparam table template The WorldObject's template.
 --
 function WorldObject:initialize( template )
+    MapObject.initialize( self )
+
     self.id = template.id
     self.height = template.size
     self.interactionCost = template.interactionCost
@@ -51,6 +53,10 @@ end
 --
 function WorldObject:damage( dmg )
     self.hp = self.hp - dmg
+
+    if self.destructible and self.hp <= 0 then
+        self.map:destroyWorldObject( self.x, self.y, self )
+    end
 end
 
 ---
@@ -60,6 +66,8 @@ end
 function WorldObject:serialize()
     local t = {
         ['id'] = self.id,
+        ['x'] = self.x,
+        ['y'] = self.y,
         ['hp'] = self.hp,
         ['passable'] = self.passable,
         ['blocksVision'] = self.blocksVision
@@ -237,6 +245,8 @@ end
 --
 function WorldObject:setBlocksVision( blocksVision )
     self.blocksVision = blocksVision
+
+    self:publish( 'TILE_UPDATED', self:getTile() )
 end
 
 ---

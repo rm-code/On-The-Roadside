@@ -21,6 +21,7 @@ local ExecutionState = Class( 'ExecutionState' )
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
 local AI_DELAY     = 0
 local PLAYER_DELAY = 0.15
 
@@ -60,7 +61,7 @@ function ExecutionState:update( dt )
         if self.character:hasEnqueuedAction() then
             self.character:performAction()
 
-            if self.factions:getPlayerFaction():canSee( self.character:getTile() ) then
+            if self.character:getTile():isSeenBy( FACTIONS.ALLIED ) then
                 self.delay = PLAYER_DELAY
             else
                 self.delay = AI_DELAY

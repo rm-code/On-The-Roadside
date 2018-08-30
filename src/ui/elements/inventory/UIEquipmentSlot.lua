@@ -21,7 +21,7 @@ local UIEquipmentSlot = UIElement:subclass( 'UIElement' )
 -- ------------------------------------------------
 
 local function updateBackground( self )
-    if self.highlight then
+    if self.highlighted then
         self.background:setColor( 'ui_equipment_highlight' )
     elseif self:isMouseOver() then
         self.background:setColor( 'ui_equipment_mouseover' )
@@ -71,12 +71,18 @@ function UIEquipmentSlot:getSlot()
     return self.slot
 end
 
-function UIEquipmentSlot:matchesType( item )
+---
+-- Sets the "highlight" flag if the item-type and sub-type of the specified item
+-- matches the item-type and sub-type of the EquipmentSlot connected to this
+-- UIEquipmentSlot.
+-- @tparam Item item The item to check for.
+--
+function UIEquipmentSlot:highlight( item )
     if not item then
-        self.highlight = false
+        self.highlighted = false
         return
     end
-    self.highlight = item:isSameType( self.slot:getItemType(), self.slot:getSubType() )
+    self.highlighted = item:isSameType( self.slot:getItemType(), self.slot:getSubType() )
 end
 
 return UIEquipmentSlot

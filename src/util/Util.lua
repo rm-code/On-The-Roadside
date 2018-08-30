@@ -101,6 +101,18 @@ function Util.clamp( min, val, max )
 end
 
 ---
+-- Wraps a value to min if it surpasses max and vice versa. If the value lies
+-- between min and max it is returned.
+-- @tparam  number min The minimum value to wrap to.
+-- @tparam  number val The value to wrap.
+-- @tparam  number max The maximum value to wrap to.
+-- @treturn number     The wrapped value.
+--
+function Util.wrap( min, val, max )
+    return val < min and max or val > max and min or val
+end
+
+---
 -- Picks a random value from a tbl. Works only with sequences.
 -- @tparam table tbl The table to select from.
 -- @treturn The randomly picked value.

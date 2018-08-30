@@ -21,7 +21,7 @@ local BTMoveToTarget = BTLeaf:subclass( 'BTMoveToTarget' )
 -- ------------------------------------------------
 
 local function generatePath( target, character )
-    if target and target:isPassable() and not target:isOccupied() then
+    if target and target:isPassable() and not target:hasCharacter() then
         return PathFinder.generatePath( character:getTile(), target, character:getStance() )
     end
 end
@@ -38,7 +38,7 @@ function BTMoveToTarget:traverse( ... )
 
     -- Find the closest neighbour tile to move to.
     for _, neighbour in pairs( blackboard.target:getNeighbours() ) do
-        if neighbour:isPassable() and not neighbour:isOccupied() then
+        if neighbour:isPassable() and not neighbour:hasCharacter() then
             if not closest then
                 closest = neighbour
                 local px, py = closest:getPosition()

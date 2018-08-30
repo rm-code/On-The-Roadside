@@ -82,12 +82,7 @@ function GameOverScreen:draw()
 end
 
 function GameOverScreen:keypressed()
-    if self.win then
-        ScreenManager.pop()
-        ScreenManager.push( 'base', self.playerFaction )
-    else
-        ScreenManager.switch( 'mainmenu' )
-    end
+    ScreenManager.switch( 'mainmenu' )
 end
 
 return GameOverScreen

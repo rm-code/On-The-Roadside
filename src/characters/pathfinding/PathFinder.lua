@@ -106,7 +106,7 @@ local function isValidTile( tile, closedList, target )
     end
 
     -- We don't allow movement to tiles occupied by other characters.
-    if tile:isOccupied() then
+    if tile:hasCharacter() then
         return false
     end
 

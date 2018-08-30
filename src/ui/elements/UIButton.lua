@@ -37,6 +37,18 @@ local function selectColor( self )
     end
 end
 
+local function drawIcon( px, py, icon, iconColorID )
+    if not icon then
+        return
+    end
+
+    if iconColorID then
+        TexturePacks.setColor( iconColorID )
+    end
+
+    love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), icon, px, py )
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -54,10 +66,6 @@ function UIButton:draw()
     local tw, th = TexturePacks.getTileDimensions()
 
     TexturePacks.setColor( selectColor( self ))
-    -- Draw icon.
-    if self.icon then
-        love.graphics.draw( TexturePacks.getTileset():getSpritesheet(), self.icon, self.ax * tw, self.ay * th )
-    end
 
     -- Draw text.
     if self.text then
@@ -71,6 +79,9 @@ function UIButton:draw()
             love.graphics.print( self.text, self.ax * tw + w, self.ay * th )
         end
     end
+
+    drawIcon( self.ax * tw, self.ay * th, self.icon, self.iconColorID )
+
     TexturePacks.resetColor()
 end
 
@@ -95,6 +106,10 @@ end
 
 function UIButton:setIcon( id, alt )
     self.icon = TexturePacks.getSprite( id, alt )
+end
+
+function UIButton:setIconColorID( color )
+    self.iconColorID = color
 end
 
 function UIButton:setActive( active )

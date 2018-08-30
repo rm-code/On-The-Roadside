@@ -173,7 +173,7 @@ local function createTargetInventoryList(  x, y, character, target, lists, listL
         id, inventory = 'inventory_base', target
     elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
         id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()
-    elseif target:isOccupied() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
+    elseif target:hasCharacter() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
         id, inventory = 'inventory_character', target:getCharacter():getInventory()
     else
         id, inventory = 'inventory_tile_inventory', target:getInventory()
@@ -382,20 +382,20 @@ end
 function InventoryScreen:mousepressed( _, _, button )
     if button == 2 then
         selectItem( self.lists, self.itemStats )
+        return
     end
     drag( button, self.lists, self.dragboard, self.itemStats )
 end
 
 function InventoryScreen:mousereleased( _, _, _ )
-    if not self.dragboard:hasDragContext() then
+    if self.dragboard:hasDragContext() then
+        local list = getListBelowCursor( self.lists )
+        self.dragboard:drop( list )
+
+        -- Refresh lists in case volumes have changed.
+        refreshLists( self.lists )
         return
     end
-
-    local list = getListBelowCursor( self.lists )
-    self.dragboard:drop( list )
-
-    -- Refresh lists in case volumes have changed.
-    refreshLists( self.lists )
 
     self.itemStats:command( 'activate' )
 end

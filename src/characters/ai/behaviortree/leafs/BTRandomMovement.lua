@@ -9,6 +9,7 @@
 local Log = require( 'src.util.Log' )
 local BTLeaf = require( 'src.characters.ai.behaviortree.leafs.BTLeaf' )
 local PathFinder = require( 'src.characters.pathfinding.PathFinder' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -21,7 +22,7 @@ local BTRandomMovement = BTLeaf:subclass( 'BTRandomMovement' )
 -- ------------------------------------------------
 
 local function generatePath( target, character )
-    if target and target:isPassable() and not target:isOccupied() then
+    if target and target:isPassable() and not target:hasCharacter() then
         return PathFinder.generatePath( character:getTile(), target, character:getStance() )
     end
 end
@@ -36,15 +37,12 @@ function BTRandomMovement:traverse( ... )
     local tiles = {}
 
     -- Get the character's FOV and store the tiles in a sequence for easier access.
-    local fov = character:getFOV()
-    for _, rx in pairs( fov ) do
-        for _, target in pairs( rx ) do
-            tiles[#tiles + 1] = target
-        end
+    for tile in pairs( character:getFOV() ) do
+        tiles[#tiles + 1] = tile
     end
 
-    local target = tiles[love.math.random( 1, #tiles )]
-    if target and target:isPassable() and not target:isOccupied() then
+    local target = Util.pickRandomValue( tiles )
+    if target and target:isPassable() and not target:hasCharacter() then
         local path = generatePath( target, character )
         if path then
             local success = path:generateActions( character )

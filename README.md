@@ -1,6 +1,6 @@
 # On The Roadside
 
-[![Version](https://img.shields.io/badge/Version-0.15.0.1521-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)
+[![Version](https://img.shields.io/badge/Version-0.16.0.1615-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)
 [![LOVE](https://img.shields.io/badge/L%C3%96VE-11.0-EA316E.svg)](http://love2d.org/)
 [![Build Status](https://travis-ci.com/rm-code/On-The-Roadside.svg?token=q3rLXeyGTBN9VB2zsWMr&branch=develop)](https://travis-ci.com/rm-code/On-The-Roadside)
 

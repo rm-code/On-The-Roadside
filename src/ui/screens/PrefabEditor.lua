@@ -11,7 +11,6 @@ local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
 local WorldObjectFactory = require( 'src.map.worldobjects.WorldObjectFactory' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
-local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
@@ -19,6 +18,8 @@ local PrefabCanvas = require( 'src.ui.mapeditor.PrefabCanvas' )
 local PrefabBrush = require( 'src.ui.mapeditor.PrefabBrush' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local GridHelper = require( 'src.util.GridHelper' )
+local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -33,54 +34,84 @@ local PrefabEditor = Screen:subclass( 'PrefabEditor' )
 local SELECTOR_WIDTH  = 10
 local SELECTOR_HEIGHT = 10
 
+local CANVAS_SIZES = {
+    'XS',
+    'S',
+    'M',
+    'L',
+    'XL'
+}
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
 local function createTileSelector( tileTemplates, tool )
     local lx, ly = 1, 1
-    local tileSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+    local tileSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
-    local counter = 0
+    local buttons = {}
     for id, template in pairs( tileTemplates ) do
         local function callback()
             tool:setBrush( template, 'tile' )
         end
 
-        local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
-        tmp:setIcon( id )
-        tileSelector:addChild( tmp )
+        local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
+        button:setIcon( id )
+        button:setIconColorID( id )
 
-        counter = counter + 1
+        buttons[#buttons + 1] = button
     end
+
+    tileSelector:setItems( buttons )
 
     return tileSelector
 end
 
 local function createWorldObjectSelector( objectTemplates, tool )
     local lx, ly = 1, SELECTOR_HEIGHT + 2
-    local objectSelector = UIVerticalList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+    local objectSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
 
-    local counter = 0
+    local buttons = {}
     for id, template in pairs( objectTemplates ) do
         local function callback()
             tool:setBrush( template, 'worldObject' )
         end
 
-        local tmp = UIButton( lx, ly, 0, counter, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
+        local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         if template.openable then
-            tmp:setIcon( id, 'closed' )
+            button:setIcon( id, 'closed' )
         elseif template.connections then
-            tmp:setIcon( id, 'default' )
+            button:setIcon( id, 'default' )
         else
-            tmp:setIcon( id )
+            button:setIcon( id )
         end
-        objectSelector:addChild( tmp )
+        button:setIconColorID( id )
 
-        counter = counter + 1
+        buttons[#buttons + 1] = button
     end
 
+    objectSelector:setItems( buttons )
+
     return objectSelector
+end
+
+local function createCanvasSelector( canvas, camera )
+    local lx, ly = 1, 2 * ( SELECTOR_HEIGHT + 2 )
+    local canvasSelector = UIPaginatedList( lx, ly, 0, 0, SELECTOR_WIDTH, SELECTOR_HEIGHT )
+
+    local buttons = {}
+    for i = 1, #CANVAS_SIZES do
+        local function callback()
+            canvas:setSize( CANVAS_SIZES[i] )
+            camera:setBounds( canvas:getWidth(), canvas:getHeight() )
+        end
+
+        buttons[#buttons + 1] = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, CANVAS_SIZES[i], 'left' )
+    end
+
+    canvasSelector:setItems( buttons )
+
+    return canvasSelector
 end
 
 -- ------------------------------------------------
@@ -103,14 +134,18 @@ function PrefabEditor:initialize()
     local objectTemplates = WorldObjectFactory.getTemplates()
     self.objectSelector = createWorldObjectSelector( objectTemplates, self.tool )
 
+    self.canvasSelector = createCanvasSelector( self.canvas, self.camera )
+
     self.uiContainer = UIContainer()
     self.uiContainer:register( self.tileSelector )
     self.uiContainer:register( self.objectSelector )
+    self.uiContainer:register( self.canvasSelector )
 end
 
 function PrefabEditor:receive( event, ... )
     if event == 'LOAD_LAYOUT' then
         self.canvas:load( ... )
+        self.camera:setBounds( self.canvas:getWidth(), self.canvas:getHeight() )
     end
 end
 
@@ -121,6 +156,7 @@ function PrefabEditor:draw()
 
     self.tileSelector:draw()
     self.objectSelector:draw()
+    self.canvasSelector:draw()
 
     self.camera:attach()
     self.canvas:draw()
@@ -152,40 +188,26 @@ end
 function PrefabEditor:keypressed( _, scancode )
     if scancode == 'escape' then
         ScreenManager.push( 'prefabeditormenu', self.canvas )
+        return
     end
 
-    if scancode == ']' then
+    local action = Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode )
+
+    if action == 'increase_tool_size' then
         self.tool:increase()
-    elseif scancode == '/' then
+    elseif action == 'decrease_tool_size' then
         self.tool:decrease()
     end
 
-    if scancode == 'd' then
+    if action == 'mode_draw' then
         self.tool:setMode( 'draw' )
-    elseif scancode == 'e' then
+    elseif action == 'mode_erase' then
         self.tool:setMode( 'erase' )
-    elseif scancode == 'f' then
+    elseif action == 'mode_fill' then
         self.tool:setMode( 'fill' )
     end
 
-    if scancode == '1' then
-        self.canvas:setSize( 'XS' )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '2' then
-        self.canvas:setSize( 'S'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '3' then
-        self.canvas:setSize( 'M'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '4' then
-        self.canvas:setSize( 'L'  )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    elseif scancode == '5' then
-        self.canvas:setSize( 'XL' )
-        self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
-    end
-
-    if scancode == 'h' then
+    if action == 'hide_worldobjects' then
         self.canvas:toggleObjects()
     end
 
@@ -196,7 +218,16 @@ function PrefabEditor:keypressed( _, scancode )
     if scancode == 'return' then
         self.uiContainer:command( 'activate' )
     end
-    self.uiContainer:command( scancode )
+
+    if self.uiContainer:hasFocus() then
+        self.uiContainer:command( scancode )
+    else
+        self.camera:input( action, true )
+    end
+end
+
+function PrefabEditor:keyreleased( _, scancode )
+    self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.PREFAB_EDITOR, scancode ), false )
 end
 
 function PrefabEditor:mousemoved()

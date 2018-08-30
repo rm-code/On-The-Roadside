@@ -45,7 +45,6 @@ locale.strings = {
     ['ui_unsaved_changes'] = "There are unsaved changes. Are you sure you want to quit?",
     ['ui_applied_settings'] = "Your settings have been updated.",
     ['ui_settings_ingame_editor'] = "Activate Map Editor:",
-    ['ui_settings_ingame_editor_active'] = "Once activated, the map editor can be accessed from the main menu. This currently is an early development version.",
     ['ui_settings_mouse_panning'] = "Mouse Panning:",
     ['ui_settings_invert_messagelog'] = "Invert message log:",
     ['ui_keybindings'] = "Edit Keybindings",
@@ -70,6 +69,13 @@ locale.strings = {
     ['pan_camera_up'] = "Move camera up",
     ['pan_camera_down'] = "Move camera down",
     ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
+
+    ['increase_tool_size'] = "Increase tool size",
+    ['decrease_tool_size'] = "Decrease tool size",
+    ['mode_draw'] = "Select drawing tool",
+    ['mode_erase'] = "Select eraser tool",
+    ['mode_fill'] = "Select filling tool",
+    ['hide_worldobjects'] = "Hide object layer",
 
     -- Map Editor
     ['ui_mapeditor_save'] = "Save Layout",
@@ -109,7 +115,68 @@ locale.strings = {
     ['ui_ingame_resume'] = "Resume",
 
     -- Help Screen
-    ['ui_help_header'] = 'Help'
+    ['ui_help_header'] = 'Help',
+
+    -- Titles
+    ['ui_title_main_menu'] = {
+        "             OOOO    OO   OO       OOOOOOO  OOO  OOO  OOOOOOO            ",
+        "           OOOOOOOO  OOO  OOO      OOOOOOO  OOO  OOO  OOOOOOOO           ",
+        "           OO!  OOO  OO!O OOO        OO!    OO!  OOO  OO!                ",
+        "           !O!  O!O  !O!!O!O!        !O!    !O!  O!O  !O!                ",
+        "           O!O  !O!  O!O !!O!        O!!    O!O!O!O!  O!!!:!             ",
+        "           !O!  !!!  !O!  !!!        !!!    !!!O!!!!  !!!!!:             ",
+        "           !!:  !!!  !!:  !!!        !!:    !!:  !!!  !!:                ",
+        "           :!:  !:!  :!:  !:!        :!:    :!:  !:!  :!:                ",
+        "           :!:::!!:   ::   ::         ::     ::   !:  ::!::!!            ",
+        "             :!::      :    :          :      :    :  :!:::::!           ",
+        "                                                                         ",
+        "OOOOOOO     OOOO     OOOOOO   OOOOOO     OOOOO    OOO  OOOOOOO   OOOOOOO ",
+        "OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOO   OOO  OOOOOOOO  OOOOOOOO",
+        "OO!  OOO  OO!  OOO  OO!  OOO  OO!  OOO  !OO       OO!  OO!  OOO  OO!     ",
+        "!O!  O!O  !O!  O!O  !O!  O!O  !O!  O!O  !O!       !O!  !O!  O!O  !O!     ",
+        "O!O!!O!   O!O  !O!  O!O!O!O!  O!O  !O!  !!OO!!    !!O  O!O  !O!  O!!!:!  ",
+        "!!O!O!    !O!  !!!  !!!O!!!!  !O!  !!!   !!O!!!   !!!  !O!  !!!  !!!!!:  ",
+        "!!: :!!   !!:  !!!  !!:  !!!  !!:  !!!       !:!  !!:  !!:  !!!  !!:     ",
+        ":!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!      !:!   :!:  :!:  !:!  :!:     ",
+        " ::   !:  ::!:!!::   ::   ::  !:.:.:::  ::!::::    ::  !:!!::.:  ::!:.:: ",
+        "  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:",
+    },
+    ['ui_title_options'] = {
+        "  OOOO    OOOOOOO   OOOOOOO  OOO    OOOO    OO   OO    OOOOO  ",
+        "OOOOOOOO  OOOOOOOO  OOOOOOO  OOO  OOOOOOOO  OOO  OOO  OOOOOOO ",
+        "OO!  OOO  OO!  OOO    OO!    OO!  OO!  OOO  OO!O OOO  !OO     ",
+        "!O!  O!O  !O!  O!O    !O!    !O!  !O!  O!O  !O!!O!O!  !O!     ",
+        "O!O  !O!  O!OO!O!     O!!    !!O  O!O  !O!  O!O !!O!  !!OO!!  ",
+        "!O!  !!!  !!O!!!      !!!    !!!  !O!  !!!  !O!  !!!   !!O!!! ",
+        "!!:  !!!  !!:         !!:    !!:  !!:  !!!  !!:  !!!       !:!",
+        ":!:  !:!  :!:         :!:    :!:  :!:  !:!  :!:  !:!      !:! ",
+        ":!:::!!:   ::          ::     ::  :!:::!!:   ::   ::  ::!:::: ",
+        "  :!::      :           :      :    :!::      :    :   :::..  "
+    },
+    ['ui_title_savegames'] = {
+        " OOOOO     OOOOOO   OOO  OOO  OOOOOOO    OOOOO  ",
+        "OOOOOOO   OOOOOOOO  OOO  OOO  OOOOOOOO  OOOOOOO ",
+        "!OO       OO!  OOO  OO!  OOO  OO!       !OO     ",
+        "!O!       !O!  O!O  !O!  O!O  !O!       !O!     ",
+        "!!OO!!    O!O!O!O!  O!O  !O!  O!!!:!    !!OO!!  ",
+        " !!O!!!   !!!O!!!!  !O!  !!!  !!!!!:     !!O!!! ",
+        "     !:!  !!:  !!!  :!:  !!:  !!:            !:!",
+        "    !:!   :!:  !:!   ::!!::   :!:           !:! ",
+        "::!::::    ::   ::    !:::    ::!::!!   ::!:::: ",
+        " :::..      !    :     !:     :!:::::!   :::..  "
+    },
+    ['ui_title_controls'] = {
+        " OOOOO      OOOO    OO   OO   OOOOOOO  OOOOOOO     OOOO    OOO        OOOOO  ",
+        "OOOOOOOO  OOOOOOOO  OOO  OOO  OOOOOOO  OOOOOOOO  OOOOOOOO  OOO       OOOOOOO ",
+        "OO!       OO!  OOO  OO!O OOO    OO!    OO!  OOO  OO!  OOO  OO!       !OO     ",
+        "!O!       !O!  O!O  !O!!O!O!    !O!    !O!  O!O  !O!  O!O  !O!       !O!     ",
+        "O!O       O!O  !O!  O!O !!O!    O!!    O!O!!O!   O!O  !O!  O!O       !!OO!!  ",
+        "!O!       !O!  !!!  !O!  !!!    !!!    !!O!O!    !O!  !!!  !O!        !!O!!! ",
+        "!!:       !!:  !!!  !!:  !!!    !!:    !!: :!!   !!:  !!!  !!:            !:!",
+        ":!:       :!:  !:!  :!:  !:!    :!:    :!:  !:!  :!:  !:!  :!:           !:! ",
+        ":!:::!!   :!:::!!:   ::   ::     ::     ::   !:  :!:::!!:  :!:::!!   ::!:::: ",
+        " ::!::!:    :!::      :    :      :      !    :    :!::    !::!::!:   :::..  "
+    }
 }
 
 return locale;

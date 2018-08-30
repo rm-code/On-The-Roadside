@@ -31,9 +31,7 @@ function ClimbOver:perform()
 
     assert( self.target:isAdjacent( current ), 'Character has to be adjacent to the target tile!' )
 
-    current:removeCharacter()
-    self.target:setCharacter( self.character )
-    self.character:setTile( self.target )
+    self.character:move( self.target:getPosition() )
 
     SoundManager.play( 'sound_climb' )
     return true

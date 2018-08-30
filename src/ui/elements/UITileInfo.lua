@@ -98,8 +98,13 @@ local function inspectTile( textObject, colorTable, tile )
         addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_error' ), Translator.getText( 'ui_tile_info_impassable' ))
     end
 
+    -- Check if the tile is seen by the player's faction.
+    if not tile:isSeenBy( FACTIONS.ALLIED ) then
+        return
+    end
+
     local _, th = TexturePacks.getTileDimensions()
-    if tile:isOccupied() then
+    if tile:hasCharacter() then
         showCharacterInfo( textObject, colorTable, x, UI_CHARACTER_INFO * th, tile:getCharacter() )
     end
 
@@ -152,17 +157,30 @@ function UITileInfo:draw()
 end
 
 function UITileInfo:update( mouseX, mouseY, map )
-    self.textObject:clear()
-
     local tile = map:getTileAt( mouseX, mouseY )
+
+    -- Clear the text object and do not update if the mouse currently isn't
+    -- hovering over a map tile.
     if not tile then
+        self.tile = nil
+        self.textObject:clear()
         return
     end
 
-    if tile:hasWorldObject() then
-        inspectWorldObject( self.textObject, self.colorTable, tile:getWorldObject() )
+    -- Only update the text object if the target has changed to a new tile.
+    if tile == self.tile then
+        return
+    end
+
+    -- Clear text object and store the new target as the current tile.
+    self.textObject:clear()
+    self.tile = tile
+
+    -- Update text object.
+    if self.tile:hasWorldObject() then
+        inspectWorldObject( self.textObject, self.colorTable, self.tile:getWorldObject() )
     else
-        inspectTile( self.textObject, self.colorTable, tile )
+        inspectTile( self.textObject, self.colorTable, self.tile )
     end
 end
 
