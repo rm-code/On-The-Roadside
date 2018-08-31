@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Class = require( 'lib.Middleclass' )
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
 local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
@@ -33,17 +32,18 @@ function ExecutionState:initialize( stateManager )
     self.actionTimer = 0
 end
 
-function ExecutionState:enter( factions, character, explosionManager )
+function ExecutionState:enter( factions, character, explosionManager, projectileManager )
     self.factions = factions
     self.character = character
     self.explosionManager = explosionManager
+    self.projectileManager = projectileManager
 
     self.delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY
 end
 
 function ExecutionState:update( dt )
-    if not ProjectileManager.isDone() then
-        ProjectileManager.update( dt )
+    if not self.projectileManager:isDone() then
+        self.projectileManager:update( dt )
         return
     end
 

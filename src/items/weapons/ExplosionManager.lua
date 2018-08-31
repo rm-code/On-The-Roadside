@@ -152,16 +152,19 @@ function ExplosionManager:update( dt )
 end
 
 ---
--- Registers and creates a new explosion.
--- @tparam Tile   source The explosion's source.
--- @tparam number damage The explosion's base damage.
--- @tparam number radius The explosion's radius.
+-- Receives events.
+-- @tparam string  event The received event.
+-- @tparam varargs ...   Variable arguments.
 --
-function ExplosionManager:register( source, damage, radius )
-    local list = Util.getTilesInCircle( self.map, source, radius )
-    local queues = generateExplosionMap( self.map, source, list, radius )
-    self.explosionLayout = generateExplosionSteps( queues, damage, radius )
-    self.explosionIndex = 1
+function ExplosionManager:receive( event, ... )
+    if event == 'CREATE_EXPLOSION' then
+        local source, damage, radius = ...
+
+        local list = Util.getTilesInCircle( self.map, source, radius )
+        local queues = generateExplosionMap( self.map, source, list, radius )
+        self.explosionLayout = generateExplosionSteps( queues, damage, radius )
+        self.explosionIndex = 1
+    end
 end
 
 ---

@@ -84,12 +84,14 @@ function CombatState:initialize( playerFaction, savegame )
     end)
 
     self.explosionManager = ExplosionManager( self.map )
-    ProjectileManager.init( self.map, self.explosionManager )
+
+    self.projectileManager = ProjectileManager( self.map )
+    self.projectileManager:observe( self.explosionManager )
 
     self.stateManager = StateManager( self.states )
-    self.stateManager:push( 'planning', self.factions, self.explosionManager )
+    self.stateManager:push( 'planning', self.factions, self.explosionManager, self.projectileManager )
 
-    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager, self.explosionManager )
+    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager, self.explosionManager, self.projectileManager )
 
     -- Register observations.
     self.map:observe( self )
@@ -137,10 +139,6 @@ function CombatState:serialize()
     return t
 end
 
-function CombatState:close()
-    ProjectileManager.clear()
-end
-
 function CombatState:keypressed( _, scancode, _ )
     if self.factions:getFaction():isAIControlled() or self.stateManager:blocksInput() then
         return
@@ -161,6 +159,10 @@ end
 
 function CombatState:getExplosionManager()
     return self.explosionManager
+end
+
+function CombatState:getProjectileManager()
+    return self.projectileManager
 end
 
 function CombatState:getFactions()

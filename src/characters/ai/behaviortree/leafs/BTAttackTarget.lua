@@ -21,9 +21,9 @@ local BTAttackTarget = BTLeaf:subclass( 'BTAttackTarget' )
 -- ------------------------------------------------
 
 function BTAttackTarget:traverse( ... )
-    local blackboard, character = ...
+    local blackboard, character, _, _, projectileManager = ...
 
-    local success = character:enqueueAction( RangedAttack( character, blackboard.target ))
+    local success = character:enqueueAction( RangedAttack( character, blackboard.target, projectileManager ))
     if success then
         Log.debug( 'Character attacks target', 'BTAttackTarget' )
         return true

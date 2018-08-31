@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Class = require( 'lib.Middleclass' )
-local Messenger = require( 'src.Messenger' )
 local Particle = require( 'src.ui.overlays.Particle' )
 local ObjectPool = require( 'src.util.ObjectPool' )
 
@@ -34,27 +33,15 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function ParticleLayer:initialize( explosionManager )
+function ParticleLayer:initialize( explosionManager, projectileManager )
     self.explosionManager = explosionManager
     self.explosionManager:observe( self )
 
+    self.projectileManager = projectileManager
+    self.projectileManager:observe( self )
+
     self.grid = {}
     self.particles = ObjectPool( Particle )
-
-    Messenger.observe( 'PROJECTILE_MOVED', function( ... )
-        local projectile = ...
-        local tile = projectile:getTile()
-        if tile then
-            if projectile:getEffects():hasCustomSprite() then
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 1.0, 1.0, 1.0, 1.0, 2.5, projectile:getEffects():getCustomSprite() )
-            elseif projectile:getEffects():isExplosive() then
-                local col = love.math.random( 0.59, 1.0 )
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), col, col, col, love.math.random( 0.59, 1.0 ), 1.0 )
-            else
-                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 0.87450, 0.44313, 0.14901, 0.78, 0.5 )
-            end
-        end
-    end)
 end
 
 function ParticleLayer:receive( event, ... )
@@ -67,6 +54,21 @@ function ParticleLayer:receive( event, ... )
             local a = love.math.random( 0.78, 0.9 )
             local fade = math.max( 0.95, love.math.random( 2.5 ))
             addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
+        end
+        return
+    end
+    if event == 'PROJECTILE_MOVED' then
+        local projectile = ...
+        local tile = projectile:getTile()
+        if tile then
+            if projectile:getEffects():hasCustomSprite() then
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 1.0, 1.0, 1.0, 1.0, 2.5, projectile:getEffects():getCustomSprite() )
+            elseif projectile:getEffects():isExplosive() then
+                local col = love.math.random( 0.59, 1.0 )
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), col, col, col, love.math.random( 0.59, 1.0 ), 1.0 )
+            else
+                addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 0.87450, 0.44313, 0.14901, 0.78, 0.5 )
+            end
         end
     end
 end

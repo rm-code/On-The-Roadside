@@ -21,9 +21,9 @@ local BTThrowingAttack = BTLeaf:subclass( 'BTThrowingAttack' )
 -- ------------------------------------------------
 
 function BTThrowingAttack:traverse( ... )
-    local blackboard, character = ...
+    local blackboard, character, _, _, projectileManager = ...
 
-    local success = character:enqueueAction( ThrowingAttack( character, blackboard.target ))
+    local success = character:enqueueAction( ThrowingAttack( character, blackboard.target, projectileManager ))
     if success then
         -- Store weapon id for the rearm action.
         blackboard.weaponID = character:getWeapon():getID()
