@@ -33,6 +33,7 @@ local DEFAULT = {
     WARNING = 'README.txt',
     SPRITES = 'sprites.lua',
     IMAGEFONT_LATIN_BASIC = 'imagefont_latin_basic.png',
+    IMAGEFONT_LATIN_1 = 'imagefont_latin_1.png',
     SPRITESHEET = 'spritesheet.png',
 }
 
@@ -134,6 +135,7 @@ local function copyDefaultTexturePack()
     copyFile( source, target, DEFAULT.SPRITES )
     copyFile( source, target, DEFAULT.WARNING )
     copyFile( source, target, DEFAULT.IMAGEFONT_LATIN_BASIC )
+    copyFile( source, target, DEFAULT.IMAGEFONT_LATIN_1 )
     copyFile( source, target, DEFAULT.SPRITESHEET )
 end
 
