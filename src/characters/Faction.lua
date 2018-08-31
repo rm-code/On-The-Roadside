@@ -244,14 +244,18 @@ end
 -- @treturn Character The active Character.
 --
 function Faction:prevCharacter()
-    local previousCharacter = self.active:getObject()
+    -- Get the currently active character.
+    local currentCharacter = self.active:getObject()
     while self.active do
+        -- Select the previous character or wrap around to the last character
+        -- in the list.
         self.active = self.active:getPrev() or self.last
-        local character = self.active:getObject()
-        if not character:isDead() then
+
+        local previousCharacter = self.active:getObject()
+        if not previousCharacter:isDead() then
+            currentCharacter:deactivate()
             previousCharacter:activate()
-            character:deactivate()
-            return character
+            return previousCharacter
         end
     end
 end
