@@ -21,17 +21,66 @@ local Font = Class( 'Font' )
 -- ------------------------------------------------
 
 ---
--- Creates a new instance of the Font class.
--- @tparam  string source The path to load the imagefont file from.
--- @tparam  string glyphs The glyph definition.
--- @tparam  number gw     The width of one glyph.
--- @tparam  number gh     The height of one glpyh.
--- @treturn Font          The new Font instance.
+-- Assembles the string containing all glyphs for the ImageFont.
+-- @tparam  table  charsets A sequence containing the different charset definitions.
+-- @treturn string          The assembled glyph strings.
 --
-function Font:initialize( source, glyphs, gw, gh )
-    self.font = love.graphics.newImageFont( source, glyphs )
-    self.glyphWidth = gw
-    self.glyphHeight = gh
+local function assembleGlyphs( charsets )
+    local glyphs = ''
+    for _, charset in ipairs( charsets ) do
+        glyphs = glyphs .. charset.glyphs
+    end
+    return glyphs
+end
+
+---
+-- Assembles the ImageData for the ImageFont.
+-- @tparam  number    height   The height of the ImageFont.
+-- @tparam  string    path     The path of the image files to load.
+-- @tparam  table     charsets A sequence containing the different charset definitions.
+-- @treturn ImageData          The assembled ImageData.
+--
+local function assembleImageData( height, path, charsets )
+    local fontWidth = 0
+    local imageDatas = {}
+
+    -- Check how many pixels we need for the new ImageData and store the
+    -- different ImageData objects.
+    for _, definition in ipairs( charsets ) do
+        local data = love.image.newImageData( path .. definition.source )
+        fontWidth = fontWidth + data:getWidth()
+        imageDatas[#imageDatas + 1] = data
+    end
+
+    -- Create the empty ImageData.
+    local fontImageData = love.image.newImageData( fontWidth, height )
+
+    -- Paste the different ImageDatas to the font's ImageData.
+    local offset = 0
+    for _, data in ipairs( imageDatas ) do
+        fontImageData:paste( data, offset, 0, 0, 0, data:getDimensions() )
+        offset = offset + data:getWidth()
+    end
+
+    return fontImageData
+end
+
+---
+-- Creates a new instance of the Font class.
+-- @tparam  string path The path to load the imagefont file from.
+-- @tparam  table  def  The font definition.
+-- @treturn Font        The new Font instance.
+--
+function Font:initialize( path, def )
+    self.glyphWidth = def.width
+    self.glyphHeight = def.height
+
+    -- Assemble the parts of the ImageFont.
+    local glyphs = assembleGlyphs( def.charsets )
+    local imageData = assembleImageData( def.height, path, def.charsets )
+
+    -- Create the ImageFont.
+    self.font = love.graphics.newImageFont( imageData, glyphs )
 end
 
 ---

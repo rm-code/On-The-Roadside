@@ -32,7 +32,7 @@ local DEFAULT = {
     COLORS = 'colors.lua',
     WARNING = 'README.txt',
     SPRITES = 'sprites.lua',
-    IMAGEFONT = 'imagefont.png',
+    IMAGEFONT_LATIN_BASIC = 'imagefont_latin_basic.png',
     SPRITESHEET = 'spritesheet.png',
 }
 
@@ -133,7 +133,7 @@ local function copyDefaultTexturePack()
     copyFile( source, target, DEFAULT.COLORS )
     copyFile( source, target, DEFAULT.SPRITES )
     copyFile( source, target, DEFAULT.WARNING )
-    copyFile( source, target, DEFAULT.IMAGEFONT )
+    copyFile( source, target, DEFAULT.IMAGEFONT_LATIN_BASIC )
     copyFile( source, target, DEFAULT.SPRITESHEET )
 end
 

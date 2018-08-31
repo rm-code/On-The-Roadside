@@ -24,9 +24,8 @@ function TexturePack:initialize( path, source, spriteInfos, colorInfos )
     self.name = source.name
 
     -- Generate font.
-    local f = source.font
-    self.font = Font( path .. f.source, f.glyphs.source, f.glyphs.width, f.glyphs.height )
-    self.glyphWidth, self.glyphHeight = f.glyphs.width, f.glyphs.height
+    self.font = Font( path, source.font )
+    self.glyphWidth, self.glyphHeight = source.font.width, source.font.height
 
     -- Generate tileset.
     local t = source.tileset
