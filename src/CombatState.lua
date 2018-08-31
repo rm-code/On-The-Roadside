@@ -83,13 +83,13 @@ function CombatState:initialize( playerFaction, savegame )
         end)
     end)
 
+    self.explosionManager = ExplosionManager( self.map )
+    ProjectileManager.init( self.map, self.explosionManager )
+
     self.stateManager = StateManager( self.states )
-    self.stateManager:push( 'planning', self.factions )
+    self.stateManager:push( 'planning', self.factions, self.explosionManager )
 
-    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager )
-
-    ProjectileManager.init( self.map )
-    ExplosionManager.init( self.map )
+    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager, self.explosionManager )
 
     -- Register observations.
     self.map:observe( self )
@@ -139,7 +139,6 @@ end
 
 function CombatState:close()
     ProjectileManager.clear()
-    ExplosionManager.clear()
 end
 
 function CombatState:keypressed( _, scancode, _ )
@@ -158,6 +157,10 @@ end
 
 function CombatState:getMap()
     return self.map
+end
+
+function CombatState:getExplosionManager()
+    return self.explosionManager
 end
 
 function CombatState:getFactions()

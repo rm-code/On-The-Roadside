@@ -71,7 +71,7 @@ local function handleInputSelectionActions( input, inputStateHandler, character 
     return true
 end
 
-local function handleOtherActions( input, stateManager, inputStateHandler, factions, character )
+local function handleOtherActions( input, stateManager, inputStateHandler, factions, character, explosionManager )
     if input == 'next_character' then
         inputStateHandler:switch( 'movement' )
         factions:getFaction():nextCharacter()
@@ -90,7 +90,7 @@ local function handleOtherActions( input, stateManager, inputStateHandler, facti
 
     if input == 'open_inventory_screen' then
         character:enqueueAction( OpenInventory( character, character:getTile() ))
-        stateManager:push( 'execution', factions, character )
+        stateManager:push( 'execution', factions, character, explosionManager )
         return true
     elseif input == 'open_health_screen' then
         ScreenManager.push( 'playerInfo', character )
@@ -127,8 +127,9 @@ function PlanningState:initialize( stateManager )
     self.inputStateHandler:switch( 'movement' )
 end
 
-function PlanningState:enter( factions )
+function PlanningState:enter( factions, explosionManager )
     self.factions = factions
+    self.explosionManager = explosionManager
 end
 
 function PlanningState:update()
@@ -148,7 +149,7 @@ function PlanningState:input( input )
     end
 
     if handleCharacterActions( input, character ) then
-        self.stateManager:push( 'execution', self.factions, character )
+        self.stateManager:push( 'execution', self.factions, character, self.explosionManager )
         return
     end
 
@@ -156,7 +157,7 @@ function PlanningState:input( input )
         return
     end
 
-    if handleOtherActions( input, self.stateManager, self.inputStateHandler, self.factions, character ) then
+    if handleOtherActions( input, self.stateManager, self.inputStateHandler, self.factions, character, self.explosionManager ) then
         return
     end
 end
@@ -176,7 +177,7 @@ function PlanningState:selectTile( tile, button )
     -- Request actions to execute.
     local execute = self.inputStateHandler:getState():request( tile, character )
     if execute then
-        self.stateManager:push( 'execution', self.factions, character )
+        self.stateManager:push( 'execution', self.factions, character, self.explosionManager )
     end
 end
 

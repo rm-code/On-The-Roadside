@@ -1,6 +1,5 @@
 local Log = require( 'src.util.Log' );
 local Messenger = require( 'src.Messenger' );
-local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
 local Util = require( 'src.util.Util' )
 local Translator = require( 'src.util.Translator' )
 
@@ -22,6 +21,7 @@ local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' );
 
 local queue;
 local map;
+local explosionManager
 
 -- ------------------------------------------------
 -- Private Functions
@@ -35,7 +35,7 @@ local map;
 --
 local function hitTile( tile, projectile )
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-        ExplosionManager.register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
+        explosionManager:register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
         return
     end
 
@@ -145,8 +145,9 @@ end
 -- Initialise the ProjectileManager.
 -- @param nmap (Map) The game's map.
 --
-function ProjectileManager.init( nmap )
+function ProjectileManager.init( nmap, nexplosionManager )
     map = nmap;
+    explosionManager = nexplosionManager
 end
 
 ---

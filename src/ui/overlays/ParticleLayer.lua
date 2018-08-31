@@ -34,7 +34,10 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function ParticleLayer:initialize()
+function ParticleLayer:initialize( explosionManager )
+    self.explosionManager = explosionManager
+    self.explosionManager:observe( self )
+
     self.grid = {}
     self.particles = ObjectPool( Particle )
 
@@ -52,8 +55,10 @@ function ParticleLayer:initialize()
             end
         end
     end)
+end
 
-    Messenger.observe( 'EXPLOSION', function( ... )
+function ParticleLayer:receive( event, ... )
+    if event == 'EXPLOSION' then
         local generation = ...
         for tile, _ in pairs( generation ) do
             local r = 0.9
@@ -63,7 +68,7 @@ function ParticleLayer:initialize()
             local fade = math.max( 0.95, love.math.random( 2.5 ))
             addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
         end
-    end)
+    end
 end
 
 function ParticleLayer:update( dt )
