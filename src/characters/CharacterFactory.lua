@@ -178,7 +178,7 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character( savedCharacter.class )
+    local character = Character( savedCharacter.class, savedCharacter.maxActionPoints )
 
     character:setName( savedCharacter.name )
     character:setActionPoints( savedCharacter.actionPoints )

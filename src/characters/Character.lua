@@ -285,6 +285,7 @@ function Character:serialize()
     local t = {
         ['class'] = self.creatureClass,
         ['name'] = self.name,
+        ['maxActionPoints'] = self.maxActionPoints,
         ['actionPoints'] = self.actionPoints,
         ['accuracy'] = self.accuracy,
         ['throwingSkill'] = self.throwingSkill,
