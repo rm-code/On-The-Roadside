@@ -246,7 +246,10 @@ end
 function WorldObject:setBlocksVision( blocksVision )
     self.blocksVision = blocksVision
 
-    self:publish( 'TILE_UPDATED', self:getTile() )
+    -- Send no update if the map isn't assembled already during map loading.
+    if self:getMap() then
+        self:publish( 'TILE_UPDATED', self:getTile() )
+    end
 end
 
 ---
