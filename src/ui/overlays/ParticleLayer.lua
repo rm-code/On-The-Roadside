@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Class = require( 'lib.Middleclass' )
-local Messenger = require( 'src.Messenger' )
 local Particle = require( 'src.ui.overlays.Particle' )
 local ObjectPool = require( 'src.util.ObjectPool' )
 
@@ -34,11 +33,31 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function ParticleLayer:initialize()
+function ParticleLayer:initialize( explosionManager, projectileManager )
+    self.explosionManager = explosionManager
+    self.explosionManager:observe( self )
+
+    self.projectileManager = projectileManager
+    self.projectileManager:observe( self )
+
     self.grid = {}
     self.particles = ObjectPool( Particle )
+end
 
-    Messenger.observe( 'PROJECTILE_MOVED', function( ... )
+function ParticleLayer:receive( event, ... )
+    if event == 'EXPLOSION' then
+        local generation = ...
+        for tile, _ in pairs( generation ) do
+            local r = 0.9
+            local g = love.math.random( 0.39, 0.58 )
+            local b = 0
+            local a = love.math.random( 0.78, 0.9 )
+            local fade = math.max( 0.95, love.math.random( 2.5 ))
+            addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
+        end
+        return
+    end
+    if event == 'PROJECTILE_MOVED' then
         local projectile = ...
         local tile = projectile:getTile()
         if tile then
@@ -51,19 +70,7 @@ function ParticleLayer:initialize()
                 addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), 0.87450, 0.44313, 0.14901, 0.78, 0.5 )
             end
         end
-    end)
-
-    Messenger.observe( 'EXPLOSION', function( ... )
-        local generation = ...
-        for tile, _ in pairs( generation ) do
-            local r = 0.9
-            local g = love.math.random( 0.39, 0.58 )
-            local b = 0
-            local a = love.math.random( 0.78, 0.9 )
-            local fade = math.max( 0.95, love.math.random( 2.5 ))
-            addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
-        end
-    end)
+    end
 end
 
 function ParticleLayer:update( dt )

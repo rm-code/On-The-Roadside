@@ -20,18 +20,20 @@ local SadisticAIDirector = Class( 'SadisticAIDirector' )
 -- Private Methods
 -- ------------------------------------------------
 
-local function tickBehaviorTree( tree, character, states, factions )
+local function tickBehaviorTree( tree, character, states, factions, projectileManager )
     Log.debug( "Tick BehaviorTree for " .. tostring( character ), 'SadisticAIDirector' )
-    return tree:traverse( {}, character, states, factions )
+    return tree:traverse( {}, character, states, factions, projectileManager )
 end
 
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function SadisticAIDirector:initialize( factions, states )
+function SadisticAIDirector:initialize( factions, states, explosionManager, projectileManager )
     self.factions = factions
     self.states = states
+    self.explosionManager = explosionManager
+    self.projectileManager = projectileManager
 end
 
 function SadisticAIDirector:update()
@@ -47,9 +49,9 @@ function SadisticAIDirector:update()
     Log.debug( 'Select next character for this turn', 'SadisticAIDirector' )
     local character = faction:nextCharacterForTurn()
 
-    local success = tickBehaviorTree( tree, character, self.states, self.factions )
+    local success = tickBehaviorTree( tree, character, self.states, self.factions, self.projectileManager )
     if success then
-        self.states:push( 'execution', self.factions, character )
+        self.states:push( 'execution', self.factions, character, self.explosionManager, self.projectileManager )
         return
     end
 

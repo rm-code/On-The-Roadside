@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
 local ProjectileQueue = require( 'src.items.weapons.ProjectileQueue' )
 local Bresenham = require( 'lib.Bresenham' )
 
@@ -21,8 +20,10 @@ local RangedAttack = Action:subclass( 'RangedAttack' )
 -- Public Methods
 -- ------------------------------------------------
 
-function RangedAttack:initialize( character, target )
+function RangedAttack:initialize( character, target, projectileManager )
     Action.initialize( self, character, target, character:getWeapon():getAttackCost() )
+
+    self.projectileManager = projectileManager
 end
 
 function RangedAttack:perform()
@@ -45,8 +46,7 @@ function RangedAttack:perform()
         return true
     end)
 
-    local package = ProjectileQueue( self.character, ax, ay, th )
-    ProjectileManager.register( package )
+    self.projectileManager:register( ProjectileQueue( self.character, ax, ay, th ))
     return true
 end
 

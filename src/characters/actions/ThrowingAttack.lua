@@ -7,7 +7,6 @@
 -- ------------------------------------------------
 
 local Action = require( 'src.characters.actions.Action' )
-local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
 local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' )
 local Bresenham = require( 'lib.Bresenham' )
 
@@ -21,8 +20,10 @@ local ThrowingAttack = Action:subclass( 'ThrowingAttack' )
 -- Public Methods
 -- ------------------------------------------------
 
-function ThrowingAttack:initialize( character, target )
+function ThrowingAttack:initialize( character, target, projectileManager )
     Action.initialize( self, character, target, character:getWeapon():getAttackCost() )
+
+    self.projectileManager = projectileManager
 end
 
 function ThrowingAttack:perform()
@@ -40,8 +41,7 @@ function ThrowingAttack:perform()
         return true
     end)
 
-    local package = ThrownProjectileQueue( self.character, ax, ay, th )
-    ProjectileManager.register( package )
+    self.projectileManager:register( ThrownProjectileQueue( self.character, ax, ay, th ))
     return true
 end
 

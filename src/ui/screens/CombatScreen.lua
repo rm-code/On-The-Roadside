@@ -122,10 +122,6 @@ function CombatScreen:mousefocus( f )
     end
 end
 
-function CombatScreen:close()
-    self.combatState:close()
-end
-
 function CombatScreen:resize( _, _ )
     self.userInterface:resize()
 end

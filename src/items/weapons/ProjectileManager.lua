@@ -1,6 +1,13 @@
-local Log = require( 'src.util.Log' );
-local Messenger = require( 'src.Messenger' );
-local ExplosionManager = require( 'src.items.weapons.ExplosionManager' );
+---
+-- @module ProjectileManager
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
+local Observable = require( 'src.util.Observable' )
+local Log = require( 'src.util.Log' )
 local Util = require( 'src.util.Util' )
 local Translator = require( 'src.util.Translator' )
 
@@ -8,34 +15,26 @@ local Translator = require( 'src.util.Translator' )
 -- Module
 -- ------------------------------------------------
 
-local ProjectileManager = {};
+local ProjectileManager = Observable:subclass( 'ProjectileManager' )
 
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
 
-local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' );
-
--- ------------------------------------------------
--- Private Variables
--- ------------------------------------------------
-
-local queue;
-local map;
+local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' )
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
 ---
--- Removes a projectile from the world and hits a tile with the projectile
--- damage.
--- @param tile       (Tile)       The tile to hit.
--- @param projectile (Projectile) The projectile to remove.
+-- Removes a projectile from the world and hits a tile with the projectile damage.
+-- @tparam Tile       tile       The tile to hit.
+-- @tparam Projectile projectile The projectile to remove.
 --
-local function hitTile( tile, projectile )
+local function hitTile( self, tile, projectile )
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-        ExplosionManager.register( tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
+        self:publish( 'CREATE_EXPLOSION', tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
         return
     end
 
@@ -44,32 +43,35 @@ end
 
 ---
 -- Reduces the energy of the projectile with slightly randomized values.
--- @params energy    (number) The current energy.
--- @params reduction (number) The reduction that should be applied.
--- @return           (number) The modified energy value.
+-- @tparam  number energy    The current energy.
+-- @tparam  number reduction The reduction that should be applied.
+-- @treturn number           The modified energy value.
 --
 local function reduceProjectileEnergy( energy, reduction )
-    reduction = love.math.random( reduction - 10, reduction + 10 );
+    reduction = love.math.random( reduction - 10, reduction + 10 )
     reduction = Util.clamp( 1, reduction, 100 )
-    return energy - reduction;
+    return energy - reduction
 end
 
 ---
+-- Hits a character.
+-- @tparam Tile       tile       The tile to hit.
+-- @tparam Projectile projectile The projectile to remove.
 --
-local function hitCharacter( tile, projectile )
+local function hitCharacter( self, tile, projectile )
     Log.debug( 'Projectile hit character', 'ProjectileManager' )
-    hitTile( tile, projectile )
+    hitTile( self, tile, projectile )
     return true
 end
 
 ---
 -- Handles how to proceed if the projectile hits a world object.
--- @param projectile  (Projectile)  The projectile to handle.
--- @param tile        (Tile)        The tile to check.
--- @param worldObject (WorldObject) The world object to check.
--- @treturn boolean Wether to remove the projectile or not.
+-- @tparam  Projectile  projectile  The projectile to handle.
+-- @tparam  Tile        tile        The tile to check.
+-- @tparam  WorldObject worldObject The world object to check.
+-- @treturn boolean                 Wether to remove the projectile or not.
 --
-local function hitWorldObject( projectile, tile, worldObject )
+local function hitWorldObject( self, projectile, tile, worldObject )
     if projectile:getHeight() > worldObject:getHeight() then
         Log.debug( 'Projectile flies over world object', 'ProjectileManager' )
         return false
@@ -83,35 +85,36 @@ local function hitWorldObject( projectile, tile, worldObject )
         -- indestructible world object. This needs to be done to make sure explosions
         -- occur on the right side of the world object.
         if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-            tile = projectile:getPreviousTile();
+            tile = projectile:getPreviousTile()
         end
 
         tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
-        hitTile( tile, projectile )
+        hitTile( self, tile, projectile )
         return true
     end
 
     Log.debug( 'Projectile hit destructible world object', 'ProjectileManager' )
 
     -- Projectiles passing through world objects lose some of their energy.
-    local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() );
-    projectile:setEnergy( energy );
+    local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() )
+    projectile:setEnergy( energy )
 
     tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
 
     -- Apply the damage to the tile and only remove it if the energy is 0.
-    hitTile( tile, projectile )
+    hitTile( self, tile, projectile )
     return energy <= 0
 end
 
 ---
 -- Checks if the projectile has hit any characters or worldobjects.
--- @param index      (number)     The id of the projectile which will be used for removing it.
--- @param projectile (Projectile) The projectile to handle.
--- @param tile       (Tile)       The tile to check.
--- @param character  (Character)  The character who fired this projectile.
+-- @tparam ProjectileQueue queue      The ProjectileQueue to process.
+-- @tparam number          index      The id of the projectile which will be used for removing it.
+-- @tparam Projectile      projectile The projectile to handle.
+-- @tparam Tile            tile       The tile to check.
+-- @tparam Character       character  The character who fired this projectile.
 --
-local function checkForHits( index, projectile, tile )
+local function checkForHits( self, queue, index, projectile, tile )
     -- Stop movement and remove the projectile if it has reached the map border.
     if not tile then
         queue:removeProjectile( index )
@@ -121,14 +124,14 @@ local function checkForHits( index, projectile, tile )
     local remove = false
 
     if tile:hasCharacter() then
-        remove = hitCharacter( tile, projectile )
+        remove = hitCharacter( self, tile, projectile )
     elseif tile:hasWorldObject() then
-        remove = hitWorldObject( projectile, tile, tile:getWorldObject() )
+        remove = hitWorldObject( self, projectile, tile, tile:getWorldObject() )
     end
 
     if not remove and projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
-        hitTile( tile, projectile )
+        hitTile( self, tile, projectile )
         remove = true
     end
 
@@ -143,66 +146,60 @@ end
 
 ---
 -- Initialise the ProjectileManager.
--- @param nmap (Map) The game's map.
+-- @tparam Map map The game's map.
 --
-function ProjectileManager.init( nmap )
-    map = nmap;
+function ProjectileManager:initialize( map )
+    Observable.initialize( self )
+
+    self.map = map
 end
 
 ---
 -- Updates the ProjectileManager which handles a ProjectileQueue for spawning
 -- projectiles and the interaction of each projectile with the game world.
--- @param dt (number) The time since the last frame.
+-- @tparam number dt The time since the last frame.
 --
-function ProjectileManager.update( dt )
-    if not queue then
-        return;
+function ProjectileManager:update( dt )
+    if not self.queue then
+        return
     end
 
     -- Updates the time of the projectile queue which handles spawning of
     -- new projectiles.
-    queue:update( dt );
+    self.queue:update( dt )
 
     -- Update the projectiles currently in the game world.
-    for i, projectile in pairs( queue:getProjectiles() ) do
-        projectile:update( dt );
+    for i, projectile in pairs( self.queue:getProjectiles() ) do
+        projectile:update( dt )
 
         -- If the projectile has moved notify the world and check if it has
         -- hit anything.
-        if projectile:hasMoved( map ) then
-            projectile:updateTile( map );
-            Messenger.publish( 'PROJECTILE_MOVED', projectile );
+        if projectile:hasMoved( self.map ) then
+            projectile:updateTile( self.map )
+            self:publish( 'PROJECTILE_MOVED', projectile )
 
-            checkForHits( i, projectile, projectile:getTile() )
+            checkForHits( self, self.queue, i, projectile, projectile:getTile() )
         end
     end
 end
 
 ---
 -- Registers a new projectile queue.
--- @param nqueue (ProjectileQueue) The ProjectileQueue to process.
+-- @tparam ProjectileQueue queue The ProjectileQueue to process.
 --
-function ProjectileManager.register( nqueue )
-    queue = nqueue
-end
-
----
--- Remove any saved state.
---
-function ProjectileManager.clear()
-    queue = nil;
-    map = nil;
+function ProjectileManager:register( queue )
+    self.queue = queue
 end
 
 ---
 -- Returns true if there isn't a queue or if the current queue has been processed.
--- @return (boolean) True if the projectile manager has processed the queue.
+-- @treturn boolean True if the projectile manager has processed the queue.
 --
-function ProjectileManager.isDone()
-    if not queue then
-        return true;
+function ProjectileManager:isDone()
+    if not self.queue then
+        return true
     end
-    return queue:isDone();
+    return self.queue:isDone()
 end
 
-return ProjectileManager;
+return ProjectileManager

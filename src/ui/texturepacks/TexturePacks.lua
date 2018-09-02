@@ -32,7 +32,8 @@ local DEFAULT = {
     COLORS = 'colors.lua',
     WARNING = 'README.txt',
     SPRITES = 'sprites.lua',
-    IMAGEFONT = 'imagefont.png',
+    IMAGEFONT_LATIN_BASIC = 'imagefont_latin_basic.png',
+    IMAGEFONT_LATIN_1 = 'imagefont_latin_1.png',
     SPRITESHEET = 'spritesheet.png',
 }
 
@@ -48,36 +49,6 @@ local current
 -- ------------------------------------------------
 
 ---
--- Checks if the loaded module provides all the necessary fields.
--- @tparam  table   module The loaded module to check.
--- @treturn boolean        True if the module is valid.
---
-local function validate( module )
-    if not module.name
-    or not module.font
-    or not module.tileset then
-        return false
-    end
-
-    if not module.font.source
-    or not module.font.glyphs
-    or not module.tileset.source
-    or not module.tileset.tiles then
-        return false
-    end
-
-    if not module.font.glyphs.source
-    or not module.font.glyphs.width
-    or not module.font.glyphs.height
-    or not module.tileset.tiles.width
-    or not module.tileset.tiles.height then
-        return false
-    end
-
-    return true
-end
-
----
 -- Loads a texture pack.
 -- @tparam string   src The path to load the templates from.
 -- @treturn boolean     True if the texture pack was loaded successfully.
@@ -86,7 +57,7 @@ end
 local function load( src )
     local path = src .. INFO_FILE_NAME
     local module = require( path )
-    if not module or not validate( module ) then
+    if not module then
         return false
     end
 
@@ -163,7 +134,8 @@ local function copyDefaultTexturePack()
     copyFile( source, target, DEFAULT.COLORS )
     copyFile( source, target, DEFAULT.SPRITES )
     copyFile( source, target, DEFAULT.WARNING )
-    copyFile( source, target, DEFAULT.IMAGEFONT )
+    copyFile( source, target, DEFAULT.IMAGEFONT_LATIN_BASIC )
+    copyFile( source, target, DEFAULT.IMAGEFONT_LATIN_1 )
     copyFile( source, target, DEFAULT.SPRITESHEET )
 end
 

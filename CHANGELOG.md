@@ -1,3 +1,19 @@
+# Version 0.16.1.1627 - 2018-09-02 (LÖVE 11.1)
+
+## Additions
+- Added support for latin-1 charset.
+
+## Fixes
+- Fixed camera focusing on the wrong character when switching from the current to the previous character.
+- Fixed faulty loading of world objects.
+- Fixed faulty loading of characters.
+
+## Other Changes
+- Changed how fonts are loaded by the game to support different charsets.
+
+
+
+
 # Version 0.16.0.1615 - 2018-08-30 (LÖVE 11.1)
 
 ## Additions

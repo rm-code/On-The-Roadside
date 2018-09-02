@@ -34,7 +34,7 @@ local WEAPON_TYPES = require( 'src.constants.WEAPON_TYPES' )
 -- @tparam  Character character The character to create the action for.
 -- @treturn boolean             True if an action was created, false otherwise.
 --
-function AttackInput:request( target, character )
+function AttackInput:request( target, character, projectileManager )
     -- Prevent characters from attacking themselves.
     if target == character:getTile() then
         return false
@@ -54,13 +54,13 @@ function AttackInput:request( target, character )
 
     -- Handle Thrown weapons.
     if weapon:getSubType() == WEAPON_TYPES.THROWN then
-        character:enqueueAction( ThrowingAttack( character, target ))
+        character:enqueueAction( ThrowingAttack( character, target, projectileManager ))
         character:enqueueAction( Rearm( character, weapon:getID() ))
     end
 
     -- Handle Ranged weapons.
     if weapon:getSubType() == WEAPON_TYPES.RANGED then
-        character:enqueueAction( RangedAttack( character, target ))
+        character:enqueueAction( RangedAttack( character, target, projectileManager ))
     end
 
     return true
