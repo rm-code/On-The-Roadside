@@ -72,7 +72,7 @@ local function load( dir )
             for _, file in ipairs( files ) do
                 loadAdditionalText( path .. file )
             end
-            Log.debug( string.format( '  %d. %s', i, subdir ))
+            Log.info( string.format( '  %d. %s', i, subdir ), 'Translator' )
         end
     end
 end
@@ -87,7 +87,7 @@ end
 -- @tparam string nlocale The identifier for the default locale (e.g. en_EN)
 --
 function Translator.init( nlocale )
-    Log.debug( 'Load language files:' )
+    Log.info( 'Load language files:', 'Translator' )
     load( TEMPLATE_DIRECTORY )
 
     -- Set the default locale and make it the active locale.
@@ -107,6 +107,14 @@ end
 --
 function Translator.getLocale()
     return locale
+end
+
+---
+-- Gets all locales.
+-- @treturn table All loaded locales.
+--
+function Translator.getLocales()
+    return locales
 end
 
 ---

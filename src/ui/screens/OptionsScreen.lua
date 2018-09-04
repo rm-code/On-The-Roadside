@@ -77,9 +77,11 @@ end
 --
 local function createLanguageOption( lx, ly )
     -- The list of values to display.
-    local listOfValues = {
-        { displayTextID = Translator.getText( 'ui_lang_eng' ), value = 'en_EN' }
-    }
+    local listOfValues = {}
+
+    for localeID, _ in pairs( Translator.getLocales() ) do
+        listOfValues[#listOfValues + 1] = { displayTextID = Translator.getText( localeID ), value = localeID }
+    end
 
     -- The function to call when the value of the UISelectField changes.
     local function callback( val )

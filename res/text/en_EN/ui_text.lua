@@ -98,7 +98,11 @@ locale.strings = {
 
     -- Language selector
     ['ui_lang'] = "Language:",
-    ['ui_lang_eng'] = "English",
+
+    -- Avoid translating these so people can easily switch back
+    -- if they select the wrong language.
+    ['en_EN'] = "English",
+    ['de_DE'] = "Deutsch",
 
     -- Other options
     ['ui_fullscreen'] = "Fullscreen:",
