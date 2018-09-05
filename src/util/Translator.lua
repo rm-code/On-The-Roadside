@@ -22,6 +22,7 @@ local MISSING_TRANSLATION_ERROR = 'Translation for locale %s and ID %s doesn\'t 
 local MISSING_ID_ERROR = 'TEXT_ERROR <%s>'
 local LOCALE_ERROR = 'The selected locale %s doesn\'t exist. Falling back to default locale.'
 local TEMPLATE_DIRECTORY  = 'res/text/'
+local MODDING_DIRECTORY  = 'mods/language/'
 
 -- ------------------------------------------------
 -- Local Variables
@@ -30,6 +31,7 @@ local TEMPLATE_DIRECTORY  = 'res/text/'
 local locales = {}
 local locale
 local defaultLocale
+local counter
 
 -- ------------------------------------------------
 -- Local Functions
@@ -63,7 +65,7 @@ end
 --
 local function load( dir )
     local subdirectories = love.filesystem.getDirectoryItems( dir )
-    for i, subdir in ipairs( subdirectories ) do
+    for _, subdir in ipairs( subdirectories ) do
         local path = dir .. subdir .. '/'
         if love.filesystem.getInfo( path, 'directory' ) then
             local files = love.filesystem.getDirectoryItems( path )
@@ -72,7 +74,9 @@ local function load( dir )
             for _, file in ipairs( files ) do
                 loadAdditionalText( path .. file )
             end
-            Log.info( string.format( '  %d. %s', i, subdir ), 'Translator' )
+
+            counter = counter + 1
+            Log.info( string.format( '  %d. %s', counter, subdir ), 'Translator' )
         end
     end
 end
@@ -87,8 +91,11 @@ end
 -- @tparam string nlocale The identifier for the default locale (e.g. en_EN)
 --
 function Translator.init( nlocale )
+    counter = 0
+
     Log.info( 'Load language files:', 'Translator' )
     load( TEMPLATE_DIRECTORY )
+    load( MODDING_DIRECTORY )
 
     -- Set the default locale and make it the active locale.
     -- The default locale will be used as a fallback.
