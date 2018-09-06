@@ -32,7 +32,7 @@ local function createTitle( titleDefinition )
     local title = love.graphics.newText( font )
     local coloredtext = {}
 
-    for _, line in ipairs( titleDefinition ) do
+    for line in titleDefinition:gmatch( '(.+)\n' ) do
         for w in string.gmatch( line, '.' ) do
             if w == 'O' then
                 coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )

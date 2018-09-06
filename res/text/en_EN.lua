@@ -1,6 +1,5 @@
 local locale = {}
 locale.identifier = 'en_EN'
-
 locale.strings = {
     -- ==============================
     -- TILES
@@ -254,67 +253,70 @@ locale.strings = {
 
     -- Help Screen
     ['ui_help_header'] = 'Help',
-
-    -- Titles
-    ['ui_title_main_menu'] = {
-        "             OOOO    OO   OO       OOOOOOO  OOO  OOO  OOOOOOO            ",
-        "           OOOOOOOO  OOO  OOO      OOOOOOO  OOO  OOO  OOOOOOOO           ",
-        "           OO!  OOO  OO!O OOO        OO!    OO!  OOO  OO!                ",
-        "           !O!  O!O  !O!!O!O!        !O!    !O!  O!O  !O!                ",
-        "           O!O  !O!  O!O !!O!        O!!    O!O!O!O!  O!!!:!             ",
-        "           !O!  !!!  !O!  !!!        !!!    !!!O!!!!  !!!!!:             ",
-        "           !!:  !!!  !!:  !!!        !!:    !!:  !!!  !!:                ",
-        "           :!:  !:!  :!:  !:!        :!:    :!:  !:!  :!:                ",
-        "           :!:::!!:   ::   ::         ::     ::   !:  ::!::!!            ",
-        "             :!::      :    :          :      :    :  :!:::::!           ",
-        "                                                                         ",
-        "OOOOOOO     OOOO     OOOOOO   OOOOOO     OOOOO    OOO  OOOOOOO   OOOOOOO ",
-        "OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOO   OOO  OOOOOOOO  OOOOOOOO",
-        "OO!  OOO  OO!  OOO  OO!  OOO  OO!  OOO  !OO       OO!  OO!  OOO  OO!     ",
-        "!O!  O!O  !O!  O!O  !O!  O!O  !O!  O!O  !O!       !O!  !O!  O!O  !O!     ",
-        "O!O!!O!   O!O  !O!  O!O!O!O!  O!O  !O!  !!OO!!    !!O  O!O  !O!  O!!!:!  ",
-        "!!O!O!    !O!  !!!  !!!O!!!!  !O!  !!!   !!O!!!   !!!  !O!  !!!  !!!!!:  ",
-        "!!: :!!   !!:  !!!  !!:  !!!  !!:  !!!       !:!  !!:  !!:  !!!  !!:     ",
-        ":!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!      !:!   :!:  :!:  !:!  :!:     ",
-        " ::   !:  ::!:!!::   ::   ::  !:.:.:::  ::!::::    ::  !:!!::.:  ::!:.:: ",
-        "  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:",
-    },
-    ['ui_title_options'] = {
-        "  OOOO    OOOOOOO   OOOOOOO  OOO    OOOO    OO   OO    OOOOO  ",
-        "OOOOOOOO  OOOOOOOO  OOOOOOO  OOO  OOOOOOOO  OOO  OOO  OOOOOOO ",
-        "OO!  OOO  OO!  OOO    OO!    OO!  OO!  OOO  OO!O OOO  !OO     ",
-        "!O!  O!O  !O!  O!O    !O!    !O!  !O!  O!O  !O!!O!O!  !O!     ",
-        "O!O  !O!  O!OO!O!     O!!    !!O  O!O  !O!  O!O !!O!  !!OO!!  ",
-        "!O!  !!!  !!O!!!      !!!    !!!  !O!  !!!  !O!  !!!   !!O!!! ",
-        "!!:  !!!  !!:         !!:    !!:  !!:  !!!  !!:  !!!       !:!",
-        ":!:  !:!  :!:         :!:    :!:  :!:  !:!  :!:  !:!      !:! ",
-        ":!:::!!:   ::          ::     ::  :!:::!!:   ::   ::  ::!:::: ",
-        "  :!::      :           :      :    :!::      :    :   :::..  "
-    },
-    ['ui_title_savegames'] = {
-        " OOOOO     OOOOOO   OOO  OOO  OOOOOOO    OOOOO  ",
-        "OOOOOOO   OOOOOOOO  OOO  OOO  OOOOOOOO  OOOOOOO ",
-        "!OO       OO!  OOO  OO!  OOO  OO!       !OO     ",
-        "!O!       !O!  O!O  !O!  O!O  !O!       !O!     ",
-        "!!OO!!    O!O!O!O!  O!O  !O!  O!!!:!    !!OO!!  ",
-        " !!O!!!   !!!O!!!!  !O!  !!!  !!!!!:     !!O!!! ",
-        "     !:!  !!:  !!!  :!:  !!:  !!:            !:!",
-        "    !:!   :!:  !:!   ::!!::   :!:           !:! ",
-        "::!::::    ::   ::    !:::    ::!::!!   ::!:::: ",
-        " :::..      !    :     !:     :!:::::!   :::..  "
-    },
-    ['ui_title_controls'] = {
-        " OOOOO      OOOO    OO   OO   OOOOOOO  OOOOOOO     OOOO    OOO        OOOOO  ",
-        "OOOOOOOO  OOOOOOOO  OOO  OOO  OOOOOOO  OOOOOOOO  OOOOOOOO  OOO       OOOOOOO ",
-        "OO!       OO!  OOO  OO!O OOO    OO!    OO!  OOO  OO!  OOO  OO!       !OO     ",
-        "!O!       !O!  O!O  !O!!O!O!    !O!    !O!  O!O  !O!  O!O  !O!       !O!     ",
-        "O!O       O!O  !O!  O!O !!O!    O!!    O!O!!O!   O!O  !O!  O!O       !!OO!!  ",
-        "!O!       !O!  !!!  !O!  !!!    !!!    !!O!O!    !O!  !!!  !O!        !!O!!! ",
-        "!!:       !!:  !!!  !!:  !!!    !!:    !!: :!!   !!:  !!!  !!:            !:!",
-        ":!:       :!:  !:!  :!:  !:!    :!:    :!:  !:!  :!:  !:!  :!:           !:! ",
-        ":!:::!!   :!:::!!:   ::   ::     ::     ::   !:  :!:::!!:  :!:::!!   ::!:::: ",
-        " ::!::!:    :!::      :    :      :      !    :    :!::    !::!::!:   :::..  "
-    }
 }
+
+locale.strings['ui_title_main_menu'] = [[
+              OOOO    OO   OO     OOOOOOO  OOO  OOO  OOOOOOO
+            OOOOOOOO  OOO  OOO    OOOOOOO  OOO  OOO  OOOOOOOO
+            OO!  OOO  OO!O OOO      OO!    OO!  OOO  OO!
+            !O!  O!O  !O!!O!O!      !O!    !O!  O!O  !O!
+            O!O  !O!  O!O !!O!      O!!    O!O!O!O!  O!!!:!
+            !O!  !!!  !O!  !!!      !!!    !!!O!!!!  !!!!!:
+            !!:  !!!  !!:  !!!      !!:    !!:  !!!  !!:
+            :!:  !:!  :!:  !:!      :!:    :!:  !:!  :!:
+            :!:::!!:   ::   ::       ::     ::   !:  ::!::!!
+              :!::      :    :        :      :    :  :!:::::!
+
+OOOOOOO     OOOO     OOOOOO   OOOOOO     OOOOO    OOO  OOOOOOO   OOOOOOO
+OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOOO  OOOOOOO   OOO  OOOOOOOO  OOOOOOOO
+OO!  OOO  OO!  OOO  OO!  OOO  OO!  OOO  !OO       OO!  OO!  OOO  OO!
+!O!  O!O  !O!  O!O  !O!  O!O  !O!  O!O  !O!       !O!  !O!  O!O  !O!
+O!O!!O!   O!O  !O!  O!O!O!O!  O!O  !O!  !!OO!!    !!O  O!O  !O!  O!!!:!
+!!O!O!    !O!  !!!  !!!O!!!!  !O!  !!!   !!O!!!   !!!  !O!  !!!  !!!!!:
+!!: :!!   !!:  !!!  !!:  !!!  !!:  !!!       !:!  !!:  !!:  !!!  !!:
+:!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!      !:!   :!:  :!:  !:!  :!:
+ ::   !:  ::!:!!::   ::   ::  !:.:.:::  ::!::::    ::  !:!!::.:  ::!:.::
+  !    :    ::!:      !    :  ::::..:    :::..      :  ::..:.:   ::..::.:
+]]
+
+-- Titles
+locale.strings['ui_title_options'] = [[
+  OOOO    OOOOOOO   OOOOOOO  OOO    OOOO    OO   OO    OOOOO
+OOOOOOOO  OOOOOOOO  OOOOOOO  OOO  OOOOOOOO  OOO  OOO  OOOOOOO
+OO!  OOO  OO!  OOO    OO!    OO!  OO!  OOO  OO!O OOO  !OO
+!O!  O!O  !O!  O!O    !O!    !O!  !O!  O!O  !O!!O!O!  !O!
+O!O  !O!  O!OO!O!     O!!    !!O  O!O  !O!  O!O !!O!  !!OO!!
+!O!  !!!  !!O!!!      !!!    !!!  !O!  !!!  !O!  !!!   !!O!!!
+!!:  !!!  !!:         !!:    !!:  !!:  !!!  !!:  !!!       !:!
+:!:  !:!  :!:         :!:    :!:  :!:  !:!  :!:  !:!      !:!
+:!:::!!:   ::          ::     ::  :!:::!!:   ::   ::  ::!::::
+  :!::      :           :      :    :!::      :    :   :::..
+]]
+
+locale.strings['ui_title_savegames'] = [[
+ OOOOO     OOOOOO   OOO  OOO  OOOOOOO    OOOOO
+OOOOOOO   OOOOOOOO  OOO  OOO  OOOOOOOO  OOOOOOO
+!OO       OO!  OOO  OO!  OOO  OO!       !OO
+!O!       !O!  O!O  !O!  O!O  !O!       !O!
+!!OO!!    O!O!O!O!  O!O  !O!  O!!!:!    !!OO!!
+ !!O!!!   !!!O!!!!  !O!  !!!  !!!!!:     !!O!!!
+     !:!  !!:  !!!  :!:  !!:  !!:            !:!
+    !:!   :!:  !:!   ::!!::   :!:           !:!
+::!::::    ::   ::    !:::    ::!::!!   ::!::::
+ :::..      !    :     !:     :!:::::!   :::..
+]]
+
+locale.strings['ui_title_controls'] = [[
+ OOOOO      OOOO    OO   OO   OOOOOOO  OOOOOOO     OOOO    OOO        OOOOO
+OOOOOOOO  OOOOOOOO  OOO  OOO  OOOOOOO  OOOOOOOO  OOOOOOOO  OOO       OOOOOOO
+OO!       OO!  OOO  OO!O OOO    OO!    OO!  OOO  OO!  OOO  OO!       !OO
+!O!       !O!  O!O  !O!!O!O!    !O!    !O!  O!O  !O!  O!O  !O!       !O!
+O!O       O!O  !O!  O!O !!O!    O!!    O!O!!O!   O!O  !O!  O!O       !!OO!!
+!O!       !O!  !!!  !O!  !!!    !!!    !!O!O!    !O!  !!!  !O!        !!O!!!
+!!:       !!:  !!!  !!:  !!!    !!:    !!: :!!   !!:  !!!  !!:            !:!
+:!:       :!:  !:!  :!:  !:!    :!:    :!:  !:!  :!:  !:!  :!:           !:!
+:!:::!!   :!:::!!:   ::   ::     ::     ::   !:  :!:::!!:  :!:::!!   ::!::::
+ ::!::!:    :!::      :    :      :      !    :    :!::    !::!::!:   :::..
+]]
 
 return locale
