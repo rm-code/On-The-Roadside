@@ -534,7 +534,7 @@ end
 
 ---
 -- Sets a new name for this character.
--- @tparam string nname The name to set for this character.
+-- @tparam string name The name to set for this character.
 --
 function Character:setName( name )
     self.name = name
