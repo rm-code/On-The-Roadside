@@ -62,7 +62,7 @@ end
 --
 local function applySettings()
     Settings.save()
-    Translator.init( Settings.getLocale() )
+    Translator.setLocale( Settings.getLocale() )
     TexturePacks.setCurrent( Settings.getTexturepack() )
     love.window.setFullscreen( Settings.getFullscreen() )
     ScreenManager.push( 'information', Translator.getText( 'ui_applied_settings' ))
