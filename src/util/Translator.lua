@@ -44,17 +44,15 @@ local counter
 local function loadAdditionalText( path )
     local status, loaded = pcall( love.filesystem.load, path )
     if not status then
-        Log.warn( 'Can not load translation file from ' .. path )
+        Log.warn( 'Can not load translation file from ' .. path, 'Translator' )
     else
         local template = loaded()
 
         -- Load table or create a new one.
-        locales[template.identifier] = locales[template.identifier] or {}
+        locales[template.identifier] = template.strings
 
-        -- Copy translations to the main locale.
-        for i, v in pairs( template.strings ) do
-            locales[template.identifier][i] = v
-        end
+        counter = counter + 1
+        Log.info( string.format( '  %d. %s', counter, template.identifier ), 'Translator' )
     end
 end
 
@@ -64,19 +62,11 @@ end
 -- @tparam string dir The template directory to search through.
 --
 local function load( dir )
-    local subdirectories = love.filesystem.getDirectoryItems( dir )
-    for _, subdir in ipairs( subdirectories ) do
-        local path = dir .. subdir .. '/'
-        if love.filesystem.getInfo( path, 'directory' ) then
-            local files = love.filesystem.getDirectoryItems( path )
-
-            -- Loads all the other text files for this locale.
-            for _, file in ipairs( files ) do
-                loadAdditionalText( path .. file )
-            end
-
-            counter = counter + 1
-            Log.info( string.format( '  %d. %s', counter, subdir ), 'Translator' )
+    local directoryItems = love.filesystem.getDirectoryItems( dir )
+    for _, item in ipairs( directoryItems ) do
+        if love.filesystem.getInfo( dir .. item, 'file' ) then
+            -- Loads the text file for this locale.
+            loadAdditionalText( dir .. item )
         end
     end
 end
