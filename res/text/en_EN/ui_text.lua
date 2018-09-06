@@ -48,6 +48,7 @@ locale.strings = {
     ['ui_settings_mouse_panning'] = "Mouse Panning:",
     ['ui_settings_invert_messagelog'] = "Invert message log:",
     ['ui_keybindings'] = "Edit Keybindings",
+    ['ui_open_modding_dir'] = "Open Save Directory",
 
     -- Keybindings
     ['action_stand'] = "Stand",

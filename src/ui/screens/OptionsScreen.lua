@@ -260,7 +260,6 @@ local function createMousePanningOption( lx, ly )
     return UISelectField( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, Translator.getText( 'ui_settings_mouse_panning' ), listOfValues, callback, default )
 end
 
-
 ---
 -- Creates a UISelectField which allows the user to switch to the keybinding screen.
 -- @tparam  number   lx The parent's absolute coordinates along the x-axis.
@@ -275,6 +274,22 @@ local function createKeybindingOption( lx, ly )
 
     -- Create the UIButton.
     return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_keybindings' ))
+end
+
+---
+-- Creates a UIButton which opens the modding directory.
+-- @tparam  number   lx The parent's absolute coordinates along the x-axis.
+-- @tparam  number   ly The parent's absolute coordinates along the y-axis.
+-- @treturn UIButton    The newly created UIButton.
+--
+local function createOpenModdingDirectoryOption( lx, ly )
+    -- The function to call when the button is activated.
+    local function callback()
+        love.system.openURL( 'file://' .. love.filesystem.getSaveDirectory() )
+    end
+
+    -- Create the UIButton.
+    return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_open_modding_dir' ))
 end
 
 ---
@@ -318,15 +333,16 @@ local function createUIList()
     local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
 
     -- Create the UIElements and add them to the list.
-    buttonList:addChild(         createLanguageOption( lx, ly ))
-    buttonList:addChild(       createFullscreenOption( lx, ly ))
-    buttonList:addChild( createInvertMessageLogOption( lx, ly ))
-    buttonList:addChild(     createIngameEditorOption( lx, ly ))
-    buttonList:addChild(      createTexturePackOption( lx, ly ))
-    buttonList:addChild(     createMousePanningOption( lx, ly ))
-    buttonList:addChild(       createKeybindingOption( lx, ly ))
-    buttonList:addChild(            createApplyButton( lx, ly ))
-    buttonList:addChild(             createBackButton( lx, ly ))
+    buttonList:addChild(             createLanguageOption( lx, ly ))
+    buttonList:addChild(           createFullscreenOption( lx, ly ))
+    buttonList:addChild(     createInvertMessageLogOption( lx, ly ))
+    buttonList:addChild(         createIngameEditorOption( lx, ly ))
+    buttonList:addChild(          createTexturePackOption( lx, ly ))
+    buttonList:addChild(         createMousePanningOption( lx, ly ))
+    buttonList:addChild(           createKeybindingOption( lx, ly ))
+    buttonList:addChild( createOpenModdingDirectoryOption( lx, ly ))
+    buttonList:addChild(                createApplyButton( lx, ly ))
+    buttonList:addChild(                 createBackButton( lx, ly ))
 
     return buttonList
 end
