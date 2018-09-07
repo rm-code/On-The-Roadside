@@ -186,7 +186,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
     character:setThrowingSkill( savedCharacter.throwingSkill )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
-    character:setPosition( savedCharacter.x, savedCharacter. y )
+    character:setPosition( savedCharacter.x, savedCharacter.y )
 
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )
