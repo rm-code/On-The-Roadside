@@ -25,6 +25,9 @@ local UI_GRID_HEIGHT = 8
 
 local SECOND_COLUMN_OFFSET = 12
 
+local SKILLS_OFFSET_Y = 4
+local STATS_OFFSET_Y = 7
+
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
@@ -118,13 +121,28 @@ local function drawSkills( textObject, colorTable, character )
     local tw, th = TexturePacks.getTileDimensions()
     local x, y
 
-    x, y = 0 * tw, 3 * th
+    x, y = 0 * tw, SKILLS_OFFSET_Y * th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_shooting_accuracy' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character:getShootingSkill() )
 
-    x, y = 0 * tw, 4 * th
+    x, y = 0 * tw, ( SKILLS_OFFSET_Y + 1 ) * th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_throwing_accuracy' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character:getThrowingSkill() )
+end
+
+---
+-- Draws general stats about the character.
+-- @tparam Text      textObject The Text object to modify.
+-- @tparam table     colorTable The table to use for adding colored text.
+-- @tparam Character character  The character for which to create the information.
+--
+local function drawStats( textObject, colorTable, character )
+    local tw, th = TexturePacks.getTileDimensions()
+    local x, y
+
+    x, y = 0 * tw, STATS_OFFSET_Y * th
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_missions' ))
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character:getMissionCount() )
 end
 
 ---
@@ -137,6 +155,7 @@ local function createText( textObject, colorTable, character )
     drawCharacterInfo( textObject, colorTable, character )
     drawHealthPoints( textObject, colorTable, character:getCurrentHP(), character:getMaximumHP() )
     drawSkills( textObject, colorTable, character )
+    drawStats( textObject, colorTable, character )
 end
 
 -- ------------------------------------------------

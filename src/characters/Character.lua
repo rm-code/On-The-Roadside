@@ -130,6 +130,8 @@ function Character:initialize( classID, actionPoints, viewRange, shootingSkill, 
     self.shootingSkill = shootingSkill
     self.throwingSkill = throwingSkill
 
+    self.missions = 0
+
     self.stance = STANCES.STAND
 
     self.finishedTurn = false
@@ -278,6 +280,13 @@ function Character:move( x, y )
 end
 
 ---
+-- Increments the mission counter.
+--
+function Character:incrementMissionCount()
+    self.missions = self.missions + 1
+end
+
+---
 -- Serializes the Character instance.
 -- @treturn table The serialized character instance.
 --
@@ -293,6 +302,7 @@ function Character:serialize()
         ['throwingSkill'] = self.throwingSkill,
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
+        ['missions'] = self.missions,
         ['body'] = self.body:serialize(),
         ['x'] = self.x,
         ['y'] = self.y
@@ -410,6 +420,14 @@ function Character:getMaximumHP()
 end
 
 ---
+-- Returns the amount of missions a character has fought in.
+-- @treturn number The number of missions.
+--
+function Character:getMissionCount()
+    return self.missions
+end
+
+---
 -- Gets the name of this character.
 -- @treturn string The character's name.
 --
@@ -524,6 +542,14 @@ end
 --
 function Character:setFaction( faction )
     self.faction = faction
+end
+
+---
+-- Sets the mission counter.
+-- @tparam number missions The new value for the mission counter.
+--
+function Character:setMissionCount( missions )
+    self.missions = missions
 end
 
 ---

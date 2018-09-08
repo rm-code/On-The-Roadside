@@ -169,6 +169,7 @@ locale.strings = {
     ['base_next_mission'] = "Next Mission",
     ['character_shooting_accuracy'] = "Shooting Skill: ",
     ['character_throwing_accuracy'] = "Throwing Skill: ",
+    ['character_missions'] = "Missions: ",
     ['ui_nationality'] = "Nationality: ",
 
     -- Health screen

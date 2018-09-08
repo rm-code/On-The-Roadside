@@ -84,6 +84,10 @@ end
 
 function GameOverScreen:keypressed()
     if self.win then
+        self.playerFaction:iterate( function( character )
+            character:incrementMissionCount()
+        end)
+
         DataHandler.copyPlayerFaction( self.playerFaction:serialize() )
         ScreenManager.switch( 'base' )
         return

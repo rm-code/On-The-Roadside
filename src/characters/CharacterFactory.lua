@@ -200,6 +200,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
     character:setFinishedTurn( savedCharacter.finishedTurn )
     character:setPosition( savedCharacter.x, savedCharacter.y )
     character:setNationality( savedCharacter.nationality )
+    character:setMissionCount( savedCharacter.missions )
 
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )
