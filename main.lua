@@ -2,6 +2,7 @@ local ScreenManager = require('lib.screenmanager.ScreenManager')
 local Log = require( 'src.util.Log' )
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 local Letterbox = require( 'src.ui.overlays.Letterbox' )
+local SaveHandler = require( 'src.SaveHandler' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -128,7 +129,11 @@ function love.update(dt)
 end
 
 function love.quit(q)
+    Log.info( 'Shutting down...', 'Main' )
+
     ScreenManager.quit(q)
+
+    SaveHandler.removeTemporaryFiles()
     Log.info( 'Thank you for playing "On The Roadside"!', 'Main' )
 end
 

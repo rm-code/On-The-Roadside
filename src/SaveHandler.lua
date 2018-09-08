@@ -100,6 +100,19 @@ function SaveHandler.pastePlayerFaction()
     return Compressor.load( TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
 end
 
+---
+-- Removes all files in the temporary folder and the folder itself from the
+-- player's save directory.
+--
+function SaveHandler.removeTemporaryFiles()
+    Log.info( 'Removing temporary files...', 'SaveHandler' )
+
+    for _, item in pairs( love.filesystem.getDirectoryItems( TEMP_FOLDER )) do
+        love.filesystem.remove( TEMP_FOLDER .. '/' .. item )
+    end
+    love.filesystem.remove( TEMP_FOLDER )
+end
+
 function SaveHandler.getSaveFolder()
     return SAVE_FOLDER
 end
