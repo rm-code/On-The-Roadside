@@ -23,7 +23,7 @@ local SAVE_FOLDER = 'saves'
 local COMPRESSED_SAVE = 'game.data'
 local VERSION_FILE = 'version.data'
 
-local TEMP_FOLDER = SAVE_FOLDER .. '/_'
+local TEMP_FOLDER = 'tmp'
 local PLAYER_FACTION_SAVE = 'tmp_faction.data'
 
 -- ------------------------------------------------
