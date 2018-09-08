@@ -62,7 +62,8 @@ end
 -- ------------------------------------------------
 
 function GameOverScreen:initialize( playerFaction, win )
-    if win then
+    self.win = win
+    if self.win then
         -- TODO Proper implementation
         -- Removes saved position to avoid characters spawning at the same
         -- position on each combat map.
@@ -80,7 +81,7 @@ function GameOverScreen:initialize( playerFaction, win )
 
     self.outlines = generateOutlines( self.x, self.y )
 
-    self.text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
+    self.text = self.win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
 end
 
 function GameOverScreen:draw()
@@ -92,7 +93,11 @@ function GameOverScreen:draw()
 end
 
 function GameOverScreen:keypressed()
-    ScreenManager.switch( 'combat' )
+    if self.win then
+        ScreenManager.switch( 'combat' )
+        return
+    end
+    ScreenManager.switch( 'mainmenu' )
 end
 
 return GameOverScreen
