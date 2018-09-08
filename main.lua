@@ -129,6 +129,7 @@ end
 
 function love.quit(q)
     ScreenManager.quit(q)
+    Log.info( 'Thank you for playing "On The Roadside"!', 'Main' )
 end
 
 function love.keypressed( key, scancode, isrepeat )
