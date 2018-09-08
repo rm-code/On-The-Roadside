@@ -137,6 +137,7 @@ local function getKeyButtonList()
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'end_turn' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_inventory_screen' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_health_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'center_camera' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_left' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ),

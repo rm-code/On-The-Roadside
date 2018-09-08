@@ -197,6 +197,7 @@ locale.strings = {
     ['end_turn'] = "End turn",
     ['open_inventory_screen'] = "Open inventory screen",
     ['open_health_screen'] = "Open health screen",
+    ['center_camera'] = "Center camera",
     ['pan_camera_left'] = "Move camera left",
     ['pan_camera_right'] = "Move camera right",
     ['pan_camera_up'] = "Move camera up",
