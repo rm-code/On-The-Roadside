@@ -192,17 +192,11 @@ function Camera:update( dt )
 end
 
 ---
--- Locks the camera to prevent scrolling.
+-- Locks or unlocks the camera to prevent scrolling.
+-- @tparam boolean lock Wether to lock or unlock the camera.
 --
-function Camera:lock()
-    self.locked = true
-end
-
----
--- Unlocks the camera and re-enables scrolling.
---
-function Camera:unlock()
-    self.locked = false
+function Camera:lock( lock )
+    self.locked = lock
 end
 
 function Camera:input( action, pressed )

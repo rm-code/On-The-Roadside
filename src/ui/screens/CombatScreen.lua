@@ -135,11 +135,7 @@ function CombatScreen:mousepressed( _, _, button )
 end
 
 function CombatScreen:mousefocus( f )
-    if f then
-        self.camera:unlock()
-    else
-        self.camera:lock()
-    end
+    self.camera:lock( f )
 end
 
 function CombatScreen:resize( _, _ )
