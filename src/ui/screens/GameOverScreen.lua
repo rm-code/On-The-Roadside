@@ -62,9 +62,17 @@ end
 -- ------------------------------------------------
 
 function GameOverScreen:initialize( playerFaction, win )
-    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
-
-    self.win = win
+    if win then
+        -- TODO Proper implementation
+        -- Removes saved position to avoid characters spawning at the same
+        -- position on each combat map.
+        local serializedData = playerFaction:serialize()
+        for i = 1, #serializedData do
+            serializedData[i].x = nil
+            serializedData[i].y = nil
+        end
+        SaveHandler.copyPlayerFaction( serializedData )
+    end
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
@@ -72,7 +80,7 @@ function GameOverScreen:initialize( playerFaction, win )
 
     self.outlines = generateOutlines( self.x, self.y )
 
-    self.text = self.win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
+    self.text = win and Translator.getText( 'ui_win' ) or Translator.getText( 'ui_lose' )
 end
 
 function GameOverScreen:draw()
