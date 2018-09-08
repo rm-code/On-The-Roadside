@@ -44,10 +44,10 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function CombatScreen:initialize( playerFaction, savegame )
+function CombatScreen:initialize( savegame )
     love.mouse.setVisible( true )
 
-    self.combatState = CombatState( playerFaction, savegame )
+    self.combatState = CombatState( savegame )
 
     self.mapPainter = MapPainter( self.combatState:getMap() )
 

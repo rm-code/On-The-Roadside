@@ -12,6 +12,7 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Faction = require( 'src.characters.Faction' )
+local SaveHandler = require( 'src.SaveHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -38,8 +39,9 @@ function GameScreen:initialize( savegame )
         playerFaction:addCharacters( 10 )
     end
 
-    local state = savegame and savegame.type or 'combat'
-    ScreenManager.push( state, playerFaction, savegame )
+    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+
+    ScreenManager.push( 'combat', savegame )
 end
 
 return GameScreen

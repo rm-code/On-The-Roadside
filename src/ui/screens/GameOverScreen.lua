@@ -13,6 +13,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local SaveHandler = require( 'src.SaveHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -61,7 +62,8 @@ end
 -- ------------------------------------------------
 
 function GameOverScreen:initialize( playerFaction, win )
-    self.playerFaction = playerFaction
+    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+
     self.win = win
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -82,7 +84,7 @@ function GameOverScreen:draw()
 end
 
 function GameOverScreen:keypressed()
-    ScreenManager.switch( 'mainmenu' )
+    ScreenManager.switch( 'combat' )
 end
 
 return GameOverScreen
