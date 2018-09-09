@@ -183,6 +183,18 @@ function Body:receive( event, ... )
 end
 
 -- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+---
+-- Sets the current health points.
+-- @tparam number hp The new health points value.
+--
+function Body:setCurrentHP( hp )
+    self.currentHP = hp
+end
+
+-- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
 
