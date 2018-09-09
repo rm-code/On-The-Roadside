@@ -2,6 +2,11 @@ local locale = {}
 locale.identifier = 'en_EN'
 locale.strings = {
     -- ==============================
+    -- General
+    -- ==============================
+    ['general_exit'] = 'Exit',
+
+    -- ==============================
     -- TILES
     -- ==============================
     ['tile_asphalt'] = 'Asphalt',
@@ -165,7 +170,6 @@ locale.strings = {
     ['ui_main_menu_options'] = "Options",
     ['ui_main_menu_mapeditor'] = "Map Editor",
     ['ui_main_menu_changelog'] = "Changes",
-    ['ui_main_menu_exit'] = "Exit",
 
     -- Options
     ['ui_on'] = "On",
@@ -216,7 +220,6 @@ locale.strings = {
     ['ui_mapeditor_load'] = "Load Layout",
     ['ui_mapeditor_test'] = "Test Map",
     ['ui_mapeditor_switch'] = "Prefab Editor",
-    ['ui_mapeditor_exit'] = "Exit",
     ['ui_mapeditor_enter_name'] = "Save layout as:",
 
     -- Prefab Editor
@@ -224,7 +227,6 @@ locale.strings = {
     ['ui_prefabeditor_load'] = "Load Prefab",
     ['ui_prefabeditor_test'] = "Test Map",
     ['ui_prefabeditor_switch'] = "Layout Editor",
-    ['ui_prefabeditor_exit'] = "Exit",
     ['ui_prefabeditor_enter_name'] = "Save prefab as:",
 
     -- Texture packs

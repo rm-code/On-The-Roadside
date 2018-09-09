@@ -109,7 +109,7 @@ local function createButtons( canvas )
     local switchButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mapeditor' ) end, Translator.getText( 'ui_prefabeditor_switch' ))
     buttonList:addChild( switchButton )
 
-    local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_prefabeditor_exit' ))
+    local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'general_exit' ))
     buttonList:addChild( exitButton )
 
     buttonList:setFocus( true )

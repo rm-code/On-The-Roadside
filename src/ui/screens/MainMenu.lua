@@ -68,7 +68,7 @@ local function createButtons()
     local changelogButton = UIButton( lx, ly, 0, 0, 10, 1, function() ScreenManager.switch( 'changelog' ) end, Translator.getText( 'ui_main_menu_changelog' ))
     buttonList:addChild( changelogButton )
 
-    local exitGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() love.event.quit() end, Translator.getText( 'ui_main_menu_exit' ))
+    local exitGameButton = UIButton( lx, ly, 0, 0, 10, 1, function() love.event.quit() end, Translator.getText( 'general_exit' ))
     buttonList:addChild( exitGameButton )
 
     return buttonList
