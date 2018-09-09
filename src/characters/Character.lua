@@ -403,8 +403,8 @@ end
 -- Returns the creature's maximum health.
 -- @treturn number The maximum health points.
 --
-function Character:getMaximumHealthPoints()
-    return self.body:getMaximumHealthPoints()
+function Character:getMaximumHP()
+    return self.body:getMaximumHP()
 end
 
 ---

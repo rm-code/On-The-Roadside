@@ -157,7 +157,7 @@ end
 
 local function drawHealthPoints( textObject, colorTable, character )
     local currentHealthPoints = character:getCurrentHP()
-    local maximumHealthPoints = character:getMaximumHealthPoints()
+    local maximumHealthPoints = character:getMaximumHP()
 
     local x, y = 112, 32
     -- HP:
