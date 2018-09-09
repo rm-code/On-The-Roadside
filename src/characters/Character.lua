@@ -395,8 +395,8 @@ end
 -- Returns the creature's health.
 -- @treturn number The current health points.
 --
-function Character:getHealthPoints()
-    return self.body:getHealthPoints()
+function Character:getCurrentHP()
+    return self.body:getCurrentHP()
 end
 
 ---

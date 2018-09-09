@@ -156,7 +156,7 @@ end
 -- @tparam Character character  The currently active character.
 
 local function drawHealthPoints( textObject, colorTable, character )
-    local currentHealthPoints = character:getHealthPoints()
+    local currentHealthPoints = character:getCurrentHP()
     local maximumHealthPoints = character:getMaximumHealthPoints()
 
     local x, y = 112, 32
