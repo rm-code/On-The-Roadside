@@ -95,6 +95,10 @@ function UIButton:command( cmd )
     end
 end
 
+function UIButton:mousecommand( cmd )
+    self:command( cmd )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
