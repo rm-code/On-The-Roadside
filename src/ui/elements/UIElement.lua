@@ -56,6 +56,20 @@ function UIElement:initialize( ox, oy, rx, ry, w, h )
 end
 
 ---
+-- Dummy function.
+--
+function UIElement:draw()
+    return
+end
+
+---
+-- Dummy function.
+--
+function UIElement:update()
+    return
+end
+
+---
 -- Adds a new UIElement to the list of children.
 --
 -- NOTE: If you use custom indexes you should make sure that you don't break the
