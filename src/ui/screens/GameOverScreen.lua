@@ -61,19 +61,9 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function GameOverScreen:initialize( playerFaction, win )
+function GameOverScreen:initialize(  playerFaction, win )
+    self.playerFaction = playerFaction
     self.win = win
-    if self.win then
-        -- TODO Proper implementation
-        -- Removes saved position to avoid characters spawning at the same
-        -- position on each combat map.
-        local serializedData = playerFaction:serialize()
-        for i = 1, #serializedData do
-            serializedData[i].x = nil
-            serializedData[i].y = nil
-        end
-        SaveHandler.copyPlayerFaction( serializedData )
-    end
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
@@ -94,6 +84,7 @@ end
 
 function GameOverScreen:keypressed()
     if self.win then
+        SaveHandler.copyPlayerFaction( self.playerFaction:serialize() )
         ScreenManager.switch( 'base' )
         return
     end

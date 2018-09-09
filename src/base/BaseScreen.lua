@@ -124,9 +124,10 @@ end
 -- @tparam  number   y The parent's absolute coordinates along the y-axis.
 -- @treturn UIButton   The newly created UIButton.
 --
-local function createNextMissionButton( x, y )
+local function createNextMissionButton( x, y, factionData )
     -- The function to call when the button is activated.
     local function callback()
+        SaveHandler.copyPlayerFaction( factionData )
         ScreenManager.switch( 'combat' )
     end
 
@@ -135,6 +136,19 @@ local function createNextMissionButton( x, y )
     return UIButton( x, y, rx, ry, w, h, callback, Translator.getText( 'base_next_mission' ))
 end
 
+---
+-- Clean the character data for the next mission.
+-- @tparam  table factionData The data to clean.
+-- @treturn table             The cleaned character data.
+--
+local function cleanUpFactionData( factionData )
+    for _, character in ipairs( factionData ) do
+        character.x, character.y = nil, nil
+        character.body.hp = character.body.maxHP
+        character.actionPoints = character.maxActionPoints
+    end
+    return factionData
+end
 
 -- ------------------------------------------------
 -- Constructor
@@ -143,7 +157,7 @@ end
 function BaseScreen:initialize()
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.factionData = SaveHandler.pastePlayerFaction()
+    self.factionData = cleanUpFactionData( SaveHandler.pastePlayerFaction() )
 
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -152,7 +166,7 @@ function BaseScreen:initialize()
     self.container = UIContainer()
     self.characterList = createCharacterList( self.x, self.y, self.factionData, self.uiBaseCharacterInfo )
     self.quitButton = createQuitButton( self.x, self.y )
-    self.nextMissionButton = createNextMissionButton( self.x, self.y )
+    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.factionData )
 
     self.container:register( self.characterList )
     self.container:register( self.quitButton )
