@@ -41,7 +41,7 @@ function GameScreen:initialize( savegame )
 
     SaveHandler.copyPlayerFaction( playerFaction:serialize() )
 
-    ScreenManager.push( 'combat', savegame )
+    ScreenManager.push( 'base', savegame )
 end
 
 return GameScreen
