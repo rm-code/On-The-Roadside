@@ -120,8 +120,8 @@ function BodyFactory.load( savedbody )
 
     local inventory = Inventory( template.defaultCarryWeight, template.defaultCarryVolume )
     local equipment = createEquipment( inventory, template )
-    local body = Body( template.id, savedbody.maxHP, template.tags, template.size, template.bodyparts, equipment, inventory )
-    body:setCurrentHP( savedbody.hp )
+    local body = Body( template.id, savedbody.maximumHP, template.tags, template.size, template.bodyparts, equipment, inventory )
+    body:setCurrentHP( savedbody.currentHP )
 
     for effect, _ in pairs( savedbody.statusEffects ) do
         body:getStatusEffects():add({ effect })

@@ -144,7 +144,7 @@ end
 local function cleanUpFactionData( factionData )
     for _, character in ipairs( factionData ) do
         character.x, character.y = nil, nil
-        character.body.hp = character.body.maxHP
+        character.body.currentHP = character.body.maximumHP
         character.actionPoints = character.maxActionPoints
     end
     return factionData

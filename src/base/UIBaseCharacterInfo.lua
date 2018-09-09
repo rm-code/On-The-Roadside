@@ -110,7 +110,7 @@ end
 --
 local function createText( textObject, colorTable, characterInfo )
     drawCharacterInfo( textObject, colorTable, characterInfo )
-    drawHealthPoints( textObject, colorTable, characterInfo.body.hp, characterInfo.body.maxHP )
+    drawHealthPoints( textObject, colorTable, characterInfo.body.currentHP, characterInfo.body.maximumHP )
 end
 
 -- ------------------------------------------------
