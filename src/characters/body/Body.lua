@@ -165,6 +165,7 @@ function Body:serialize()
     local t = {
         ['id'] = self.id,
         ['hp'] = self.currentHP,
+        ['maxHP'] = self.maximumHP,
         ['inventory'] = self.inventory:serialize(),
         ['equipment'] = self.equipment:serialize(),
         ['statusEffects'] = self.statusEffects:serialize()

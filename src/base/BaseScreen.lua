@@ -17,7 +17,7 @@ local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
-local UILabel = require( 'src.ui.elements.UILabel' )
+local UIBaseCharacterInfo = require( 'src.base.UIBaseCharacterInfo' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 
 -- ------------------------------------------------
@@ -79,17 +79,21 @@ end
 
 ---
 -- Creates a paginated list for all the player's characters.
--- @tparam  number          x           The origin of the screen along the x-axis.
--- @tparam  number          y           The origin of the screen along the y-axis.
--- @tparam  table           factionData The data about the player's faction and characters.
--- @treturn UIPaginatedList             The paginated list instance.
+-- @tparam  number          x             The origin of the screen along the x-axis.
+-- @tparam  number          y             The origin of the screen along the y-axis.
+-- @tparam  table           factionData   The data about the player's faction and characters.
+-- @tparam  table           characterInfo The table containing information about a character.
+-- @treturn UIPaginatedList               The paginated list instance.
 
-local function createCharacterList( x, y, factionData )
+local function createCharacterList( x, y, factionData, uiBaseCharacterInfo )
     local buttonList = UIPaginatedList( x, y, CHARACTER_LIST_OFFSET_X, CHARACTER_LIST_OFFSET_Y, CHARACTER_LIST_WIDTH, CHARACTER_LIST_HEIGHT )
 
     local characterList = {}
     for i = 1, #factionData do
-        characterList[i] = UILabel( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, factionData[i].name )
+        local function callback()
+            uiBaseCharacterInfo:setCharacter( factionData[i] )
+        end
+        characterList[i] = UIButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, callback, factionData[i].name, 'left' )
     end
 
     buttonList:setItems( characterList )
@@ -143,9 +147,10 @@ function BaseScreen:initialize()
 
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
+    self.uiBaseCharacterInfo = UIBaseCharacterInfo( self.x, self.y, CHARACTER_LIST_WIDTH, 0 )
 
     self.container = UIContainer()
-    self.characterList = createCharacterList( self.x, self.y, self.factionData )
+    self.characterList = createCharacterList( self.x, self.y, self.factionData, self.uiBaseCharacterInfo )
     self.quitButton = createQuitButton( self.x, self.y )
     self.nextMissionButton = createNextMissionButton( self.x, self.y )
 
@@ -161,7 +166,10 @@ end
 function BaseScreen:draw()
     self.background:draw()
     self.outlines:draw()
+
     self.characterList:draw()
+    self.uiBaseCharacterInfo:draw()
+
     self.quitButton:draw()
     self.nextMissionButton:draw()
 end
