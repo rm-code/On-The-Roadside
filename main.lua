@@ -44,6 +44,7 @@ local SCREENS = {
     keybindingeditor = require( 'src.ui.screens.KeybindingScreen'      ),
     keybindingmodal  = require( 'src.ui.screens.KeybindingModal'       ),
     playerInfo       = require( 'src.ui.screens.PlayerInfo'            ),
+    base             = require( 'src.base.BaseScreen'                  ),
 }
 
 -- ------------------------------------------------

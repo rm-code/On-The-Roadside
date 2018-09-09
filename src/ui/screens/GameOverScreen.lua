@@ -94,7 +94,7 @@ end
 
 function GameOverScreen:keypressed()
     if self.win then
-        ScreenManager.switch( 'combat' )
+        ScreenManager.switch( 'base' )
         return
     end
     ScreenManager.switch( 'mainmenu' )

@@ -159,6 +159,9 @@ locale.strings = {
     ['ui_faction_neutral'] = 'Neutral',
     ['ui_faction_enemy'] = 'Enemy',
 
+    -- Base screen
+    ['base_next_mission'] = "Next Mission",
+
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",
     ['ui_healthscreen_name'] = "Name: ",
