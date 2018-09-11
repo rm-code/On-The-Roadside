@@ -30,6 +30,8 @@ local BaseScreen = Screen:subclass( 'BaseScreen' )
 -- Constants
 -- ------------------------------------------------
 
+local STANCES = require( 'src.constants.STANCES' )
+
 local UI_GRID_WIDTH  = 64
 local UI_GRID_HEIGHT = 48
 
@@ -146,6 +148,7 @@ local function cleanUpFactionData( factionData )
         character.x, character.y = nil, nil
         character.body.currentHP = character.body.maximumHP
         character.actionPoints = character.maxActionPoints
+        character.stance = STANCES.STAND
     end
     return factionData
 end
