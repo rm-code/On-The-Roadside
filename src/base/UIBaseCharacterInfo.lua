@@ -103,6 +103,25 @@ local function drawHealthPoints( textObject, colorTable, curHP, maxHP )
 end
 
 ---
+-- Draws the character's skill points.
+-- @tparam Text  textObject    The Text object to modify.
+-- @tparam table colorTable    The table to use for adding colored text.
+-- @tparam table characterInfo The table containing information about a character.
+--
+local function drawSkills( textObject, colorTable, character )
+    local tw, th = TexturePacks.getTileDimensions()
+    local x, y
+
+    x, y = 0 * tw, 3 * th
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_shooting_accuracy' ))
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character.accuracy )
+
+    x, y = 0 * tw, 4 * th
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_throwing_accuracy' ))
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character.throwingSkill )
+end
+
+---
 -- Fills the text object to draw on the screen.
 -- @tparam Text  textObject    The Text object to modify.
 -- @tparam table colorTable    The table to use for adding colored text.
@@ -111,6 +130,7 @@ end
 local function createText( textObject, colorTable, characterInfo )
     drawCharacterInfo( textObject, colorTable, characterInfo )
     drawHealthPoints( textObject, colorTable, characterInfo.body.currentHP, characterInfo.body.maximumHP )
+    drawSkills( textObject, colorTable, characterInfo )
 end
 
 -- ------------------------------------------------
