@@ -222,4 +222,8 @@ function BaseScreen:mousereleased()
     self.container:mousecommand( 'activate' )
 end
 
+function BaseScreen:mousemoved()
+    love.mouse.setVisible( true )
+end
+
 return BaseScreen
