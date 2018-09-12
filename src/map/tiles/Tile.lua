@@ -118,6 +118,9 @@ end
 -- @treturn number        The movement cost for this tile.
 --
 function Tile:getMovementCost( stance )
+    if not stance then
+        error( 'Expected a stance to determine the movement cost for this Tile.' )
+    end
     return self.cost[stance]
 end
 
