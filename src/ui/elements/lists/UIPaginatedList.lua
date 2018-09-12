@@ -289,7 +289,7 @@ function UIPaginatedList:setOrigin( ox, oy )
 
     for _, page in ipairs( self.pages ) do
         for _, item in ipairs( page ) do
-            item:setOrigin( ox, oy )
+            item:setOrigin( self.ax, self.ay )
         end
     end
 end
