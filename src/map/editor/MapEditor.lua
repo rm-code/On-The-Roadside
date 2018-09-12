@@ -12,7 +12,7 @@ local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Camera = require( 'src.ui.Camera' )
 local LayoutCanvas = require( 'src.map.editor.LayoutCanvas' )
-local LayoutBrush = require( 'src.ui.mapeditor.LayoutBrush' )
+local LayoutBrush = require( 'src.map.editor.LayoutBrush' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
