@@ -105,14 +105,6 @@ end
 -- ------------------------------------------------
 
 ---
--- Returns the tile's unique spriteID.
--- @treturn number The tile's spriteID.
---
-function Tile:getSpriteID()
-    return self.spriteID
-end
-
----
 -- Returns the cost it takes a character to traverse this tile.
 -- @tparam  string stance The stance the character is currently in.
 -- @treturn number        The movement cost for this tile.
@@ -212,14 +204,6 @@ end
 --
 function Tile:setDirty( dirty )
     self.dirty = dirty
-end
-
----
--- Sets the tile's unique spriteID.
--- @tparam number id The tile's new spriteID.
---
-function Tile:setSpriteID( id )
-    self.spriteID = id
 end
 
 return Tile

@@ -82,15 +82,20 @@ local CONNECTION_BITMASK = {
 -- each tile a unique identifier and sets it to dirty for the first update.
 -- @tparam Map         map         The map to draw.
 -- @tparam SpriteBatch spritebatch The spritebatch to initialize.
+-- @treturn table                  A table containing the sprite ids for each tile.
 --
 local function initSpritebatch( map, spritebatch )
     local tw, th = TexturePacks.getTileDimensions()
+    local spriteIndex = {}
+
     map:iterate( function( x, y, tile, _ )
         local id = spritebatch:add( TexturePacks.getSprite( 'tile_empty' ), x * tw, y * th )
-        tile:setSpriteID( id )
+        spriteIndex[tile] = id
         tile:setDirty( true )
     end)
     Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
+
+    return spriteIndex
 end
 
 ---
@@ -220,15 +225,16 @@ end
 -- Updates the spritebatch by going through every tile in the map. Only
 -- tiles which have been marked as dirty will be sent to the spritebatch.
 -- @tparam SpriteBatch spritebatch The spritebatch to update.
+-- @tparam table       spriteIndex A table containing the sprite IDs for each tile.
 -- @tparam Map         map         The map to draw.
 -- @tparam Faction     faction     The player's faction.
 --
-local function updateSpritebatch( spritebatch, map, faction )
+local function updateSpritebatch( spritebatch, spriteIndex, map, faction )
     local tw, th = TexturePacks.getTileDimensions()
     map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
             spritebatch:setColor( selectTileColor( tile, worldObject, character, faction ))
-            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
+            spritebatch:set( spriteIndex[tile], selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)
@@ -247,7 +253,7 @@ function MapPainter:initialize( map )
 
     TexturePacks.setBackgroundColor()
     self.spritebatch = love.graphics.newSpriteBatch( TexturePacks.getTileset():getSpritesheet(), MAX_SPRITES, 'dynamic' )
-    initSpritebatch( self.map, self.spritebatch )
+    self.spriteIndex = initSpritebatch( self.map, self.spritebatch )
 end
 
 ---
@@ -261,7 +267,7 @@ end
 -- Updates the spritebatch for the game's world.
 --
 function MapPainter:update()
-    updateSpritebatch( self.spritebatch, self.map, self.faction )
+    updateSpritebatch( self.spritebatch, self.spriteIndex, self.map, self.faction )
 end
 
 ---
