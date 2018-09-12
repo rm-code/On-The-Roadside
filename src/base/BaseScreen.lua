@@ -172,8 +172,8 @@ function BaseScreen:initialize()
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.factionData )
 
     self.container:register( self.characterList )
-    self.container:register( self.quitButton )
     self.container:register( self.nextMissionButton )
+    self.container:register( self.quitButton )
 end
 
 function BaseScreen:update()
