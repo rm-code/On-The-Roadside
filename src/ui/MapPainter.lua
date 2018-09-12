@@ -90,7 +90,8 @@ local function initSpritebatch( map, spritebatch )
 
     map:iterate( function( x, y, tile, _ )
         local id = spritebatch:add( TexturePacks.getSprite( 'tile_empty' ), x * tw, y * th )
-        spriteIndex[tile] = id
+        spriteIndex[x] = spriteIndex[x] or {}
+        spriteIndex[x][y] = id
         tile:setDirty( true )
     end)
     Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
@@ -234,7 +235,7 @@ local function updateSpritebatch( spritebatch, spriteIndex, map, faction )
     map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
             spritebatch:setColor( selectTileColor( tile, worldObject, character, faction ))
-            spritebatch:set( spriteIndex[tile], selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
+            spritebatch:set( spriteIndex[x][y], selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)
