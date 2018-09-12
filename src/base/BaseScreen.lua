@@ -196,6 +196,10 @@ function BaseScreen:resize()
 
     self.background:setOrigin( self.x, self.y )
     self.outlines:setOrigin( self.x, self.y )
+    self.characterList:setOrigin( self.x, self.y )
+    self.uiBaseCharacterInfo:setOrigin( self.x, self.y )
+    self.quitButton:setOrigin( self.x, self.y )
+    self.nextMissionButton:setOrigin( self.x, self.y )
 end
 
 function BaseScreen:keypressed( _, scancode )
