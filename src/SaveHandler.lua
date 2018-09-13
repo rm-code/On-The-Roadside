@@ -1,4 +1,8 @@
 ---
+-- This module handles the saving and loading of savegames and also offers
+-- functions to save and load temporary data of the player's faction which
+-- can be used to pass around the player's faction between different states.
+--
 -- @module SaveHandler
 --
 
@@ -43,6 +47,11 @@ end
 -- Public Functions
 -- ------------------------------------------------
 
+---
+-- Creates a new savegame based on the provided data table and the name string.
+-- @tparam table  t    The data table to serialize.
+-- @tparam string name The name to use for this savegame.
+--
 function SaveHandler.save( t, name )
     Log.info( 'Created savegame: ' .. name, 'SaveHandler' )
 
@@ -61,10 +70,20 @@ function SaveHandler.save( t, name )
     Compressor.save( t, folder .. '/' .. COMPRESSED_SAVE )
 end
 
+---
+-- Loads a savegame from the specified path.
+-- @tparam  string path The path to load the savegame from.
+-- @treturn table       The loaded and deserialized game data.
+--
 function SaveHandler.load( path )
     return Compressor.load( path .. '/' .. COMPRESSED_SAVE )
 end
 
+---
+-- Loads a version file from the specified path.
+-- @tparam  string path The path to load the version from.
+-- @treturn string      The loaded version.
+--
 function SaveHandler.loadVersion( path )
     local result, error = Compressor.load( path .. '/' .. VERSION_FILE )
     if not result then
@@ -95,6 +114,7 @@ end
 -- Loads the temporary player faction file from the harddisk.
 -- This should only be used to copy and paste the player faction data between
 -- different states.
+-- @treturn table The player faction data.
 --
 function SaveHandler.pastePlayerFaction()
     return Compressor.load( TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
@@ -113,6 +133,14 @@ function SaveHandler.removeTemporaryFiles()
     love.filesystem.remove( TEMP_FOLDER )
 end
 
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns the path to the save directory.
+-- @treturn string The path to the save directory.
+--
 function SaveHandler.getSaveFolder()
     return SAVE_FOLDER
 end
