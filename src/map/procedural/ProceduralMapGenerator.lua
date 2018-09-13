@@ -9,7 +9,7 @@
 
 local Class = require( 'lib.Middleclass' )
 local Log = require( 'src.util.Log' )
-local ArrayRotation = require( 'src.util.ArrayRotation' )
+local ArrayRotation = require( 'lib.ArrayRotation' )
 local PrefabLoader = require( 'src.map.procedural.PrefabLoader' )
 local ParcelGrid = require( 'src.map.procedural.ParcelGrid' )
 local TileFactory = require( 'src.map.tiles.TileFactory' )
