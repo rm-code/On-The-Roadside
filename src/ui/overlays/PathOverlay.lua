@@ -63,7 +63,7 @@ function PathOverlay:draw()
     local character = self.game:getCurrentCharacter()
     local mode = self.game:getState():getInputMode()
     if mode:isInstanceOf( MovementInput ) and mode:hasPath() then
-        local total = character:getActionPoints()
+        local total = character:getCurrentAP()
         local ap = total
         mode:getPath():iterate( function( tile )
             ap = ap - tile:getMovementCost( character:getStance() )

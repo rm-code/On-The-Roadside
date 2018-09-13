@@ -178,10 +178,10 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character( savedCharacter.class, savedCharacter.maxActionPoints )
+    local character = Character( savedCharacter.class, savedCharacter.maximumAP )
 
     character:setName( savedCharacter.name )
-    character:setActionPoints( savedCharacter.actionPoints )
+    character:setCurrentAP( savedCharacter.currentAP )
     character:setAccuracy( savedCharacter.accuracy )
     character:setThrowingSkill( savedCharacter.throwingSkill )
     character:setStance( savedCharacter.stance )

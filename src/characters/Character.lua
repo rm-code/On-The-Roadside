@@ -119,8 +119,8 @@ function Character:initialize( classID, actionPoints )
 
     self.creatureClass = classID
 
-    self.maxActionPoints = actionPoints
-    self.actionPoints = actionPoints
+    self.maximumAP = actionPoints
+    self.currentAP = self.maximumAP
 
     self.actions = Queue()
 
@@ -186,7 +186,7 @@ function Character:enqueueAction( newAction )
     end
 
     -- Enqueue action only if the character has enough action points left.
-    if cost + newAction:getCost() <= self.actionPoints then
+    if cost + newAction:getCost() <= self.currentAP then
         self.actions:enqueue( newAction )
         return true
     end
@@ -204,7 +204,7 @@ function Character:performAction()
     local action = self.actions:dequeue()
     local success = action:perform()
     if success then
-        self.actionPoints = self.actionPoints - action:getCost()
+        self.currentAP = self.currentAP - action:getCost()
     end
     self:generateFOV()
 end
@@ -239,8 +239,8 @@ end
 ---
 -- Resets the character's action points to the default value.
 --
-function Character:resetActionPoints()
-    self.actionPoints = self.maxActionPoints
+function Character:resetCurrentAP()
+    self.currentAP = self.maximumAP
 end
 
 ---
@@ -285,8 +285,8 @@ function Character:serialize()
     local t = {
         ['class'] = self.creatureClass,
         ['name'] = self.name,
-        ['maxActionPoints'] = self.maxActionPoints,
-        ['actionPoints'] = self.actionPoints,
+        ['maximumAP'] = self.maximumAP,
+        ['currentAP'] = self.currentAP,
         ['accuracy'] = self.accuracy,
         ['throwingSkill'] = self.throwingSkill,
         ['stance'] = self.stance,
@@ -323,8 +323,8 @@ end
 -- Returns the amount of action points.
 -- @treturn number The amount of action points.
 --
-function Character:getActionPoints()
-    return self.actionPoints
+function Character:getCurrentAP()
+    return self.currentAP
 end
 
 ---
@@ -451,8 +451,8 @@ end
 -- Returns the total amount of action points.
 -- @treturn number The total amount of action points.
 --
-function Character:getMaxActionPoints()
-    return self.maxActionPoints
+function Character:getMaximumAP()
+    return self.maximumAP
 end
 
 ---
@@ -511,8 +511,8 @@ end
 -- Sets the character's action points.
 -- @tparam number ap The amount of AP to set.
 --
-function Character:setActionPoints( ap )
-    self.actionPoints = ap
+    function Character:setCurrentAP( ap )
+    self.currentAP = ap
 end
 
 ---

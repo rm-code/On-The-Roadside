@@ -130,8 +130,8 @@ end
 -- @tparam Character character  The currently active character.
 --
 local function drawActionPoints( textObject, colorTable, gw, gh, character )
-    local currentActionPoints = character:getActionPoints()
-    local maximumActionPoints = character:getMaxActionPoints()
+    local currentActionPoints = character:getCurrentAP()
+    local maximumActionPoints = character:getMaximumAP()
 
     local x, y = AP_POSITION.X * gw, AP_POSITION.Y * gh
     -- AP:

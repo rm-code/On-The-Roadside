@@ -120,7 +120,7 @@ end
 --
 function Faction:deactivate()
     self:iterate( function( character )
-        character:resetActionPoints()
+        character:resetCurrentAP()
         character:clearActions()
     end)
 end
