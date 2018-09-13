@@ -1,5 +1,5 @@
 ---
--- @module DrawingBrush
+-- @module DrawingTool
 --
 
 -- ------------------------------------------------
@@ -13,20 +13,20 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 -- Module
 -- ------------------------------------------------
 
-local DrawingBrush = BaseTool:subclass( 'DrawingBrush' )
+local DrawingTool = BaseTool:subclass( 'DrawingTool' )
 
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function DrawingBrush:initialize()
+function DrawingTool:initialize()
     BaseTool.initialize( self )
 end
 
 ---
 -- Draw
 --
-function DrawingBrush:draw()
+function DrawingTool:draw()
     if not self.icon then
         return
     end
@@ -44,7 +44,7 @@ function DrawingBrush:draw()
     TexturePacks.resetColor()
 end
 
-function DrawingBrush:use( canvas )
+function DrawingTool:use( canvas )
     if self.layer and self.active then
         for x = 0, self.size-1 do
             for y = 0, self.size-1 do
@@ -58,4 +58,4 @@ function DrawingBrush:use( canvas )
     end
 end
 
-return DrawingBrush
+return DrawingTool

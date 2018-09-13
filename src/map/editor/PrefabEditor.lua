@@ -15,7 +15,7 @@ local UIButton = require( 'src.ui.elements.UIButton' )
 local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
 local PrefabCanvas = require( 'src.map.editor.PrefabCanvas' )
-local DrawingBrush = require( 'src.map.editor.DrawingBrush' )
+local DrawingTool = require( 'src.map.editor.DrawingTool' )
 local EraserTool = require( 'src.map.editor.EraserTool' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
@@ -152,7 +152,7 @@ function PrefabEditor:initialize()
     self.camera = Camera( self.canvas:getWidth(), self.canvas:getHeight(), TexturePacks.getTileDimensions() )
 
     self.brush = Brush()
-    self.tool = DrawingBrush()
+    self.tool = DrawingTool()
 
     local tileTemplates = TileFactory.getTemplates()
     self.tileSelector = createTileSelector( tileTemplates, self.brush )
@@ -235,7 +235,7 @@ function PrefabEditor:keypressed( _, scancode )
     end
 
     if action == 'mode_draw' then
-        self.tool = DrawingBrush()
+        self.tool = DrawingTool()
     elseif action == 'mode_erase' then
         self.tool = EraserTool()
     end
