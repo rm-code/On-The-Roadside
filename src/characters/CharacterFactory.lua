@@ -82,7 +82,7 @@ end
 -- @treturn name The generated name.
 --
 local function generateName( nationality )
-    return CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )]
+    return Util.pickRandomValue( CREATURE_NAMES[nationality] )
 end
 
 ---
