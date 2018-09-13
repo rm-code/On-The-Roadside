@@ -54,7 +54,7 @@ function Compressor.load( path )
     end
 
     -- Load and execute the actual Lua code.
-    return load( rawstring )()
+    return result()
 end
 
 return Compressor
