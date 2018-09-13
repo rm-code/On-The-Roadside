@@ -150,8 +150,6 @@ return {
     -- Prefab Editor
     -- ==============================
 
-    ['prefab_editor_cursor_draw'] = 101,
-    ['prefab_editor_cursor_fill'] = 160,
     ['prefab_editor_cursor_erase'] = 89,
 
     -- ==============================
