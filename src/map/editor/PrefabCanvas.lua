@@ -200,6 +200,14 @@ end
 -- Getters
 -- ------------------------------------------------
 
+function PrefabCanvas:getTileAt( x, y )
+    return self.map:getTileAt( x, y )
+end
+
+function PrefabCanvas:getWorldObjectAt( x, y )
+    return self.map:getWorldObjectAt( x, y )
+end
+
 function PrefabCanvas:getWidth()
     return self.width
 end

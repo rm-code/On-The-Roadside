@@ -16,6 +16,7 @@ local Camera = require( 'src.ui.Camera' )
 local Translator = require( 'src.util.Translator' )
 local PrefabCanvas = require( 'src.map.editor.PrefabCanvas' )
 local DrawingTool = require( 'src.map.editor.DrawingTool' )
+local FillingTool = require( 'src.map.editor.FillingTool' )
 local EraserTool = require( 'src.map.editor.EraserTool' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
@@ -238,6 +239,8 @@ function PrefabEditor:keypressed( _, scancode )
         self.tool = DrawingTool()
     elseif action == 'mode_erase' then
         self.tool = EraserTool()
+    elseif action == 'mode_fill' then
+        self.tool = FillingTool()
     end
 
     if action == 'hide_worldobjects' then

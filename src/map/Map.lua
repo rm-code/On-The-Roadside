@@ -280,6 +280,23 @@ function Map:getNeighbours( x, y, object )
     error( 'Not a valid object to get neighbours for!' )
 end
 
+
+---
+-- Returns the neighbour in the specific direction around a certain position.
+-- @tparam number    x      The position along the x-axis.
+-- @tparam number    y      The position along the y-axis.
+-- @tparam MapObject object The map object to return the neighbour for.
+-- @tparam string    dir    The direction to get the neighbour from.
+--
+function Map:getNeighbour( x, y, object, dir )
+    if object:isInstanceOf( Tile ) then
+        return self:getTileAt( x + DIRECTION_MODIFIERS[dir].x, y + DIRECTION_MODIFIERS[dir].y )
+    elseif object:isInstanceOf( WorldObject ) then
+        return self:getWorldObjectAt( x + DIRECTION_MODIFIERS[dir].x, y + DIRECTION_MODIFIERS[dir].y )
+    end
+    error( 'Not a valid object to get neighbours for!' )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------

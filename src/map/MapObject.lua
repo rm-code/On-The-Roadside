@@ -66,6 +66,10 @@ function MapObject:getNeighbours()
     return self.map:getNeighbours( self.x, self.y, self )
 end
 
+function MapObject:getNeighbour( direction )
+    return self.map:getNeighbour( self.x, self.y, self, direction )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
