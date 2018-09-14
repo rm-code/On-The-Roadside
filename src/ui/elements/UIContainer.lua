@@ -12,6 +12,7 @@
 
 local Class = require( 'lib.Middleclass' )
 local UIElement = require( 'src.ui.elements.UIElement' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -81,13 +82,11 @@ end
 --
 function UIContainer:next()
     love.mouse.setVisible( false )
-    if self.current then
-        self.list[self.current]:setFocus( false )
-        self.current = self.current + 1
-        self.current = self.current > #self.list and 1 or self.current
-    else
-        self.current = 1
-    end
+    self.current = self.current or 1
+    self.list[self.current]:setFocus( false )
+
+    self.current = Util.wrap( 1, self.current + 1, #self.list )
+
     self.list[self.current]:setFocus( true )
 end
 
