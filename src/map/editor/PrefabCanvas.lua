@@ -83,6 +83,10 @@ function PrefabCanvas:update()
     self.mapPainter:update()
 end
 
+function PrefabCanvas:toggleObjects()
+    self.mapPainter:setWorldObjectsVisible( not self.mapPainter:getWorldObjectsVisible() )
+end
+
 -- ------------------------------------------------
 -- Setters
 -- ------------------------------------------------
