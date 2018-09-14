@@ -187,11 +187,10 @@ local function selectWorldObjectSprite( worldObject )
     -- Check if the world object sprite connects to adjacent sprites.
     local connections = worldObject:getConnections()
     if connections then
-        local neighbours = worldObject:getNeighbours()
-        local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
-                       checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
-                       checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
-                       checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
+        local result = checkConnection( connections, worldObject:getNeighbour( DIRECTION.NORTH ), 1 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.EAST  ), 2 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.SOUTH ), 4 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.WEST  ), 8 )
         return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
     end
 
