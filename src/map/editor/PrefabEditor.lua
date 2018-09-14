@@ -248,7 +248,11 @@ function PrefabEditor:keypressed( _, scancode )
     end
 
     if scancode == 'tab' then
-        self.uiContainer:next()
+        if love.keyboard.isScancodeDown( 'lshift' ) then
+            self.uiContainer:prev()
+        else
+            self.uiContainer:next()
+        end
     end
 
     if scancode == 'return' then
