@@ -44,7 +44,7 @@ local function createBackButton( lx, ly )
 end
 
 local function createSaveGameEntry( lx, ly, index, item, folder )
-    local version = SaveHandler.loadVersion( folder )
+    local valid, version = SaveHandler.validateSave( folder )
 
     -- Generate the string for the savegame button showing the name of the saves,
     -- the version of the game at which they were created and their creation date.
@@ -53,14 +53,13 @@ local function createSaveGameEntry( lx, ly, index, item, folder )
     str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getInfo( folder ).modtime ))
 
     local function callback()
-        if version == getVersion() then
-            local save = SaveHandler.load( folder )
-            ScreenManager.switch( 'gamescreen', save )
+        if valid then
+            ScreenManager.switch( 'gamescreen', SaveHandler.load( folder ))
         end
     end
 
     local button = UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, str, 'center' )
-    button:setActive( version == getVersion() )
+    button:setActive( valid )
     return button
 end
 

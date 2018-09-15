@@ -27,6 +27,10 @@ local SAVE_FOLDER = 'saves'
 local COMPRESSED_SAVE = 'game.data'
 local VERSION_FILE = 'version.data'
 
+local VERSION_FILE_WARNING = 'Can not load a version file from "%s"'
+local SAVE_FILE_WARNING = 'Can not load a save file from "%s"'
+local VERSION_MISMATCH_WARNING = 'Save file version (%s) doesn\'t match the current game version (%s).'
+
 local TEMP_FOLDER = 'tmp'
 local PLAYER_FACTION_SAVE = 'tmp_faction.data'
 
@@ -91,6 +95,35 @@ function SaveHandler.loadVersion( path )
         return '<undefined>'
     end
     return result.version
+end
+
+---
+-- Validates the savegame.
+-- @tparam string path The save path to check.
+--
+function SaveHandler.validateSave( path )
+    if not love.filesystem.getInfo( path .. '/' .. VERSION_FILE ) then
+        Log.warn( string.format( VERSION_FILE_WARNING, path ), 'SaveHandler' )
+        return false, '0.0.0.0'
+    end
+
+    local result, error = Compressor.load( path .. '/' .. VERSION_FILE )
+    if not result then
+        Log.warn( error, 'SaveHandler' )
+        return false, '0.0.0.0'
+    end
+
+    if not love.filesystem.getInfo( path .. '/' .. COMPRESSED_SAVE ) then
+        Log.warn( string.format( SAVE_FILE_WARNING, path ), 'SaveHandler' )
+        return false, result.version
+    end
+
+    if getVersion() ~= result.version then
+        Log.warn( string.format( VERSION_MISMATCH_WARNING, result.version, getVersion() ), 'SaveHandler' )
+        return false, result.version
+    end
+
+    return true, result.version
 end
 
 ---
