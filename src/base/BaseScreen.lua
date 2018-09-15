@@ -220,6 +220,10 @@ function BaseScreen:keypressed( _, scancode )
     elseif scancode == 'return' then
         self.container:command( 'activate' )
     end
+
+    if scancode == 'escape' then
+        ScreenManager.push( 'basemenu', self.factionData )
+    end
 end
 
 function BaseScreen:mousereleased()
