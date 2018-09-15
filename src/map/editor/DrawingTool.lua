@@ -20,7 +20,7 @@ local DrawingTool = BaseTool:subclass( 'DrawingTool' )
 -- ------------------------------------------------
 
 function DrawingTool:initialize()
-    BaseTool.initialize( self )
+    BaseTool.initialize( self, 'tool_draw' )
 end
 
 ---

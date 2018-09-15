@@ -203,7 +203,8 @@ function PrefabEditor:draw()
     local template, type = self.brush:getTemplate(), self.brush:getLayer()
     if template then
         TexturePacks.setColor( 'ui_prefab_editor_brush' )
-        love.graphics.print( string.format( 'Selected brush: %s (%s)', Translator.getText( template.id ), type ), tw, (sh-1) * th )
+        love.graphics.print( string.format( '%s (%s)', Translator.getText( self.tool:getID() ), type ), tw, (sh-2) * th )
+        love.graphics.print( Translator.getText( template.id ), tw, (sh-1) * th )
         TexturePacks.resetColor()
     end
 end

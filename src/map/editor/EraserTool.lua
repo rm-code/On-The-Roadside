@@ -26,7 +26,7 @@ local SPRITE = 'prefab_editor_cursor_erase'
 -- ------------------------------------------------
 
 function EraserTool:initialize()
-    BaseTool.initialize( self )
+    BaseTool.initialize( self, 'tool_erase' )
 end
 
 function EraserTool:draw()

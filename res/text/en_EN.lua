@@ -234,6 +234,9 @@ locale.strings = {
     ['ui_prefabeditor_test'] = "Test Map",
     ['ui_prefabeditor_switch'] = "Layout Editor",
     ['ui_prefabeditor_enter_name'] = "Save prefab as:",
+    ['tool_draw'] = "Draw",
+    ['tool_fill'] = "Fill",
+    ['tool_erase'] = "Erase",
 
     -- Texture packs
     ['ui_texturepack'] = "Texture Pack:",

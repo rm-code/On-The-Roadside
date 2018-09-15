@@ -90,7 +90,7 @@ end
 -- ------------------------------------------------
 
 function FillingTool:initialize()
-    BaseTool.initialize( self )
+    BaseTool.initialize( self, 'tool_fill' )
 end
 
 -- ------------------------------------------------

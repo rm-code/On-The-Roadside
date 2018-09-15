@@ -18,7 +18,8 @@ local BaseTool = Class( 'BaseTool' )
 -- Public Methods
 -- ------------------------------------------------
 
-function BaseTool:initialize()
+function BaseTool:initialize( id )
+    self.id = id
     self.size = 1
     self.active = false
 end
@@ -29,6 +30,10 @@ end
 
 function BaseTool:decreaseSize()
     self.size = self.size - 1
+end
+
+function BaseTool:getID()
+    return self.id
 end
 
 function BaseTool:setActive( nactive )
