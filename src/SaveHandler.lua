@@ -84,20 +84,6 @@ function SaveHandler.load( path )
 end
 
 ---
--- Loads a version file from the specified path.
--- @tparam  string path The path to load the version from.
--- @treturn string      The loaded version.
---
-function SaveHandler.loadVersion( path )
-    local result, error = Compressor.load( path .. '/' .. VERSION_FILE )
-    if not result then
-        Log.warn( error, 'SaveHandler' )
-        return '<undefined>'
-    end
-    return result.version
-end
-
----
 -- Validates the savegame.
 -- @tparam string path The save path to check.
 --
