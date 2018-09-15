@@ -18,7 +18,7 @@ local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 local Faction = require( 'src.characters.Faction' )
 local Settings = require( 'src.Settings' )
 local MessageQueue = require( 'src.util.MessageQueue' )
-local SaveHandler = require( 'src.SaveHandler' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -70,7 +70,7 @@ function CombatState:initialize( savegame )
     self.factions:addFaction( Faction( FACTIONS.ENEMY,   true ))
     self.factions:addFaction( Faction( FACTIONS.NEUTRAL, true ))
 
-    local playerFaction = createPlayerFaction( SaveHandler.pastePlayerFaction() )
+    local playerFaction = createPlayerFaction( DataHandler.pastePlayerFaction() )
     self.factions:addFaction( playerFaction )
 
     if savegame then

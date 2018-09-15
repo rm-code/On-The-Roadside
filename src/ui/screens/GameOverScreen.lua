@@ -13,7 +13,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
-local SaveHandler = require( 'src.SaveHandler' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -84,7 +84,7 @@ end
 
 function GameOverScreen:keypressed()
     if self.win then
-        SaveHandler.copyPlayerFaction( self.playerFaction:serialize() )
+        DataHandler.copyPlayerFaction( self.playerFaction:serialize() )
         ScreenManager.switch( 'base' )
         return
     end

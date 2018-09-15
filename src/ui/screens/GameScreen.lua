@@ -12,7 +12,7 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Faction = require( 'src.characters.Faction' )
-local SaveHandler = require( 'src.SaveHandler' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -32,13 +32,13 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 
 local function loadGame( savegame, playerFaction )
     playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
-    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+    DataHandler.copyPlayerFaction( playerFaction:serialize() )
     ScreenManager.switch( savegame.type, savegame )
 end
 
 local function newGame( playerFaction )
     playerFaction:addCharacters( 10 )
-    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+    DataHandler.copyPlayerFaction( playerFaction:serialize() )
     ScreenManager.switch( 'base' )
 end
 

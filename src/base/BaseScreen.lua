@@ -11,7 +11,7 @@ local Screen = require( 'src.ui.screens.Screen' )
 
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
-local SaveHandler = require( 'src.SaveHandler' )
+local DataHandler = require( 'src.DataHandler' )
 
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
@@ -109,7 +109,7 @@ end
 local function createNextMissionButton( x, y, factionData )
     -- The function to call when the button is activated.
     local function callback()
-        SaveHandler.copyPlayerFaction( factionData )
+        DataHandler.copyPlayerFaction( factionData )
         ScreenManager.switch( 'combat' )
     end
 
@@ -150,7 +150,7 @@ end
 function BaseScreen:initialize()
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.factionData = cleanUpFactionData( SaveHandler.pastePlayerFaction() )
+    self.factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
 
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )

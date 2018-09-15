@@ -1,7 +1,5 @@
 ---
--- This module handles the saving and loading of savegames and also offers
--- functions to save and load temporary data of the player's faction which
--- can be used to pass around the player's faction between different states.
+-- This module handles the saving and loading of savegames.
 --
 -- @module SaveHandler
 --
@@ -30,9 +28,6 @@ local VERSION_FILE = 'version.data'
 local VERSION_FILE_WARNING = 'Can not load a version file from "%s"'
 local SAVE_FILE_WARNING = 'Can not load a save file from "%s"'
 local VERSION_MISMATCH_WARNING = 'Save file version (%s) doesn\'t match the current game version (%s).'
-
-local TEMP_FOLDER = 'tmp'
-local PLAYER_FACTION_SAVE = 'tmp_faction.data'
 
 -- ------------------------------------------------
 -- Private Functions
@@ -110,46 +105,6 @@ function SaveHandler.validateSave( path )
     end
 
     return true, result.version
-end
-
----
--- Copies the current player faction to the harddisk as a temporary file.
--- This should only be used to copy and paste the player faction data between
--- different states.
--- @tparam table t The player faction data.
---
-function SaveHandler.copyPlayerFaction( t )
-    Log.info( 'Saving player faction...', 'SaveHandler' )
-
-    -- Create the saves folder it doesn't exist already.
-    if not love.filesystem.getInfo( TEMP_FOLDER ) then
-        love.filesystem.createDirectory( TEMP_FOLDER )
-    end
-
-    Compressor.save( t, TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
-end
-
----
--- Loads the temporary player faction file from the harddisk.
--- This should only be used to copy and paste the player faction data between
--- different states.
--- @treturn table The player faction data.
---
-function SaveHandler.pastePlayerFaction()
-    return Compressor.load( TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
-end
-
----
--- Removes all files in the temporary folder and the folder itself from the
--- player's save directory.
---
-function SaveHandler.removeTemporaryFiles()
-    Log.info( 'Removing temporary files...', 'SaveHandler' )
-
-    for _, item in pairs( love.filesystem.getDirectoryItems( TEMP_FOLDER )) do
-        love.filesystem.remove( TEMP_FOLDER .. '/' .. item )
-    end
-    love.filesystem.remove( TEMP_FOLDER )
 end
 
 -- ------------------------------------------------
