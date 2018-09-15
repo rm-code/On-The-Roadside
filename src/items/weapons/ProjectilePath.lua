@@ -118,7 +118,7 @@ end
 -- @return          (number)    The maximum range for the deviation.
 --
 local function calculateRangedMaximumDeviation( character, weapon, count )
-    local marksmanSkill  = floor( character:getAccuracy() )
+    local marksmanSkill  = floor( character:getShootingSkill() )
     local weaponAccuracy = floor( weapon:getAccuracy() )
 
     local deviation = 0

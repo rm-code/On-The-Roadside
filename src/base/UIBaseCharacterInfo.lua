@@ -114,7 +114,7 @@ local function drawSkills( textObject, colorTable, character )
 
     x, y = 0 * tw, 3 * th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_shooting_accuracy' ))
-    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character.accuracy )
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character.shootingSkill )
 
     x, y = 0 * tw, 4 * th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'character_throwing_accuracy' ))

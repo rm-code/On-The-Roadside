@@ -127,7 +127,7 @@ function Character:initialize( classID, actionPoints, viewRange )
     self.fov = {}
     self.viewRange = viewRange
 
-    self.accuracy = love.math.random( 60, 90 )
+    self.shootingSkill = love.math.random( 60, 90 )
     self.throwingSkill = love.math.random( 60, 90 )
 
     self.stance = STANCES.STAND
@@ -288,7 +288,7 @@ function Character:serialize()
         ['maximumAP'] = self.maximumAP,
         ['currentAP'] = self.currentAP,
         ['viewRange'] = self.viewRange,
-        ['accuracy'] = self.accuracy,
+        ['shootingSkill'] = self.shootingSkill,
         ['throwingSkill'] = self.throwingSkill,
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
@@ -313,11 +313,11 @@ end
 -- ------------------------------------------------
 
 ---
--- Returns the accuracy of this character used when shooting guns.
--- @treturn number The character's accuracy.
+-- Returns the shooting skill of this character.
+-- @treturn number The character's shooting skill.
 --
-function Character:getAccuracy()
-    return self.accuracy
+function Character:getShootingSkill()
+    return self.shootingSkill
 end
 
 ---
@@ -501,11 +501,11 @@ end
 -- ------------------------------------------------
 
 ---
--- Sets the character's accuracy attribute.
--- @tparam number accuracy The new accuracy value.
+-- Sets the character's shooting skill.
+-- @tparam number shootingSkill The new shooting skill value.
 --
-function Character:setAccuracy( accuracy )
-    self.accuracy = accuracy
+function Character:setShootingSkill( shootingSkill )
+    self.shootingSkill = shootingSkill
 end
 
 ---

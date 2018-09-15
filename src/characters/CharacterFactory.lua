@@ -182,7 +182,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
 
     character:setName( savedCharacter.name )
     character:setCurrentAP( savedCharacter.currentAP )
-    character:setAccuracy( savedCharacter.accuracy )
+    character:setShootingSkill( savedCharacter.shootingSkill )
     character:setThrowingSkill( savedCharacter.throwingSkill )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
