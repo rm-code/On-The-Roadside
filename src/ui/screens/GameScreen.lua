@@ -30,18 +30,30 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- Constructor
 -- ------------------------------------------------
 
+local function loadGame( savegame, playerFaction )
+    playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+    ScreenManager.switch( savegame.type, savegame )
+end
+
+local function newGame( playerFaction )
+    playerFaction:addCharacters( 10 )
+    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
+    ScreenManager.switch( 'base' )
+end
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
 function GameScreen:initialize( savegame )
     local playerFaction = Faction( FACTIONS.ALLIED, false )
 
     if savegame then
-        playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+        loadGame( savegame, playerFaction )
     else
-        playerFaction:addCharacters( 10 )
+        newGame( playerFaction )
     end
-
-    SaveHandler.copyPlayerFaction( playerFaction:serialize() )
-
-    ScreenManager.push( 'base', savegame )
 end
 
 return GameScreen
