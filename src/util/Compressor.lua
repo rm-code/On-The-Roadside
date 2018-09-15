@@ -31,7 +31,6 @@ function Compressor.save( t, path )
     local rawstring = Serialize( t )
     local compressedData = love.data.compress( 'data', 'lz4', rawstring )
     assert( love.filesystem.write( path, compressedData ))
-    assert( love.filesystem.write( path..'.txt', compressedData ))
 end
 
 ---
