@@ -23,6 +23,7 @@ local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 local Settings = require( 'src.Settings' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Brush = require( 'src.map.editor.Brush' )
+local UIBackground = require( 'src.ui.elements.UIBackground' )
 
 -- ------------------------------------------------
 -- Module
@@ -36,6 +37,8 @@ local PrefabEditor = Screen:subclass( 'PrefabEditor' )
 
 local SELECTOR_WIDTH  = 10
 local SELECTOR_HEIGHT = 10
+
+local UI_BACKGROUND_WIDTH = 12
 
 local CANVAS_SIZES = {
     'XS',
@@ -163,6 +166,9 @@ function PrefabEditor:initialize()
 
     self.canvasSelector = createCanvasSelector( self.canvas, self.camera )
 
+    local _, sh = GridHelper.getScreenGridDimensions()
+    self.background = UIBackground( 0, 0, 0, 0, UI_BACKGROUND_WIDTH, sh )
+
     self.uiContainer = UIContainer()
     self.uiContainer:register( self.tileSelector )
     self.uiContainer:register( self.objectSelector )
@@ -181,14 +187,15 @@ function PrefabEditor:draw()
         return
     end
 
-    self.tileSelector:draw()
-    self.objectSelector:draw()
-    self.canvasSelector:draw()
-
     self.camera:attach()
     self.canvas:draw()
     self.tool:draw()
     self.camera:detach()
+
+    self.background:draw()
+    self.tileSelector:draw()
+    self.objectSelector:draw()
+    self.canvasSelector:draw()
 
     local  _, sh = GridHelper.getScreenGridDimensions()
     local tw, th = TexturePacks.getTileDimensions()
