@@ -114,7 +114,7 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize( classID, actionPoints )
+function Character:initialize( classID, actionPoints, viewRange )
     MapObject.initialize( self )
 
     self.creatureClass = classID
@@ -125,7 +125,7 @@ function Character:initialize( classID, actionPoints )
     self.actions = Queue()
 
     self.fov = {}
-    self.viewRange = 12
+    self.viewRange = viewRange
 
     self.accuracy = love.math.random( 60, 90 )
     self.throwingSkill = love.math.random( 60, 90 )
@@ -287,6 +287,7 @@ function Character:serialize()
         ['name'] = self.name,
         ['maximumAP'] = self.maximumAP,
         ['currentAP'] = self.currentAP,
+        ['viewRange'] = self.viewRange,
         ['accuracy'] = self.accuracy,
         ['throwingSkill'] = self.throwingSkill,
         ['stance'] = self.stance,

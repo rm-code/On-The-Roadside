@@ -178,7 +178,7 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character( savedCharacter.class, savedCharacter.maximumAP )
+    local character = Character( savedCharacter.class, savedCharacter.maximumAP, savedCharacter.viewRange )
 
     character:setName( savedCharacter.name )
     character:setCurrentAP( savedCharacter.currentAP )
@@ -197,7 +197,7 @@ end
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
     local class = findClass( classID )
-    local character = Character( classID, class.stats.ap )
+    local character = Character( classID, class.stats.ap, class.stats.viewRange )
 
     local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'body_human' then

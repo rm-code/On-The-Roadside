@@ -6,7 +6,8 @@ return {
         },
         stats = {
             ap = 40,
-            hp = 8
+            hp = 8,
+            viewRange = 12
         }
     },
     {
@@ -16,7 +17,8 @@ return {
         },
         stats = {
             ap = 30,
-            hp = 5
+            hp = 5,
+            viewRange = 10
         }
     },
     {
@@ -26,7 +28,8 @@ return {
         },
         stats = {
             ap = 20,
-            hp = 4
+            hp = 4,
+            viewRange = 8
         }
     }
 }
