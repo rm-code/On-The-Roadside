@@ -40,11 +40,6 @@ local CHARACTER_LIST_HEIGHT = 15
 local CHARACTER_LIST_OFFSET_X = 1
 local CHARACTER_LIST_OFFSET_Y = 1
 
-local QUIT_BUTTON_WIDTH = 4
-local QUIT_BUTTON_HEIGHT = 1
-local QUIT_BUTTON_OFFSET_X = 1
-local QUIT_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
-
 local NEXTMISSION_BUTTON_WIDTH = 8
 local NEXTMISSION_BUTTON_HEIGHT = 1
 local NEXTMISSION_BUTTON_OFFSET_X = UI_GRID_WIDTH - NEXTMISSION_BUTTON_WIDTH - 2
@@ -104,23 +99,6 @@ local function createCharacterList( x, y, factionData, uiBaseCharacterInfo )
 end
 
 ---
--- Creates a button which allows the user to return to the main menu.
--- @tparam  number   x The parent's absolute coordinates along the x-axis.
--- @tparam  number   y The parent's absolute coordinates along the y-axis.
--- @treturn UIButton   The newly created UIButton.
---
-local function createQuitButton( x, y )
-    -- The function to call when the button is activated.
-    local function callback()
-        ScreenManager.switch( 'mainmenu' )
-    end
-
-    -- Create the UIButton.
-    local rx, ry, w, h = QUIT_BUTTON_OFFSET_X, QUIT_BUTTON_OFFSET_Y, QUIT_BUTTON_WIDTH, QUIT_BUTTON_HEIGHT
-    return UIButton( x, y, rx, ry, w, h, callback, Translator.getText( 'general_exit' ))
-end
-
----
 -- Creates a button which allows the user to start a new combat mission.
 -- @tparam  number   x The parent's absolute coordinates along the x-axis.
 -- @tparam  number   y The parent's absolute coordinates along the y-axis.
@@ -168,12 +146,10 @@ function BaseScreen:initialize()
 
     self.container = UIContainer()
     self.characterList = createCharacterList( self.x, self.y, self.factionData, self.uiBaseCharacterInfo )
-    self.quitButton = createQuitButton( self.x, self.y )
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.factionData )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
-    self.container:register( self.quitButton )
 end
 
 function BaseScreen:update()
@@ -187,7 +163,6 @@ function BaseScreen:draw()
     self.characterList:draw()
     self.uiBaseCharacterInfo:draw()
 
-    self.quitButton:draw()
     self.nextMissionButton:draw()
 end
 
@@ -198,7 +173,6 @@ function BaseScreen:resize()
     self.outlines:setOrigin( self.x, self.y )
     self.characterList:setOrigin( self.x, self.y )
     self.uiBaseCharacterInfo:setOrigin( self.x, self.y )
-    self.quitButton:setOrigin( self.x, self.y )
     self.nextMissionButton:setOrigin( self.x, self.y )
 end
 
