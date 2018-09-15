@@ -169,6 +169,16 @@ local function pickCreatureClass( factionID )
     return Util.pickRandomValue( CREATURE_GROUPS[factionID] )
 end
 
+---
+-- Rolls a random number between the min and max value.
+-- @tparam number min The minimum possible value.
+-- @tparam number max The maximum possible value.
+-- @tparam number     The rolled number.
+--
+local function rollStat( min, max )
+    return love.math.random( min, max )
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -178,12 +188,14 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character( savedCharacter.class, savedCharacter.maximumAP, savedCharacter.viewRange )
+    local character = Character( savedCharacter.class,
+                                 savedCharacter.maximumAP,
+                                 savedCharacter.viewRange,
+                                 savedCharacter.shootingSkill,
+                                 savedCharacter.throwingSkill )
 
     character:setName( savedCharacter.name )
     character:setCurrentAP( savedCharacter.currentAP )
-    character:setShootingSkill( savedCharacter.shootingSkill )
-    character:setThrowingSkill( savedCharacter.throwingSkill )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
     character:setPosition( savedCharacter.x, savedCharacter.y )
@@ -197,7 +209,11 @@ end
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
     local class = findClass( classID )
-    local character = Character( classID, class.stats.ap, class.stats.viewRange )
+
+    local shootingSkill = rollStat( class.stats.shootingSkill.min, class.stats.shootingSkill.max )
+    local throwingSkill = rollStat( class.stats.throwingSkill.min, class.stats.throwingSkill.max )
+
+    local character = Character( classID, class.stats.ap, class.stats.viewRange, shootingSkill, throwingSkill )
 
     local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'body_human' then

@@ -114,7 +114,7 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize( classID, actionPoints, viewRange )
+function Character:initialize( classID, actionPoints, viewRange, shootingSkill, throwingSkill )
     MapObject.initialize( self )
 
     self.creatureClass = classID
@@ -127,8 +127,8 @@ function Character:initialize( classID, actionPoints, viewRange )
     self.fov = {}
     self.viewRange = viewRange
 
-    self.shootingSkill = love.math.random( 60, 90 )
-    self.throwingSkill = love.math.random( 60, 90 )
+    self.shootingSkill = shootingSkill
+    self.throwingSkill = throwingSkill
 
     self.stance = STANCES.STAND
 
@@ -501,14 +501,6 @@ end
 -- ------------------------------------------------
 
 ---
--- Sets the character's shooting skill.
--- @tparam number shootingSkill The new shooting skill value.
---
-function Character:setShootingSkill( shootingSkill )
-    self.shootingSkill = shootingSkill
-end
-
----
 -- Sets the character's action points.
 -- @tparam number ap The amount of AP to set.
 --
@@ -547,14 +539,6 @@ end
 --
 function Character:setNationality( nationality )
     self.nationality = nationality
-end
-
----
--- Sets the character's throwing skill.
--- @tparam number throwingSkill The character's throwing skill.
---
-function Character:setThrowingSkill( throwingSkill )
-    self.throwingSkill = throwingSkill
 end
 
 ---

@@ -7,7 +7,9 @@ return {
         stats = {
             ap = 40,
             hp = 8,
-            viewRange = 12
+            viewRange = 12,
+            shootingSkill = { min = 40, max = 70 },
+            throwingSkill = { min = 50, max = 80 }
         }
     },
     {
@@ -18,7 +20,9 @@ return {
         stats = {
             ap = 30,
             hp = 5,
-            viewRange = 10
+            viewRange = 10,
+            shootingSkill = { min = 30, max = 60 },
+            throwingSkill = { min = 40, max = 70 }
         }
     },
     {
@@ -29,7 +33,9 @@ return {
         stats = {
             ap = 20,
             hp = 4,
-            viewRange = 8
+            viewRange = 8,
+            shootingSkill = { min = 30, max = 40 },
+            throwingSkill = { min = 20, max = 30 }
         }
     }
 }
