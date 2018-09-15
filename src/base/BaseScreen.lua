@@ -20,6 +20,8 @@ local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 local UIBaseCharacterInfo = require( 'src.base.UIBaseCharacterInfo' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 
+local Log = require( 'src.util.Log' )
+
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
@@ -117,11 +119,21 @@ local function createNextMissionButton( x, y, factionData )
 end
 
 ---
--- Clean the character data for the next mission.
+-- Cleans the character data for the next mission and removes dead characters.
 -- @tparam  table factionData The data to clean.
 -- @treturn table             The cleaned character data.
 --
 local function cleanUpFactionData( factionData )
+    -- Remove dead characters from the faction data.
+    for i = #factionData, 1, -1 do
+        local character = factionData[i]
+        if character.body.currentHP <= 0 then
+            Log.debug( string.format( 'Removed dead character "%s" from faction.', character.name ), 'BaseScreen' )
+            table.remove( factionData, i )
+        end
+    end
+
+    -- Reset the living characters for the next mission.
     for _, character in ipairs( factionData ) do
         character.x, character.y = nil, nil
         character.body.currentHP = character.body.maximumHP
