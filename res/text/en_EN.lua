@@ -5,6 +5,7 @@ locale.strings = {
     -- General
     -- ==============================
     ['general_exit'] = 'Exit',
+    ['general_cancel'] = 'Cancel',
 
     ['nationality_german'] = 'German',
     ['nationality_finnish'] = 'Finnish',
@@ -171,6 +172,8 @@ locale.strings = {
     ['character_throwing_accuracy'] = "Throwing Skill: ",
     ['character_missions'] = "Missions: ",
     ['ui_nationality'] = "Nationality: ",
+    ['base_recruitment_button'] = "Recruitment",
+    ['recruitment_hire_button'] = "Hire",
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",

@@ -45,6 +45,11 @@ local CHARACTER_LIST_HEIGHT = 15
 local CHARACTER_LIST_OFFSET_X = 1
 local CHARACTER_LIST_OFFSET_Y = 1
 
+local RECRUITMENT_BUTTON_WIDTH = 8
+local RECRUITMENT_BUTTON_HEIGHT = 1
+local RECRUITMENT_BUTTON_OFFSET_X = 1
+local RECRUITMENT_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
+
 local NEXTMISSION_BUTTON_WIDTH = 8
 local NEXTMISSION_BUTTON_HEIGHT = 1
 local NEXTMISSION_BUTTON_OFFSET_X = UI_GRID_WIDTH - NEXTMISSION_BUTTON_WIDTH - 2
@@ -124,6 +129,26 @@ local function createNextMissionButton( x, y, faction )
 end
 
 ---
+-- Creates a button which allows the user to open the recruitment screen.
+-- @tparam  number   x       The parent's absolute coordinates along the x-axis.
+-- @tparam  number   y       The parent's absolute coordinates along the y-axis.
+-- @tparam  Faction  faction The Faction to use for the next mission.
+-- @treturn UIButton         The newly created UIButton.
+--
+local function createRecruitmentButton( x, y, faction )
+    -- The function to call when the button is activated.
+    local function callback()
+        DataHandler.copyPlayerFaction( faction:serialize() )
+        ScreenManager.switch( 'recruitment' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = RECRUITMENT_BUTTON_OFFSET_X, RECRUITMENT_BUTTON_OFFSET_Y, RECRUITMENT_BUTTON_WIDTH, RECRUITMENT_BUTTON_HEIGHT
+    return UIButton( x, y, rx, ry, w, h, callback, Translator.getText( 'base_recruitment_button' ))
+end
+
+
+---
 -- Cleans the character data for the next mission and removes dead characters.
 -- @tparam  table factionData The data to clean.
 -- @treturn table             The cleaned character data.
@@ -176,9 +201,11 @@ function BaseScreen:initialize()
     self.container = UIContainer()
     self.characterList = createCharacterList( self.x, self.y, self.faction, self.uiBaseCharacterInfo )
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
+    self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
+    self.container:register( self.recruitmentButton )
 end
 
 function BaseScreen:update()
@@ -193,6 +220,7 @@ function BaseScreen:draw()
     self.uiBaseCharacterInfo:draw()
 
     self.nextMissionButton:draw()
+    self.recruitmentButton:draw()
 end
 
 function BaseScreen:resize()
@@ -203,6 +231,7 @@ function BaseScreen:resize()
     self.characterList:setOrigin( self.x, self.y )
     self.uiBaseCharacterInfo:setOrigin( self.x, self.y )
     self.nextMissionButton:setOrigin( self.x, self.y )
+    self.recruitmentButton:setOrigin( self.x, self.y )
 end
 
 function BaseScreen:keypressed( _, scancode )

@@ -46,6 +46,7 @@ local SCREENS = {
     playerInfo       = require( 'src.ui.screens.PlayerInfo'            ),
     base             = require( 'src.base.BaseScreen'                  ),
     basemenu         = require( 'src.base.BaseScreenMenu'              ),
+    recruitment      = require( 'src.base.RecruitmentScreen'           ),
 }
 
 -- ------------------------------------------------

@@ -146,6 +146,10 @@ return {
     ['ui_prev_element'] = 18,
     ['ui_next_element'] = 17,
 
+    -- UICheckBox
+    ['ui_checkbox_unchecked'] = 9,
+    ['ui_checkbox_checked'] = 11,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================
