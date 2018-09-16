@@ -61,7 +61,7 @@ local function generateOutlines( x, y )
     return outlines
 end
 
-local function createSaveGameButton( lx, ly, factionData )
+local function createSaveGameButton( lx, ly, faction )
     -- Create the callback for the save button.
     local function saveGame()
         -- Create the callback for the confirmation dialog.
@@ -70,7 +70,7 @@ local function createSaveGameButton( lx, ly, factionData )
             local data = {
                 type = 'base',
                 factions = {
-                    ['allied'] =factionData
+                    ['allied'] = faction:serialize()
                 }
             }
 
@@ -88,11 +88,11 @@ local function createSaveGameButton( lx, ly, factionData )
     return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
 end
 
-local function createButtons( factionData )
+local function createButtons( faction )
     local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
     local buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    local saveGameButton = createSaveGameButton( lx, ly, factionData )
+    local saveGameButton = createSaveGameButton( lx, ly, faction )
     buttonList:addChild( saveGameButton )
 
     local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
@@ -108,11 +108,11 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function BaseScreenMenu:initialize( factionData )
+function BaseScreenMenu:initialize( faction )
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.outlines = generateOutlines( self.x, self.y )
-    self.buttonList = createButtons( factionData )
+    self.buttonList = createButtons( faction )
     self.container = UIContainer()
     self.container:register( self.buttonList )
 end

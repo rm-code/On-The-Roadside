@@ -22,6 +22,8 @@ local UIButton = require( 'src.ui.elements.UIButton' )
 
 local Log = require( 'src.util.Log' )
 
+local Faction = require( 'src.characters.Faction' )
+
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
@@ -32,6 +34,7 @@ local BaseScreen = Screen:subclass( 'BaseScreen' )
 -- Constants
 -- ------------------------------------------------
 
+local FACTIONS = require( 'src.constants.FACTIONS' )
 local STANCES = require( 'src.constants.STANCES' )
 
 local UI_GRID_WIDTH  = 64
@@ -80,20 +83,21 @@ end
 -- Creates a paginated list for all the player's characters.
 -- @tparam  number          x             The origin of the screen along the x-axis.
 -- @tparam  number          y             The origin of the screen along the y-axis.
--- @tparam  table           factionData   The data about the player's faction and characters.
+-- @tparam  Faction         faction       The Faction on which to base the character list.
 -- @tparam  table           characterInfo The table containing information about a character.
 -- @treturn UIPaginatedList               The paginated list instance.
 
-local function createCharacterList( x, y, factionData, uiBaseCharacterInfo )
+local function createCharacterList( x, y, faction, uiBaseCharacterInfo )
     local buttonList = UIPaginatedList( x, y, CHARACTER_LIST_OFFSET_X, CHARACTER_LIST_OFFSET_Y, CHARACTER_LIST_WIDTH, CHARACTER_LIST_HEIGHT )
 
     local characterList = {}
-    for i = 1, #factionData do
+
+    faction:iterate( function( character )
         local function callback()
-            uiBaseCharacterInfo:setCharacter( factionData[i] )
+            uiBaseCharacterInfo:setCharacter( character )
         end
-        characterList[i] = UIButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, callback, factionData[i].name, 'left' )
-    end
+        characterList[#characterList + 1] = UIButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, callback, character:getName(), 'left' )
+    end)
 
     buttonList:setItems( characterList )
 
@@ -102,14 +106,15 @@ end
 
 ---
 -- Creates a button which allows the user to start a new combat mission.
--- @tparam  number   x The parent's absolute coordinates along the x-axis.
--- @tparam  number   y The parent's absolute coordinates along the y-axis.
--- @treturn UIButton   The newly created UIButton.
+-- @tparam  number   x       The parent's absolute coordinates along the x-axis.
+-- @tparam  number   y       The parent's absolute coordinates along the y-axis.
+-- @tparam  Faction  faction The Faction to use for the next mission.
+-- @treturn UIButton         The newly created UIButton.
 --
-local function createNextMissionButton( x, y, factionData )
+local function createNextMissionButton( x, y, faction )
     -- The function to call when the button is activated.
     local function callback()
-        DataHandler.copyPlayerFaction( factionData )
+        DataHandler.copyPlayerFaction( faction:serialize() )
         ScreenManager.switch( 'combat' )
     end
 
@@ -143,6 +148,17 @@ local function cleanUpFactionData( factionData )
     return factionData
 end
 
+---
+-- Creates a proper Faction object based on the faction data.
+-- @tparam  table   factionData The faction data to use to create the faction.
+-- @treturn Faction             The created Faction.
+--
+local function createFaction( factionData )
+    local faction = Faction( FACTIONS.ALLIED, false )
+    faction:loadCharacters( factionData )
+    return faction
+end
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -150,15 +166,16 @@ end
 function BaseScreen:initialize()
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
+    local factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
+    self.faction = createFaction( factionData )
 
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.uiBaseCharacterInfo = UIBaseCharacterInfo( self.x, self.y, CHARACTER_LIST_WIDTH, 0 )
 
     self.container = UIContainer()
-    self.characterList = createCharacterList( self.x, self.y, self.factionData, self.uiBaseCharacterInfo )
-    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.factionData )
+    self.characterList = createCharacterList( self.x, self.y, self.faction, self.uiBaseCharacterInfo )
+    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
@@ -208,7 +225,7 @@ function BaseScreen:keypressed( _, scancode )
     end
 
     if scancode == 'escape' then
-        ScreenManager.push( 'basemenu', self.factionData )
+        ScreenManager.push( 'basemenu', self.faction )
     end
 end
 
