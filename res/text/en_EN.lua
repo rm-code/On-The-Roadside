@@ -6,6 +6,11 @@ locale.strings = {
     -- ==============================
     ['general_exit'] = 'Exit',
 
+    ['nationality_german'] = 'German',
+    ['nationality_finnish'] = 'Finnish',
+    ['nationality_russian'] = 'Russian',
+    ['nationality_british'] = 'British',
+
     -- ==============================
     -- TILES
     -- ==============================
@@ -164,6 +169,7 @@ locale.strings = {
     ['base_next_mission'] = "Next Mission",
     ['character_shooting_accuracy'] = "Shooting Skill: ",
     ['character_throwing_accuracy'] = "Throwing Skill: ",
+    ['ui_nationality'] = "Nationality: ",
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",

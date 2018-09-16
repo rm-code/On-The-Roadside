@@ -285,6 +285,7 @@ function Character:serialize()
     local t = {
         ['class'] = self.creatureClass,
         ['name'] = self.name,
+        ['nationality'] = self.nationality,
         ['maximumAP'] = self.maximumAP,
         ['currentAP'] = self.currentAP,
         ['viewRange'] = self.viewRange,

@@ -31,10 +31,10 @@ local CREATURE_CLASSES = require( 'res.data.creatures.classes' )
 local CREATURE_GROUPS = require( 'res.data.creatures.groups' )
 local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
-    { id = 'german',  weight = 10 },
-    { id = 'russian', weight =  3 },
-    { id = 'british', weight =  3 },
-    { id = 'finnish', weight =  1 }
+    { id = 'nationality_german',  weight = 10 },
+    { id = 'nationality_russian', weight =  3 },
+    { id = 'nationality_british', weight =  3 },
+    { id = 'nationality_finnish', weight =  1 }
 }
 
 -- ------------------------------------------------
@@ -199,6 +199,7 @@ function CharacterFactory.loadCharacter( savedCharacter )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
     character:setPosition( savedCharacter.x, savedCharacter.y )
+    character:setNationality( savedCharacter.nationality )
 
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )

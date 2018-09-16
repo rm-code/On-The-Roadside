@@ -1,5 +1,5 @@
 return {
-    german = {
+    nationality_german = {
         "Albrecht",
         "Arnold",
         "Bauer",
@@ -101,7 +101,7 @@ return {
         "Ziegler",
         "Zimmermann"
     },
-    finnish = {
+    nationality_finnish = {
         ---
         -- Data provided by the Finnish Population Register Centre (avoindata.fi)
         -- License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
@@ -602,7 +602,7 @@ return {
         "Närhi",
         "Pakkanen"
     },
-    russian = {
+    nationality_russian = {
         "Ivanov",
         "Smirnov",
         "Vasilev",
@@ -704,7 +704,7 @@ return {
         "Filimonov",
         "Chernyshev"
     },
-    british = {
+    nationality_british = {
         "Smith",
         "Jones",
         "Williams",

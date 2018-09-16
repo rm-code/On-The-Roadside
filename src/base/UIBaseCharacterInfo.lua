@@ -23,6 +23,8 @@ local UIBaseCharacterInfo = UIElement:subclass( 'UIBaseCharacterInfo' )
 local UI_GRID_WIDTH = 16
 local UI_GRID_HEIGHT = 8
 
+local SECOND_COLUMN_OFFSET = 12
+
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
@@ -75,11 +77,15 @@ local function drawCharacterInfo( textObject, colorTable, character )
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_healthscreen_name' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), character:getName() )
 
+    x, y =  SECOND_COLUMN_OFFSET * tw, 0
+    x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_nationality' ))
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getNationality() ))
+
     x, y = 0, th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_class' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getCreatureClass() ))
 
-    x, y =  8 * tw, th
+    x, y =  SECOND_COLUMN_OFFSET * tw, th
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_healthscreen_type' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getBody():getID() ))
 end
