@@ -120,14 +120,18 @@ end
 
 ---
 -- Fowards a command to the currently focused UIElement.
+-- If no UIElement is currently focused it selects the next one, but doesn't
+-- send the command.
+--
 -- @tparam string cmd The command to forward.
 --
 function UIContainer:command( cmd )
-    if self.current then
-        self.list[self.current]:command( cmd )
-    else
+    if not self.current then
         self:next()
+        return
     end
+
+    self.list[self.current]:command( cmd )
 end
 
 ---
