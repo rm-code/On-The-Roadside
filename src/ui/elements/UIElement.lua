@@ -118,6 +118,10 @@ function UIElement:setRelativePosition( nx, ny )
     self.ry = ny
     self.ax = self.ox + self.rx
     self.ay = self.oy + self.ry
+
+    for i = 1, #self.children do
+        self.children[i]:setOrigin( self.ax, self.ay )
+    end
 end
 
 ---
