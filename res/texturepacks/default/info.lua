@@ -1,7 +1,8 @@
 return {
     name = 'default',
     tileset = {
-        -- Tiles by Rogue Yun released as CCO (http://www.bay12forums.com/smf/index.php?topic=144897.0)
+        -- Based on "Simple Mood" tileset by Rogue Yun released as CCO
+        -- http://www.bay12forums.com/smf/index.php?topic=144897.0
         source = 'spritesheet.png',
         tiles = {
             width = 16,
