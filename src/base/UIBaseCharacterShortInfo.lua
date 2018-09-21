@@ -133,10 +133,7 @@ end
 
 function UIBaseCharacterShortInfo:command( cmd )
     for i = 1, #self.children do
-        if self.children[i]:isMouseOver() then
-            self.children[i]:mousecommand( cmd )
-            return
-        end
+        self.children[i]:command( cmd )
     end
 end
 
@@ -146,6 +143,12 @@ function UIBaseCharacterShortInfo:mousecommand( cmd )
             self.children[i]:mousecommand( cmd )
             return
         end
+    end
+end
+
+function UIBaseCharacterShortInfo:setFocus( focus )
+    for i = 1, #self.children do
+        self.children[i]:setFocus( focus )
     end
 end
 
