@@ -158,26 +158,15 @@ end
 ---
 -- Creates the target inventory with which the character wants to interact and
 -- its associated header label.
--- @tparam number    x          The origin of the screen along the x-axis.
--- @tparam number    y          The origin of the screen along the y-axis.
--- @tparam Character character  The character to use for the equipment list.
--- @tparam Tile      target    The target tile to interact with.
--- @tparam table     lists      A table containing the different inventories.
--- @tparam table     listLabels A table containing the labels for each inventory list.
+-- @tparam number x          The origin of the screen along the x-axis.
+-- @tparam number y          The origin of the screen along the y-axis.
+-- @tparam string targetID   The inventory ID.
+-- @tparam Tile   target     The target tile to interact with.
+-- @tparam table  lists      A table containing the different inventories.
+-- @tparam table  listLabels A table containing the labels for each inventory list.
 --
-local function createTargetInventoryList(  x, y, character, target, lists, listLabels )
-    local id, inventory
-
-    -- TODO How to handle base inventory?
-    if target:isInstanceOf( Inventory ) then
-        id, inventory = 'inventory_base', target
-    elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
-        id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()
-    elseif target:hasCharacter() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-        id, inventory = 'inventory_character', target:getCharacter():getInventory()
-    else
-        id, inventory = 'inventory_tile_inventory', target:getInventory()
-    end
+local function createTargetInventoryList(  x, y, targetID, target, lists, listLabels )
+    local id, inventory = targetID, target
 
     -- Offset calculations:
     --  x-axis: Outline left + Equipment Column + Equipment Column Outline
@@ -203,17 +192,18 @@ end
 -- @tparam  number    x         The origin of the screen along the x-axis.
 -- @tparam  number    y         The origin of the screen along the y-axis.
 -- @tparam  Character character The character to use for the equipment list.
+-- @tparam  string    targetID  The inventory ID.
 -- @tparam  Tile      target    The target tile to interact with.
 -- @treturn table               The table containing the different inventory lists.
 -- @treturn table               The table containing a label for each inventory list.
 --
-local function createInventoryLists( x, y, character, target )
+local function createInventoryLists( x, y, character, targetID, target )
     local lists = {}
     local listLabels = {}
 
     createEquipmentList( x, y, character, lists, listLabels )
     createCharacterInventoryList( x, y, character, lists, listLabels )
-    createTargetInventoryList( x, y, character, target, lists, listLabels )
+    createTargetInventoryList( x, y, targetID, target, lists, listLabels )
 
     return lists, listLabels
 end
@@ -307,9 +297,10 @@ end
 ---
 -- Initialises the inventory screen.
 -- @tparam Character character The character to open the inventory for.
+-- @tparam string    targetID  The inventory ID.
 -- @tparam Tile      target    The target tile to open the inventory for.
 --
-function InventoryScreen:initialize( character, target )
+function InventoryScreen:initialize( character, targetID, target )
     love.mouse.setVisible( true )
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -319,7 +310,7 @@ function InventoryScreen:initialize( character, target )
     self.outlines = generateOutlines( self.x, self.y )
 
     -- UI inventory lists.
-    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, target )
+    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, targetID, target )
 
     self.dragboard = UIInventoryDragboard()
 
