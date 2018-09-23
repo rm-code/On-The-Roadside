@@ -24,6 +24,7 @@ local UIObservableButton = require( 'src.ui.elements.UIObservableButton' )
 local Log = require( 'src.util.Log' )
 
 local Faction = require( 'src.characters.Faction' )
+local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
@@ -50,6 +51,11 @@ local RECRUITMENT_BUTTON_WIDTH = 8
 local RECRUITMENT_BUTTON_HEIGHT = 1
 local RECRUITMENT_BUTTON_OFFSET_X = 1
 local RECRUITMENT_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
+
+local INVENTORY_BUTTON_WIDTH = 8
+local INVENTORY_BUTTON_HEIGHT = 1
+local INVENTORY_BUTTON_OFFSET_X = RECRUITMENT_BUTTON_WIDTH + RECRUITMENT_BUTTON_OFFSET_X + 1
+local INVENTORY_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
 
 local NEXTMISSION_BUTTON_WIDTH = 8
 local NEXTMISSION_BUTTON_HEIGHT = 1
@@ -126,6 +132,18 @@ local function createNextMissionButton( x, y, faction )
 end
 
 ---
+-- Creates a button which allows the user to edit a character's inventory
+-- @tparam self The BaseScreen instance to use
+-- @treturn UIObservableButton The newly created UIObservableButton.
+--
+local function createInventoryButton( self )
+    local rx, ry, w, h = INVENTORY_BUTTON_OFFSET_X, INVENTORY_BUTTON_OFFSET_Y, INVENTORY_BUTTON_WIDTH, INVENTORY_BUTTON_HEIGHT
+    local button = UIObservableButton( self.x, self.y, rx, ry, w, h, Translator.getText( 'ui_base_inventory' ), 'left', 'INVENTORY_BUTTON_CLICKED' )
+    button:observe( self )
+    return button
+end
+
+---
 -- Creates a button which allows the user to open the recruitment screen.
 -- @tparam  number   x       The parent's absolute coordinates along the x-axis.
 -- @tparam  number   y       The parent's absolute coordinates along the y-axis.
@@ -191,6 +209,8 @@ function BaseScreen:initialize()
     local factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
     self.faction = createFaction( factionData )
 
+    self.baseInventory = Inventory()
+
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.uiBaseCharacterInfo = UIBaseCharacterInfo( self.x, self.y, CHARACTER_LIST_WIDTH, 0 )
@@ -202,16 +222,24 @@ function BaseScreen:initialize()
     self.container = UIContainer()
     self.characterList = createCharacterList( self )
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
+    self.inventoryButton = createInventoryButton( self )
     self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
+    self.container:register( self.inventoryButton )
     self.container:register( self.recruitmentButton )
 end
 
 function BaseScreen:receive( msg, ... )
     if msg == 'CHARACTER_BUTTON_CLICKED' then
-        self.uiBaseCharacterInfo:setCharacter( ... )
+        self.character = ...
+        self.uiBaseCharacterInfo:setCharacter( self.character )
+        return
+    end
+    if msg == 'INVENTORY_BUTTON_CLICKED' then
+        ScreenManager.push( 'inventory', self.character, 'inventory_base', self.baseInventory )
+        return
     end
 end
 
@@ -227,6 +255,7 @@ function BaseScreen:draw()
     self.uiBaseCharacterInfo:draw()
 
     self.nextMissionButton:draw()
+    self.inventoryButton:draw()
     self.recruitmentButton:draw()
 end
 
@@ -238,6 +267,7 @@ function BaseScreen:resize()
     self.characterList:setOrigin( self.x, self.y )
     self.uiBaseCharacterInfo:setOrigin( self.x, self.y )
     self.nextMissionButton:setOrigin( self.x, self.y )
+    self.inventoryButton:setOrigin( self.x, self.y )
     self.recruitmentButton:setOrigin( self.x, self.y )
 end
 

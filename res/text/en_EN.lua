@@ -174,6 +174,7 @@ locale.strings = {
     ['ui_nationality'] = "Nationality: ",
     ['base_recruitment_button'] = "Recruitment",
     ['recruitment_hire_button'] = "Hire",
+    ['ui_base_inventory'] = "Inventory",
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",
