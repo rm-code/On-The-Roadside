@@ -116,15 +116,11 @@ end
 -- Creates a button which allows the user to start a new combat mission.
 -- @tparam  number   x       The parent's absolute coordinates along the x-axis.
 -- @tparam  number   y       The parent's absolute coordinates along the y-axis.
--- @tparam  Faction  faction The Faction to use for the next mission.
--- @tparam Inventory baseInventory The inventory to save temporarily.
 -- @treturn UIButton         The newly created UIButton.
 --
-local function createNextMissionButton( x, y, faction, baseInventory )
+local function createNextMissionButton( x, y )
     -- The function to call when the button is activated.
     local function callback()
-        DataHandler.copyPlayerFaction( faction:serialize() )
-        DataHandler.copyBaseInventory( baseInventory:serialize() )
         ScreenManager.switch( 'combat' )
     end
 
@@ -149,15 +145,11 @@ end
 -- Creates a button which allows the user to open the recruitment screen.
 -- @tparam number x The parent's absolute coordinates along the x-axis.
 -- @tparam number y The parent's absolute coordinates along the y-axis.
--- @tparam Faction faction The Faction to use for the next mission.
--- @tparam Inventory baseInventory The inventory to save temporarily.
 -- @treturn UIButton The newly created UIButton.
 --
-local function createRecruitmentButton( x, y, faction, baseInventory )
+local function createRecruitmentButton( x, y )
     -- The function to call when the button is activated.
     local function callback()
-        DataHandler.copyPlayerFaction( faction:serialize() )
-        DataHandler.copyBaseInventory( baseInventory:serialize() )
         ScreenManager.switch( 'recruitment' )
     end
 
@@ -226,14 +218,19 @@ function BaseScreen:initialize()
 
     self.container = UIContainer()
     self.characterList = createCharacterList( self )
-    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction, self.baseInventory )
+    self.nextMissionButton = createNextMissionButton( self.x, self.y )
     self.inventoryButton = createInventoryButton( self )
-    self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction, self.baseInventory )
+    self.recruitmentButton = createRecruitmentButton( self.x, self.y )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
     self.container:register( self.inventoryButton )
     self.container:register( self.recruitmentButton )
+end
+
+function BaseScreen:close()
+    DataHandler.copyPlayerFaction( self.faction:serialize() )
+    DataHandler.copyBaseInventory( self.baseInventory:serialize() )
 end
 
 function BaseScreen:receive( msg, ... )
