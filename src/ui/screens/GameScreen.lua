@@ -13,6 +13,7 @@ local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Faction = require( 'src.characters.Faction' )
 local DataHandler = require( 'src.DataHandler' )
+local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
@@ -32,6 +33,7 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 
 local function loadGame( savegame )
     DataHandler.copyPlayerFaction( savegame.factions[FACTIONS.ALLIED] )
+    DataHandler.copyBaseInventory( savegame.baseInventory )
     ScreenManager.switch( savegame.type, savegame )
 end
 
@@ -39,7 +41,10 @@ local function newGame()
     local playerFaction = Faction( FACTIONS.ALLIED, false )
     playerFaction:addCharacters( 10 )
 
+    local baseInventory = Inventory( 1000, 1000 )
+
     DataHandler.copyPlayerFaction( playerFaction:serialize() )
+    DataHandler.copyBaseInventory( baseInventory:serialize() )
     ScreenManager.switch( 'base' )
 end
 

@@ -24,6 +24,7 @@ local DataHandler = {}
 
 local TEMP_FOLDER = 'tmp'
 local PLAYER_FACTION_SAVE = 'tmp_faction.data'
+local BASE_INVENTORY_SAVE = 'tmp_base_inventory.data'
 
 -- ------------------------------------------------
 -- Public Functions
@@ -56,6 +57,35 @@ function DataHandler.pastePlayerFaction()
     Log.info( 'Loading player faction...', 'DataHandler' )
     return Compressor.load( TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
 end
+
+---
+-- Copies the base inventory to the harddisk as a temporary file.
+-- This should only be used to copy and paste the base inventory data between
+-- different states.
+-- @tparam table t The base inventory data.
+--
+function DataHandler.copyBaseInventory( t )
+    Log.info( 'Saving base inventory...', 'DataHandler' )
+
+    -- Create the saves folder it doesn't exist already.
+    if not love.filesystem.getInfo( TEMP_FOLDER ) then
+        love.filesystem.createDirectory( TEMP_FOLDER )
+    end
+
+    Compressor.save( t, TEMP_FOLDER .. '/' .. BASE_INVENTORY_SAVE )
+end
+
+---
+-- Loads the base inventory file from the harddisk.
+-- This should only be used to copy and paste the base inventory data between
+-- different states.
+-- @treturn table The base inventory data.
+--
+function DataHandler.pasteBaseInventory()
+    Log.info( 'Loading base inventory...', 'DataHandler' )
+    return Compressor.load( TEMP_FOLDER .. '/' .. BASE_INVENTORY_SAVE )
+end
+
 
 ---
 -- Removes all files in the temporary folder and the folder itself from the

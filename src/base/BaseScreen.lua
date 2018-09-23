@@ -117,12 +117,14 @@ end
 -- @tparam  number   x       The parent's absolute coordinates along the x-axis.
 -- @tparam  number   y       The parent's absolute coordinates along the y-axis.
 -- @tparam  Faction  faction The Faction to use for the next mission.
+-- @tparam Inventory baseInventory The inventory to save temporarily.
 -- @treturn UIButton         The newly created UIButton.
 --
-local function createNextMissionButton( x, y, faction )
+local function createNextMissionButton( x, y, faction, baseInventory )
     -- The function to call when the button is activated.
     local function callback()
         DataHandler.copyPlayerFaction( faction:serialize() )
+        DataHandler.copyBaseInventory( baseInventory:serialize() )
         ScreenManager.switch( 'combat' )
     end
 
@@ -145,15 +147,17 @@ end
 
 ---
 -- Creates a button which allows the user to open the recruitment screen.
--- @tparam  number   x       The parent's absolute coordinates along the x-axis.
--- @tparam  number   y       The parent's absolute coordinates along the y-axis.
--- @tparam  Faction  faction The Faction to use for the next mission.
--- @treturn UIButton         The newly created UIButton.
+-- @tparam number x The parent's absolute coordinates along the x-axis.
+-- @tparam number y The parent's absolute coordinates along the y-axis.
+-- @tparam Faction faction The Faction to use for the next mission.
+-- @tparam Inventory baseInventory The inventory to save temporarily.
+-- @treturn UIButton The newly created UIButton.
 --
-local function createRecruitmentButton( x, y, faction )
+local function createRecruitmentButton( x, y, faction, baseInventory )
     -- The function to call when the button is activated.
     local function callback()
         DataHandler.copyPlayerFaction( faction:serialize() )
+        DataHandler.copyBaseInventory( baseInventory:serialize() )
         ScreenManager.switch( 'recruitment' )
     end
 
@@ -206,10 +210,11 @@ end
 function BaseScreen:initialize()
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
+    self.baseInventory = Inventory()
+    self.baseInventory:loadItems( DataHandler.pasteBaseInventory() )
+
     local factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
     self.faction = createFaction( factionData )
-
-    self.baseInventory = Inventory()
 
     self.outlines = generateOutlines( self.x, self.y )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -221,9 +226,9 @@ function BaseScreen:initialize()
 
     self.container = UIContainer()
     self.characterList = createCharacterList( self )
-    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
+    self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction, self.baseInventory )
     self.inventoryButton = createInventoryButton( self )
-    self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction )
+    self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction, self.baseInventory )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
@@ -291,7 +296,7 @@ function BaseScreen:keypressed( _, scancode )
     end
 
     if scancode == 'escape' then
-        ScreenManager.push( 'basemenu', self.faction )
+        ScreenManager.push( 'basemenu', self.faction, self.baseInventory )
     end
 end
 

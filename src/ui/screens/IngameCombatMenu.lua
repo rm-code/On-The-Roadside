@@ -67,7 +67,10 @@ local function createSaveGameButton( lx, ly, game )
     local function saveGame()
         -- Create the callback for the confirmation dialog.
         local function confirmationCallback( name )
-            SaveHandler.save( game:serialize(), name )
+            local save = game:serialize()
+            save.baseInventory = DataHandler.pasteBaseInventory()
+
+            SaveHandler.save( save, name )
             ScreenManager.pop() -- Close input dialog.
             ScreenManager.pop() -- Close ingame combat menu.
         end

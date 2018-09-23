@@ -61,7 +61,7 @@ local function generateOutlines( x, y )
     return outlines
 end
 
-local function createSaveGameButton( lx, ly, faction )
+local function createSaveGameButton( lx, ly, faction, baseInventory )
     -- Create the callback for the save button.
     local function saveGame()
         -- Create the callback for the confirmation dialog.
@@ -71,7 +71,8 @@ local function createSaveGameButton( lx, ly, faction )
                 type = 'base',
                 factions = {
                     ['allied'] = faction:serialize()
-                }
+                },
+                baseInventory = baseInventory:serialize()
             }
 
             SaveHandler.save( data, name )
@@ -88,11 +89,11 @@ local function createSaveGameButton( lx, ly, faction )
     return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
 end
 
-local function createButtons( faction )
+local function createButtons( faction, baseInventory )
     local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
     local buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    local saveGameButton = createSaveGameButton( lx, ly, faction )
+    local saveGameButton = createSaveGameButton( lx, ly, faction, baseInventory )
     buttonList:addChild( saveGameButton )
 
     local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
@@ -108,11 +109,11 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function BaseScreenMenu:initialize( faction )
+function BaseScreenMenu:initialize( faction, baseInventory )
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.outlines = generateOutlines( self.x, self.y )
-    self.buttonList = createButtons( faction )
+    self.buttonList = createButtons( faction, baseInventory )
     self.container = UIContainer()
     self.container:register( self.buttonList )
 end
