@@ -18,7 +18,6 @@ local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
 local Container = require( 'src.items.Container' )
-local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
