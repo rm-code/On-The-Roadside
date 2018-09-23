@@ -294,6 +294,14 @@ end
 -- ------------------------------------------------
 
 ---
+-- Returns this faction's first (root) character.
+-- @treturn Character The first character in the list.
+--
+function Faction:getFirstCharacter()
+    return self.root:getObject()
+end
+
+---
 -- Returns this faction's currently active character.
 -- @treturn Character The active character.
 --

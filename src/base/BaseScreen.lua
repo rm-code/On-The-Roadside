@@ -198,6 +198,10 @@ function BaseScreen:initialize()
     self.background = UIBackground( self.x, self.y, 0, 0, UI_GRID_WIDTH, UI_GRID_HEIGHT )
     self.uiBaseCharacterInfo = UIBaseCharacterInfo( self.x, self.y, CHARACTER_LIST_WIDTH, 0 )
 
+    -- Initialize the character info with the first character.
+    self.character = self.faction:getFirstCharacter()
+    self.uiBaseCharacterInfo:setCharacter( self.character )
+
     self.container = UIContainer()
     self.characterList = createCharacterList( self.x, self.y, self.faction, self.uiBaseCharacterInfo )
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
