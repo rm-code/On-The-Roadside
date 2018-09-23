@@ -19,6 +19,7 @@ local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 local UIBaseCharacterInfo = require( 'src.base.UIBaseCharacterInfo' )
 local UIButton = require( 'src.ui.elements.UIButton' )
+local UIObservableButton = require( 'src.ui.elements.UIObservableButton' )
 
 local Log = require( 'src.util.Log' )
 
@@ -86,22 +87,18 @@ end
 
 ---
 -- Creates a paginated list for all the player's characters.
--- @tparam  number          x             The origin of the screen along the x-axis.
--- @tparam  number          y             The origin of the screen along the y-axis.
--- @tparam  Faction         faction       The Faction on which to base the character list.
--- @tparam  table           characterInfo The table containing information about a character.
--- @treturn UIPaginatedList               The paginated list instance.
-
-local function createCharacterList( x, y, faction, uiBaseCharacterInfo )
-    local buttonList = UIPaginatedList( x, y, CHARACTER_LIST_OFFSET_X, CHARACTER_LIST_OFFSET_Y, CHARACTER_LIST_WIDTH, CHARACTER_LIST_HEIGHT )
+-- @tparam self The BaseScreen instance to use.
+-- @treturn UIPaginatedList The paginated list instance.
+--
+local function createCharacterList( self )
+    local buttonList = UIPaginatedList( self.x, self.y, CHARACTER_LIST_OFFSET_X, CHARACTER_LIST_OFFSET_Y, CHARACTER_LIST_WIDTH, CHARACTER_LIST_HEIGHT )
 
     local characterList = {}
 
-    faction:iterate( function( character )
-        local function callback()
-            uiBaseCharacterInfo:setCharacter( character )
-        end
-        characterList[#characterList + 1] = UIButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, callback, character:getName(), 'left' )
+    self.faction:iterate( function( character )
+        local button = UIObservableButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, character:getName(), 'left', 'CHARACTER_BUTTON_CLICKED', character )
+        button:observe( self )
+        characterList[#characterList + 1] = button
     end)
 
     buttonList:setItems( characterList )
@@ -203,13 +200,19 @@ function BaseScreen:initialize()
     self.uiBaseCharacterInfo:setCharacter( self.character )
 
     self.container = UIContainer()
-    self.characterList = createCharacterList( self.x, self.y, self.faction, self.uiBaseCharacterInfo )
+    self.characterList = createCharacterList( self )
     self.nextMissionButton = createNextMissionButton( self.x, self.y, self.faction )
     self.recruitmentButton = createRecruitmentButton( self.x, self.y, self.faction )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
     self.container:register( self.recruitmentButton )
+end
+
+function BaseScreen:receive( msg, ... )
+    if msg == 'CHARACTER_BUTTON_CLICKED' then
+        self.uiBaseCharacterInfo:setCharacter( ... )
+    end
 end
 
 function BaseScreen:update()
