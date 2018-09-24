@@ -180,12 +180,12 @@ end
 ---
 -- Drops items until the volume of the carried items is smaller than the
 -- maximum volume.
--- @tparam Tile tile The tile to drop the items on.
+-- @tparam Inventory inventory The inventory to drop the items into.
 --
-function Inventory:dropItems( tile )
+function Inventory:dropItems( inventory )
     for i = #self.items, 1, -1 do
         if calculateVolume( self.items ) > self.volumeLimit then
-            local success = tile:getInventory():addItem( self.items[i] )
+            local success = inventory:addItem( self.items[i] )
             if success then
                 self:removeItem( self.items[i] )
             else

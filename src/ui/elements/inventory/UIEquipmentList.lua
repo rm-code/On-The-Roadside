@@ -87,7 +87,7 @@ function UIEquipmentList:drag()
             local item = self.equipment:removeItem( uiEquipmentSlot:getSlot() )
 
             if item:isInstanceOf( Container ) then
-                self.character:getInventory():dropItems( self.character:getTile() )
+                self.character:getInventory():dropItems( self.character:getTile():getInventory() )
             end
 
             self:refresh()
