@@ -41,7 +41,7 @@ local function newGame()
     local playerFaction = Faction( FACTIONS.ALLIED, false )
     playerFaction:addCharacters( 10 )
 
-    local baseInventory = Inventory( 1000, 1000 )
+    local baseInventory = Inventory()
 
     DataHandler.copyPlayerFaction( playerFaction:serialize() )
     DataHandler.copyBaseInventory( baseInventory:serialize() )

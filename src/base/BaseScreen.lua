@@ -62,6 +62,9 @@ local NEXTMISSION_BUTTON_HEIGHT = 1
 local NEXTMISSION_BUTTON_OFFSET_X = UI_GRID_WIDTH - NEXTMISSION_BUTTON_WIDTH - 2
 local NEXTMISSION_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
 
+local BASE_INVENTORY_WEIGHT_LIMIT = 1000
+local BASE_INVENTORY_VOLUME_LIMIT = 1000
+
 -- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
@@ -202,7 +205,7 @@ end
 function BaseScreen:initialize()
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
-    self.baseInventory = Inventory()
+    self.baseInventory = Inventory( BASE_INVENTORY_WEIGHT_LIMIT, BASE_INVENTORY_VOLUME_LIMIT )
     self.baseInventory:loadItems( DataHandler.pasteBaseInventory() )
 
     local factionData = cleanUpFactionData( DataHandler.pastePlayerFaction() )
