@@ -9,6 +9,7 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Screen = require( 'src.ui.screens.Screen' )
 
+local Settings = require( 'src.Settings' )
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
 local DataHandler = require( 'src.DataHandler' )
@@ -198,6 +199,15 @@ local function createFaction( factionData )
     return faction
 end
 
+---
+-- Opens the inventory screen.
+-- @tparam Character character     The character to open the inventory for.
+-- @tparam Inventory baseInventory The base inventory to use.
+--
+local function openInventory( character, baseInventory )
+    ScreenManager.push( 'inventory', character, 'inventory_base', baseInventory )
+end
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -243,7 +253,7 @@ function BaseScreen:receive( msg, ... )
         return
     end
     if msg == 'INVENTORY_BUTTON_CLICKED' then
-        ScreenManager.push( 'inventory', self.character, 'inventory_base', self.baseInventory )
+        openInventory( self.character, self.baseInventory )
         return
     end
 end
@@ -297,6 +307,11 @@ function BaseScreen:keypressed( _, scancode )
 
     if scancode == 'escape' then
         ScreenManager.push( 'basemenu', self.faction, self.baseInventory )
+    end
+
+    local command = Settings.mapInput( 'base', scancode )
+    if command == 'open_inventory_screen' then
+        openInventory( self.character, self.baseInventory )
     end
 end
 

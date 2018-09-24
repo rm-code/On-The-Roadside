@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 12,
+    version = 13,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -31,6 +31,9 @@ local DEFAULT_SETTINGS = {
         invertedMessageLog = false,
     },
     controls = {
+        base = {
+            ['i']      = 'open_inventory_screen',
+        },
         combat = {
             ['x']      = 'action_stand',
             ['c']      = 'action_crouch',
@@ -71,6 +74,7 @@ local WARNING_TEXT = 'Replacing outdated settings file (v%d) with current defaul
 local UNASSIGNED_SCANCODE = 'unassigned'
 
 Settings.INPUTLAYOUTS = {}
+Settings.INPUTLAYOUTS.BASE = 'base'
 Settings.INPUTLAYOUTS.COMBAT = 'combat'
 Settings.INPUTLAYOUTS.PREFAB_EDITOR = 'prefabeditor'
 
