@@ -48,7 +48,8 @@ function OpenInventory:initialize( character, target )
 end
 
 function OpenInventory:perform()
-    ScreenManager.push( 'inventory', self.character, findTarget( self.character, self.target ))
+    local targetID, targetInventory = findTarget( self.character, self.target )
+    ScreenManager.push( 'inventory', self.character, targetID, targetInventory, self.target:getInventory() )
     return true
 end
 

@@ -51,10 +51,12 @@ end
 ---
 -- Creates a new UIEquipmentList instance.
 --
-function UIEquipmentList:initialize( px, py, x, y, w, h, character )
+function UIEquipmentList:initialize( px, py, x, y, w, h, character, dropInventory )
     UIElement.initialize( self, px, py, x, y, w, h )
 
     self.character = character
+    self.dropInventory = dropInventory
+
     self.equipment = character:getEquipment()
     self:refresh()
 end
@@ -87,7 +89,7 @@ function UIEquipmentList:drag()
             local item = self.equipment:removeItem( uiEquipmentSlot:getSlot() )
 
             if item:isInstanceOf( Container ) then
-                self.character:getInventory():dropItems( self.character:getTile():getInventory() )
+                self.character:getInventory():dropItems( self.dropInventory )
             end
 
             self:refresh()

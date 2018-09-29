@@ -205,7 +205,7 @@ end
 -- @tparam Inventory baseInventory The base inventory to use.
 --
 local function openInventory( character, baseInventory )
-    ScreenManager.push( 'inventory', character, 'inventory_base', baseInventory )
+    ScreenManager.push( 'inventory', character, 'inventory_base', baseInventory, baseInventory )
 end
 
 -- ------------------------------------------------

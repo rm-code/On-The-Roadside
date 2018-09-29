@@ -112,13 +112,14 @@ end
 -- @tparam Character character  The character to use for the equipment list.
 -- @tparam table     lists      A table containing the different inventories.
 -- @tparam table     listLabels A table containing the labels for each inventory list.
+-- @tparam Inventory dropInventory The inventory to use when dropping items.
 --
-local function createEquipmentList( x, y, character, lists, listLabels )
+local function createEquipmentList( x, y, character, lists, listLabels, dropInventory )
     -- Offset calculations:
     --  x-axis: Outline left => 1
     --  y-axis: Outline top + Header Text + Outline below Header => 3
     local ox, oy = 1, 3
-    lists.equipment = UIEquipmentList( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT, character )
+    lists.equipment = UIEquipmentList( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT, character, dropInventory )
 
     -- Offset calculations:
     --  x-axis: Outline left => 1
@@ -193,14 +194,15 @@ end
 -- @tparam  Character character The character to use for the equipment list.
 -- @tparam  string    targetID  The inventory ID.
 -- @tparam  Tile      target    The target tile to interact with.
+-- @tparam  Inventory dropInventory The inventory to use when dropping items.
 -- @treturn table               The table containing the different inventory lists.
 -- @treturn table               The table containing a label for each inventory list.
 --
-local function createInventoryLists( x, y, character, targetID, target )
+local function createInventoryLists( x, y, character, targetID, target, dropInventory )
     local lists = {}
     local listLabels = {}
 
-    createEquipmentList( x, y, character, lists, listLabels )
+    createEquipmentList( x, y, character, lists, listLabels, dropInventory )
     createCharacterInventoryList( x, y, character, lists, listLabels )
     createTargetInventoryList( x, y, targetID, target, lists, listLabels )
 
@@ -298,8 +300,9 @@ end
 -- @tparam Character character The character to open the inventory for.
 -- @tparam string    targetID  The inventory ID.
 -- @tparam Tile      target    The target tile to open the inventory for.
+-- @tparam Inventory dropInventory The inventory to use when dropping items.
 --
-function InventoryScreen:initialize( character, targetID, target )
+function InventoryScreen:initialize( character, targetID, target, dropInventory )
     love.mouse.setVisible( true )
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -309,7 +312,7 @@ function InventoryScreen:initialize( character, targetID, target )
     self.outlines = generateOutlines( self.x, self.y )
 
     -- UI inventory lists.
-    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, targetID, target )
+    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, targetID, target, dropInventory )
 
     self.dragboard = UIInventoryDragboard()
 
