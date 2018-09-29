@@ -221,6 +221,9 @@ return {
     ['shopitem_sell_focus'] = COLORS.DB05,
     ['shopitem_sell'] = COLORS.DB27,
 
+    ['shop_balance_positive'] = COLORS.DB11,
+    ['shop_balance_negative'] = COLORS.DB27,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================

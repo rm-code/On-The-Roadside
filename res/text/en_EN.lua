@@ -175,6 +175,9 @@ locale.strings = {
     ['base_recruitment_button'] = "Recruitment",
     ['recruitment_hire_button'] = "Hire",
     ['ui_base_inventory'] = "Inventory",
+    ['base_shop_button'] = "Shop",
+    ['base_shop_checkout'] = "Checkout",
+    ['base_shop_checkout_label'] = "Balance: %s",
 
     -- Health screen
     ['ui_healthscreen_type'] = "Type: ",

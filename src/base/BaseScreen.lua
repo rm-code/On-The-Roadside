@@ -58,6 +58,11 @@ local INVENTORY_BUTTON_HEIGHT = 1
 local INVENTORY_BUTTON_OFFSET_X = RECRUITMENT_BUTTON_WIDTH + RECRUITMENT_BUTTON_OFFSET_X + 1
 local INVENTORY_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
 
+local SHOP_BUTTON_WIDTH = 8
+local SHOP_BUTTON_HEIGHT = 1
+local SHOP_BUTTON_OFFSET_X = INVENTORY_BUTTON_WIDTH + INVENTORY_BUTTON_OFFSET_X + 1
+local SHOP_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 2
+
 local NEXTMISSION_BUTTON_WIDTH = 8
 local NEXTMISSION_BUTTON_HEIGHT = 1
 local NEXTMISSION_BUTTON_OFFSET_X = UI_GRID_WIDTH - NEXTMISSION_BUTTON_WIDTH - 2
@@ -164,6 +169,24 @@ local function createRecruitmentButton( x, y )
     return UIButton( x, y, rx, ry, w, h, callback, Translator.getText( 'base_recruitment_button' ))
 end
 
+---
+-- Creates a button which allows the user to sell and buy items on a shop screen.
+-- @tparam number x The parent's absolute coordinates along the x-axis.
+-- @tparam number y The parent's absolute coordinates along the y-axis.
+-- @tparam Inventory baseInventory The base inventory to use.
+-- @treturn UIButton The newly created UIButton.
+--
+local function createShopButton( x, y, baseInventory )
+    -- The function to call when the button is activated.
+    local function callback()
+        ScreenManager.switch( 'shop', baseInventory )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = SHOP_BUTTON_OFFSET_X, SHOP_BUTTON_OFFSET_Y, SHOP_BUTTON_WIDTH, SHOP_BUTTON_HEIGHT
+    return UIButton( x, y, rx, ry, w, h, callback, Translator.getText( 'base_shop_button' ))
+end
+
 
 ---
 -- Cleans the character data for the next mission and removes dead characters.
@@ -234,11 +257,13 @@ function BaseScreen:initialize()
     self.container = UIContainer()
     self.characterList = createCharacterList( self )
     self.nextMissionButton = createNextMissionButton( self.x, self.y )
+    self.shopButton = createShopButton( self.x, self.y, self.baseInventory )
     self.inventoryButton = createInventoryButton( self )
     self.recruitmentButton = createRecruitmentButton( self.x, self.y )
 
     self.container:register( self.characterList )
     self.container:register( self.nextMissionButton )
+    self.container:register( self.shopButton )
     self.container:register( self.inventoryButton )
     self.container:register( self.recruitmentButton )
 end
@@ -272,6 +297,7 @@ function BaseScreen:draw()
     self.uiBaseCharacterInfo:draw()
 
     self.nextMissionButton:draw()
+    self.shopButton:draw()
     self.inventoryButton:draw()
     self.recruitmentButton:draw()
 end
@@ -284,6 +310,7 @@ function BaseScreen:resize()
     self.characterList:setOrigin( self.x, self.y )
     self.uiBaseCharacterInfo:setOrigin( self.x, self.y )
     self.nextMissionButton:setOrigin( self.x, self.y )
+    self.shopButton:setOrigin( self.x, self.y )
     self.inventoryButton:setOrigin( self.x, self.y )
     self.recruitmentButton:setOrigin( self.x, self.y )
 end

@@ -94,6 +94,25 @@ local function drawPageNumbers( currentPage, maxPages, px, py, w )
     TexturePacks.resetColor()
 end
 
+---
+-- Adds an item to the paginated list.
+-- If a dummy item is used, it will be replaced.
+-- @tparam UIPaginatedList self The list instance to use.
+-- @tparam UIElement       item The item to add.
+--
+local function addItem( self, item )
+    -- Replace dummy element.
+    if self.dummy then
+        self.items[#self.items] = item
+        self.dummy = false
+        return
+    end
+
+    -- Add item normally.
+    self.items[#self.items + 1] = item
+    return
+end
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -200,6 +219,27 @@ end
 function UIPaginatedList:setItems( items )
     self.items = items
     self:generatePagination()
+end
+
+---
+-- Gets the list of items displayed in this paginated list.
+-- If the list contains a dummy item a dummy table is returned instead.
+-- @treturn table A sequence containing the UIElements on this list.
+--
+function UIPaginatedList:getItems()
+    return self.dummy and {} or self.items
+end
+
+---
+-- Counts the amount of items in this paginated list.
+-- If the list contains a dummy item the returned value is zero.
+-- @treturn number The amount of items on the list.
+--
+function UIPaginatedList:getItemCount()
+    if self.dummy then
+        return 0
+    end
+    return #self.items
 end
 
 ---
@@ -362,6 +402,26 @@ function UIPaginatedList:removeItem( item )
             table.remove( self.items, i )
             break
         end
+    end
+    self:generatePagination()
+end
+
+---
+-- Adds a single item to the list and restarts the pagination.
+-- @tparam UIElement item The ui element to add.
+--
+function UIPaginatedList:addItem( item )
+    addItem( self, item )
+    self:generatePagination()
+end
+
+---
+-- Adds multiple item to the list and restarts the pagination.
+-- @tparam table items A sequence containing the UIElements to add.
+--
+function UIPaginatedList:addItems( items )
+    for i = 1, #items do
+        addItem( self, items[i] )
     end
     self:generatePagination()
 end
