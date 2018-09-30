@@ -160,12 +160,11 @@ function UIPaginatedList:update()
 end
 
 ---
--- Adds the list of items to display in this paginated list.
--- @tparam table items A sequence containing the UIElements to add to the list.
+-- Generates the pages based on the amount of added items.
 --
-function UIPaginatedList:setItems( items )
-    self.maxPages = calculateMaximumPages( #items, self.h )
-    self.pages = fillPages( items, self.maxPages, self.h, self.ax, self.ay )
+function UIPaginatedList:generatePagination()
+    self.maxPages = calculateMaximumPages( #self.items, self.h )
+    self.pages = fillPages( self.items, self.maxPages, self.h, self.ax, self.ay )
 
     -- Create buttons for the status bar if we have more than one page.
     if #self.pages > 1 then
@@ -174,6 +173,15 @@ function UIPaginatedList:setItems( items )
 
     -- Set focus to the first item on the list.
     self.pages[self.currentPage][self.cursor]:setFocus( true )
+end
+
+---
+-- Adds the list of items to display in this paginated list.
+-- @tparam table items A sequence containing the UIElements to add to the list.
+--
+function UIPaginatedList:setItems( items )
+    self.items = items
+    self:generatePagination()
 end
 
 ---
