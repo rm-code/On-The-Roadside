@@ -108,10 +108,12 @@ local function createCharacterList( self )
     self.faction:iterate( function( character )
         local button = UIObservableButton( 0, 0, 0, 0, CHARACTER_LIST_WIDTH, 1, character:getName(), 'left', 'CHARACTER_BUTTON_CLICKED', character )
         button:observe( self )
+        button.sortCategories = { name = character:getName() }
         characterList[#characterList + 1] = button
     end)
 
     buttonList:setItems( characterList )
+    buttonList:sort( false, 'name' )
 
     return buttonList
 end

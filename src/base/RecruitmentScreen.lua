@@ -18,7 +18,6 @@ local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 local UIBaseCharacterShortInfo = require( 'src.base.UIBaseCharacterShortInfo' )
-local UIBaseCharacterShortInfoHeader = require( 'src.base.UIBaseCharacterShortInfoHeader' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 
 local CharacterFactory = require( 'src.characters.CharacterFactory' )
@@ -36,8 +35,30 @@ local RecruitmentScreen = Screen:subclass( 'RecruitmentScreen' )
 local UI_GRID_WIDTH  = 27
 local UI_GRID_HEIGHT = 30
 
-local CHARACTER_LIST_HEADER_X = 1
-local CHARACTER_LIST_HEADER_Y = 1
+local NAME_HEADER_X = 1
+local NAME_HEADER_Y = 1
+local NAME_HEADER_W = 4
+local NAME_HEADER_H = 1
+
+local AP_HEADER_X = 17
+local AP_HEADER_Y = 1
+local AP_HEADER_W = 2
+local AP_HEADER_H = 1
+
+local HP_HEADER_X = 19
+local HP_HEADER_Y = 1
+local HP_HEADER_W = 2
+local HP_HEADER_H = 1
+
+local FIR_HEADER_X = 21
+local FIR_HEADER_Y = 1
+local FIR_HEADER_W = 2
+local FIR_HEADER_H = 1
+
+local THR_HEADER_X = 23
+local THR_HEADER_Y = 1
+local THR_HEADER_W = 2
+local THR_HEADER_H = 1
 
 local CHARACTER_LIST_WIDTH = 25
 local CHARACTER_LIST_HEIGHT = 25
@@ -85,6 +106,61 @@ local function generateOutlines( x, y )
     return outlines
 end
 
+local function createNameHeader( x, y, characterList )
+    -- The function to call when the button is activated.
+    local function callback()
+        characterList:sort( false, 'name' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = NAME_HEADER_X, NAME_HEADER_Y, NAME_HEADER_W, NAME_HEADER_H
+    return UIButton( x, y, rx, ry, w, h, callback, 'NAME', 'left' )
+end
+
+local function createAPHeader( x, y, characterList )
+    -- The function to call when the button is activated.
+    local function callback()
+        characterList:sort( true, 'ap' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = AP_HEADER_X, AP_HEADER_Y, AP_HEADER_W, AP_HEADER_H
+    return UIButton( x, y, rx, ry, w, h, callback, 'AP', 'left' )
+end
+
+local function createHPHeader( x, y, characterList )
+    -- The function to call when the button is activated.
+    local function callback()
+        characterList:sort( false, 'hp' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = HP_HEADER_X, HP_HEADER_Y, HP_HEADER_W, HP_HEADER_H
+    return UIButton( x, y, rx, ry, w, h, callback, 'HP', 'left' )
+end
+
+local function createFiringAccuracyHeader( x, y, characterList )
+    -- The function to call when the button is activated.
+    local function callback()
+        characterList:sort( true, 'fir' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = FIR_HEADER_X, FIR_HEADER_Y, FIR_HEADER_W, FIR_HEADER_H
+    return UIButton( x, y, rx, ry, w, h, callback, 'FIR', 'left' )
+end
+
+local function createThrowingAccuracyHeader( x, y, characterList )
+    -- The function to call when the button is activated.
+    local function callback()
+        characterList:sort( true, 'thr' )
+    end
+
+    -- Create the UIButton.
+    local rx, ry, w, h = THR_HEADER_X, THR_HEADER_Y, THR_HEADER_W, THR_HEADER_H
+    return UIButton( x, y, rx, ry, w, h, callback, 'THR', 'left' )
+end
+
 ---
 -- Creates a paginated list for all the recruitable characters.
 -- @tparam number x The origin of the screen along the x-axis.
@@ -98,10 +174,21 @@ local function createRecruitList( x, y, recruitmentList )
     local characterList = {}
 
     for i = 1, CHARACTER_AMOUNT do
-        characterList[i] = UIBaseCharacterShortInfo( 0, 0, 0, 0, CharacterFactory.newCharacter( 'allied' ), recruitmentList )
+        local character = CharacterFactory.newCharacter( 'allied' )
+        local categories = {
+            name = character:getName(),
+            ap = character:getMaximumAP(),
+            hp = character:getMaximumHP(),
+            fir = character:getShootingSkill(),
+            thr = character:getThrowingSkill()
+        }
+
+        characterList[i] = UIBaseCharacterShortInfo( 0, 0, 0, 0, character, recruitmentList )
+        characterList[i].sortCategories = categories
     end
 
     buttonList:setItems( characterList )
+    buttonList:sort( false, 'name' )
 
     return buttonList
 end
@@ -163,10 +250,19 @@ function RecruitmentScreen:initialize()
     self.recruitmentList = {}
     self.recruits = createRecruitList( self.x, self.y, self.recruitmentList )
 
-    self.header = UIBaseCharacterShortInfoHeader( self.x, self.y, CHARACTER_LIST_HEADER_X, CHARACTER_LIST_HEADER_Y )
+    self.nameHeaderButton = createNameHeader( self.x, self.y, self.recruits )
+    self.apHeaderButton = createAPHeader( self.x, self.y, self.recruits )
+    self.hpHeaderButton = createHPHeader( self.x, self.y, self.recruits )
+    self.firingAccuracyHeaderButton = createFiringAccuracyHeader( self.x, self.y, self.recruits )
+    self.throwingAccuracyHeaderButton = createThrowingAccuracyHeader( self.x, self.y, self.recruits )
     self.hireButton = createHireButton( self.x, self.y, self.recruitmentList )
     self.cancelButton = createCancelButton( self.x, self.y )
 
+    self.container:register( self.nameHeaderButton )
+    self.container:register( self.apHeaderButton )
+    self.container:register( self.hpHeaderButton )
+    self.container:register( self.firingAccuracyHeaderButton )
+    self.container:register( self.throwingAccuracyHeaderButton )
     self.container:register( self.recruits )
     self.container:register( self.hireButton )
     self.container:register( self.cancelButton )
@@ -181,10 +277,13 @@ function RecruitmentScreen:draw()
     self.outlines:draw()
 
     self.recruits:draw()
+    self.nameHeaderButton:draw()
+    self.apHeaderButton:draw()
+    self.hpHeaderButton:draw()
+    self.firingAccuracyHeaderButton:draw()
+    self.throwingAccuracyHeaderButton:draw()
     self.hireButton:draw()
     self.cancelButton:draw()
-
-    self.header:draw()
 end
 
 function RecruitmentScreen:keypressed( _, scancode )
@@ -209,6 +308,19 @@ function RecruitmentScreen:keypressed( _, scancode )
         self.container:command( 'right' )
     elseif scancode == 'return' then
         self.container:command( 'activate' )
+    end
+
+    if scancode == 'a' then
+        self.recruits:sort( true, 'ap' )
+    end
+    if scancode == 'n' then
+        self.recruits:sort( false, 'name' )
+    end
+    if scancode == 'f' then
+        self.recruits:sort( true, 'fir' )
+    end
+    if scancode == 't' then
+        self.recruits:sort( true, 'thr' )
     end
 end
 

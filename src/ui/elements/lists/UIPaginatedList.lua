@@ -302,4 +302,29 @@ function UIPaginatedList:setOrigin( ox, oy )
     end
 end
 
+
+---
+-- Sorts the items of the paginated list by the provided category and restarts
+-- the pagination process.
+-- @tparam boolean ascending Wether to sort the items ascending or descending.
+-- @tparam string  category  The category by which to sort the list.
+--
+function UIPaginatedList:sort( ascending, category )
+    for i = 1, #self.items do
+        self.items[i]:setFocus( false )
+    end
+
+    if ascending then
+        table.sort( self.items, function( a, b )
+            return a.sortCategories[category] > b.sortCategories[category]
+        end)
+    else
+        table.sort( self.items, function( a, b )
+            return a.sortCategories[category] < b.sortCategories[category]
+        end)
+    end
+
+    self:generatePagination()
+end
+
 return UIPaginatedList
