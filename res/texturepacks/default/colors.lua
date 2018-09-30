@@ -138,6 +138,10 @@ return {
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,
 
+    -- Savegames
+    ['ui_valid'] = COLORS.DB09,
+    ['ui_invalid'] = COLORS.DB27,
+
     -- Buttons.
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
@@ -156,6 +160,7 @@ return {
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
     ['ui_text_dark'] = COLORS.DB25,
+    ['ui_text_passive'] = COLORS.DB15,
     ['ui_text_success'] = COLORS.DB09,
     ['ui_text_warning'] = COLORS.DB05,
     ['ui_text_error'] = COLORS.DB27,

@@ -150,6 +150,8 @@ return {
     ['ui_checkbox_unchecked'] = 9,
     ['ui_checkbox_checked'] = 11,
 
+    ['ui_delete'] = 89,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================

@@ -163,12 +163,25 @@ end
 -- Generates the pages based on the amount of added items.
 --
 function UIPaginatedList:generatePagination()
+    -- Create dummy element.
+    if #self.items == 0 then
+        self.items[1] = UIElement( 0, 0, 0, 0, 0, 0 )
+    end
+
     self.maxPages = calculateMaximumPages( #self.items, self.h )
     self.pages = fillPages( self.items, self.maxPages, self.h, self.ax, self.ay )
 
     -- Create buttons for the status bar if we have more than one page.
     if #self.pages > 1 then
         self:addButtons()
+    end
+
+    while not self.pages[self.currentPage] do
+        self.currentPage = self.currentPage - 1
+    end
+
+    while not self.pages[self.currentPage][self.cursor] do
+        self.cursor = self.cursor - 1
     end
 
     -- Set focus to the first item on the list.
@@ -180,10 +193,6 @@ end
 -- @tparam table items A sequence containing the UIElements to add to the list.
 --
 function UIPaginatedList:setItems( items )
-    if #items == 0 then
-        items[1] = UIElement( 0, 0, 0, 0, 0, 0 )
-    end
-
     self.items = items
     self:generatePagination()
 end
@@ -306,7 +315,6 @@ function UIPaginatedList:setOrigin( ox, oy )
     end
 end
 
-
 ---
 -- Sorts the items of the paginated list by the provided category and restarts
 -- the pagination process.
@@ -328,6 +336,20 @@ function UIPaginatedList:sort( ascending, category )
         end)
     end
 
+    self:generatePagination()
+end
+
+---
+-- Removes an item from the paginated list and restarts the pagination process.
+-- @tparam UIElement item The ui element to remove.
+--
+function UIPaginatedList:removeItem( item )
+    for i = 1, #self.items do
+        if self.items[i] == item then
+            table.remove( self.items, i )
+            break
+        end
+    end
     self:generatePagination()
 end
 

@@ -274,6 +274,11 @@ locale.strings = {
     ['ui_ingame_exit'] = "Main menu",
     ['ui_ingame_resume'] = "Resume",
 
+    -- Savegame menu
+    ['combat'] = 'COMBAT',
+    ['base'] = 'BASE',
+    ['error'] = 'ERROR',
+
     -- Help Screen
     ['ui_help_header'] = 'Help',
 }
