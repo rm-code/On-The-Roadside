@@ -69,6 +69,10 @@ function UIElement:update()
     return
 end
 
+function UIElement:command()
+    return
+end
+
 ---
 -- Adds a new UIElement to the list of children.
 --

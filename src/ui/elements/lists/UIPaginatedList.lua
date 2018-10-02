@@ -180,6 +180,10 @@ end
 -- @tparam table items A sequence containing the UIElements to add to the list.
 --
 function UIPaginatedList:setItems( items )
+    if #items == 0 then
+        items[1] = UIElement( 0, 0, 0, 0, 0, 0 )
+    end
+
     self.items = items
     self:generatePagination()
 end
