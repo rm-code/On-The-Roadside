@@ -88,11 +88,13 @@ local function createTileSelector( tileTemplates, brush )
         local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         button:setIcon( id )
         button:setIconColorID( id )
+        button.sortCategories = { name = Translator.getText( id )}
 
         buttons[#buttons + 1] = button
     end
 
     tileSelector:setItems( buttons )
+    tileSelector:sort( false, 'name' )
 
     return tileSelector
 end
@@ -113,11 +115,13 @@ local function createWorldObjectSelector( objectTemplates, brush )
         local button = UIButton( 0, 0, 0, 0, SELECTOR_WIDTH, 1, callback, Translator.getText( id ), 'left' )
         button:setIcon( unpack( icons[id] ))
         button:setIconColorID( id )
+        button.sortCategories = { name = Translator.getText( id )}
 
         buttons[#buttons + 1] = button
     end
 
     objectSelector:setItems( buttons )
+    objectSelector:sort( false, 'name' )
 
     return objectSelector
 end
