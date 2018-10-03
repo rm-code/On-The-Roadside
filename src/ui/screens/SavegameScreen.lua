@@ -18,6 +18,7 @@ local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
 local UIContainer = require( 'src.ui.elements.UIContainer' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local UISaveGameEntry = require( 'src.savegames.UISaveGameEntry' )
+local UISaveGameHeader = require( 'src.savegames.UISaveGameHeader' )
 local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 
 -- ------------------------------------------------
@@ -40,8 +41,10 @@ local BACK_BUTTON_HEIGHT = 1
 local BACK_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 3
 
 local SAVEGAME_LIST_WIDTH = 42
-local SAVEGAME_LIST_HEIGHT = 30
-local SAVEGAME_LIST_OFFSET_Y = 14
+local SAVEGAME_LIST_HEIGHT = 28
+local SAVEGAME_LIST_OFFSET_Y = 16
+
+local SAVEGAME_LIST_HEADER_OFFSET_Y = 14
 
 -- ------------------------------------------------
 -- Private Functions
@@ -114,6 +117,7 @@ function SavegameScreen:initialize()
     self.container:register( self.saveGameList )
 
     self.title = UIMenuTitle( Translator.getText( 'ui_title_savegames' ), TITLE_POSITION )
+    self.header = UISaveGameHeader( SAVEGAME_LIST_HEADER_OFFSET_Y )
     self.footer = UICopyrightFooter()
 end
 
@@ -131,6 +135,7 @@ end
 
 function SavegameScreen:draw()
     self.title:draw()
+    self.header:draw()
     self.backButton:draw()
     self.saveGameList:draw()
     self.footer:draw()

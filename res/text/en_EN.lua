@@ -275,6 +275,11 @@ locale.strings = {
     ['ui_ingame_resume'] = "Resume",
 
     -- Savegame menu
+    ['ui_savename'] = 'Name',
+    ['ui_type'] = 'Type',
+    ['ui_version'] = 'Version',
+    ['ui_date'] = 'Date',
+    ['ui_delete'] = 'Delete',
     ['combat'] = 'COMBAT',
     ['base'] = 'BASE',
     ['error'] = 'ERROR',
