@@ -13,7 +13,6 @@ local SaveHandler = require( 'src.SaveHandler' )
 local UIElement = require( 'src.ui.elements.UIElement' )
 local UIObservableButton = require( 'src.ui.elements.UIObservableButton' )
 local UILabel = require( 'src.ui.elements.UILabel' )
-local UIContainer = require( 'src.ui.elements.UIContainer' )
 
 -- ------------------------------------------------
 -- Module
