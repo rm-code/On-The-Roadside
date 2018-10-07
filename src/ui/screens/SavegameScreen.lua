@@ -113,8 +113,8 @@ function SavegameScreen:initialize()
     self.backButton = createBackButton( self.x, self.y )
     self.saveGameList = createSaveGameList( self )
 
-    self.container:register( self.backButton )
     self.container:register( self.saveGameList )
+    self.container:register( self.backButton )
 
     self.title = UIMenuTitle( Translator.getText( 'ui_title_savegames' ), TITLE_POSITION )
     self.header = UISaveGameHeader( SAVEGAME_LIST_HEADER_OFFSET_Y )
