@@ -11,6 +11,7 @@
 -- ------------------------------------------------
 
 local UIElement = require( 'src.ui.elements.UIElement' )
+local UIDummy = require( 'src.ui.elements.UIDummy' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Util = require( 'src.util.Util' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -165,7 +166,7 @@ end
 function UIPaginatedList:generatePagination()
     -- Create dummy element.
     if #self.items == 0 then
-        self.items[1] = UIElement( 0, 0, 0, 0, 0, 0 )
+        self.items[1] = UIDummy( 0, 0, 0, 0, 0, 0 )
     end
 
     self.maxPages = calculateMaximumPages( #self.items, self.h )
