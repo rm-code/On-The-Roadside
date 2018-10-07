@@ -108,7 +108,7 @@ end
 
 function UISaveGameEntry:command( cmd )
     for i = 1, #self.children do
-        if self.children[i]:isMouseOver() and self.children[i].command then
+        if self.children[i]:hasFocus() and self.children[i].command then
             self.children[i]:command( cmd )
             return
         end
@@ -117,7 +117,7 @@ end
 
 function UISaveGameEntry:mousecommand( cmd )
     for i = 1, #self.children do
-        if self.children[i]:isMouseOver() and self.children[i].command then
+        if self.children[i]:isMouseOver() and self.children[i].mousecommand then
             self.children[i]:mousecommand( cmd )
             return
         end

@@ -278,14 +278,14 @@ end
 function UIPaginatedList:mousecommand( cmd )
     for _, item in ipairs( self.pages[self.currentPage] ) do
         if item:isMouseOver() then
-            item:command( cmd )
+            item:mousecommand( cmd )
             return
         end
     end
 
     for i = 1, #self.children do
         if self.children[i]:isMouseOver() then
-            self.children[i]:command( cmd )
+            self.children[i]:mousecommand( cmd )
             return
         end
     end
