@@ -16,24 +16,37 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UIButton = UIElement:subclass( 'UIButton' )
 
 -- ------------------------------------------------
+-- CONSTANTS
+-- ------------------------------------------------
+
+local COLORS = {}
+COLORS.HOT = 'ui_button_hot'
+COLORS.FOCUS = 'ui_button_focus'
+COLORS.DEFAULT = 'ui_button'
+
+COLORS.INACTIVE_HOT = 'ui_button_inactive_hot'
+COLORS.INACTIVE_FOCUS = 'ui_button_inactive_focus'
+COLORS.INACTIVE_DEFAULT = 'ui_button_inactive'
+
+-- ------------------------------------------------
 -- Private Methods
 -- ------------------------------------------------
 
 local function selectColor( self )
     if self.active then
         if love.mouse.isVisible() and self:isMouseOver() then
-            return 'ui_button_hot'
+            return self.colors.HOT
         elseif self:hasFocus() then
-            return 'ui_button_focus'
+            return self.colors.FOCUS
         end
-        return 'ui_button'
+        return self.colors.DEFAULT
     elseif not self.active then
         if love.mouse.isVisible() and self:isMouseOver() then
-            return 'ui_button_inactive_hot'
+            return self.colors.INACTIVE_HOT
         elseif self:hasFocus() then
-            return 'ui_button_inactive_focus'
+            return self.colors.INACTIVE_FOCUS
         end
-        return 'ui_button_inactive'
+        return self.colors.INACTIVE_DEFAULT
     end
 end
 
@@ -60,6 +73,8 @@ function UIButton:initialize( px, py, x, y, w, h, callback, text, alignMode )
     self.text = text
     self.alignMode = alignMode or 'center'
     self.active = true
+
+    self.colors = COLORS
 end
 
 function UIButton:draw()
@@ -106,6 +121,14 @@ end
 function UIButton:setText( text, alignMode )
     self.text = text
     self.alignMode = alignMode
+end
+
+function UIButton:setColors( table )
+    self.colors = table
+end
+
+function UIButton:setDefaultColors()
+    self.colors = COLORS
 end
 
 function UIButton:setIcon( id, alt )

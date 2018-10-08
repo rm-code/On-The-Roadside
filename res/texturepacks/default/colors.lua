@@ -212,6 +212,15 @@ return {
     ['ui_msg_warning']  = COLORS.DB05,
     ['ui_msg_danger']  = COLORS.DB27,
 
+    -- Shop
+    ['shopitem_buy_hot'] = COLORS.DB09,
+    ['shopitem_buy_focus'] = COLORS.DB10,
+    ['shopitem_buy'] = COLORS.DB11,
+
+    ['shopitem_sell_hot'] = COLORS.DB28,
+    ['shopitem_sell_focus'] = COLORS.DB05,
+    ['shopitem_sell'] = COLORS.DB27,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================
