@@ -57,18 +57,6 @@ local function calculateVolume( items )
 end
 
 ---
--- Adds an Item to the inventory.
--- @tparam  table   items The table containing all items inside of this inventory.
--- @tparam  Item    item  The Item to add.
--- @tparam  numnber index The index at which to insert the item.
--- @treturn boolean       True if the Item was added successfully.
---
-local function addItem( items, item, index )
-    table.insert( items, index, item )
-    return true
-end
-
----
 -- Adds an ItemStack to the inventory.
 -- @tparam  table     items The table containing all items inside of this inventory.
 -- @tparam  ItemStack stack The ItemStack to add.
@@ -237,11 +225,7 @@ function Inventory:addItem( item, index )
     end
 
     if item:isInstanceOf( Item ) then
-        if item:isStackable() then
-            return addStackableItem( self.items, item, index )
-        else
-            return addItem( self.items, item, index )
-        end
+        return addStackableItem( self.items, item, index )
     end
 end
 
