@@ -27,6 +27,33 @@ local PLAYER_FACTION_SAVE = 'tmp_faction.data'
 local BASE_INVENTORY_SAVE = 'tmp_base_inventory.data'
 
 -- ------------------------------------------------
+-- Private Functions
+-- ------------------------------------------------
+
+---
+-- Copies data to the harddrive.
+-- @tparam table data The data to save.
+-- @tparam string file The target file.
+--
+local function copyData( data, file )
+    -- Create the target folder it doesn't exist already.
+    if not love.filesystem.getInfo( TEMP_FOLDER ) then
+        love.filesystem.createDirectory( TEMP_FOLDER )
+    end
+
+    Compressor.save( data, string.format( '%s/%s', TEMP_FOLDER, file ))
+end
+
+---
+-- Loads data from a file on the harddrive.
+-- @tparam string file The target file to load.
+-- @treturn table The loaded data.
+--
+local function loadData( file )
+    return Compressor.load( string.format( '%s/%s', TEMP_FOLDER .. '/' .. file ))
+end
+
+-- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
 
@@ -38,24 +65,7 @@ local BASE_INVENTORY_SAVE = 'tmp_base_inventory.data'
 --
 function DataHandler.copyPlayerFaction( t )
     Log.info( 'Saving player faction...', 'DataHandler' )
-
-    -- Create the saves folder it doesn't exist already.
-    if not love.filesystem.getInfo( TEMP_FOLDER ) then
-        love.filesystem.createDirectory( TEMP_FOLDER )
-    end
-
-    Compressor.save( t, TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
-end
-
----
--- Loads the temporary player faction file from the harddisk.
--- This should only be used to copy and paste the player faction data between
--- different states.
--- @treturn table The player faction data.
---
-function DataHandler.pastePlayerFaction()
-    Log.info( 'Loading player faction...', 'DataHandler' )
-    return Compressor.load( TEMP_FOLDER .. '/' .. PLAYER_FACTION_SAVE )
+    copyData( t, PLAYER_FACTION_SAVE )
 end
 
 ---
@@ -66,13 +76,18 @@ end
 --
 function DataHandler.copyBaseInventory( t )
     Log.info( 'Saving base inventory...', 'DataHandler' )
+    copyData( t, BASE_INVENTORY_SAVE )
+end
 
-    -- Create the saves folder it doesn't exist already.
-    if not love.filesystem.getInfo( TEMP_FOLDER ) then
-        love.filesystem.createDirectory( TEMP_FOLDER )
-    end
-
-    Compressor.save( t, TEMP_FOLDER .. '/' .. BASE_INVENTORY_SAVE )
+---
+-- Loads the temporary player faction file from the harddisk.
+-- This should only be used to copy and paste the player faction data between
+-- different states.
+-- @treturn table The player faction data.
+--
+function DataHandler.pastePlayerFaction()
+    Log.info( 'Loading player faction...', 'DataHandler' )
+    return loadData( PLAYER_FACTION_SAVE )
 end
 
 ---
@@ -83,9 +98,8 @@ end
 --
 function DataHandler.pasteBaseInventory()
     Log.info( 'Loading base inventory...', 'DataHandler' )
-    return Compressor.load( TEMP_FOLDER .. '/' .. BASE_INVENTORY_SAVE )
+    return loadData( BASE_INVENTORY_SAVE )
 end
-
 
 ---
 -- Removes all files in the temporary folder and the folder itself from the
