@@ -60,6 +60,7 @@ local function fillPages( items, maximumPages, height, ax, ay )
 
     for i = 1, #items do
         currentPage[#currentPage + 1] = items[i]
+        items[i]:setFocus( false )
         items[i]:setOrigin( ax, ay )
         items[i]:setRelativePosition( 0, #currentPage-1 )
 
