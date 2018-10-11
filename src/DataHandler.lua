@@ -50,7 +50,7 @@ end
 -- @treturn table The loaded data.
 --
 local function loadData( file )
-    return Compressor.load( string.format( '%s/%s', TEMP_FOLDER .. '/' .. file ))
+    return Compressor.load( string.format( '%s/%s', TEMP_FOLDER, file ))
 end
 
 -- ------------------------------------------------
