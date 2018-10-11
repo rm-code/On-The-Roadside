@@ -112,6 +112,8 @@ function UIPaginatedList:initialize( ox, oy, rx, ry, w, h )
     self.pages = {}
     self.currentPage = 1
     self.cursor = 1
+
+    self.dummy = false
 end
 
 -- ------------------------------------------------
@@ -167,6 +169,7 @@ function UIPaginatedList:generatePagination()
     -- Create dummy element.
     if #self.items == 0 then
         self.items[1] = UIDummy( 0, 0, 0, 0, 0, 0 )
+        self.dummy = true
     end
 
     self.maxPages = calculateMaximumPages( #self.items, self.h )
@@ -252,6 +255,10 @@ end
 -- @tparam string cmd The command to forward.
 --
 function UIPaginatedList:command( cmd )
+    if self.dummy then
+        return
+    end
+
     -- Scroll through items.
     if cmd == 'up' then
         self:scrollItem( -1 )
@@ -276,6 +283,10 @@ end
 -- @tparam string cmd The command to forward.
 --
 function UIPaginatedList:mousecommand( cmd )
+    if self.dummy then
+        return
+    end
+
     for _, item in ipairs( self.pages[self.currentPage] ) do
         if item:isMouseOver() then
             item:mousecommand( cmd )
