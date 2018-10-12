@@ -10,7 +10,6 @@ local UIElement = require( 'src.ui.elements.UIElement' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UILabel = require( 'src.ui.elements.UILabel' )
 local Translator = require( 'src.util.Translator' )
-local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -61,14 +60,8 @@ function UIInventoryItem:draw()
     self.amount:draw()
 end
 
-function UIInventoryItem:drag( rmb, fullstack )
-    if self.item:isInstanceOf( ItemStack ) and rmb then
-        if self.item:getItemCount() == 1 then
-            return self.item
-        else
-            return self.item:split()
-        end
-    elseif self.item:isInstanceOf( ItemStack ) and not fullstack then
+function UIInventoryItem:drag( fullstack )
+    if not fullstack then
         return self.item:getItem()
     end
     return self.item

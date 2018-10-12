@@ -234,12 +234,12 @@ end
 
 ---
 -- Initiates a drag action.
--- @tparam number               button    The mouse button index.
 -- @tparam table                lists     A table containing the different inventories.
 -- @tparam UIInventoryDragboard dragboard The dragboard containing the current dragged item.
 -- @tparam UIItemStats          itemStats The itemStats object to set the item for.
+-- @tparam boolean              stack     Wether or not to drag a full stack.
 --
-local function drag( button, lists, dragboard, itemStats )
+local function drag( lists, dragboard, itemStats, stack )
     -- Can't drag if we are already dragging.
     if dragboard:hasDragContext() then
         return
@@ -251,7 +251,7 @@ local function drag( button, lists, dragboard, itemStats )
         return
     end
 
-    local item, origin, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ))
+    local item, origin, slot = list:drag( stack )
 
     -- Abort if there is nothing to drag here.
     if not item then
@@ -410,11 +410,17 @@ function InventoryScreen:mousepressed( _, _, button )
         return
     end
 
+    if love.keyboard.isDown( 'lshift' ) then
+        drag( self.lists, self.dragboard, self.itemStats, true )
+        return
+    end
+
     if button == 2 then
         selectItem( self.lists, self.itemStats )
         return
     end
-    drag( button, self.lists, self.dragboard, self.itemStats )
+
+    drag( self.lists, self.dragboard, self.itemStats, false )
 end
 
 function InventoryScreen:mousereleased( _, _, _ )
