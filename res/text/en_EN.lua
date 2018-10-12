@@ -228,6 +228,8 @@ locale.strings = {
     ['pan_camera_down'] = "Move camera down",
     ['ui_enter_key'] = "Press a key you want to asign to this action.\n\nPress escape to cancel.",
 
+    ['open_shop_screen'] = "Open shop screen",
+
     ['drag_item_stack'] = "Drag whole stack (hold&click)",
     ['split_item_stack']  = "Split item stack (hold&click)",
 

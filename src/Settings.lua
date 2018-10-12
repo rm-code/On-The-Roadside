@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 14,
+    version = 15,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -33,6 +33,7 @@ local DEFAULT_SETTINGS = {
     controls = {
         base = {
             ['i']      = 'open_inventory_screen',
+            ['s']      = 'open_shop_screen',
         },
         combat = {
             ['x']      = 'action_stand',

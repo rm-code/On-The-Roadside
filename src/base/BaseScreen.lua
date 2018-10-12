@@ -341,6 +341,8 @@ function BaseScreen:keypressed( _, scancode )
     local command = Settings.mapInput( 'base', scancode )
     if command == 'open_inventory_screen' then
         openInventory( self.character, self.baseInventory )
+    elseif command == 'open_shop_screen' then
+        ScreenManager.switch( 'shop', self.baseInventory )
     end
 end
 

@@ -147,6 +147,7 @@ local function getKeyButtonList()
         createKeybinding( Settings.INPUTLAYOUTS.INVENTORY, 'split_item_stack' ),
 
         createKeybinding( Settings.INPUTLAYOUTS.BASE, 'open_inventory_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.BASE, 'open_shop_screen' ),
 
         createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'increase_tool_size' ),
         createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'decrease_tool_size' ),
