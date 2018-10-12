@@ -158,7 +158,7 @@ end
 
 local function createPriceLabel( self )
     local rx, ry, w, h = CHECKOUT_LABEL_OFFSET_X, CHECKOUT_LABEL_OFFSET_Y, CHECKOUT_LABEL_WIDTH, CHECKOUT_LABEL_HEIGHT
-    local balance = self.sellInventory:getItemCount() - self.buyInventory:getItemCount()
+    local balance = self.lists.sellInventory:getItemCount() - self.lists.buyInventory:getItemCount()
     local txt = string.format( Translator.getText( 'base_shop_checkout_label' ), balance )
     local color = balance < 0 and 'shop_balance_negative' or 'shop_balance_positive'
     return UILabel( self.x, self.y, rx, ry, w, h, txt, color )
@@ -208,10 +208,12 @@ function ShopScreen:initialize( baseInventory )
 
     self.container = UIContainer()
 
-    self.baseInventory = createBaseList( self, baseInventory )
-    self.buyInventory = createBuyList( self )
-    self.sellInventory = createSellList( self )
-    self.shopInventory = createShopList( self )
+    self.lists = {
+        baseInventory = createBaseList( self, baseInventory ),
+        buyInventory  = createBuyList( self ),
+        sellInventory = createSellList( self ),
+        shopInventory = createShopList( self ),
+    }
 
     self.baseLabel = createLabel( self.x, self.y, BASE_INVENTORY_X, LABEL_Y, INVENTORY_LIST_WIDTH, LABEL_HEIGHT, 'ui_base_inventory', 'ui_inventory_headers' )
     self.checkoutLabel = createLabel( self.x, self.y, CHECKOUT_INVENTORY_X, LABEL_Y, INVENTORY_LIST_WIDTH, LABEL_HEIGHT, 'base_shop_checkout', 'ui_inventory_headers' )
@@ -222,10 +224,10 @@ function ShopScreen:initialize( baseInventory )
 
     self.priceLabel = createPriceLabel( self )
 
-    self.container:register( self.baseInventory )
-    self.container:register( self.buyInventory )
-    self.container:register( self.sellInventory )
-    self.container:register( self.shopInventory )
+    self.container:register( self.lists.baseInventory )
+    self.container:register( self.lists.buyInventory )
+    self.container:register( self.lists.sellInventory )
+    self.container:register( self.lists.shopInventory )
 
     self.container:register( self.cancelButton )
     self.container:register( self.checkoutButton )
@@ -234,25 +236,25 @@ end
 function ShopScreen:receive( msg, ... )
     if msg == 'SELL_ITEM' then
         local shopItem = ...
-        moveShopItem( self.baseInventory, self.sellInventory, shopItem, 'UNSELL_ITEM', UIShopItem.TYPE_SELL )
+        moveShopItem( self.lists.baseInventory, self.lists.sellInventory, shopItem, 'UNSELL_ITEM', UIShopItem.TYPE_SELL )
         self.priceLabel = createPriceLabel( self )
     elseif msg == 'BUY_ITEM' then
         local shopItem = ...
-        moveShopItem( self.shopInventory, self.buyInventory, shopItem, 'UNBUY_ITEM', UIShopItem.TYPE_BUY )
+        moveShopItem( self.lists.shopInventory, self.lists.buyInventory, shopItem, 'UNBUY_ITEM', UIShopItem.TYPE_BUY )
         self.priceLabel = createPriceLabel( self )
     elseif msg == 'UNSELL_ITEM' then
         local shopItem = ...
-        moveShopItem( self.sellInventory, self.baseInventory, shopItem, 'SELL_ITEM', UIShopItem.TYPE_NONE )
+        moveShopItem( self.lists.sellInventory, self.lists.baseInventory, shopItem, 'SELL_ITEM', UIShopItem.TYPE_NONE )
         self.priceLabel = createPriceLabel( self )
     elseif msg == 'UNBUY_ITEM' then
         local shopItem = ...
-        moveShopItem( self.buyInventory, self.shopInventory, shopItem, 'BUY_ITEM', UIShopItem.TYPE_NONE )
+        moveShopItem( self.lists.buyInventory, self.lists.shopInventory, shopItem, 'BUY_ITEM', UIShopItem.TYPE_NONE )
         self.priceLabel = createPriceLabel( self )
     elseif msg == 'CHECKOUT' then
-        commitCheckout( self.baseInventory, self.shopInventory, self.buyInventory, self.sellInventory )
+        commitCheckout( self.lists.baseInventory, self.lists.shopInventory, self.lists.buyInventory, self.lists.sellInventory )
         self.priceLabel = createPriceLabel( self )
     elseif msg == 'CANCEL' then
-        cancel( self.baseInventory, self.shopInventory, self.buyInventory, self.sellInventory )
+        cancel( self.lists.baseInventory, self.lists.shopInventory, self.lists.buyInventory, self.lists.sellInventory )
     end
 end
 
@@ -268,10 +270,10 @@ function ShopScreen:draw()
     self.checkoutLabel:draw()
     self.shopLabel:draw()
 
-    self.baseInventory:draw()
-    self.buyInventory:draw()
-    self.sellInventory:draw()
-    self.shopInventory:draw()
+    self.lists.baseInventory:draw()
+    self.lists.buyInventory:draw()
+    self.lists.sellInventory:draw()
+    self.lists.shopInventory:draw()
 
     self.cancelButton:draw()
     self.checkoutButton:draw()
