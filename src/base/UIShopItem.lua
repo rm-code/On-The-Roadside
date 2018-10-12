@@ -10,6 +10,8 @@ local Translator = require( 'src.util.Translator' )
 
 local UIElement = require( 'src.ui.elements.UIElement' )
 local UIObservableButton = require( 'src.ui.elements.UIObservableButton' )
+local UILabel = require( 'src.ui.elements.UILabel' )
+
 local Observable = require( 'src.util.Observable' )
 
 -- ------------------------------------------------
@@ -53,6 +55,8 @@ COLORS.SELL.INACTIVE_DEFAULT = 'ui_button_inactive'
 function UIShopItem:initialize( ox, oy, rx, ry, msg, item )
     UIElement.initialize( self, ox, oy, rx, ry, UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
+    self.observable = Observable()
+
     self.msg = msg
     self.item = item
     self.type = UIShopItem.TYPE_NONE
@@ -62,9 +66,10 @@ function UIShopItem:initialize( ox, oy, rx, ry, msg, item )
     self.button:setIcon( item:getID() )
     self.button:setIconColorID( item:getID() )
 
-    self.observable = Observable()
+    self.label = UILabel( self.ax, self.ay, 0, 0, self.w, 1, self.item:getItemCount(), 'ui_button', 'right' )
 
     self:addChild( self.button )
+    self:addChild( self.label )
 end
 
 function UIShopItem:receive( msg )
@@ -79,6 +84,7 @@ end
 
 function UIShopItem:draw()
     self.button:draw()
+    self.label:draw()
 end
 
 function UIShopItem:update()
