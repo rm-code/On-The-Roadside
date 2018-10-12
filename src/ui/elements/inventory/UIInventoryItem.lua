@@ -31,11 +31,7 @@ local function updateBackground( self )
 end
 
 local function createInfo( self )
-    local count = 1
-    if self.item:isInstanceOf( ItemStack ) and self.item:getItemCount() > 1 then
-        count = self.item:getItemCount()
-    end
-    self.amount = UILabel( self.ax, self.ay, 0, 0, self.w, 1, count, 'ui_equipment_item', 'right' )
+    self.amount = UILabel( self.ax, self.ay, 0, 0, self.w, 1, self.item:getItemCount(), 'ui_equipment_item', 'right' )
     self:addChild( self.amount )
 end
 
