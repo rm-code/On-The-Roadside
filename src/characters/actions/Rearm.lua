@@ -30,14 +30,10 @@ local Rearm = Action:subclass( 'Rearm' )
 -- @treturn Item                The item matching the searched id (or nil).
 --
 local function findItem( inventory, weaponID )
-    for _, item in pairs( inventory:getItems() ) do
-        if item:isInstanceOf( Weapon ) and item:getID() == weaponID then
-            return item
-        elseif item:isInstanceOf( ItemStack ) then
-            for _, sitem in pairs( item:getItems() ) do
-                if sitem:isInstanceOf( Weapon ) and sitem:getID() == weaponID then
-                    return sitem
-                end
+    for _, stack in ipairs( inventory:getItems() ) do
+        for _, item in ipairs( stack:getItems() ) do
+            if item:isInstanceOf( Weapon ) and item:getID() == weaponID then
+                return item
             end
         end
     end
