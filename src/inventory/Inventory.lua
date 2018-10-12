@@ -80,7 +80,7 @@ end
 local function addStackableItem( items, item, index )
     -- Check if we already have an item stack to add this item to.
     for _, stack in ipairs( items ) do
-        if stack:isInstanceOf( ItemStack ) and stack:getID() == item:getID() then
+        if stack:getID() == item:getID() then
             stack:addItem( item )
             return true
         end
@@ -101,18 +101,11 @@ end
 --
 local function removeItem( items, item )
     for i = 1, #items do
-        -- Check if item is part of a stack.
-        if items[i]:isInstanceOf( ItemStack ) then
-            local success = items[i]:removeItem( item )
-            if success then
-                -- Remove the stack if it is empty.
-                if items[i]:isEmpty() then
-                    table.remove( items, i )
-                end
-                return true
+        if items[i]:removeItem( item ) then
+            -- Remove the stack if it is empty.
+            if items[i]:isEmpty() then
+                table.remove( items, i )
             end
-        elseif items[i] == item then
-            table.remove( items, i )
             return true
         end
     end
@@ -127,7 +120,7 @@ end
 --
 local function removeItemStack( items, stack )
     for i = 1, #items do
-        if items[i]:isInstanceOf( ItemStack ) and items[i] == stack then
+        if items[i] == stack then
             table.remove( items, i )
             return true
         end
@@ -238,10 +231,8 @@ end
 function Inventory:insertItem( item, oitem )
     for i = 1, #self.items do
         if self.items[i] == oitem then
-            if oitem:isInstanceOf( ItemStack ) and oitem:getID() == item:getID() then
-                if item:isInstanceOf( ItemStack ) then
-                    return merge( self, oitem, item )
-                end
+            if item:isInstanceOf( ItemStack ) and oitem:isInstanceOf( ItemStack ) and oitem:getID() == item:getID() then
+                return merge( self, oitem, item )
             end
             return self:addItem( item, i )
         end
@@ -280,12 +271,8 @@ end
 --
 function Inventory:loadItems( loadedItems )
     for _, item in pairs( loadedItems ) do
-        if item.ItemStack then
-            for _, sitem in ipairs( item.items ) do
-                self:addItem( ItemFactory.loadItem( sitem ))
-            end
-        else
-            self:addItem( ItemFactory.loadItem( item ))
+        for _, sitem in ipairs( item.items ) do
+            self:addItem( ItemFactory.loadItem( sitem ))
         end
     end
 end
@@ -310,16 +297,11 @@ end
 -- @treturn Item        An item of the specified type.
 --
 function Inventory:getAndRemoveItem( type )
-    for _, item in ipairs( self.items ) do
-        if item:getItemType() == type then
-            if item:isInstanceOf( ItemStack ) then
-                local i = item:getItem()
-                self:removeItem( i )
-                return i
-            else
-                self:removeItem( item )
-                return item
-            end
+    for _, stack in ipairs( self.items ) do
+        if stack:getItemType() == type then
+            local item = stack:getItem()
+            self:removeItem( item )
+            return item
         end
     end
 end
@@ -334,15 +316,10 @@ end
 --
 function Inventory:countItems( type, id )
     local count = 0
-    for _, item in ipairs( self.items ) do
+    for _, stack in ipairs( self.items ) do
         -- Match items based on type and id.
-        if item:getItemType() == type and item:getID() == id then
-            -- Count items in stacks.
-            if item:isInstanceOf( ItemStack ) then
-                count = count + item:getItemCount()
-            else
-                count = count + 1
-            end
+        if stack:getItemType() == type and stack:getID() == id then
+            count = count + stack:getItemCount()
         end
     end
     return count
