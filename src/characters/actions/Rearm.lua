@@ -10,7 +10,6 @@
 
 local Action = require( 'src.characters.actions.Action' )
 local Weapon = require( 'src.items.weapons.Weapon' )
-local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
