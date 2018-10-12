@@ -99,6 +99,14 @@ function UIEquipmentList:drag()
 end
 
 ---
+-- Since slots on the UIEquipmentList can't contain stacks, we simply delegate
+-- the call to the dragging method which returns the correct objects.
+--
+function UIEquipmentList:splitStack()
+    return self:drag()
+end
+
+---
 -- Drops an item onto this list. If the slot the item belongs to already
 -- contains an item, that item will be swapped to the inventory the new item
 -- is coming from.

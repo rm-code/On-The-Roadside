@@ -74,6 +74,10 @@ function UIInventoryItem:drag( rmb, fullstack )
     return self.item
 end
 
+function UIInventoryItem:splitStack()
+    return self.item:split()
+end
+
 function UIInventoryItem:getItem()
     return self.item
 end

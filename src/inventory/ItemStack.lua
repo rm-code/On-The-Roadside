@@ -69,6 +69,7 @@ function ItemStack:split()
         end
         return newStack
     end
+    return self
 end
 
 function ItemStack:serialize()

@@ -272,6 +272,38 @@ local function drag( button, lists, dragboard, itemStats )
     end
 end
 
+local function splitStack( lists, dragboard, itemStats )
+    -- Can't drag if we are already dragging.
+    if dragboard:hasDragContext() then
+        return
+    end
+
+    -- Can't drag if not over a list.
+    local list = getListBelowCursor( lists )
+    if not list then
+        return
+    end
+
+    local item, origin, slot = list:splitStack()
+    -- Abort if there is nothing to drag here.
+    if not item then
+        return
+    end
+
+    -- Display stats for the dragged item.
+    itemStats:setItem( item )
+
+    -- Add the item and list to the dragboard. If the item comes from the
+    -- equipment list we also pass the slot.
+    dragboard:drag( item, origin or list, slot )
+
+    -- If the dragged item is a container we need to refresh the inventory lists
+    -- because it changes the inventory volumes.
+    if item:isInstanceOf( Container ) then
+        refreshLists( lists )
+    end
+end
+
 ---
 -- Selects an item for the item stats area.
 -- @tparam table       lists     A table containing the different inventories.
@@ -373,6 +405,11 @@ function InventoryScreen:keypressed( key, scancode )
 end
 
 function InventoryScreen:mousepressed( _, _, button )
+    if love.keyboard.isDown( 'lctrl' ) then
+        splitStack( self.lists, self.dragboard, self.itemStats )
+        return
+    end
+
     if button == 2 then
         selectItem( self.lists, self.itemStats )
         return
