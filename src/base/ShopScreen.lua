@@ -9,9 +9,6 @@
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Screen = require( 'src.ui.screens.Screen' )
 
-local Inventory = require( 'src.inventory.Inventory' )
-local ItemFactory = require( 'src.items.ItemFactory' )
-
 local Translator = require( 'src.util.Translator' )
 local GridHelper = require( 'src.util.GridHelper' )
 
@@ -123,19 +120,9 @@ local function createBaseList( self, inventory )
     return buttonList
 end
 
-local function createShopList( self, inventory )
+local function createShopList( self )
     local buttonList = UIPaginatedList( self.x, self.y, SHOP_INVENTORY_X, SHOP_INVENTORY_Y, INVENTORY_LIST_WIDTH, SHOP_INVENTORY_H )
-
-    local itemList = {}
-    local items = inventory:getItems()
-
-    for i, item in ipairs( items ) do
-        itemList[i] = UIShopItem( 0, 0, 0, 0, 'BUY_ITEM', item )
-        itemList[i]:observe( self )
-    end
-
-    buttonList:setItems( itemList )
-
+    buttonList:setItems( {} )
     return buttonList
 end
 
@@ -221,27 +208,10 @@ function ShopScreen:initialize( baseInventory )
 
     self.container = UIContainer()
 
-    -- TODO Create persistent store.
-    local tags = {
-        whitelist = {
-            'humanoid'
-        },
-        blacklist = {
-            'creature'
-        }
-    }
-    local shop = Inventory()
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Weapon', 'Ranged' ))
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Weapon', 'Melee' ))
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Armor', 'Footwear' ))
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Armor', 'Headgear' ))
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Armor', 'Jacket' ))
-    shop:addItem( ItemFactory.createRandomItem( tags, 'Armor', 'Trousers' ))
-
     self.baseInventory = createBaseList( self, baseInventory )
     self.buyInventory = createBuyList( self )
     self.sellInventory = createSellList( self )
-    self.shopInventory = createShopList( self, shop )
+    self.shopInventory = createShopList( self )
 
     self.baseLabel = createLabel( self.x, self.y, BASE_INVENTORY_X, LABEL_Y, INVENTORY_LIST_WIDTH, LABEL_HEIGHT, 'ui_base_inventory', 'ui_inventory_headers' )
     self.checkoutLabel = createLabel( self.x, self.y, CHECKOUT_INVENTORY_X, LABEL_Y, INVENTORY_LIST_WIDTH, LABEL_HEIGHT, 'base_shop_checkout', 'ui_inventory_headers' )
