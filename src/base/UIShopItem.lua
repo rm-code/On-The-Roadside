@@ -92,18 +92,11 @@ function UIShopItem:update()
 end
 
 function UIShopItem:command( cmd )
-    for i = 1, #self.children do
-        self.children[i]:command( cmd )
-    end
+    self.button:command( cmd )
 end
 
 function UIShopItem:mousecommand( cmd )
-    for i = 1, #self.children do
-        if self.children[i]:isMouseOver() then
-            self.children[i]:mousecommand( cmd )
-            return
-        end
-    end
+    self.button:mousecommand( cmd )
 end
 
 function UIShopItem:setFocus( focus )
