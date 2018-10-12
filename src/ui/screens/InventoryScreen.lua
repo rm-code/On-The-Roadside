@@ -18,6 +18,7 @@ local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
 local Container = require( 'src.items.Container' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -405,12 +406,12 @@ function InventoryScreen:keypressed( key, scancode )
 end
 
 function InventoryScreen:mousepressed( _, _, button )
-    if love.keyboard.isDown( 'lctrl' ) then
+    if love.keyboard.isDown( Settings.mapAction( 'inventory', 'split_item_stack' )) then
         splitStack( self.lists, self.dragboard, self.itemStats )
         return
     end
 
-    if love.keyboard.isDown( 'lshift' ) then
+    if love.keyboard.isDown( Settings.mapAction( 'inventory', 'drag_item_stack' )) then
         drag( self.lists, self.dragboard, self.itemStats, true )
         return
     end
