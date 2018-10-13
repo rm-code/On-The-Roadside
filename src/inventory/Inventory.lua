@@ -56,15 +56,39 @@ local function calculateVolume( items )
     return volume
 end
 
+-- TODO: proper documentation
+local function merge( self, stack, ostack )
+    assert( stack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
+    assert( ostack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
+
+    for i = #ostack:getItems(), 1, -1 do
+        local item = ostack:getItems()[i]
+
+        if not self:doesFit( item:getWeight(), item:getVolume() ) then
+            return false
+        end
+
+        stack:addItem( item )
+        ostack:removeItem( item )
+    end
+
+    return true
+end
+
 ---
 -- Adds an ItemStack to the inventory.
--- @tparam  table     items The table containing all items inside of this inventory.
+-- @tparam  Inventory self  The inventory instance to use.
 -- @tparam  ItemStack stack The ItemStack to add.
 -- @tparam  number    index The index at which to insert the stack.
 -- @treturn boolean         True if the ItemStack was added successfully.
 --
-local function addItemStack( items, stack, index )
-    table.insert( items, index, stack )
+local function addItemStack( self, stack, index )
+    for i = 1, #self.items do
+        if self.items[i]:getID() == stack:getID() then
+            return merge( self, self.items[i], stack )
+        end
+    end
+    table.insert( self.items, index, stack )
     return true
 end
 
@@ -126,25 +150,6 @@ local function removeItemStack( items, stack )
         end
     end
     return false
-end
-
--- TODO: proper documentation
-local function merge( self, stack, ostack )
-    assert( stack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
-    assert( ostack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
-
-    for i = #ostack:getItems(), 1, -1 do
-        local item = ostack:getItems()[i]
-
-        if not self:doesFit( item:getWeight(), item:getVolume() ) then
-            return false
-        end
-
-        stack:addItem( item )
-        ostack:removeItem( item )
-    end
-
-    return true
 end
 
 -- ------------------------------------------------
@@ -214,7 +219,7 @@ function Inventory:addItem( item, index )
     end
 
     if item:isInstanceOf( ItemStack ) then
-        return addItemStack( self.items, item, index )
+        return addItemStack( self, item, index )
     end
 
     if item:isInstanceOf( Item ) then
