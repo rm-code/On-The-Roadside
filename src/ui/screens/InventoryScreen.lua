@@ -406,6 +406,17 @@ function InventoryScreen:keypressed( key, scancode )
 end
 
 function InventoryScreen:mousepressed( _, _, button )
+    if button == 2 then
+        selectItem( self.lists, self.itemStats )
+        return
+    end
+end
+
+function InventoryScreen:mousereleased( _, _, _ )
+    self.itemStats:command( 'activate' )
+end
+
+function InventoryScreen:mousedragstarted()
     if love.keyboard.isDown( Settings.mapAction( 'inventory', 'split_item_stack' )) then
         splitStack( self.lists, self.dragboard, self.itemStats )
         return
@@ -416,15 +427,10 @@ function InventoryScreen:mousepressed( _, _, button )
         return
     end
 
-    if button == 2 then
-        selectItem( self.lists, self.itemStats )
-        return
-    end
-
     drag( self.lists, self.dragboard, self.itemStats, false )
 end
 
-function InventoryScreen:mousereleased( _, _, _ )
+function InventoryScreen:mousedragstopped()
     if self.dragboard:hasDragContext() then
         local list = getListBelowCursor( self.lists )
         self.dragboard:drop( list )
@@ -433,8 +439,6 @@ function InventoryScreen:mousereleased( _, _, _ )
         refreshLists( self.lists )
         return
     end
-
-    self.itemStats:command( 'activate' )
 end
 
 function InventoryScreen:wheelmoved( _, dy )

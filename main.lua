@@ -11,6 +11,9 @@ local DataHandler = require( 'src.DataHandler' )
 local debugGrid
 local letterbox
 
+local mousepressed = false
+local mousedragged = false
+
 -- ------------------------------------------------
 -- Constants
 -- ------------------------------------------------
@@ -158,10 +161,18 @@ function love.textinput( text )
 end
 
 function love.mousepressed( mx, my, button, isTouch, presses )
+    mousepressed = true
     ScreenManager.mousepressed( mx, my, button, isTouch, presses )
 end
 
 function love.mousereleased( mx, my, button, isTouch, presses )
+    mousepressed = false
+    if mousedragged then
+        mousedragged = false
+        ScreenManager.mousedragstopped()
+        return
+    end
+
     ScreenManager.mousereleased( mx, my, button, isTouch, presses )
 end
 
@@ -170,6 +181,12 @@ function love.mousefocus( f )
 end
 
 function love.mousemoved( x, y, dx, dy, isTouch )
+    if mousepressed then
+        mousedragged = true
+        mousepressed = false
+        ScreenManager.mousedragstarted()
+    end
+
     ScreenManager.mousemoved( x, y, dx, dy, isTouch )
 end
 
