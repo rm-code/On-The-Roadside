@@ -27,25 +27,38 @@ local TEMPLATE_FILE  = 'res.data.Tiles'
 -- Private Variables
 -- ------------------------------------------------
 
-local tiles = {}
+local templates = {}
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
 ---
--- Loads all Tile-templates found in the specified file.
--- @tparam string src The file to load the templates from.
+-- Loads all templates found in the specified file.
+-- @tparam string src The path to load the templates from.
+-- @treturn table The table containing all the loaded templates.
 --
 local function load( src )
     local module = require( src )
-    local counter = 0
 
+    local tiles = {}
     for _, template in ipairs( module ) do
         tiles[template.id] = template
-        counter = counter + 1
-        Log.debug( string.format( '  %3d. %s', counter, template.id ))
     end
+    return tiles
+end
+
+---
+-- Counts all items in the table.
+-- @tparam table t The table in which to count the items.
+-- @treturn number The amount of items in the table.
+--
+local function countTemplates( t )
+    local counter = 0
+    for _, _ in pairs( t ) do
+        counter = counter + 1
+    end
+    return counter
 end
 
 -- ------------------------------------------------
@@ -56,8 +69,9 @@ end
 -- Loads the templates.
 --
 function TileFactory.loadTemplates()
-    Log.debug( "Load Tile Templates:" )
-    load( TEMPLATE_FILE )
+    Log.info( 'Loading Tile Templates...', 'TileFactory' )
+    templates.tiles = load( TEMPLATE_FILE )
+    Log.info( string.format( 'Done! Loaded %d templates!', countTemplates( templates.tiles )), 'TileFactory' )
 end
 
 ---
@@ -66,7 +80,7 @@ end
 -- @treturn Tile      The newly created Tile.
 --
 function TileFactory.create( id )
-    local template = tiles[id]
+    local template = templates.tiles[id]
     assert( template, string.format( 'Requested tile id (%s) doesn\'t exist!', id ))
     return Tile( template.id, template.movementCost, template.passable, template.spawn )
 end
@@ -76,7 +90,7 @@ end
 -- @treturn table A table containing all templates indexed by their id.
 --
 function TileFactory.getTemplates()
-    return tiles
+    return templates.tiles
 end
 
 return TileFactory
