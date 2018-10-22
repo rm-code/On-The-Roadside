@@ -1,5 +1,4 @@
 describe( 'Creature template spec', function()
-    local TGFParser   =  require( 'lib.TGFParser' );
     local FILE_PATH   = 'res/data/creatures/bodies/';
 
     local function getDirectoryItems( dir )
@@ -22,9 +21,7 @@ describe( 'Creature template spec', function()
         local creatureTemplates = {};
         local bodyPartTemplates = {};
         for _, file in ipairs( fileNames ) do
-            if file.extension == 'tgf' then
-                creatureTemplates[file.name] = TGFParser.parse( FILE_PATH .. file.name .. '.' .. file.extension );
-            elseif file.extension == 'lua' then
+            if file.extension == 'lua' then
                 local creature = require( FILE_PATH .. file.name );
                 bodyPartTemplates[creature.id] = {};
                 -- Create template library for this creature.
