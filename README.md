@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/badge/Version-0.16.1.1627-blue.svg)](https://github.com/rm-code/on-the-roadside/releases/latest)
 [![LOVE](https://img.shields.io/badge/L%C3%96VE-11.1-EA316E.svg)](http://love2d.org/)
+[![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.com/rm-code/On-The-Roadside.svg?token=q3rLXeyGTBN9VB2zsWMr&branch=develop)](https://travis-ci.com/rm-code/On-The-Roadside)
 
 _On the Roadside_ is a turn-based strategy game in which you take control of a squad of mercenaries fighting for survival in a world shaped by unknown forces. It currently is in the very _early stages_ of development.
