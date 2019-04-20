@@ -27,10 +27,6 @@ function RangedWeapon:initialize( template )
     self.magazine = Magazine( template.caliber, template.magSize )
 end
 
-function RangedWeapon:attack()
-    self.magazine:removeShell()
-end
-
 function RangedWeapon:serialize()
     local t = RangedWeapon.super.serialize( self )
     if self.magazine then
