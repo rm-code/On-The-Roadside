@@ -25,7 +25,6 @@ function RangedWeapon:initialize( template )
     self.rpm = template.rpm or 60
     self.firingDelay = 1 / ( self.rpm / 60 )
     self.magazine = Magazine( template.caliber, template.magSize )
-    self.range = template.range
 end
 
 function RangedWeapon:attack()
@@ -50,10 +49,6 @@ end
 
 function RangedWeapon:getMagazine()
     return self.magazine
-end
-
-function RangedWeapon:getRange()
-    return self.range
 end
 
 return RangedWeapon

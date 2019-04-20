@@ -22,7 +22,6 @@ return {
                 damageType = 'explosive'
             }
         },
-        range = 10,
         effects = {
             explosive    = { blastRadius = 2 },
             customSprite = { sprite = "weapon_m67_grenade" }
@@ -51,7 +50,6 @@ return {
                 damageType = 'piercing'
             }
         },
-        range = 10,
         effects = {
             customSprite = { sprite = "weapon_shuriken" }
         }

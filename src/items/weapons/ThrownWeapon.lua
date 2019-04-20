@@ -23,7 +23,6 @@ function ThrownWeapon:initialize( template )
     Weapon.initialize( self, template )
 
     self.effects = AmmunitionEffects( template.effects )
-    self.range = template.range
 end
 
 function ThrownWeapon:getDamageType()
@@ -32,10 +31,6 @@ end
 
 function ThrownWeapon:getEffects()
     return self.effects
-end
-
-function ThrownWeapon:getRange()
-    return self.range
 end
 
 return ThrownWeapon

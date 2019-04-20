@@ -27,21 +27,10 @@ function ThrowingAttack:initialize( character, target, projectileManager )
 end
 
 function ThrowingAttack:perform()
-    -- Pick the actual target based on the weapon's range attribute.
-    local ox, oy = self.character:getTile():getPosition()
     local tx, ty = self.target:getPosition()
     local th = self.target:getHeight()
 
-    local ax, ay
-    Bresenham.line( ox, oy, tx, ty, function( cx, cy, count )
-        if count > self.character:getWeapon():getRange() then
-            return false
-        end
-        ax, ay = cx, cy
-        return true
-    end)
-
-    self.projectileManager:register( ThrownProjectileQueue( self.character, ax, ay, th ))
+    self.projectileManager:register( ThrownProjectileQueue( self.character, tx, ty, th ))
     return true
 end
 

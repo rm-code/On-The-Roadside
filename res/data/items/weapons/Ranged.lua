@@ -30,7 +30,6 @@ return {
         },
         caliber    = "5.45x39mm",
         magSize    = 30,
-        range      = 30,
         rpm        = 650
     },
     {
@@ -57,8 +56,7 @@ return {
             }
         },
         caliber    = "OG-7V",
-        magSize    = 1,
-        range      = 30
+        magSize    = 1
     },
     {
         id         = "weapon_benelli_m4",
@@ -84,7 +82,6 @@ return {
             }
         },
         caliber    = "12_gauge",
-        magSize    = 8,
-        range      = 15
+        magSize    = 8
     }
 }

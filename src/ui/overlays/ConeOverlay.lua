@@ -111,11 +111,6 @@ function ConeOverlay:generate()
                 return false
             end
 
-            -- Stop early if the target is out of range.
-            if counter > weapon:getRange() then
-                return false
-            end
-
             -- Always advance the ray on the original tile.
             if tile == origin then
                 return true
