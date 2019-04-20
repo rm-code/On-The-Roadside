@@ -8,7 +8,6 @@
 
 local Action = require( 'src.characters.actions.Action' )
 local ThrownProjectileQueue = require( 'src.items.weapons.ThrownProjectileQueue' )
-local Bresenham = require( 'lib.Bresenham' )
 
 -- ------------------------------------------------
 -- Module
