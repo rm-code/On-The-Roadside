@@ -66,7 +66,7 @@ local function showCharacterInfo( textObject, colorTable, x, y, character )
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_character_name' ), Translator.getText( character:getCreatureClass() ))
 
     -- FACTION; CLASS (HP: xx)
-    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), ' (' .. Translator.getText( 'ui_hp' ) .. character:getHealthPoints() .. ')')
+    addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), ' (' .. Translator.getText( 'ui_hp' ) .. character:getCurrentHP() .. ')')
 end
 
 local function showItems( textObject, colorTable, x, y, items )

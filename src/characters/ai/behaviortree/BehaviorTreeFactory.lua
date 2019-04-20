@@ -69,14 +69,14 @@ end
 local function createTree( layout )
     local nodes = {};
 
-    for index, id in ipairs( layout.nodes ) do
-        assert( BLUEPRINTS[id], string.format( 'Behavior blueprint %s does not exist!', id ));
-        nodes[index] = BLUEPRINTS[id]()
+    for _, node in ipairs( layout.nodes ) do
+        assert( BLUEPRINTS[node.label], string.format( 'Behavior blueprint %s does not exist!', node.label ))
+        nodes[node.id] = BLUEPRINTS[node.label]()
     end
 
     for _, edge in ipairs( layout.edges ) do
         local from, to = nodes[edge.from], nodes[edge.to];
-        from:addNode( to, tonumber( edge.name ));
+        from:addNode( to, tonumber( edge.label ))
     end
 
     return nodes[1];

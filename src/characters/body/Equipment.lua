@@ -91,7 +91,7 @@ end
 function Equipment:load( savedEquipment )
     for index, slot in pairs( savedEquipment ) do
         if slot.item then
-            self.slots[index]:addItem( ItemFactory.loadItem( slot.item ))
+            self:addItem( self.slots[index], ItemFactory.loadItem( slot.item ))
         end
     end
 end

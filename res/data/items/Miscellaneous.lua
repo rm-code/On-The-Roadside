@@ -6,7 +6,6 @@ return {
         weight     = 0.1,
         volume     = 0.1,
         equippable = false,
-        stackable  = true,
         permanent  = false
     },
     {
@@ -16,7 +15,6 @@ return {
         weight     = 3.0,
         volume     = 2.0,
         equippable = false,
-        stackable  = true,
         permanent  = false
     },
     {
@@ -26,7 +24,6 @@ return {
         weight     = 0.6,
         volume     = 0.5,
         equippable = false,
-        stackable  = true,
         permanent  = false
     },
     {
@@ -36,7 +33,6 @@ return {
         weight     = 0.6,
         volume     = 0.5,
         equippable = false,
-        stackable  = true,
         permanent  = false
     }
 }

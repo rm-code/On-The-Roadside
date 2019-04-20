@@ -93,6 +93,17 @@ function UIInventoryList:drag( rmb, fullstack )
     end
 end
 
+function UIInventoryList:splitStack()
+    for _, uiItem in ipairs( self.children ) do
+        if uiItem:isInstanceOf( UIInventoryItem ) and uiItem:isMouseOver() then
+            local item = uiItem:splitStack()
+            self.inventory:removeItem( item )
+            self:refresh()
+            return item
+        end
+    end
+end
+
 function UIInventoryList:drop( item )
     for _, uiItem in ipairs( self.children ) do
         if uiItem:isInstanceOf( UIInventoryItem ) and uiItem:isMouseOver() then

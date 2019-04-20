@@ -22,7 +22,6 @@ describe( 'Item template spec', function()
                 assert.is.not_nil( template.weight );
                 assert.is.not_nil( template.volume );
                 assert.is.not_nil( template.equippable );
-                assert.is.not_nil( template.stackable );
                 assert.is.not_nil( template.permanent, template.id );
             end
         end

@@ -26,13 +26,28 @@ local CombatScreen = Screen:subclass( 'CombatScreen' )
 local FACTIONS = require( 'src.constants.FACTIONS' )
 
 -- ------------------------------------------------
+-- Local Methods
+-- ------------------------------------------------
+
+---
+-- Centers the camera on the currently selected character.
+-- @tparam Character character The character to center the camera on.
+-- @tparam Camera    camera    The camera to center.
+-- @tparam number    tw        The tile width.
+-- @tparam number    th        The tile height.
+--
+local function centerCamera( character, camera, tw, th )
+    camera:setTargetPosition( character:getX() * tw, character:getY() * th )
+end
+
+-- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function CombatScreen:initialize( playerFaction, savegame )
+function CombatScreen:initialize( savegame )
     love.mouse.setVisible( true )
 
-    self.combatState = CombatState( playerFaction, savegame )
+    self.combatState = CombatState( savegame )
 
     self.mapPainter = MapPainter( self.combatState:getMap() )
 
@@ -101,6 +116,11 @@ function CombatScreen:keypressed( key, scancode, isrepeat )
         ScreenManager.push( 'ingamemenu', self.combatState )
     end
 
+    if Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ) == 'center_camera' then
+        centerCamera( self.combatState:getPlayerFaction():getCurrentCharacter(), self.camera, TexturePacks.getTileDimensions() )
+        return
+    end
+
     self.combatState:keypressed( key, scancode, isrepeat )
     self.camera:input( Settings.mapInput( Settings.INPUTLAYOUTS.COMBAT, scancode ), true )
 end
@@ -115,11 +135,7 @@ function CombatScreen:mousepressed( _, _, button )
 end
 
 function CombatScreen:mousefocus( f )
-    if f then
-        self.camera:unlock()
-    else
-        self.camera:lock()
-    end
+    self.camera:lock( f )
 end
 
 function CombatScreen:resize( _, _ )

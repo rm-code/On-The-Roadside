@@ -122,8 +122,8 @@ end
 -- @tparam Character character  The currently active character.
 
 local function drawActionPoints( textObject, colorTable, state, map, camera, character )
-    local currentActionPoints = character:getActionPoints()
-    local maximumActionPoints = character:getMaxActionPoints()
+    local currentActionPoints = character:getCurrentAP()
+    local maximumActionPoints = character:getMaximumAP()
 
     local x, y = 0, 32
     -- AP:
@@ -145,7 +145,7 @@ local function drawActionPoints( textObject, colorTable, state, map, camera, cha
     -- AP: xx =>
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), ' => ' )
     -- AP: xx => yy
-    addToTextObject( textObject, colorTable, x, y, adjustColors( character:getActionPoints() - cost, character:getMaxActionPoints() ), character:getActionPoints() - cost )
+    addToTextObject( textObject, colorTable, x, y, adjustColors( character:getCurrentAP() - cost, character:getMaximumAP() ), character:getCurrentAP() - cost )
 end
 
 ---
@@ -156,8 +156,8 @@ end
 -- @tparam Character character  The currently active character.
 
 local function drawHealthPoints( textObject, colorTable, character )
-    local currentHealthPoints = character:getHealthPoints()
-    local maximumHealthPoints = character:getMaximumHealthPoints()
+    local currentHealthPoints = character:getCurrentHP()
+    local maximumHealthPoints = character:getMaximumHP()
 
     local x, y = 112, 32
     -- HP:

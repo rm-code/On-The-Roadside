@@ -56,27 +56,39 @@ local function calculateVolume( items )
     return volume
 end
 
----
--- Adds an Item to the inventory.
--- @tparam  table   items The table containing all items inside of this inventory.
--- @tparam  Item    item  The Item to add.
--- @tparam  numnber index The index at which to insert the item.
--- @treturn boolean       True if the Item was added successfully.
---
-local function addItem( items, item, index )
-    table.insert( items, index, item )
+-- TODO: proper documentation
+local function merge( self, stack, ostack )
+    assert( stack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
+    assert( ostack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
+
+    for i = #ostack:getItems(), 1, -1 do
+        local item = ostack:getItems()[i]
+
+        if not self:doesFit( item:getWeight(), item:getVolume() ) then
+            return false
+        end
+
+        stack:addItem( item )
+        ostack:removeItem( item )
+    end
+
     return true
 end
 
 ---
 -- Adds an ItemStack to the inventory.
--- @tparam  table     items The table containing all items inside of this inventory.
+-- @tparam  Inventory self  The inventory instance to use.
 -- @tparam  ItemStack stack The ItemStack to add.
 -- @tparam  number    index The index at which to insert the stack.
 -- @treturn boolean         True if the ItemStack was added successfully.
 --
-local function addItemStack( items, stack, index )
-    table.insert( items, index, stack )
+local function addItemStack( self, stack, index )
+    for i = 1, #self.items do
+        if self.items[i]:getID() == stack:getID() then
+            return merge( self, self.items[i], stack )
+        end
+    end
+    table.insert( self.items, index, stack )
     return true
 end
 
@@ -92,7 +104,7 @@ end
 local function addStackableItem( items, item, index )
     -- Check if we already have an item stack to add this item to.
     for _, stack in ipairs( items ) do
-        if stack:isInstanceOf( ItemStack ) and stack:getID() == item:getID() then
+        if stack:getID() == item:getID() then
             stack:addItem( item )
             return true
         end
@@ -113,18 +125,11 @@ end
 --
 local function removeItem( items, item )
     for i = 1, #items do
-        -- Check if item is part of a stack.
-        if items[i]:isInstanceOf( ItemStack ) then
-            local success = items[i]:removeItem( item )
-            if success then
-                -- Remove the stack if it is empty.
-                if items[i]:isEmpty() then
-                    table.remove( items, i )
-                end
-                return true
+        if items[i]:removeItem( item ) then
+            -- Remove the stack if it is empty.
+            if items[i]:isEmpty() then
+                table.remove( items, i )
             end
-        elseif items[i] == item then
-            table.remove( items, i )
             return true
         end
     end
@@ -139,31 +144,12 @@ end
 --
 local function removeItemStack( items, stack )
     for i = 1, #items do
-        if items[i]:isInstanceOf( ItemStack ) and items[i] == stack then
+        if items[i] == stack then
             table.remove( items, i )
             return true
         end
     end
     return false
-end
-
--- TODO: proper documentation
-local function merge( self, stack, ostack )
-    assert( stack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
-    assert( ostack:isInstanceOf( ItemStack ), 'Expected parameter of type ItemStack.' )
-
-    for i = #ostack:getItems(), 1, -1 do
-        local item = ostack:getItems()[i]
-
-        if not self:doesFit( item:getWeight(), item:getVolume() ) then
-            return false
-        end
-
-        stack:addItem( item )
-        ostack:removeItem( item )
-    end
-
-    return true
 end
 
 -- ------------------------------------------------
@@ -180,12 +166,12 @@ end
 ---
 -- Drops items until the volume of the carried items is smaller than the
 -- maximum volume.
--- @tparam Tile tile The tile to drop the items on.
+-- @tparam Inventory inventory The inventory to drop the items into.
 --
-function Inventory:dropItems( tile )
+function Inventory:dropItems( inventory )
     for i = #self.items, 1, -1 do
         if calculateVolume( self.items ) > self.volumeLimit then
-            local success = tile:getInventory():addItem( self.items[i] )
+            local success = inventory:addItem( self.items[i] )
             if success then
                 self:removeItem( self.items[i] )
             else
@@ -233,15 +219,11 @@ function Inventory:addItem( item, index )
     end
 
     if item:isInstanceOf( ItemStack ) then
-        return addItemStack( self.items, item, index )
+        return addItemStack( self, item, index )
     end
 
     if item:isInstanceOf( Item ) then
-        if item:isStackable() then
-            return addStackableItem( self.items, item, index )
-        else
-            return addItem( self.items, item, index )
-        end
+        return addStackableItem( self.items, item, index )
     end
 end
 
@@ -254,10 +236,8 @@ end
 function Inventory:insertItem( item, oitem )
     for i = 1, #self.items do
         if self.items[i] == oitem then
-            if oitem:isInstanceOf( ItemStack ) and oitem:getID() == item:getID() then
-                if item:isInstanceOf( ItemStack ) then
-                    return merge( self, oitem, item )
-                end
+            if item:isInstanceOf( ItemStack ) and oitem:isInstanceOf( ItemStack ) and oitem:getID() == item:getID() then
+                return merge( self, oitem, item )
             end
             return self:addItem( item, i )
         end
@@ -296,12 +276,8 @@ end
 --
 function Inventory:loadItems( loadedItems )
     for _, item in pairs( loadedItems ) do
-        if item.ItemStack then
-            for _, sitem in ipairs( item.items ) do
-                self:addItem( ItemFactory.loadItem( sitem ))
-            end
-        else
-            self:addItem( ItemFactory.loadItem( item ))
+        for _, sitem in ipairs( item.items ) do
+            self:addItem( ItemFactory.loadItem( sitem ))
         end
     end
 end
@@ -326,16 +302,11 @@ end
 -- @treturn Item        An item of the specified type.
 --
 function Inventory:getAndRemoveItem( type )
-    for _, item in ipairs( self.items ) do
-        if item:getItemType() == type then
-            if item:isInstanceOf( ItemStack ) then
-                local i = item:getItem()
-                self:removeItem( i )
-                return i
-            else
-                self:removeItem( item )
-                return item
-            end
+    for _, stack in ipairs( self.items ) do
+        if stack:getItemType() == type then
+            local item = stack:getItem()
+            self:removeItem( item )
+            return item
         end
     end
 end
@@ -350,15 +321,10 @@ end
 --
 function Inventory:countItems( type, id )
     local count = 0
-    for _, item in ipairs( self.items ) do
+    for _, stack in ipairs( self.items ) do
         -- Match items based on type and id.
-        if item:getItemType() == type and item:getID() == id then
-            -- Count items in stacks.
-            if item:isInstanceOf( ItemStack ) then
-                count = count + item:getItemCount()
-            else
-                count = count + 1
-            end
+        if stack:getItemType() == type and stack:getID() == id then
+            count = count + stack:getItemCount()
         end
     end
     return count

@@ -2,6 +2,7 @@ local ScreenManager = require('lib.screenmanager.ScreenManager')
 local Log = require( 'src.util.Log' )
 local DebugGrid = require( 'src.ui.overlays.DebugGrid' )
 local Letterbox = require( 'src.ui.overlays.Letterbox' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Local Variables
@@ -9,6 +10,9 @@ local Letterbox = require( 'src.ui.overlays.Letterbox' )
 
 local debugGrid
 local letterbox
+
+local mousepressed = false
+local mousedragged = false
 
 -- ------------------------------------------------
 -- Constants
@@ -35,14 +39,18 @@ local SCREENS = {
     information      = require( 'src.ui.screens.InformationModal'      ),
     inputdialog      = require( 'src.ui.screens.InputDialog'           ),
     maptest          = require( 'src.ui.screens.MapTest'               ),
-    mapeditor        = require( 'src.ui.screens.MapEditor'             ),
-    mapeditormenu    = require( 'src.ui.screens.MapEditorMenu'         ),
-    prefabeditor     = require( 'src.ui.screens.PrefabEditor'          ),
-    prefabeditormenu = require( 'src.ui.screens.PrefabEditorMenu'      ),
-    editorloading    = require( 'src.ui.mapeditor.EditorLoadingScreen' ),
+    mapeditor        = require( 'src.map.editor.MapEditor'             ),
+    mapeditormenu    = require( 'src.map.editor.MapEditorMenu'         ),
+    prefabeditor     = require( 'src.map.editor.PrefabEditor'          ),
+    prefabeditormenu = require( 'src.map.editor.PrefabEditorMenu'      ),
+    editorloading    = require( 'src.map.editor.EditorLoadingScreen'   ),
     keybindingeditor = require( 'src.ui.screens.KeybindingScreen'      ),
     keybindingmodal  = require( 'src.ui.screens.KeybindingModal'       ),
     playerInfo       = require( 'src.ui.screens.PlayerInfo'            ),
+    base             = require( 'src.base.BaseScreen'                  ),
+    basemenu         = require( 'src.base.BaseScreenMenu'              ),
+    recruitment      = require( 'src.base.RecruitmentScreen'           ),
+    shop             = require( 'src.base.ShopScreen'                  ),
 }
 
 -- ------------------------------------------------
@@ -128,7 +136,12 @@ function love.update(dt)
 end
 
 function love.quit(q)
+    Log.info( 'Shutting down...', 'Main' )
+
     ScreenManager.quit(q)
+
+    DataHandler.removeTemporaryFiles()
+    Log.info( 'Thank you for playing "On The Roadside"!', 'Main' )
 end
 
 function love.keypressed( key, scancode, isrepeat )
@@ -148,10 +161,18 @@ function love.textinput( text )
 end
 
 function love.mousepressed( mx, my, button, isTouch, presses )
+    mousepressed = true
     ScreenManager.mousepressed( mx, my, button, isTouch, presses )
 end
 
 function love.mousereleased( mx, my, button, isTouch, presses )
+    mousepressed = false
+    if mousedragged then
+        mousedragged = false
+        ScreenManager.mousedragstopped()
+        return
+    end
+
     ScreenManager.mousereleased( mx, my, button, isTouch, presses )
 end
 
@@ -160,6 +181,12 @@ function love.mousefocus( f )
 end
 
 function love.mousemoved( x, y, dx, dy, isTouch )
+    if mousepressed then
+        mousedragged = true
+        mousepressed = false
+        ScreenManager.mousedragstarted()
+    end
+
     ScreenManager.mousemoved( x, y, dx, dy, isTouch )
 end
 

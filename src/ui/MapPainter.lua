@@ -82,26 +82,33 @@ local CONNECTION_BITMASK = {
 -- each tile a unique identifier and sets it to dirty for the first update.
 -- @tparam Map         map         The map to draw.
 -- @tparam SpriteBatch spritebatch The spritebatch to initialize.
+-- @treturn table                  A table containing the sprite ids for each tile.
 --
 local function initSpritebatch( map, spritebatch )
     local tw, th = TexturePacks.getTileDimensions()
+    local spriteIndex = {}
+
     map:iterate( function( x, y, tile, _ )
         local id = spritebatch:add( TexturePacks.getSprite( 'tile_empty' ), x * tw, y * th )
-        tile:setSpriteID( id )
+        spriteIndex[x] = spriteIndex[x] or {}
+        spriteIndex[x][y] = id
         tile:setDirty( true )
     end)
     Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
+
+    return spriteIndex
 end
 
 ---
 -- Selects a color which to use when a tile is drawn based on its contents.
--- @tparam  Tile        tile        The tile to choose a color for.
--- @tparam  WorldObject worldObject The worldobject to choose a color for.
--- @tparam  Character   character   A character to choose a color for.
--- @tparam  Faction     faction     The faction to draw for.
--- @treturn table                   A table containing RGBA values.
+-- @tparam  Tile        tile                The tile to choose a color for.
+-- @tparam  WorldObject worldObject         The worldobject to choose a color for.
+-- @tparam  boolean     worldObjectsVisible Wether or not to hide world objects.
+-- @tparam  Character   character           A character to choose a color for.
+-- @tparam  Faction     faction             The faction to draw for.
+-- @treturn table                           A table containing RGBA values.
 --
-local function selectTileColor( tile, worldObject, character, faction )
+local function selectTileColor( tile, worldObject, worldObjectsVisible, character, faction )
     -- If there is a faction we check which tiles are currently seen and highlight
     -- the active character.
     if faction then
@@ -125,7 +132,7 @@ local function selectTileColor( tile, worldObject, character, faction )
         return TexturePacks.getColor( items[1]:getID() )
     end
 
-    if worldObject then
+    if worldObjectsVisible and worldObject then
         return TexturePacks.getColor( worldObject:getID() )
     end
 
@@ -180,11 +187,10 @@ local function selectWorldObjectSprite( worldObject )
     -- Check if the world object sprite connects to adjacent sprites.
     local connections = worldObject:getConnections()
     if connections then
-        local neighbours = worldObject:getNeighbours()
-        local result = checkConnection( connections, neighbours[DIRECTION.NORTH], 1 ) +
-                       checkConnection( connections, neighbours[DIRECTION.EAST],  2 ) +
-                       checkConnection( connections, neighbours[DIRECTION.SOUTH], 4 ) +
-                       checkConnection( connections, neighbours[DIRECTION.WEST],  8 )
+        local result = checkConnection( connections, worldObject:getNeighbour( DIRECTION.NORTH ), 1 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.EAST  ), 2 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.SOUTH ), 4 ) +
+                       checkConnection( connections, worldObject:getNeighbour( DIRECTION.WEST  ), 8 )
         return TexturePacks.getSprite( worldObject:getID(), CONNECTION_BITMASK[result] )
     end
 
@@ -193,13 +199,14 @@ end
 
 ---
 -- Selects a sprite from the tileset based on the contents of a tile.
--- @tparam  Tile        tile        The tile to choose a sprite for.
--- @tparam  WorldObject worldObject The worldObject to choose a sprite for.
--- @tparam  Character   character   A character to choose a sprite for.
--- @tparam  Faction     faction     The faction to draw for.
--- @treturn Quad                    A quad pointing to a sprite on the tileset.
+-- @tparam  Tile        tile                The tile to choose a sprite for.
+-- @tparam  WorldObject worldObject         The worldObject to choose a sprite for.
+-- @tparam  boolean     worldObjectsVisible Wether or not to hide world objects.
+-- @tparam  Character   character           A character to choose a sprite for.
+-- @tparam  Faction     faction             The faction to draw for.
+-- @treturn Quad                            A quad pointing to a sprite on the tileset.
 --
-local function selectTileSprite( tile, worldObject, character, faction )
+local function selectTileSprite( tile, worldObject, worldObjectsVisible, character, faction )
     if character and tile:isSeenBy( faction:getType() ) then
         return selectCharacterTile( character )
     end
@@ -209,7 +216,7 @@ local function selectTileSprite( tile, worldObject, character, faction )
         return TexturePacks.getSprite( items[1]:getID() )
     end
 
-    if worldObject then
+    if worldObjectsVisible and worldObject then
         return selectWorldObjectSprite( worldObject )
     end
 
@@ -219,16 +226,18 @@ end
 ---
 -- Updates the spritebatch by going through every tile in the map. Only
 -- tiles which have been marked as dirty will be sent to the spritebatch.
--- @tparam SpriteBatch spritebatch The spritebatch to update.
--- @tparam Map         map         The map to draw.
--- @tparam Faction     faction     The player's faction.
+-- @tparam SpriteBatch spritebatch         The spritebatch to update.
+-- @tparam table       spriteIndex         A table containing the sprite IDs for each tile.
+-- @tparam Map         map                 The map to draw.
+-- @tparam Faction     faction             The player's faction.
+-- @tparam boolean     worldObjectsVisible Wether or not to hide world objects.
 --
-local function updateSpritebatch( spritebatch, map, faction )
+local function updateSpritebatch( spritebatch, spriteIndex, map, faction, worldObjectsVisible )
     local tw, th = TexturePacks.getTileDimensions()
     map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
-            spritebatch:setColor( selectTileColor( tile, worldObject, character, faction ))
-            spritebatch:set( tile:getSpriteID(), selectTileSprite( tile, worldObject, character, faction ), x * tw, y * th )
+            spritebatch:setColor( selectTileColor( tile, worldObject, worldObjectsVisible, character, faction ))
+            spritebatch:set( spriteIndex[x][y], selectTileSprite( tile, worldObject, worldObjectsVisible, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end
     end)
@@ -244,10 +253,11 @@ end
 --
 function MapPainter:initialize( map )
     self.map = map
+    self.worldObjectsVisible = true
 
     TexturePacks.setBackgroundColor()
     self.spritebatch = love.graphics.newSpriteBatch( TexturePacks.getTileset():getSpritesheet(), MAX_SPRITES, 'dynamic' )
-    initSpritebatch( self.map, self.spritebatch )
+    self.spriteIndex = initSpritebatch( self.map, self.spritebatch )
 end
 
 ---
@@ -261,8 +271,12 @@ end
 -- Updates the spritebatch for the game's world.
 --
 function MapPainter:update()
-    updateSpritebatch( self.spritebatch, self.map, self.faction )
+    updateSpritebatch( self.spritebatch, self.spriteIndex, self.map, self.faction, self.worldObjectsVisible )
 end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
 
 ---
 -- Sets the faction which is used for checking which parts of the map are visible.
@@ -270,6 +284,32 @@ end
 --
 function MapPainter:setActiveFaction( faction )
     self.faction = faction
+end
+
+---
+-- Determines wether to hide or show the world object layer.
+-- @tparam boolean visible Wether to show or hide the object layer.
+--
+function MapPainter:setWorldObjectsVisible( visible )
+    self.worldObjectsVisible = visible
+
+    self.map:iterate( function( _, _, tile, worldObject )
+        if worldObject then
+            tile:setDirty( true )
+        end
+    end)
+end
+
+-- ------------------------------------------------
+-- Getters
+-- ------------------------------------------------
+
+---
+-- Returns wether the world object layer is currently hidden or not.
+-- @tparam boolean True if it is visible, false if not.
+--
+function MapPainter:getWorldObjectsVisible()
+    return self.worldObjectsVisible
 end
 
 return MapPainter

@@ -164,7 +164,8 @@ end
 function Body:serialize()
     local t = {
         ['id'] = self.id,
-        ['hp'] = self.currentHP,
+        ['currentHP'] = self.currentHP,
+        ['maximumHP'] = self.maximumHP,
         ['inventory'] = self.inventory:serialize(),
         ['equipment'] = self.equipment:serialize(),
         ['statusEffects'] = self.statusEffects:serialize()
@@ -179,6 +180,18 @@ end
 --
 function Body:receive( event, ... )
     self:publish( event, ... )
+end
+
+-- ------------------------------------------------
+-- Setters
+-- ------------------------------------------------
+
+---
+-- Sets the current health points.
+-- @tparam number hp The new health points value.
+--
+function Body:setCurrentHP( hp )
+    self.currentHP = hp
 end
 
 -- ------------------------------------------------
@@ -197,7 +210,7 @@ end
 -- Returns the creature's health.
 -- @treturn number The current health points.
 --
-function Body:getHealthPoints()
+function Body:getCurrentHP()
     return self.currentHP
 end
 
@@ -205,7 +218,7 @@ end
 -- Returns the creature's maximum health.
 -- @treturn number The maximum health points.
 --
-function Body:getMaximumHealthPoints()
+function Body:getMaximumHP()
     return self.maximumHP
 end
 

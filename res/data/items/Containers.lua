@@ -6,7 +6,6 @@ return {
         weight        = 1.7,
         volume        = 1.0,
         equippable    = true,
-        stackable     = false,
         permanent     = false,
         tags = {
             'humanoid'

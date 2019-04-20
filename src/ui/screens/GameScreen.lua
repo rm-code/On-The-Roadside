@@ -12,6 +12,8 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local Faction = require( 'src.characters.Faction' )
+local DataHandler = require( 'src.DataHandler' )
+local Inventory = require( 'src.inventory.Inventory' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,17 +31,34 @@ local FACTIONS = require( 'src.constants.FACTIONS' )
 -- Constructor
 -- ------------------------------------------------
 
-function GameScreen:initialize( savegame )
+local function loadGame( savegame )
+    DataHandler.copyPlayerFaction( savegame.factions[FACTIONS.ALLIED] )
+    DataHandler.copyBaseInventory( savegame.baseInventory )
+    ScreenManager.switch( savegame.type, savegame )
+end
+
+local function newGame()
     local playerFaction = Faction( FACTIONS.ALLIED, false )
+    playerFaction:addCharacters( 10 )
+
+    local baseInventory = Inventory()
+
+    DataHandler.copyPlayerFaction( playerFaction:serialize() )
+    DataHandler.copyBaseInventory( baseInventory:serialize() )
+    ScreenManager.switch( 'base' )
+end
+
+-- ------------------------------------------------
+-- Constructor
+-- ------------------------------------------------
+
+function GameScreen:initialize( savegame )
 
     if savegame then
-        playerFaction:loadCharacters( savegame.factions[FACTIONS.ALLIED] )
+        loadGame( savegame )
     else
-        playerFaction:addCharacters( 10 )
+        newGame()
     end
-
-    local state = savegame and savegame.type or 'combat'
-    ScreenManager.push( state, playerFaction, savegame )
 end
 
 return GameScreen

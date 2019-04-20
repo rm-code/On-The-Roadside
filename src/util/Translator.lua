@@ -22,6 +22,7 @@ local MISSING_TRANSLATION_ERROR = 'Translation for locale %s and ID %s doesn\'t 
 local MISSING_ID_ERROR = 'TEXT_ERROR <%s>'
 local LOCALE_ERROR = 'The selected locale %s doesn\'t exist. Falling back to default locale.'
 local TEMPLATE_DIRECTORY  = 'res/text/'
+local MODDING_DIRECTORY  = 'mods/language/'
 
 -- ------------------------------------------------
 -- Local Variables
@@ -30,6 +31,7 @@ local TEMPLATE_DIRECTORY  = 'res/text/'
 local locales = {}
 local locale
 local defaultLocale
+local counter
 
 -- ------------------------------------------------
 -- Local Functions
@@ -42,17 +44,15 @@ local defaultLocale
 local function loadAdditionalText( path )
     local status, loaded = pcall( love.filesystem.load, path )
     if not status then
-        Log.warn( 'Can not load translation file from ' .. path )
+        Log.warn( 'Can not load translation file from ' .. path, 'Translator' )
     else
         local template = loaded()
 
         -- Load table or create a new one.
-        locales[template.identifier] = locales[template.identifier] or {}
+        locales[template.identifier] = template.strings
 
-        -- Copy translations to the main locale.
-        for i, v in pairs( template.strings ) do
-            locales[template.identifier][i] = v
-        end
+        counter = counter + 1
+        Log.info( string.format( '  %d. %s', counter, template.identifier ), 'Translator' )
     end
 end
 
@@ -62,17 +62,11 @@ end
 -- @tparam string dir The template directory to search through.
 --
 local function load( dir )
-    local subdirectories = love.filesystem.getDirectoryItems( dir )
-    for i, subdir in ipairs( subdirectories ) do
-        local path = dir .. subdir .. '/'
-        if love.filesystem.getInfo( path, 'directory' ) then
-            local files = love.filesystem.getDirectoryItems( path )
-
-            -- Loads all the other text files for this locale.
-            for _, file in ipairs( files ) do
-                loadAdditionalText( path .. file )
-            end
-            Log.debug( string.format( '  %d. %s', i, subdir ))
+    local directoryItems = love.filesystem.getDirectoryItems( dir )
+    for _, item in ipairs( directoryItems ) do
+        if love.filesystem.getInfo( dir .. item, 'file' ) then
+            -- Loads the text file for this locale.
+            loadAdditionalText( dir .. item )
         end
     end
 end
@@ -87,8 +81,11 @@ end
 -- @tparam string nlocale The identifier for the default locale (e.g. en_EN)
 --
 function Translator.init( nlocale )
-    Log.debug( 'Load language files:' )
+    counter = 0
+
+    Log.info( 'Load language files:', 'Translator' )
     load( TEMPLATE_DIRECTORY )
+    load( MODDING_DIRECTORY )
 
     -- Set the default locale and make it the active locale.
     -- The default locale will be used as a fallback.
@@ -107,6 +104,14 @@ end
 --
 function Translator.getLocale()
     return locale
+end
+
+---
+-- Gets all locales.
+-- @treturn table All loaded locales.
+--
+function Translator.getLocales()
+    return locales
 end
 
 ---

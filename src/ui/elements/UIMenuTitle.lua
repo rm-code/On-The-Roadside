@@ -32,21 +32,20 @@ local function createTitle( titleDefinition )
     local title = love.graphics.newText( font )
     local coloredtext = {}
 
-    for _, line in ipairs( titleDefinition ) do
-        for w in string.gmatch( line, '.' ) do
-            if w == 'O' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
-                coloredtext[#coloredtext + 1] = w
-            elseif w == '!' then
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
-                coloredtext[#coloredtext + 1] = w
-            else
-                coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
-                coloredtext[#coloredtext + 1] = w
-            end
+    for w in string.gmatch( titleDefinition, '.' ) do
+        if w == 'O' then
+            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_1' )
+            coloredtext[#coloredtext + 1] = w
+        elseif w == '!' then
+            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_2' )
+            coloredtext[#coloredtext + 1] = w
+        elseif w == ':' then
+            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
+            coloredtext[#coloredtext + 1] = w
+        else
+            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'tile_unseen' )
+            coloredtext[#coloredtext + 1] = w
         end
-        coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'tile_unseen' )
-        coloredtext[#coloredtext + 1] = '\n'
     end
 
     title:add( coloredtext, 0, 0 )

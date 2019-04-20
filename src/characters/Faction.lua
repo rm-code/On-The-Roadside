@@ -120,7 +120,7 @@ end
 --
 function Faction:deactivate()
     self:iterate( function( character )
-        character:resetActionPoints()
+        character:resetCurrentAP()
         character:clearActions()
     end)
 end
@@ -292,6 +292,14 @@ end
 -- ------------------------------------------------
 -- Getters
 -- ------------------------------------------------
+
+---
+-- Returns this faction's first (root) character.
+-- @treturn Character The first character in the list.
+--
+function Faction:getFirstCharacter()
+    return self.root:getObject()
+end
 
 ---
 -- Returns this faction's currently active character.

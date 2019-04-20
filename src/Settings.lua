@@ -21,7 +21,7 @@ local Settings = {}
 
 local FILE_NAME = 'settings.otr'
 local DEFAULT_SETTINGS = {
-    version = 11,
+    version = 15,
     general = {
         fullscreen = true,
         locale = 'en_EN',
@@ -31,6 +31,10 @@ local DEFAULT_SETTINGS = {
         invertedMessageLog = false,
     },
     controls = {
+        base = {
+            ['i']      = 'open_inventory_screen',
+            ['s']      = 'open_shop_screen',
+        },
         combat = {
             ['x']      = 'action_stand',
             ['c']      = 'action_crouch',
@@ -46,10 +50,15 @@ local DEFAULT_SETTINGS = {
             ['return'] = 'end_turn',
             ['i']      = 'open_inventory_screen',
             ['h']      = 'open_health_screen',
+            ['f1']     = 'center_camera',
             ['left']   = 'pan_camera_left',
             ['right']  = 'pan_camera_right',
             ['up']     = 'pan_camera_up',
             ['down']   = 'pan_camera_down'
+        },
+        inventory = {
+            ['lshift'] = 'drag_item_stack',
+            ['lctrl']  = 'split_item_stack'
         },
         prefabeditor = {
             [']']      = 'increase_tool_size',
@@ -70,7 +79,9 @@ local WARNING_TEXT = 'Replacing outdated settings file (v%d) with current defaul
 local UNASSIGNED_SCANCODE = 'unassigned'
 
 Settings.INPUTLAYOUTS = {}
+Settings.INPUTLAYOUTS.BASE = 'base'
 Settings.INPUTLAYOUTS.COMBAT = 'combat'
+Settings.INPUTLAYOUTS.INVENTORY = 'inventory'
 Settings.INPUTLAYOUTS.PREFAB_EDITOR = 'prefabeditor'
 
 -- ------------------------------------------------
@@ -133,6 +144,17 @@ end
 --
 function Settings.mapInput( mode, scancode )
     return settings.controls[mode][scancode]
+end
+
+---
+-- Maps an action to a keypress.
+--
+function Settings.mapAction( mode, actionToMap )
+    for scancode, action in pairs( settings.controls[mode] ) do
+        if action == actionToMap then
+            return scancode
+        end
+    end
 end
 
 -- ------------------------------------------------

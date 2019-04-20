@@ -7,16 +7,19 @@
 -- ------------------------------------------------
 
 local Screen = require( 'src.ui.screens.Screen' )
-local Translator = require( 'src.util.Translator' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
+
+local Translator = require( 'src.util.Translator' )
 local SaveHandler = require( 'src.SaveHandler' )
-local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
-local UIVerticalList = require( 'src.ui.elements.lists.UIVerticalList' )
-local UIButton = require( 'src.ui.elements.UIButton' )
 local GridHelper = require( 'src.util.GridHelper' )
-local UIContainer = require( 'src.ui.elements.UIContainer' )
-local Util = require( 'src.util.Util' )
+
 local UIMenuTitle = require( 'src.ui.elements.UIMenuTitle' )
+local UICopyrightFooter = require( 'src.ui.elements.UICopyrightFooter' )
+local UIContainer = require( 'src.ui.elements.UIContainer' )
+local UIButton = require( 'src.ui.elements.UIButton' )
+local UISaveGameEntry = require( 'src.savegames.UISaveGameEntry' )
+local UISaveGameHeader = require( 'src.savegames.UISaveGameHeader' )
+local UIPaginatedList = require( 'src.ui.elements.lists.UIPaginatedList' )
 
 -- ------------------------------------------------
 -- Module
@@ -28,40 +31,32 @@ local SavegameScreen = Screen:subclass( 'SavegameScreen' )
 -- Constants
 -- ------------------------------------------------
 
+local UI_GRID_WIDTH  = 64
+local UI_GRID_HEIGHT = 48
+
 local TITLE_POSITION = 2
-local BUTTON_LIST_WIDTH = 20
-local BUTTON_LIST_Y = 20
+
+local BACK_BUTTON_WIDTH = 10
+local BACK_BUTTON_HEIGHT = 1
+local BACK_BUTTON_OFFSET_Y = UI_GRID_HEIGHT - 3
+
+local SAVEGAME_LIST_WIDTH = 42
+local SAVEGAME_LIST_HEIGHT = 28
+local SAVEGAME_LIST_OFFSET_Y = 16
+
+local SAVEGAME_LIST_HEADER_OFFSET_Y = 14
 
 -- ------------------------------------------------
 -- Private Functions
 -- ------------------------------------------------
 
-local function createBackButton( lx, ly )
+local function createBackButton()
+    local x, _ = GridHelper.centerElement( BACK_BUTTON_WIDTH, UI_GRID_HEIGHT )
+
     local function callback()
         ScreenManager.switch( 'mainmenu' )
     end
-    return UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, Translator.getText( 'ui_back' ))
-end
-
-local function createSaveGameEntry( lx, ly, index, item, folder )
-    local version = SaveHandler.loadVersion( folder )
-
-    -- Generate the string for the savegame button showing the name of the saves,
-    -- the version of the game at which they were created and their creation date.
-    local str = string.format( '%2d. %s', index, item )
-    str = Util.rightPadString( str, 36, ' ')
-    str = str .. string.format( '  %s    %s', version, os.date( '%Y-%m-%d  %X', love.filesystem.getInfo( folder ).modtime ))
-
-    local function callback()
-        if version == getVersion() then
-            local save = SaveHandler.load( folder )
-            ScreenManager.switch( 'gamescreen', save )
-        end
-    end
-
-    local button = UIButton( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1, callback, str, 'center' )
-    button:setActive( version == getVersion() )
-    return button
+    return UIButton( x, BACK_BUTTON_OFFSET_Y, 0, 0, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, callback, Translator.getText( 'ui_back' ))
 end
 
 ---
@@ -86,21 +81,24 @@ local function loadFiles( savedir )
     return saveDirectories
 end
 
-local function createButtons()
-    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
-    local ly = BUTTON_LIST_Y
+local function createSaveGameList( self )
+    local x, _ = GridHelper.centerElement( SAVEGAME_LIST_WIDTH, SAVEGAME_LIST_HEIGHT )
+    local saveGameList = UIPaginatedList( x, SAVEGAME_LIST_OFFSET_Y, 0, 0, SAVEGAME_LIST_WIDTH, SAVEGAME_LIST_HEIGHT )
 
-    local buttonList = UIVerticalList( lx, ly, 0, 0, BUTTON_LIST_WIDTH, 1 )
+    local saves = {}
 
     local items = loadFiles( SaveHandler.getSaveFolder() )
-    local counter = 0
-    for i = 1, #items do
-        counter = counter + 1
-        buttonList:addChild( createSaveGameEntry( lx, ly, counter, items[i], SaveHandler.getSaveFolder() .. '/' .. items[i] ))
+    for i, folder in ipairs( items ) do
+        local valid, version = SaveHandler.validateSave( folder )
+        local type = Translator.getText( SaveHandler.loadSaveType( folder ).type )
+        local date = os.date( '%Y-%m-%d %X', love.filesystem.getInfo( SaveHandler.getSaveFolder() .. '/' .. folder ).modtime )
+        saves[i] = UISaveGameEntry( 0, 0, 0, 0, folder, version, date, type, valid )
+        saves[i]:observe( self )
     end
 
-    buttonList:addChild( createBackButton( lx, ly ))
-    return buttonList
+    saveGameList:setItems( saves )
+
+    return saveGameList
 end
 
 -- ------------------------------------------------
@@ -108,13 +106,27 @@ end
 -- ------------------------------------------------
 
 function SavegameScreen:initialize()
-    self.title = UIMenuTitle( Translator.getText( 'ui_title_savegames'), TITLE_POSITION )
-    self.buttonList = createButtons()
+    self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
 
     self.container = UIContainer()
-    self.container:register( self.buttonList )
 
+    self.backButton = createBackButton( self.x, self.y )
+    self.saveGameList = createSaveGameList( self )
+
+    self.container:register( self.saveGameList )
+    self.container:register( self.backButton )
+
+    self.title = UIMenuTitle( Translator.getText( 'ui_title_savegames' ), TITLE_POSITION )
+    self.header = UISaveGameHeader( SAVEGAME_LIST_HEADER_OFFSET_Y )
     self.footer = UICopyrightFooter()
+end
+
+function SavegameScreen:receive( msg, ... )
+    if msg == 'DELETE_SAVE' then
+        local save = ...
+        SaveHandler.deleteSave( save.name )
+        self.saveGameList:removeItem( save )
+    end
 end
 
 function SavegameScreen:update()
@@ -123,7 +135,9 @@ end
 
 function SavegameScreen:draw()
     self.title:draw()
-    self.container:draw()
+    self.header:draw()
+    self.backButton:draw()
+    self.saveGameList:draw()
     self.footer:draw()
 end
 
@@ -134,10 +148,18 @@ function SavegameScreen:keypressed( _, scancode )
         ScreenManager.switch( 'mainmenu' )
     end
 
+    if scancode == 'tab' then
+        self.container:next()
+    end
+
     if scancode == 'up' then
         self.container:command( 'up' )
     elseif scancode == 'down' then
         self.container:command( 'down' )
+    elseif scancode == 'left' then
+        self.container:command( 'left' )
+    elseif scancode == 'right' then
+        self.container:command( 'right' )
     elseif scancode == 'return' then
         self.container:command( 'activate' )
     end
@@ -155,9 +177,11 @@ function SavegameScreen:mousereleased()
 end
 
 function SavegameScreen:resize( _, _ )
-    local lx = GridHelper.centerElement( BUTTON_LIST_WIDTH, 1 )
-    local ly = BUTTON_LIST_Y
-    self.buttonList:setOrigin( lx, ly )
+    local x, _ = GridHelper.centerElement( SAVEGAME_LIST_WIDTH, SAVEGAME_LIST_HEIGHT )
+    self.saveGameList:setOrigin( x, SAVEGAME_LIST_OFFSET_Y )
+
+    x, _ = GridHelper.centerElement( BACK_BUTTON_WIDTH, UI_GRID_HEIGHT )
+    self.backButton:setOrigin( x, BACK_BUTTON_OFFSET_Y )
 end
 
 return SavegameScreen

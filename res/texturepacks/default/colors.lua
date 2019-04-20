@@ -47,6 +47,7 @@ return {
     -- ==============================
     -- TILES
     -- ==============================
+    ['tile_empty']       = COLORS.DB00,
     ['tile_unseen']      = COLORS.DB01,
 
     ['tile_asphalt']     = COLORS.DB25,
@@ -137,6 +138,10 @@ return {
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,
 
+    -- Savegames
+    ['ui_valid'] = COLORS.DB09,
+    ['ui_invalid'] = COLORS.DB27,
+
     -- Buttons.
     ['ui_button']     = COLORS.DB16,
     ['ui_button_hot'] = COLORS.DB18,
@@ -155,6 +160,7 @@ return {
     ['ui_text_dim'] = COLORS.DB01,
     ['ui_text']     = COLORS.DB20,
     ['ui_text_dark'] = COLORS.DB25,
+    ['ui_text_passive'] = COLORS.DB15,
     ['ui_text_success'] = COLORS.DB09,
     ['ui_text_warning'] = COLORS.DB05,
     ['ui_text_error'] = COLORS.DB27,
@@ -206,9 +212,22 @@ return {
     ['ui_msg_warning']  = COLORS.DB05,
     ['ui_msg_danger']  = COLORS.DB27,
 
+    -- Shop
+    ['shopitem_buy_hot'] = COLORS.DB09,
+    ['shopitem_buy_focus'] = COLORS.DB10,
+    ['shopitem_buy'] = COLORS.DB11,
+
+    ['shopitem_sell_hot'] = COLORS.DB28,
+    ['shopitem_sell_focus'] = COLORS.DB05,
+    ['shopitem_sell'] = COLORS.DB27,
+
+    ['shop_balance_positive'] = COLORS.DB11,
+    ['shop_balance_negative'] = COLORS.DB27,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================
+    ['ui_prefab_editor_brush'] = COLORS.DB25,
 
     ['parcel_spawns_friendly'] = COLORS.DB09,
     ['parcel_spawns_neutral'] = COLORS.DB08,

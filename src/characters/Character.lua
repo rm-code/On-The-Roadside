@@ -114,21 +114,23 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function Character:initialize( classID, actionPoints )
+function Character:initialize( classID, actionPoints, viewRange, shootingSkill, throwingSkill )
     MapObject.initialize( self )
 
     self.creatureClass = classID
 
-    self.maxActionPoints = actionPoints
-    self.actionPoints = actionPoints
+    self.maximumAP = actionPoints
+    self.currentAP = self.maximumAP
 
     self.actions = Queue()
 
     self.fov = {}
-    self.viewRange = 12
+    self.viewRange = viewRange
 
-    self.accuracy = love.math.random( 60, 90 )
-    self.throwingSkill = love.math.random( 60, 90 )
+    self.shootingSkill = shootingSkill
+    self.throwingSkill = throwingSkill
+
+    self.missions = 0
 
     self.stance = STANCES.STAND
 
@@ -186,7 +188,7 @@ function Character:enqueueAction( newAction )
     end
 
     -- Enqueue action only if the character has enough action points left.
-    if cost + newAction:getCost() <= self.actionPoints then
+    if cost + newAction:getCost() <= self.currentAP then
         self.actions:enqueue( newAction )
         return true
     end
@@ -204,7 +206,7 @@ function Character:performAction()
     local action = self.actions:dequeue()
     local success = action:perform()
     if success then
-        self.actionPoints = self.actionPoints - action:getCost()
+        self.currentAP = self.currentAP - action:getCost()
     end
     self:generateFOV()
 end
@@ -239,8 +241,8 @@ end
 ---
 -- Resets the character's action points to the default value.
 --
-function Character:resetActionPoints()
-    self.actionPoints = self.maxActionPoints
+function Character:resetCurrentAP()
+    self.currentAP = self.maximumAP
 end
 
 ---
@@ -278,6 +280,13 @@ function Character:move( x, y )
 end
 
 ---
+-- Increments the mission counter.
+--
+function Character:incrementMissionCount()
+    self.missions = self.missions + 1
+end
+
+---
 -- Serializes the Character instance.
 -- @treturn table The serialized character instance.
 --
@@ -285,12 +294,15 @@ function Character:serialize()
     local t = {
         ['class'] = self.creatureClass,
         ['name'] = self.name,
-        ['maxActionPoints'] = self.maxActionPoints,
-        ['actionPoints'] = self.actionPoints,
-        ['accuracy'] = self.accuracy,
+        ['nationality'] = self.nationality,
+        ['maximumAP'] = self.maximumAP,
+        ['currentAP'] = self.currentAP,
+        ['viewRange'] = self.viewRange,
+        ['shootingSkill'] = self.shootingSkill,
         ['throwingSkill'] = self.throwingSkill,
         ['stance'] = self.stance,
         ['finishedTurn'] = self.finishedTurn,
+        ['missions'] = self.missions,
         ['body'] = self.body:serialize(),
         ['x'] = self.x,
         ['y'] = self.y
@@ -312,19 +324,19 @@ end
 -- ------------------------------------------------
 
 ---
--- Returns the accuracy of this character used when shooting guns.
--- @treturn number The character's accuracy.
+-- Returns the shooting skill of this character.
+-- @treturn number The character's shooting skill.
 --
-function Character:getAccuracy()
-    return self.accuracy
+function Character:getShootingSkill()
+    return self.shootingSkill
 end
 
 ---
 -- Returns the amount of action points.
 -- @treturn number The amount of action points.
 --
-function Character:getActionPoints()
-    return self.actionPoints
+function Character:getCurrentAP()
+    return self.currentAP
 end
 
 ---
@@ -395,16 +407,24 @@ end
 -- Returns the creature's health.
 -- @treturn number The current health points.
 --
-function Character:getHealthPoints()
-    return self.body:getHealthPoints()
+function Character:getCurrentHP()
+    return self.body:getCurrentHP()
 end
 
 ---
 -- Returns the creature's maximum health.
 -- @treturn number The maximum health points.
 --
-function Character:getMaximumHealthPoints()
-    return self.body:getMaximumHealthPoints()
+function Character:getMaximumHP()
+    return self.body:getMaximumHP()
+end
+
+---
+-- Returns the amount of missions a character has fought in.
+-- @treturn number The number of missions.
+--
+function Character:getMissionCount()
+    return self.missions
 end
 
 ---
@@ -451,8 +471,8 @@ end
 -- Returns the total amount of action points.
 -- @treturn number The total amount of action points.
 --
-function Character:getMaxActionPoints()
-    return self.maxActionPoints
+function Character:getMaximumAP()
+    return self.maximumAP
 end
 
 ---
@@ -500,19 +520,11 @@ end
 -- ------------------------------------------------
 
 ---
--- Sets the character's accuracy attribute.
--- @tparam number accuracy The new accuracy value.
---
-function Character:setAccuracy( accuracy )
-    self.accuracy = accuracy
-end
-
----
 -- Sets the character's action points.
 -- @tparam number ap The amount of AP to set.
 --
-function Character:setActionPoints( ap )
-    self.actionPoints = ap
+    function Character:setCurrentAP( ap )
+    self.currentAP = ap
 end
 
 ---
@@ -533,8 +545,16 @@ function Character:setFaction( faction )
 end
 
 ---
+-- Sets the mission counter.
+-- @tparam number missions The new value for the mission counter.
+--
+function Character:setMissionCount( missions )
+    self.missions = missions
+end
+
+---
 -- Sets a new name for this character.
--- @tparam string nname The name to set for this character.
+-- @tparam string name The name to set for this character.
 --
 function Character:setName( name )
     self.name = name
@@ -546,14 +566,6 @@ end
 --
 function Character:setNationality( nationality )
     self.nationality = nationality
-end
-
----
--- Sets the character's throwing skill.
--- @tparam number throwingSkill The character's throwing skill.
---
-function Character:setThrowingSkill( throwingSkill )
-    self.throwingSkill = throwingSkill
 end
 
 ---

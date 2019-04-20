@@ -13,6 +13,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -60,7 +61,7 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function GameOverScreen:initialize( playerFaction, win )
+function GameOverScreen:initialize(  playerFaction, win )
     self.playerFaction = playerFaction
     self.win = win
 
@@ -82,6 +83,15 @@ function GameOverScreen:draw()
 end
 
 function GameOverScreen:keypressed()
+    if self.win then
+        self.playerFaction:iterate( function( character )
+            character:incrementMissionCount()
+        end)
+
+        DataHandler.copyPlayerFaction( self.playerFaction:serialize() )
+        ScreenManager.switch( 'base' )
+        return
+    end
     ScreenManager.switch( 'mainmenu' )
 end
 

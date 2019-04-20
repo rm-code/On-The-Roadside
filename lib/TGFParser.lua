@@ -1,7 +1,7 @@
 -- ============================================================================== --
 -- MIT License                                                                    --
 --                                                                                --
--- Copyright (c) 2016 - 2017 Robert Machmer                                       --
+-- Copyright (c) 2016 - 2018 Robert Machmer                                       --
 --                                                                                --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy   --
 -- of this software and associated documentation files (the "Software"), to deal  --
@@ -23,43 +23,57 @@
 -- ============================================================================== --
 
 local TGFParser = {
-    _VERSION     = '1.0.3',
+    _VERSION     = '1.1.0',
     _DESCRIPTION = 'A parser for "Trivial Graph Format" (TGF) files written in Lua.',
     _URL         = 'https://github.com/rm-code/lua-tgf-parser/',
-};
+}
+
+-- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local NODE_REGEX = '(.+) (.+)'
+local EDGE_REGEX = '(.+) (.+) (.+)'
 
 -- ------------------------------------------------
 -- Line iterator
 -- ------------------------------------------------
 
-local lines = love and love.filesystem.lines or io.lines;
+local lines = love and love.filesystem.lines or io.lines
 
 -- ------------------------------------------------
 -- Local Functions
 -- ------------------------------------------------
 
 ---
--- Iterates over the file and separates the lines for nodes and edges into
+-- Iterates over the file and stores the lines for nodes and edges in
 -- different tables.
--- @param path (string)   The path of the file to load.
--- @return     (sequence) A sequence containing all node definitions.
--- @return     (sequence) A sequence containing all edge definitions.
+-- @tparam string path The path of the file to load.
+-- @treturn table A sequence containing all node definitions.
+-- @treturn table A sequence containing all edge definitions.
 --
 local function loadFile( path )
-    local nodes = {};
-    local edges = {};
-    local target = nodes;
+    local nodes = {}
+    local edges = {}
+    local target = nodes
 
     -- Change the target table once the '#' separator is reached.
     for line in lines( path ) do
         if line == '#' then
-            target = edges;
+            target = edges
         else
-            target[#target + 1] = line;
+            target[#target + 1] = line
         end
     end
 
-    return nodes, edges;
+    return nodes, edges
+end
+
+---
+-- Tries to convert a string to a number.
+--
+local function convertNumber( n )
+    return tonumber( n ) and tonumber( n ) or n
 end
 
 -- ------------------------------------------------
@@ -68,34 +82,32 @@ end
 
 ---
 -- Parses a .tgf file.
--- @param path (string) The path of the file to load.
--- @return     (table)  The table containing the nodes and edges of the graph.
+-- @tparam string path The path of the file to load.
+-- @treturn table A table containing tables the nodes and edges of the graph.
 --
 function TGFParser.parse( path )
-    local nodes, edges = loadFile( path );
+    local nodes, edges = loadFile( path )
 
     -- Set up the graph table.
-    local graph = {};
-    graph.nodes = {};
-    graph.edges = {};
+    local graph = {}
+    graph.nodes = {}
+    graph.edges = {}
 
     -- Splits each line of the node definitions and stores them inside of the
     -- node table as nodes[id] = name.
     for _, line in ipairs( nodes ) do
-        local id, name = string.match( line, '(%d+) (.+)' );
-        id = tonumber( id );
-        graph.nodes[id] = name;
+        local id, label = string.match( line, NODE_REGEX )
+        graph.nodes[#graph.nodes + 1] = { id = convertNumber( id ), label = label }
     end
 
     -- Splits each line of the edge definitions and stores them inside of the
     -- edge table as edges[i] = { from = nodeId1, to = nodeId2, name = edgeName }.
     for _, line in ipairs( edges ) do
-        local f, t, e = string.match( line, '(%d+) (%d+) (.+)' );
-        f, t = tonumber( f ), tonumber( t );
-        graph.edges[#graph.edges + 1] = { from = f, to = t, name = e };
+        local from, to, label = string.match( line, EDGE_REGEX )
+        graph.edges[#graph.edges + 1] = { from = convertNumber( from ), to = convertNumber( to ), label = label }
     end
 
-    return graph;
+    return graph
 end
 
-return TGFParser;
+return TGFParser

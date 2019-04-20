@@ -137,10 +137,17 @@ local function getKeyButtonList()
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'end_turn' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_inventory_screen' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'open_health_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'center_camera' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_left' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_right' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_up' ),
         createKeybinding( Settings.INPUTLAYOUTS.COMBAT, 'pan_camera_down' ),
+
+        createKeybinding( Settings.INPUTLAYOUTS.INVENTORY, 'drag_item_stack' ),
+        createKeybinding( Settings.INPUTLAYOUTS.INVENTORY, 'split_item_stack' ),
+
+        createKeybinding( Settings.INPUTLAYOUTS.BASE, 'open_inventory_screen' ),
+        createKeybinding( Settings.INPUTLAYOUTS.BASE, 'open_shop_screen' ),
 
         createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'increase_tool_size' ),
         createKeybinding( Settings.INPUTLAYOUTS.PREFAB_EDITOR, 'decrease_tool_size' ),

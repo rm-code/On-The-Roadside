@@ -10,8 +10,6 @@
 local Action = require( 'src.characters.actions.Action' )
 local Log = require( 'src.util.Log' )
 local Ammunition = require( 'src.items.weapons.Ammunition' )
-local Item = require( 'src.items.Item' )
-local ItemStack = require( 'src.inventory.ItemStack' )
 
 -- ------------------------------------------------
 -- Module
@@ -52,15 +50,8 @@ function Reload:perform()
     end
 
     local inventory = self.character:getInventory()
-    for _, item in pairs( inventory:getItems() ) do
-        if item:isInstanceOf( ItemStack ) then
-            for _, sitem in pairs( item:getItems() ) do
-                reload( weapon, inventory, sitem )
-                if weapon:getMagazine():isFull() then
-                    return true
-                end
-            end
-        elseif item:isInstanceOf( Item ) then
+    for _, stack in pairs( inventory:getItems() ) do
+        for _, item in pairs( stack:getItems() ) do
             reload( weapon, inventory, item )
             if weapon:getMagazine():isFull() then
                 return true

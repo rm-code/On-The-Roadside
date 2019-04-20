@@ -26,7 +26,6 @@ function Item:initialize( template )
     self.weight = template.weight
     self.volume = template.volume
     self.equippable = template.equippable
-    self.stackable = template.stackable
     self.permanent = template.permanent
 end
 
@@ -65,10 +64,6 @@ end
 
 function Item:isEquippable()
     return self.equippable
-end
-
-function Item:isStackable()
-    return self.stackable
 end
 
 function Item:isPermanent()

@@ -6,7 +6,6 @@ return {
         weight     = 2.7,
         volume     = 3.0,
         equippable = true,
-        stackable  = false,
         permanent  = false,
         tags = {
             'humanoid'
@@ -41,7 +40,6 @@ return {
         weight     = 5.7,
         volume     = 9.0,
         equippable = true,
-        stackable  = false,
         permanent  = false,
         tags = {
             'humanoid'
@@ -69,7 +67,6 @@ return {
         weight     = 2.3,
         volume     = 4.5,
         equippable = true,
-        stackable  = false,
         permanent  = false,
         tags = {
             'humanoid'

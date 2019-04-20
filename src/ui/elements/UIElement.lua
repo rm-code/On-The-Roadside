@@ -56,6 +56,24 @@ function UIElement:initialize( ox, oy, rx, ry, w, h )
 end
 
 ---
+-- Dummy function.
+--
+function UIElement:draw()
+    return
+end
+
+---
+-- Dummy function.
+--
+function UIElement:update()
+    return
+end
+
+function UIElement:command()
+    return
+end
+
+---
 -- Adds a new UIElement to the list of children.
 --
 -- NOTE: If you use custom indexes you should make sure that you don't break the
@@ -104,6 +122,10 @@ function UIElement:setRelativePosition( nx, ny )
     self.ry = ny
     self.ax = self.ox + self.rx
     self.ay = self.oy + self.ry
+
+    for i = 1, #self.children do
+        self.children[i]:setOrigin( self.ax, self.ay )
+    end
 end
 
 ---
@@ -112,10 +134,10 @@ end
 --
 function UIElement:isMouseOver()
     local gx, gy = GridHelper.getMouseGridPosition()
-    return  gx >= self.ox + self.rx
-        and gx <  self.ox + self.rx + self.w
-        and gy >= self.oy + self.ry
-        and gy <  self.oy + self.ry + self.h
+    return  gx >= self.ax
+        and gx <  self.ax + self.w
+        and gy >= self.ay
+        and gy <  self.ay + self.h
 end
 
 ---

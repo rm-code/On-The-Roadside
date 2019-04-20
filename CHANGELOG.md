@@ -1,3 +1,45 @@
+# Version 0.17.0.1766 - 2019-04-20
+
+## Additions
+- Added simple base screen.
+    - Allows the player to start a new mission.
+    - Allows the player to quit to the main menu.
+    - Allows the player to recruit new stalkers.
+    - Allows the player to edit each stalkers inventory and to store items in the base.
+    - Allows the player to sell and buy items inside of a shop menu.
+    - Starting a new game will direct the player directly to the base screen.
+    - Shows overview over the player's faction.
+    - Missions can be aborted and the game will return back to the base screen.
+- Added button to the option menu which allows opening the save / modding directory.
+- Added keybinding that centers the camera on the currently selected character.
+- Added better save game validation.
+- Added sorting mechanics for paginated lists.
+- Added keybindings for the "split item stack" and "drag full item stack" actions so they can be changed.
+
+## Fixes
+- Fixed inventory volume being set incorrectly after loading a savegame.
+- Fixed health points being set incorrectly after loading a savegame.
+- Fixed items of paginated list not being moved correctly when the paginated list was moved.
+- Fixed positioning of UI child elements.
+- Fixed splitting of item stacks.
+
+## Other Changes
+- Changed view range based on character classes.
+- Changed values for shooting and throwing skills based on character classes.
+- Changed prefab editor to be more performant.
+- Changed translator to load translations from a single .lua file.
+- Changed translator to load external translations.
+- Changed savegame screen
+    - Saves are now displayed as a paginated list for easy navigation
+    - Saves can now be deleted by clicking on the "X" button
+    - Improved information about saves
+- Changed all items to be stackable.
+    - Item stacks are now merged automatically.
+- Changed detection for mouse dragging events which makes it easier to distinguish dragging events from normal mouse clicking.
+
+
+
+
 # Version 0.16.1.1627 - 2018-09-02 (LÖVE 11.1)
 
 ## Additions

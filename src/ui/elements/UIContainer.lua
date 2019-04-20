@@ -12,12 +12,38 @@
 
 local Class = require( 'lib.Middleclass' )
 local UIElement = require( 'src.ui.elements.UIElement' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
 -- ------------------------------------------------
 
 local UIContainer = Class( 'UIContainer' )
+
+-- ------------------------------------------------
+-- Private Methods
+-- ------------------------------------------------
+
+---
+-- Scrolls to the next / previous UIElement in the list. Automatically selects
+-- the first element in the list if none is selected yet. Also wraps to the
+-- first / last item if the end of the list is reached.
+-- @tparam  number current   The index pointing to the currently active item in the list.
+-- @tparam  table  list      The sequence containing the registered UIElements.
+-- @tparam  number direction The direction to scroll into (-1 = previous, 1 = next).
+-- @treturn number           The updated "current" index.
+--
+local function scroll( current, list, direction )
+    love.mouse.setVisible( false )
+
+    current = current or 1
+
+    list[current]:setFocus( false )
+    current = Util.wrap( 1, current + direction, #list )
+    list[current]:setFocus( true )
+
+    return current
+end
 
 -- ------------------------------------------------
 -- Constructor
@@ -77,30 +103,35 @@ function UIContainer:update()
 end
 
 ---
--- Select the next registered UIElement and focus it.
+-- Selects the previous registered UIElement and focuses it.
+-- If no UIElement is currently selected, it will select the first one in the list.
+--
+function UIContainer:prev()
+    self.current = scroll( self.current, self.list, -1 )
+end
+
+---
+-- Selects the next registered UIElement and focuses it.
+-- If no UIElement is currently selected, it will select the first one in the list.
 --
 function UIContainer:next()
-    love.mouse.setVisible( false )
-    if self.current then
-        self.list[self.current]:setFocus( false )
-        self.current = self.current + 1
-        self.current = self.current > #self.list and 1 or self.current
-    else
-        self.current = 1
-    end
-    self.list[self.current]:setFocus( true )
+    self.current = scroll( self.current, self.list, 1 )
 end
 
 ---
 -- Fowards a command to the currently focused UIElement.
+-- If no UIElement is currently focused it selects the next one, but doesn't
+-- send the command.
+--
 -- @tparam string cmd The command to forward.
 --
 function UIContainer:command( cmd )
-    if self.current then
-        self.list[self.current]:command( cmd )
-    else
+    if not self.current then
         self:next()
+        return
     end
+
+    self.list[self.current]:command( cmd )
 end
 
 ---

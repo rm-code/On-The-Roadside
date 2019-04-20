@@ -130,8 +130,8 @@ end
 -- @tparam Character character  The currently active character.
 --
 local function drawActionPoints( textObject, colorTable, gw, gh, character )
-    local currentActionPoints = character:getActionPoints()
-    local maximumActionPoints = character:getMaxActionPoints()
+    local currentActionPoints = character:getCurrentAP()
+    local maximumActionPoints = character:getMaximumAP()
 
     local x, y = AP_POSITION.X * gw, AP_POSITION.Y * gh
     -- AP:
@@ -152,8 +152,8 @@ end
 -- @tparam Character character  The currently active character.
 --
 local function drawHealthPoints( textObject, colorTable, gw, gh, character )
-    local currentHealthPoints = character:getHealthPoints()
-    local maximumHealthPoints = character:getMaximumHealthPoints()
+    local currentHealthPoints = character:getCurrentHP()
+    local maximumHealthPoints = character:getMaximumHP()
 
     local x, y = HP_POSITION.X * gw, HP_POSITION.Y * gh
     -- HP:

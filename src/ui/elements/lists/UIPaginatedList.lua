@@ -11,6 +11,7 @@
 -- ------------------------------------------------
 
 local UIElement = require( 'src.ui.elements.UIElement' )
+local UIDummy = require( 'src.ui.elements.UIDummy' )
 local UIButton = require( 'src.ui.elements.UIButton' )
 local Util = require( 'src.util.Util' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -59,6 +60,7 @@ local function fillPages( items, maximumPages, height, ax, ay )
 
     for i = 1, #items do
         currentPage[#currentPage + 1] = items[i]
+        items[i]:setFocus( false )
         items[i]:setOrigin( ax, ay )
         items[i]:setRelativePosition( 0, #currentPage-1 )
 
@@ -92,6 +94,25 @@ local function drawPageNumbers( currentPage, maxPages, px, py, w )
     TexturePacks.resetColor()
 end
 
+---
+-- Adds an item to the paginated list.
+-- If a dummy item is used, it will be replaced.
+-- @tparam UIPaginatedList self The list instance to use.
+-- @tparam UIElement       item The item to add.
+--
+local function addItem( self, item )
+    -- Replace dummy element.
+    if self.dummy then
+        self.items[#self.items] = item
+        self.dummy = false
+        return
+    end
+
+    -- Add item normally.
+    self.items[#self.items + 1] = item
+    return
+end
+
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
@@ -111,6 +132,8 @@ function UIPaginatedList:initialize( ox, oy, rx, ry, w, h )
     self.pages = {}
     self.currentPage = 1
     self.cursor = 1
+
+    self.dummy = false
 end
 
 -- ------------------------------------------------
@@ -160,20 +183,63 @@ function UIPaginatedList:update()
 end
 
 ---
--- Adds the list of items to display in this paginated list.
--- @tparam table items A sequence containing the UIElements to add to the list.
+-- Generates the pages based on the amount of added items.
 --
-function UIPaginatedList:setItems( items )
-    self.maxPages = calculateMaximumPages( #items, self.h )
-    self.pages = fillPages( items, self.maxPages, self.h, self.ax, self.ay )
+function UIPaginatedList:generatePagination()
+    -- Create dummy element.
+    if #self.items == 0 then
+        self.items[1] = UIDummy( 0, 0, 0, 0, 0, 0 )
+        self.dummy = true
+    end
+
+    self.maxPages = calculateMaximumPages( #self.items, self.h )
+    self.pages = fillPages( self.items, self.maxPages, self.h, self.ax, self.ay )
 
     -- Create buttons for the status bar if we have more than one page.
     if #self.pages > 1 then
         self:addButtons()
     end
 
+    while not self.pages[self.currentPage] do
+        self.currentPage = self.currentPage - 1
+    end
+
+    while not self.pages[self.currentPage][self.cursor] do
+        self.cursor = self.cursor - 1
+    end
+
     -- Set focus to the first item on the list.
     self.pages[self.currentPage][self.cursor]:setFocus( true )
+end
+
+---
+-- Adds the list of items to display in this paginated list.
+-- @tparam table items A sequence containing the UIElements to add to the list.
+--
+function UIPaginatedList:setItems( items )
+    self.items = items
+    self:generatePagination()
+end
+
+---
+-- Gets the list of items displayed in this paginated list.
+-- If the list contains a dummy item a dummy table is returned instead.
+-- @treturn table A sequence containing the UIElements on this list.
+--
+function UIPaginatedList:getItems()
+    return self.dummy and {} or self.items
+end
+
+---
+-- Counts the amount of items in this paginated list.
+-- If the list contains a dummy item the returned value is zero.
+-- @treturn number The amount of items on the list.
+--
+function UIPaginatedList:getItemCount()
+    if self.dummy then
+        return 0
+    end
+    return #self.items
 end
 
 ---
@@ -230,6 +296,10 @@ end
 -- @tparam string cmd The command to forward.
 --
 function UIPaginatedList:command( cmd )
+    if self.dummy then
+        return
+    end
+
     -- Scroll through items.
     if cmd == 'up' then
         self:scrollItem( -1 )
@@ -254,16 +324,20 @@ end
 -- @tparam string cmd The command to forward.
 --
 function UIPaginatedList:mousecommand( cmd )
+    if self.dummy then
+        return
+    end
+
     for _, item in ipairs( self.pages[self.currentPage] ) do
         if item:isMouseOver() then
-            item:command( cmd )
+            item:mousecommand( cmd )
             return
         end
     end
 
     for i = 1, #self.children do
         if self.children[i]:isMouseOver() then
-            self.children[i]:command( cmd )
+            self.children[i]:mousecommand( cmd )
             return
         end
     end
@@ -289,9 +363,67 @@ function UIPaginatedList:setOrigin( ox, oy )
 
     for _, page in ipairs( self.pages ) do
         for _, item in ipairs( page ) do
-            item:setOrigin( ox, oy )
+            item:setOrigin( self.ax, self.ay )
         end
     end
+end
+
+---
+-- Sorts the items of the paginated list by the provided category and restarts
+-- the pagination process.
+-- @tparam boolean ascending Wether to sort the items ascending or descending.
+-- @tparam string  category  The category by which to sort the list.
+--
+function UIPaginatedList:sort( ascending, category )
+    for i = 1, #self.items do
+        self.items[i]:setFocus( false )
+    end
+
+    if ascending then
+        table.sort( self.items, function( a, b )
+            return a.sortCategories[category] > b.sortCategories[category]
+        end)
+    else
+        table.sort( self.items, function( a, b )
+            return a.sortCategories[category] < b.sortCategories[category]
+        end)
+    end
+
+    self:generatePagination()
+end
+
+---
+-- Removes an item from the paginated list and restarts the pagination process.
+-- @tparam UIElement item The ui element to remove.
+--
+function UIPaginatedList:removeItem( item )
+    for i = 1, #self.items do
+        if self.items[i] == item then
+            table.remove( self.items, i )
+            break
+        end
+    end
+    self:generatePagination()
+end
+
+---
+-- Adds a single item to the list and restarts the pagination.
+-- @tparam UIElement item The ui element to add.
+--
+function UIPaginatedList:addItem( item )
+    addItem( self, item )
+    self:generatePagination()
+end
+
+---
+-- Adds multiple item to the list and restarts the pagination.
+-- @tparam table items A sequence containing the UIElements to add.
+--
+function UIPaginatedList:addItems( items )
+    for i = 1, #items do
+        addItem( self, items[i] )
+    end
+    self:generatePagination()
 end
 
 return UIPaginatedList

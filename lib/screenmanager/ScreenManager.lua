@@ -358,6 +358,14 @@ function ScreenManager.mousereleased( x, y, button, istouch, presses )
     ScreenManager.peek():mousereleased( x, y, button, istouch, presses )
 end
 
+function ScreenManager.mousedragstarted()
+    ScreenManager.peek():mousedragstarted()
+end
+
+function ScreenManager.mousedragstopped()
+    ScreenManager.peek():mousedragstopped()
+end
+
 ---
 -- Reroutes the quit callback to the currently active screen.
 -- @return quit (boolean) Abort quitting. If true, do not close the game.

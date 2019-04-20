@@ -18,7 +18,7 @@ local UIItemStats = require( 'src.ui.elements.inventory.UIItemStats' )
 local GridHelper = require( 'src.util.GridHelper' )
 local Translator = require( 'src.util.Translator' )
 local Container = require( 'src.items.Container' )
-local Inventory = require( 'src.inventory.Inventory' )
+local Settings = require( 'src.Settings' )
 
 -- ------------------------------------------------
 -- Module
@@ -113,13 +113,14 @@ end
 -- @tparam Character character  The character to use for the equipment list.
 -- @tparam table     lists      A table containing the different inventories.
 -- @tparam table     listLabels A table containing the labels for each inventory list.
+-- @tparam Inventory dropInventory The inventory to use when dropping items.
 --
-local function createEquipmentList( x, y, character, lists, listLabels )
+local function createEquipmentList( x, y, character, lists, listLabels, dropInventory )
     -- Offset calculations:
     --  x-axis: Outline left => 1
     --  y-axis: Outline top + Header Text + Outline below Header => 3
     local ox, oy = 1, 3
-    lists.equipment = UIEquipmentList( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT, character )
+    lists.equipment = UIEquipmentList( x, y, ox, oy, EQUIPMENT_WIDTH, EQUIPMENT_HEIGHT, character, dropInventory )
 
     -- Offset calculations:
     --  x-axis: Outline left => 1
@@ -158,26 +159,15 @@ end
 ---
 -- Creates the target inventory with which the character wants to interact and
 -- its associated header label.
--- @tparam number    x          The origin of the screen along the x-axis.
--- @tparam number    y          The origin of the screen along the y-axis.
--- @tparam Character character  The character to use for the equipment list.
--- @tparam Tile      target    The target tile to interact with.
--- @tparam table     lists      A table containing the different inventories.
--- @tparam table     listLabels A table containing the labels for each inventory list.
+-- @tparam number x          The origin of the screen along the x-axis.
+-- @tparam number y          The origin of the screen along the y-axis.
+-- @tparam string targetID   The inventory ID.
+-- @tparam Tile   target     The target tile to interact with.
+-- @tparam table  lists      A table containing the different inventories.
+-- @tparam table  listLabels A table containing the labels for each inventory list.
 --
-local function createTargetInventoryList(  x, y, character, target, lists, listLabels )
-    local id, inventory
-
-    -- TODO How to handle base inventory?
-    if target:isInstanceOf( Inventory ) then
-        id, inventory = 'inventory_base', target
-    elseif target:hasWorldObject() and target:getWorldObject():isContainer() then
-        id, inventory = 'inventory_container_inventory', target:getWorldObject():getInventory()
-    elseif target:hasCharacter() and target:getCharacter() ~= character and target:getCharacter():getFaction():getType() == character:getFaction():getType() then
-        id, inventory = 'inventory_character', target:getCharacter():getInventory()
-    else
-        id, inventory = 'inventory_tile_inventory', target:getInventory()
-    end
+local function createTargetInventoryList(  x, y, targetID, target, lists, listLabels )
+    local id, inventory = targetID, target
 
     -- Offset calculations:
     --  x-axis: Outline left + Equipment Column + Equipment Column Outline
@@ -203,17 +193,19 @@ end
 -- @tparam  number    x         The origin of the screen along the x-axis.
 -- @tparam  number    y         The origin of the screen along the y-axis.
 -- @tparam  Character character The character to use for the equipment list.
+-- @tparam  string    targetID  The inventory ID.
 -- @tparam  Tile      target    The target tile to interact with.
+-- @tparam  Inventory dropInventory The inventory to use when dropping items.
 -- @treturn table               The table containing the different inventory lists.
 -- @treturn table               The table containing a label for each inventory list.
 --
-local function createInventoryLists( x, y, character, target )
+local function createInventoryLists( x, y, character, targetID, target, dropInventory )
     local lists = {}
     local listLabels = {}
 
-    createEquipmentList( x, y, character, lists, listLabels )
+    createEquipmentList( x, y, character, lists, listLabels, dropInventory )
     createCharacterInventoryList( x, y, character, lists, listLabels )
-    createTargetInventoryList( x, y, character, target, lists, listLabels )
+    createTargetInventoryList( x, y, targetID, target, lists, listLabels )
 
     return lists, listLabels
 end
@@ -243,12 +235,12 @@ end
 
 ---
 -- Initiates a drag action.
--- @tparam number               button    The mouse button index.
 -- @tparam table                lists     A table containing the different inventories.
 -- @tparam UIInventoryDragboard dragboard The dragboard containing the current dragged item.
 -- @tparam UIItemStats          itemStats The itemStats object to set the item for.
+-- @tparam boolean              stack     Wether or not to drag a full stack.
 --
-local function drag( button, lists, dragboard, itemStats )
+local function drag( lists, dragboard, itemStats, stack )
     -- Can't drag if we are already dragging.
     if dragboard:hasDragContext() then
         return
@@ -260,8 +252,40 @@ local function drag( button, lists, dragboard, itemStats )
         return
     end
 
-    local item, origin, slot = list:drag( button == 2, love.keyboard.isDown( 'lshift' ))
+    local item, origin, slot = list:drag( stack )
 
+    -- Abort if there is nothing to drag here.
+    if not item then
+        return
+    end
+
+    -- Display stats for the dragged item.
+    itemStats:setItem( item )
+
+    -- Add the item and list to the dragboard. If the item comes from the
+    -- equipment list we also pass the slot.
+    dragboard:drag( item, origin or list, slot )
+
+    -- If the dragged item is a container we need to refresh the inventory lists
+    -- because it changes the inventory volumes.
+    if item:isInstanceOf( Container ) then
+        refreshLists( lists )
+    end
+end
+
+local function splitStack( lists, dragboard, itemStats )
+    -- Can't drag if we are already dragging.
+    if dragboard:hasDragContext() then
+        return
+    end
+
+    -- Can't drag if not over a list.
+    local list = getListBelowCursor( lists )
+    if not list then
+        return
+    end
+
+    local item, origin, slot = list:splitStack()
     -- Abort if there is nothing to drag here.
     if not item then
         return
@@ -307,9 +331,11 @@ end
 ---
 -- Initialises the inventory screen.
 -- @tparam Character character The character to open the inventory for.
+-- @tparam string    targetID  The inventory ID.
 -- @tparam Tile      target    The target tile to open the inventory for.
+-- @tparam Inventory dropInventory The inventory to use when dropping items.
 --
-function InventoryScreen:initialize( character, target )
+function InventoryScreen:initialize( character, targetID, target, dropInventory )
     love.mouse.setVisible( true )
 
     self.x, self.y = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -319,7 +345,7 @@ function InventoryScreen:initialize( character, target )
     self.outlines = generateOutlines( self.x, self.y )
 
     -- UI inventory lists.
-    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, target )
+    self.lists, self.listLabels = createInventoryLists( self.x, self.y, character, targetID, target, dropInventory )
 
     self.dragboard = UIInventoryDragboard()
 
@@ -384,10 +410,27 @@ function InventoryScreen:mousepressed( _, _, button )
         selectItem( self.lists, self.itemStats )
         return
     end
-    drag( button, self.lists, self.dragboard, self.itemStats )
 end
 
 function InventoryScreen:mousereleased( _, _, _ )
+    self.itemStats:command( 'activate' )
+end
+
+function InventoryScreen:mousedragstarted()
+    if love.keyboard.isDown( Settings.mapAction( 'inventory', 'split_item_stack' )) then
+        splitStack( self.lists, self.dragboard, self.itemStats )
+        return
+    end
+
+    if love.keyboard.isDown( Settings.mapAction( 'inventory', 'drag_item_stack' )) then
+        drag( self.lists, self.dragboard, self.itemStats, true )
+        return
+    end
+
+    drag( self.lists, self.dragboard, self.itemStats, false )
+end
+
+function InventoryScreen:mousedragstopped()
     if self.dragboard:hasDragContext() then
         local list = getListBelowCursor( self.lists )
         self.dragboard:drop( list )
@@ -396,8 +439,6 @@ function InventoryScreen:mousereleased( _, _, _ )
         refreshLists( self.lists )
         return
     end
-
-    self.itemStats:command( 'activate' )
 end
 
 function InventoryScreen:wheelmoved( _, dy )

@@ -51,10 +51,12 @@ end
 ---
 -- Creates a new UIEquipmentList instance.
 --
-function UIEquipmentList:initialize( px, py, x, y, w, h, character )
+function UIEquipmentList:initialize( px, py, x, y, w, h, character, dropInventory )
     UIElement.initialize( self, px, py, x, y, w, h )
 
     self.character = character
+    self.dropInventory = dropInventory
+
     self.equipment = character:getEquipment()
     self:refresh()
 end
@@ -87,13 +89,21 @@ function UIEquipmentList:drag()
             local item = self.equipment:removeItem( uiEquipmentSlot:getSlot() )
 
             if item:isInstanceOf( Container ) then
-                self.character:getInventory():dropItems( self.character:getTile() )
+                self.character:getInventory():dropItems( self.dropInventory )
             end
 
             self:refresh()
             return item, self.equipment, uiEquipmentSlot:getSlot()
         end
     end
+end
+
+---
+-- Since slots on the UIEquipmentList can't contain stacks, we simply delegate
+-- the call to the dragging method which returns the correct objects.
+--
+function UIEquipmentList:splitStack()
+    return self:drag()
 end
 
 ---

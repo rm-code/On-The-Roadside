@@ -31,10 +31,10 @@ local CREATURE_CLASSES = require( 'res.data.creatures.classes' )
 local CREATURE_GROUPS = require( 'res.data.creatures.groups' )
 local CREATURE_NAMES = require( 'res.data.creatures.names' )
 local NATIONALITY = {
-    { id = 'german',  weight = 10 },
-    { id = 'russian', weight =  3 },
-    { id = 'british', weight =  3 },
-    { id = 'finnish', weight =  1 }
+    { id = 'nationality_german',  weight = 10 },
+    { id = 'nationality_russian', weight =  3 },
+    { id = 'nationality_british', weight =  3 },
+    { id = 'nationality_finnish', weight =  1 }
 }
 
 -- ------------------------------------------------
@@ -82,7 +82,7 @@ end
 -- @treturn name The generated name.
 --
 local function generateName( nationality )
-    return CREATURE_NAMES[nationality][love.math.random( #CREATURE_NAMES[nationality] )]
+    return Util.pickRandomValue( CREATURE_NAMES[nationality] )
 end
 
 ---
@@ -169,6 +169,16 @@ local function pickCreatureClass( factionID )
     return Util.pickRandomValue( CREATURE_GROUPS[factionID] )
 end
 
+---
+-- Rolls a random number between the min and max value.
+-- @tparam number min The minimum possible value.
+-- @tparam number max The maximum possible value.
+-- @tparam number     The rolled number.
+--
+local function rollStat( min, max )
+    return love.math.random( min, max )
+end
+
 -- ------------------------------------------------
 -- Public Functions
 -- ------------------------------------------------
@@ -178,15 +188,19 @@ function CharacterFactory.init()
 end
 
 function CharacterFactory.loadCharacter( savedCharacter )
-    local character = Character( savedCharacter.class, savedCharacter.maxActionPoints )
+    local character = Character( savedCharacter.class,
+                                 savedCharacter.maximumAP,
+                                 savedCharacter.viewRange,
+                                 savedCharacter.shootingSkill,
+                                 savedCharacter.throwingSkill )
 
     character:setName( savedCharacter.name )
-    character:setActionPoints( savedCharacter.actionPoints )
-    character:setAccuracy( savedCharacter.accuracy )
-    character:setThrowingSkill( savedCharacter.throwingSkill )
+    character:setCurrentAP( savedCharacter.currentAP )
     character:setStance( savedCharacter.stance )
     character:setFinishedTurn( savedCharacter.finishedTurn )
-    character:setPosition( savedCharacter.x, savedCharacter. y )
+    character:setPosition( savedCharacter.x, savedCharacter.y )
+    character:setNationality( savedCharacter.nationality )
+    character:setMissionCount( savedCharacter.missions )
 
     local body = BodyFactory.load( savedCharacter.body )
     character:setBody( body )
@@ -197,7 +211,11 @@ end
 function CharacterFactory.newCharacter( factionType )
     local classID = pickCreatureClass( factionType )
     local class = findClass( classID )
-    local character = Character( classID, class.stats.ap )
+
+    local shootingSkill = rollStat( class.stats.shootingSkill.min, class.stats.shootingSkill.max )
+    local throwingSkill = rollStat( class.stats.throwingSkill.min, class.stats.throwingSkill.max )
+
+    local character = Character( classID, class.stats.ap, class.stats.viewRange, shootingSkill, throwingSkill )
 
     local bodyType = Util.pickRandomValue( class.body )
     if bodyType == 'body_human' then

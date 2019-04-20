@@ -18,6 +18,7 @@ local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
 local Faction = require( 'src.characters.Faction' )
 local Settings = require( 'src.Settings' )
 local MessageQueue = require( 'src.util.MessageQueue' )
+local DataHandler = require( 'src.DataHandler' )
 
 -- ------------------------------------------------
 -- Module
@@ -43,11 +44,17 @@ local function createMap()
     return ProceduralMapGenerator():createMap()
 end
 
+local function createPlayerFaction( serializedData )
+    local playerFaction = Faction( FACTIONS.ALLIED, false )
+    playerFaction:loadCharacters( serializedData )
+    return playerFaction
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
-function CombatState:initialize( playerFaction, savegame )
+function CombatState:initialize( savegame )
     self.states = {
         execution = require( 'src.turnbased.states.ExecutionState' ),
         planning  = require( 'src.turnbased.states.PlanningState' )
@@ -62,6 +69,8 @@ function CombatState:initialize( playerFaction, savegame )
     self.factions = Factions()
     self.factions:addFaction( Faction( FACTIONS.ENEMY,   true ))
     self.factions:addFaction( Faction( FACTIONS.NEUTRAL, true ))
+
+    local playerFaction = createPlayerFaction( DataHandler.pastePlayerFaction() )
     self.factions:addFaction( playerFaction )
 
     if savegame then
@@ -112,12 +121,12 @@ function CombatState:update( dt )
     self.stateManager:update( dt )
 
     if not self.factions:getPlayerFaction():hasLivingCharacters() then
-        ScreenManager.pop()
-        ScreenManager.push( 'gameover', self.factions:getPlayerFaction(), false )
+        ScreenManager.switch( 'gameover', self.factions:getPlayerFaction(), false )
+        return
     end
     if not self.factions:findFaction( FACTIONS.ENEMY ):hasLivingCharacters() then
-        ScreenManager.pop()
-        ScreenManager.push( 'gameover', self.factions:getPlayerFaction(), true )
+        ScreenManager.switch( 'gameover', self.factions:getPlayerFaction(), true )
+        return
     end
 end
 

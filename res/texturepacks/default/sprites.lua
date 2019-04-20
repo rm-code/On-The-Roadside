@@ -146,12 +146,16 @@ return {
     ['ui_prev_element'] = 18,
     ['ui_next_element'] = 17,
 
+    -- UICheckBox
+    ['ui_checkbox_unchecked'] = 9,
+    ['ui_checkbox_checked'] = 11,
+
+    ['ui_delete'] = 89,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================
 
-    ['prefab_editor_cursor_draw'] = 101,
-    ['prefab_editor_cursor_fill'] = 160,
     ['prefab_editor_cursor_erase'] = 89,
 
     -- ==============================

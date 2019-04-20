@@ -1,5 +1,9 @@
 return {
     {
+        id = 'tile_empty',
+        passable = false
+    },
+    {
         id = 'tile_asphalt',
         movementCost = {
             stand  = 1,

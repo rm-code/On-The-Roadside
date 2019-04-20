@@ -9,6 +9,7 @@
 local Screen = require( 'src.ui.screens.Screen' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local SaveHandler = require( 'src.SaveHandler' )
+local DataHandler = require( 'src.DataHandler' )
 local Translator = require( 'src.util.Translator' )
 local UIOutlines = require( 'src.ui.elements.UIOutlines' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
@@ -29,7 +30,7 @@ local IngameCombatMenu = Screen:subclass( 'IngameCombatMenu' )
 -- ------------------------------------------------
 
 local UI_GRID_WIDTH  = 14
-local UI_GRID_HEIGHT = 8
+local UI_GRID_HEIGHT = 9
 
 -- ------------------------------------------------
 -- Private Methods
@@ -66,7 +67,10 @@ local function createSaveGameButton( lx, ly, game )
     local function saveGame()
         -- Create the callback for the confirmation dialog.
         local function confirmationCallback( name )
-            SaveHandler.save( game:serialize(), name )
+            local save = game:serialize()
+            save.baseInventory = DataHandler.pasteBaseInventory()
+
+            SaveHandler.save( save, name )
             ScreenManager.pop() -- Close input dialog.
             ScreenManager.pop() -- Close ingame combat menu.
         end
@@ -80,6 +84,14 @@ local function createSaveGameButton( lx, ly, game )
     return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, saveGame, Translator.getText( 'ui_ingame_save_game' ))
 end
 
+local function createAbortMissionButton( lx, ly, playerFaction )
+    local function abortMission()
+        DataHandler.copyPlayerFaction( playerFaction:serialize() )
+        ScreenManager.switch( 'base' )
+    end
+    return UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, abortMission, Translator.getText( 'ui_ingame_abort' ))
+end
+
 local function createButtons( game )
     local lx, ly = GridHelper.centerElement( UI_GRID_WIDTH, UI_GRID_HEIGHT )
     local buttonList = UIVerticalList( lx, ly, 0, 3, UI_GRID_WIDTH, UI_GRID_HEIGHT )
@@ -89,6 +101,9 @@ local function createButtons( game )
 
     local openHelpButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.push( 'help' ) end, Translator.getText( 'ui_ingame_open_help' ))
     buttonList:addChild( openHelpButton )
+
+    local abortMissionButton = createAbortMissionButton( lx, ly, game:getPlayerFaction() )
+    buttonList:addChild( abortMissionButton )
 
     local exitButton = UIButton( lx, ly, 0, 0, UI_GRID_WIDTH, 1, function() ScreenManager.switch( 'mainmenu' ) end, Translator.getText( 'ui_ingame_exit' ))
     buttonList:addChild( exitButton )
