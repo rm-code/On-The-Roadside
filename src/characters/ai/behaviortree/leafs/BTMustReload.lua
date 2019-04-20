@@ -22,7 +22,7 @@ local BTMustReload = BTLeaf:subclass( 'BTMustReload' )
 function BTMustReload:traverse( ... )
     local _, character = ...
 
-    local result = character:getWeapon():getMagazine():isEmpty()
+    local result = character:getWeapon():isEmpty()
     Log.debug( result, 'BTMustReload' )
     return result
 end

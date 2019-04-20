@@ -24,8 +24,6 @@ local UICharacterInfo = UIElement:subclass( 'UICharacterInfo' )
 -- Constants
 -- ------------------------------------------------
 
-local ITEM_TYPES = require( 'src.constants.ITEM_TYPES' )
-
 local UI_GRID_WIDTH = 16
 local UI_GRID_HEIGHT = 8
 
@@ -182,10 +180,9 @@ end
 -- Draws ammunition info about the equipped weapon (only if it is reloadable).
 -- @tparam Text      textObject The Text object to modify.
 -- @tparam table     colorTable The table to use for adding colored text.
--- @tparam Inventory inventory  The character's inventory.
 -- @tparam Weapon    weapon     The equipped weapon.
 --
-local function drawAmmunitionInfo( textObject, colorTable, inventory, weapon )
+local function drawAmmunitionInfo( textObject, colorTable, weapon )
     -- If the weapon is reloadable we show the current ammo in the magazine,
     -- the maximum capacity of the magazine and the total amount of ammo
     -- on the character.
@@ -194,9 +191,9 @@ local function drawAmmunitionInfo( textObject, colorTable, inventory, weapon )
     end
 
     local x, y = 0, 64
-    local magazine = weapon:getMagazine()
-    local total = inventory:countItems( ITEM_TYPES.AMMO, magazine:getCaliber() )
-    local text = string.format( '%d/%d (%d)', magazine:getNumberOfRounds(), magazine:getCapacity(), total )
+    local currentCapacity = weapon:getCurrentCapacity()
+    local maximumCapacity = weapon:getMaximumCapacity()
+    local text = string.format( '%d/%d', currentCapacity, maximumCapacity )
 
     x = x + addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text_dark' ), Translator.getText( 'ui_ammo' ))
     addToTextObject( textObject, colorTable, x, y, TexturePacks.getColor( 'ui_text' ), text )
@@ -252,7 +249,7 @@ function UICharacterInfo:update( state, map, camera, character )
     end
 
     drawWeaponName( self.textObject, self.colorTable, character:getWeapon() )
-    drawAmmunitionInfo( self.textObject, self.colorTable, character:getInventory(), character:getWeapon() )
+    drawAmmunitionInfo( self.textObject, self.colorTable, character:getWeapon() )
     drawWeaponMode( self.textObject, self.colorTable, character:getWeapon():getAttackMode(), character:getWeapon():getDamage() )
 end
 

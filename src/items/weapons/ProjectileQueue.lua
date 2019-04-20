@@ -9,7 +9,6 @@
 local Class = require( 'lib.Middleclass' )
 local Projectile = require( 'src.items.weapons.Projectile' )
 local ProjectilePath = require( 'src.items.weapons.ProjectilePath' )
-local Queue = require( 'src.util.Queue' )
 local SoundManager = require( 'src.SoundManager' )
 
 -- ------------------------------------------------
@@ -23,40 +22,31 @@ local ProjectileQueue = Class( 'ProjectileQueue' )
 -- ------------------------------------------------
 
 ---
--- Enqueues projectiles based on the amount specified by the weapon's current
--- attack mode.
+-- Calculates the amount of shots fired from the weapon.
 -- @tparam  Weapon weapon The weapon to generate the projectiles for.
--- @tparam  Queue  queue  The queue to fill.
 -- @treturn number        The amount of shots fired from the weapon.
 --
-local function calculateShots( weapon, queue )
-    local shots = math.min( weapon:getMagazine():getNumberOfRounds(), weapon:getAttacks() )
-    for i = 1, shots do
-        queue:enqueue( weapon:getMagazine():getRound( i ))
-    end
-    return shots
+local function calculateNumberOfShots( weapon )
+    return math.min( weapon:getCurrentCapacity(), weapon:getAttacks() )
 end
 
 ---
--- Removes a projectile from the queue and adds it to the table of active
--- projectiles.
+-- Spawns a new projectile.
 --
-local function spawnProjectile( queue, character, weapon, shots, projectiles, tx, ty, th, index )
-    local round = queue:dequeue()
-
-    local path = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - queue:getSize() )
-    local projectile = Projectile( character, path, weapon:getDamage(), round:getDamageType(), round:getEffects() )
+local function spawnProjectile( character, weapon, projectiles, tx, ty, th, index )
+    local path = ProjectilePath.calculate( character, tx, ty, th, weapon, 1 ) -- TODO Amount of shots
+    local projectile = Projectile( character, path, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() )
 
     -- Play sound and remove the round from the magazine.
     SoundManager.play( weapon:getSound() )
-    weapon:getMagazine():removeRound()
+    weapon:removeRound()
 
     -- Spawn projectiles for the spread shot.
-    if round:getEffects():spreadsOnShot() then
-        for _ = 1, round:getEffects():getPellets() do
+    if weapon:getEffects():spreadsOnShot() then
+        for _ = 1, weapon:getEffects():getPellets() do
             index = index + 1
-            local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, shots - queue:getSize() )
-            projectiles[index] = Projectile( character, spreadTiles, weapon:getDamage(), round:getDamageType(), round:getEffects() )
+            local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, 1 )
+            projectiles[index] = Projectile( character, spreadTiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() )
         end
         return
     end
@@ -89,12 +79,11 @@ function ProjectileQueue:initialize( character, tx, ty, th )
 
     self.weapon = character:getWeapon()
 
-    self.queue = Queue()
     self.projectiles = {}
     self.index = 0
     self.timer = 0
 
-    self.shots = calculateShots( self.weapon, self.queue )
+    self.numberOfShots = calculateNumberOfShots( self.weapon, self.queue )
 end
 
 ---
@@ -104,9 +93,10 @@ end
 --
 function ProjectileQueue:update( dt )
     self.timer = self.timer - dt
-    if self.timer <= 0 and not self.queue:isEmpty() then
-        spawnProjectile( self.queue, self.character, self.weapon, self.shots, self.projectiles, self.targetX, self.targetY, self.targetHeight, self.index )
+    if self.timer <= 0 and self.numberOfShots > 0 then
+        spawnProjectile( self.character, self.weapon, self.projectiles, self.targetX, self.targetY, self.targetHeight, self.index )
         self.timer = self.weapon:getFiringDelay()
+        self.numberOfShots = self.numberOfShots - 1
     end
 end
 
@@ -143,7 +133,7 @@ end
 -- @treturn boolean True if it is done.
 --
 function ProjectileQueue:isDone()
-    if not self.queue:isEmpty() then
+    if self.numberOfShots > 0  then
         return false
     end
 

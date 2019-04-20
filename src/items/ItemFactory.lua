@@ -26,14 +26,12 @@ local TEMPLATES_RANGED     = 'res.data.items.weapons.Ranged'
 local TEMPLATES_THROWN     = 'res.data.items.weapons.Thrown'
 local TEMPLATES_ARMOR      = 'res.data.items.Armor'
 local TEMPLATES_CONTAINERS = 'res.data.items.Containers'
-local TEMPLATES_AMMO       = 'res.data.items.Ammunition'
 local TEMPLATES_MISC       = 'res.data.items.Miscellaneous'
 
 local ITEM_CLASSES = {
     [ITEM_TYPES.ARMOR    ] = require( 'src.items.Armor'                ),
     [ITEM_TYPES.CONTAINER] = require( 'src.items.Container'            ),
     [ITEM_TYPES.MISC     ] = require( 'src.items.Item'                 ),
-    [ITEM_TYPES.AMMO     ] = require( 'src.items.weapons.Ammunition'   ),
     [WEAPON_TYPES.MELEE  ] = require( 'src.items.weapons.MeleeWeapon'  ),
     [WEAPON_TYPES.RANGED ] = require( 'src.items.weapons.RangedWeapon' ),
     [WEAPON_TYPES.THROWN ] = require( 'src.items.weapons.ThrownWeapon' )
@@ -78,7 +76,6 @@ function ItemFactory.loadTemplates()
     load( TEMPLATES_RANGED )
     load( TEMPLATES_THROWN )
     load( TEMPLATES_CONTAINERS )
-    load( TEMPLATES_AMMO )
     load( TEMPLATES_MISC )
 end
 
@@ -109,9 +106,7 @@ function ItemFactory.loadItem( savedItem )
     if item:getItemType() == ITEM_TYPES.WEAPON then
         item:setAttackMode( savedItem.modeIndex )
         if item:isReloadable() then
-            for _, round in ipairs( savedItem.magazine.rounds ) do
-                item:getMagazine():addRound( ItemFactory.createItem( round.id ))
-            end
+            item:setCurrentCapacity( savedItem.currentCapacity )
         end
     end
 

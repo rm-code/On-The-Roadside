@@ -74,11 +74,6 @@ return {
     -- Items
     -- ==============================
 
-    -- Ammunition
-    ['5.45x39mm'] = 174,
-    ['12_gauge'] = 8,
-    ['OG-7V'] = 95,
-
     -- Armor
     ['footwear_combat_boots'] = 92,
     ['headgear_pasgt_helmet'] = 92,

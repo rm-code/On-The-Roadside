@@ -88,11 +88,6 @@ return {
     -- ITEMS
     -- ==============================
 
-    -- Ammunition
-    ['5.45x39mm'] = COLORS.DB06,
-    ['12_gauge'] = COLORS.DB06,
-    ['OG-7V'] = COLORS.DB06,
-
     -- Armor
     ['footwear_combat_boots'] = COLORS.DB05,
     ['headgear_pasgt_helmet'] = COLORS.DB05,

@@ -8,7 +8,6 @@ describe( 'Item template spec', function()
             require( 'res.data.items.weapons.Ranged' ),
             require( 'res.data.items.weapons.Thrown' ),
             require( 'res.data.items.Containers' ),
-            require( 'res.data.items.Ammunition' ),
             require( 'res.data.items.Miscellaneous' )
         }
     end)

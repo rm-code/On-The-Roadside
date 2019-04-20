@@ -86,26 +86,6 @@ local function generateName( nationality )
 end
 
 ---
--- Loads the character's weapon and adds ammunition to his inventory.
--- @tparam Weapon weapon The weapon to load.
--- @tparam Inventory inventory The inventory to create ammunition for.
---
-local function createAmmunition( weapon, inventory )
-    -- Load the weapon.
-    local amount = weapon:getMagazine():getCapacity()
-    for _ = 1, amount do
-        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() )
-        weapon:getMagazine():addRound( round )
-    end
-
-    -- Add twice the amount of ammunition to the inventory.
-    for _ = 1, amount * 2 do
-        local round = ItemFactory.createItem( weapon:getMagazine():getCaliber() )
-        inventory:addItem( round )
-    end
-end
-
----
 -- Creates the equipment for a character.
 -- @tparam Character character   The character to equip with new items.
 -- @tparam string    factionType The type of faction this character is created for.
@@ -138,9 +118,7 @@ local function createEquipment( character, factionType )
     end
 
     local weapon = character:getWeapon()
-    if weapon:isReloadable() then
-        createAmmunition( weapon, inventory )
-    elseif weapon:getSubType() == WEAPON_TYPES.THROWN then
+    if weapon:getSubType() == WEAPON_TYPES.THROWN then
         inventory:addItem( ItemFactory.createItem( weapon:getID() ))
         inventory:addItem( ItemFactory.createItem( weapon:getID() ))
         inventory:addItem( ItemFactory.createItem( weapon:getID() ))

@@ -27,7 +27,7 @@ end
 
 function RangedAttack:perform()
     -- Stop if the character's weapon is empty.
-    if self.character:getWeapon():getMagazine():isEmpty() then
+    if self.character:getWeapon():isEmpty() then
         return false
     end
 

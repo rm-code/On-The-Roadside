@@ -312,25 +312,6 @@ function Inventory:getAndRemoveItem( type )
 end
 
 ---
--- Counts items of a certain type and id.
--- Items that are contained within a stack will be counted too.
---
--- @tparam  string type The item type to search for.
--- @tparam  string id   The item id to search for.
--- @treturn number      The total amount of found items.
---
-function Inventory:countItems( type, id )
-    local count = 0
-    for _, stack in ipairs( self.items ) do
-        -- Match items based on type and id.
-        if stack:getItemType() == type and stack:getID() == id then
-            count = count + stack:getItemCount()
-        end
-    end
-    return count
-end
-
----
 -- Receives events.
 -- @tparam string  event The received event.
 -- @tparam varargs ...   Variable arguments.

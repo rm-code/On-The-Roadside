@@ -22,7 +22,7 @@ local BTCanAttack = BTLeaf:subclass( 'BTCanAttack' )
 function BTCanAttack:traverse( ... )
     local _, character = ...
 
-    local result = not character:getWeapon():getMagazine():isEmpty()
+    local result = not character:getWeapon():isEmpty()
     Log.debug( result, 'BTCanAttack' )
     return result
 end

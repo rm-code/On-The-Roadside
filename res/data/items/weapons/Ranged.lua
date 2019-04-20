@@ -28,9 +28,12 @@ return {
                 attacks  = 5,
             }
         },
-        caliber    = "5.45x39mm",
-        magSize    = 30,
-        rpm        = 650
+        rounds = 30,
+        rpm        = 650,
+        damageType = 'piercing',
+        effects = {
+            customSpeed = { speed = 35 }
+        }
     },
     {
         id         = "weapon_rpg7",
@@ -55,8 +58,12 @@ return {
                 attacks = 1,
             }
         },
-        caliber    = "OG-7V",
-        magSize    = 1
+        rounds = 1,
+        damageType = 'explosive',
+        effects = {
+            explosive = { blastRadius = 5 },
+            customSpeed = { speed = 12, increase = 1, final = 35 }
+        }
     },
     {
         id         = "weapon_benelli_m4",
@@ -81,7 +88,11 @@ return {
                 attacks = 1,
             }
         },
-        caliber    = "12_gauge",
-        magSize    = 8
+        rounds = 8,
+        damageType = 'piercing',
+        effects = {
+            spreadsOnShot = { pellets = 6 },
+            customSprite  = { sprite = "12_gauge" }
+        }
     }
 }

@@ -2,7 +2,6 @@ local ITEM_TYPES = {}
 
 ITEM_TYPES.WEAPON    = 'Weapon'
 ITEM_TYPES.CONTAINER = 'Container'
-ITEM_TYPES.AMMO      = 'Ammunition'
 ITEM_TYPES.ARMOR     = 'Armor'
 ITEM_TYPES.MISC      = 'Miscellaneous'
 

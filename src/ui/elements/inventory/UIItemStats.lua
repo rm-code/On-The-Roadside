@@ -96,7 +96,7 @@ local function addWeaponInformation( self, text, item, tw, th )
     end
 
     if item:getSubType() == WEAPON_TYPES.RANGED then
-        local ammo = item:getMagazine():getCaliber()
+        local ammo = 'foo'
         text:add({ self.typeColor, 'Ammo:' }, COLUMN_1 * tw, 4 * th )
         text:add({ self.valueColor, ammo },    COLUMN_2 * tw, 4 * th )
     end
