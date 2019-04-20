@@ -12,7 +12,7 @@
 
 local Class = require( 'lib.Middleclass' )
 local Pulser = require( 'src.util.Pulser' )
-local ConeOverlay = require( 'src.ui.overlays.ConeOverlay' )
+local AttackOverlay = require( 'src.ui.overlays.AttackOverlay' )
 local PathOverlay = require( 'src.ui.overlays.PathOverlay' )
 local ParticleLayer = require( 'src.ui.overlays.ParticleLayer' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
@@ -95,7 +95,7 @@ function OverlayPainter:initialize( game, camera )
 
     self.particleLayer = ParticleLayer( game:getExplosionManager(), game:getProjectileManager()  )
     self.pulser = Pulser( 2, 0.2, 0.6 )
-    self.coneOverlay = ConeOverlay( self.game, self.pulser, self.camera )
+    self.attackOverlay = AttackOverlay( self.game, self.pulser, self.camera )
     self.pathOverlay = PathOverlay( self.game, self.pulser )
 
     self.tileset = TexturePacks.getTileset()
@@ -108,7 +108,7 @@ end
 --
 function OverlayPainter:update( dt )
     if not self.game:getState():isInstanceOf( ExecutionState ) then
-        self.coneOverlay:generate()
+        self.attackOverlay:generate()
     end
 
     self.particleLayer:update( dt )
@@ -124,7 +124,7 @@ function OverlayPainter:draw()
     and not self.game:getState():isInstanceOf( ExecutionState ) then
         self.pathOverlay:draw()
         drawMouseCursor( self.tileset, self.tw, self.th, self.camera, self.game )
-        self.coneOverlay:draw()
+        self.attackOverlay:draw()
     end
 
     drawParticles( self.tileset, self.tw, self.th, self.particleLayer, self.game )
