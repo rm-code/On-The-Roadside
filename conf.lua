@@ -4,7 +4,7 @@ local PROJECT_IDENTITY = "rmcode_otr"
 
 local PROJECT_VERSION = require( 'version' )
 
-local LOVE_VERSION = "11.1"
+local LOVE_VERSION = "11.2"
 
 ---
 -- Initialise löve's config file.
