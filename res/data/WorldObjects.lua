@@ -1,7 +1,14 @@
+---
+-- cover:
+--      => 0: No cover
+--      => 1: Half cover
+--      => 2: Full cover
+--
 return {
     {
         id = 'worldobject_chair',
         size = 15,
+        cover = 1,
         hp = 10,
         interactionCost = {
             stand  = 5,
@@ -20,6 +27,7 @@ return {
     {
         id = 'worldobject_toilet',
         size = 15,
+        cover = 1,
         hp = 12,
         interactionCost = {
             stand  = 5,
@@ -37,6 +45,7 @@ return {
     {
         id = 'worldobject_shower',
         size = 15,
+        cover = 1,
         hp = 12,
         interactionCost = {
             stand  = 5,
@@ -54,6 +63,7 @@ return {
     {
         id = 'worldobject_crate',
         size = 50,
+        cover = 1,
         hp = 30,
         energyReduction = 50,
         destructible = true,
@@ -68,6 +78,7 @@ return {
     {
         id = 'worldobject_door',
         size = 100,
+        cover = 2,
         hp = 40,
         interactionCost = {
             stand  = 3,
@@ -88,6 +99,7 @@ return {
     {
         id = 'worldobject_fence',
         size = 35,
+        cover = 1,
         hp = 14,
         interactionCost = {
             stand  = 5,
@@ -109,6 +121,7 @@ return {
     {
         id = 'worldobject_fencegate',
         size = 40,
+        cover = 1,
         hp = 15,
         interactionCost = {
             stand  = 3,
@@ -129,6 +142,7 @@ return {
     {
         id = 'worldobject_lowwall',
         size = 35,
+        cover = 1,
         interactionCost = {
             stand  = 5,
             crouch = 6,
@@ -144,6 +158,7 @@ return {
     {
         id = 'worldobject_table',
         size = 25,
+        cover = 1,
         hp = 20,
         interactionCost = {
             stand  = 5,
@@ -162,6 +177,7 @@ return {
     {
         id = 'worldobject_tree',
         size = 100,
+        cover = 2,
         destructible = false,
         blocksVision = true,
         blocksPathfinding = true
@@ -169,6 +185,7 @@ return {
     {
         id = 'worldobject_wall',
         size = 100,
+        cover = 2,
         destructible = false,
         blocksVision = true,
         blocksPathfinding = true,
@@ -178,6 +195,7 @@ return {
     {
         id = 'worldobject_window',
         size = 100,
+        cover = 1,
         hp = 1,
         energyReduction = 10,
         destructible = true,

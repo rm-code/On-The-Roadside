@@ -16,6 +16,15 @@ local Inventory = require( 'src.inventory.Inventory' )
 local WorldObject = MapObject:subclass( 'WorldObject' )
 
 -- ------------------------------------------------
+-- Constants
+-- ------------------------------------------------
+
+local COVER_VALUES = {}
+COVER_VALUES.NONE = 0
+COVER_VALUES.HALF = 1
+COVER_VALUES.FULL = 2
+
+-- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
 
@@ -28,6 +37,7 @@ function WorldObject:initialize( template )
 
     self.id = template.id
     self.height = template.size
+    self.cover = template.cover
     self.interactionCost = template.interactionCost
     self.energyReduction = template.energyReduction
     self.destructible = template.destructible
@@ -105,6 +115,22 @@ end
 --
 function WorldObject:getDebrisID()
     return self.debrisID
+end
+
+---
+-- Checks wether this world object provides half cover.
+-- @treturn boolean Wether or not this world object is half cover.
+--
+function WorldObject:isHalfCover()
+    return self.cover == COVER_VALUES.HALF
+end
+
+---
+-- Checks wether this world object provides full cover.
+-- @treturn boolean Wether or not this world object is full cover.
+--
+function WorldObject:isFullCover()
+    return self.cover == COVER_VALUES.FULL
 end
 
 ---
