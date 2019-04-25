@@ -1,5 +1,14 @@
+---
+-- @module ProjectilePath
+--
+
+-- ------------------------------------------------
+-- Required Modules
+-- ------------------------------------------------
+
 local Bresenham = require( 'lib.Bresenham' );
 local Util = require( 'src.util.Util' )
+local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
 -- Module
@@ -177,6 +186,65 @@ local function calculateFalloff( origin, theight, steps )
     return delta / steps
 end
 
+---
+-- Determines which coordinates a projectile traverses on its way to the target.
+-- @tparam Character character The character shooting the weapon.
+-- @tparam number tx The target's x-coordinate.
+-- @tparam number ty The target's y-coordinate.
+-- @treturn table A sequence containing the X and Y coordinates of each traversed tile.
+--
+local function determineTraversedCoordinates( character, tx, ty )
+    local ox, oy = character:getTile():getPosition()
+    local coordinates = {}
+
+    Bresenham.line( ox, oy, tx, ty, function( sx, sy )
+        -- Ignore the origin.
+        if sx ~= ox or sy ~= oy then
+            coordinates[#coordinates + 1] = { x = sx, y = sy }
+        end
+        return true
+    end)
+
+    return coordinates
+end
+
+---
+-- Determines which coordinates a projectile traverses on its way to the deviated target.
+-- @tparam Character character The character shooting the weapon.
+-- @tparam number tx The target's x-coordinate.
+-- @tparam number ty The target's y-coordinate.
+-- @tparam number th The target's height.
+-- @tparam Weapon weapon The used weapon.
+-- @tparam number count Determines how many projectiles have been fired already.
+-- @treturn table A sequence containing all tiles of the projectile's path.
+--
+local function determineDeviationCoordinates( character, tx, ty, th, weapon, count )
+    -- Calculate the angle of deviation.
+    local maxDeviation = ProjectilePath.getMaximumDeviation( character, weapon, count )
+    local actualDeviation = randomSign() * getRandomAngle( maxDeviation )
+
+    -- Apply the angle to find the final target tile.
+    local origin = character:getTile()
+    local px, py = origin:getPosition()
+
+    local nx, ny = Util.rotateVector( px, py, tx, ty, actualDeviation, love.math.random( 90, 130 ) / 100 )
+    nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 )
+
+    -- Determine the height falloff for the projectile.
+    local _, steps = Bresenham.line( px, py, nx, ny )
+    local falloff = calculateFalloff( origin, th, steps )
+
+    -- Get the coords of all tiles the projectile passes on the way to its target.
+    local tiles = {}
+    Bresenham.line( px, py, nx, ny, function( sx, sy, counter )
+        -- Ignore the origin.
+        if sx ~= px or sy ~= py then
+            tiles[#tiles + 1] = { x = sx, y = sy, z = origin:getHeight() - (counter+1) * falloff }
+        end
+        return true
+    end)
+    return tiles
+end
 
 -- ------------------------------------------------
 -- Public Functions
@@ -202,41 +270,26 @@ end
 
 ---
 -- Creates the path for a particular projectile.
--- @param character (Character) The character shooting the weapon.
+-- @tparam Character character The character shooting the weapon.
 -- @tparam number tx The target's x-coordinate.
 -- @tparam number ty The target's y-coordinate.
 -- @tparam number th The target's height.
--- @param weapon    (Weapon)    The used weapon.
--- @param count     (number)    Determines how many projectiles have been fired already.
--- @return          (table)     A sequence containing all tiles of the projectile's path.
+-- @tparam Weapon weapon The used weapon.
+-- @tparam number count Determines how many projectiles have been fired already.
+-- @treturn table A sequence containing all tiles of the projectile's path.
 --
 function ProjectilePath.calculate( character, tx, ty, th, weapon, count )
-    -- Calculate the angle of deviation.
-    local maxDeviation = ProjectilePath.getMaximumDeviation( character, weapon, count )
-    local actualDeviation = randomSign() * getRandomAngle( maxDeviation )
+    local chanceToHit = character:getShootingSkill()
 
-    -- Apply the angle to find the final target tile.
-    local origin = character:getTile();
-    local px, py = origin:getPosition();
+    -- The shot hits its target.
+    if love.math.random(100) <= chanceToHit then
+        Log.debug( 'Attack hits the target', 'ProjectilePath' )
+        return determineTraversedCoordinates( character, tx, ty )
+    end
 
-    local nx, ny = Util.rotateVector( px, py, tx, ty, actualDeviation, love.math.random( 90, 130 ) / 100 )
-    nx, ny = math.floor( nx + 0.5 ), math.floor( ny + 0.5 );
-
-    -- Determine the height falloff for the projectile.
-    local _, steps = Bresenham.line( px, py, nx, ny )
-    local falloff = calculateFalloff( origin, th, steps )
-
-    -- Get the coords of all tiles the projectile passes on the way to its target.
-    local tiles = {};
-    Bresenham.line( px, py, nx, ny, function( sx, sy, counter )
-        -- Ignore the origin.
-        if sx ~= px or sy ~= py then
-            tiles[#tiles + 1] = { x = sx, y = sy, z = origin:getHeight() - (counter+1) * falloff }
-        end
-        return true;
-    end)
-
-    return tiles;
+    -- The shot misses.
+    Log.debug( 'Attack misses the target', 'ProjectilePath' )
+    return determineDeviationCoordinates( character, tx, ty, th, weapon, count )
 end
 
 return ProjectilePath;
