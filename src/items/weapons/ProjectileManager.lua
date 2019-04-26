@@ -34,6 +34,11 @@ local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' )
 --
 local function hitTile( self, tile, projectile )
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
+        -- Explosive projectiles explode on the previous tile once they hit an
+        -- indestructible world object. This needs to be done to make sure explosions
+        -- occur on the right side of the world object.
+        tile = projectile:getPreviousTile()
+
         self:publish( 'CREATE_EXPLOSION', tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
         return
     end
@@ -54,59 +59,6 @@ local function reduceProjectileEnergy( energy, reduction )
 end
 
 ---
--- Hits a character.
--- @tparam Tile       tile       The tile to hit.
--- @tparam Projectile projectile The projectile to remove.
---
-local function hitCharacter( self, tile, projectile )
-    Log.debug( 'Projectile hit character', 'ProjectileManager' )
-    hitTile( self, tile, projectile )
-    return true
-end
-
----
--- Handles how to proceed if the projectile hits a world object.
--- @tparam  Projectile  projectile  The projectile to handle.
--- @tparam  Tile        tile        The tile to check.
--- @tparam  WorldObject worldObject The world object to check.
--- @treturn boolean                 Wether to remove the projectile or not.
---
-local function hitWorldObject( self, projectile, tile, worldObject )
-    if projectile:getHeight() > worldObject:getHeight() then
-        Log.debug( 'Projectile flies over world object', 'ProjectileManager' )
-        return false
-    end
-
-    -- Remove projectiles when they hit indestructible world objects.
-    if not worldObject:isDestructible() then
-        Log.debug( 'Projectile hits indestructible world object', 'ProjectileManager' )
-
-        -- Explosive projectiles explode on the previous tile once they hit an
-        -- indestructible world object. This needs to be done to make sure explosions
-        -- occur on the right side of the world object.
-        if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-            tile = projectile:getPreviousTile()
-        end
-
-        tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_indestructible_worldobject' ), Translator.getText( worldObject:getID() )), 'INFO' )
-        hitTile( self, tile, projectile )
-        return true
-    end
-
-    Log.debug( 'Projectile hit destructible world object', 'ProjectileManager' )
-
-    -- Projectiles passing through world objects lose some of their energy.
-    local energy = reduceProjectileEnergy( projectile:getEnergy(), worldObject:getEnergyReduction() )
-    projectile:setEnergy( energy )
-
-    tile:publish( 'MESSAGE_LOG_EVENT', tile, string.format( Translator.getText( 'msg_hit_worldobject' ), Translator.getText( worldObject:getID() ), projectile:getDamage() ), 'INFO' )
-
-    -- Apply the damage to the tile and only remove it if the energy is 0.
-    hitTile( self, tile, projectile )
-    return energy <= 0
-end
-
----
 -- Checks if the projectile has hit any characters or worldobjects.
 -- @tparam ProjectileQueue queue      The ProjectileQueue to process.
 -- @tparam number          index      The id of the projectile which will be used for removing it.
@@ -121,22 +73,26 @@ local function checkForHits( self, queue, index, projectile, tile )
         return
     end
 
-    local remove = false
-
     if tile:hasCharacter() then
-        remove = hitCharacter( self, tile, projectile )
-    elseif tile:hasWorldObject() then
-        remove = hitWorldObject( self, projectile, tile, tile:getWorldObject() )
+        Log.debug( 'Projectile hit character', 'ProjectileManager' )
+        hitTile( self, tile, projectile )
+        return true
     end
 
-    if not remove and projectile:hasReachedTarget() then
+    -- Remove the projectile if it hits a world object on the way to its target.
+    if tile:hasWorldObject() and tile:getWorldObject():isFullCover() then
+        Log.debug( 'Projectile hits world object', 'ProjectileManager' )
+        hitTile( self, tile, projectile )
+        queue:removeProjectile( index )
+        return
+    end
+
+    -- Remove the projectile if it hits the target of its attack.
+    if projectile:hasReachedTarget() then
         Log.debug( 'Projectile reached target tile', 'ProjectileManager' )
         hitTile( self, tile, projectile )
-        remove = true
-    end
-
-    if remove then
         queue:removeProjectile( index )
+        return
     end
 end
 
