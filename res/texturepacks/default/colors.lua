@@ -118,6 +118,9 @@ return {
     ['weapon_m67_grenade'] = COLORS.DB08,
     ['weapon_shuriken'] = COLORS.DB08,
 
+    -- Projectiles
+    ['12_gauge'] = COLORS.DB06,
+
     -- ==============================
     -- WORLD OBJECTS (OPENABLE)
     -- ==============================
