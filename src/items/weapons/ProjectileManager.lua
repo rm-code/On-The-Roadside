@@ -64,6 +64,7 @@ local function checkForHits( self, queue, index, projectile, tile )
     if tile:hasCharacter() then
         Log.debug( 'Projectile hit character', 'ProjectileManager' )
         hitTile( self, tile, projectile )
+        queue:removeProjectile( index )
         return true
     end
 
