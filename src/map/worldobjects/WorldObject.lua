@@ -39,7 +39,6 @@ function WorldObject:initialize( template )
     self.height = template.size
     self.cover = template.cover
     self.interactionCost = template.interactionCost
-    self.energyReduction = template.energyReduction
     self.destructible = template.destructible
     self.debrisID = template.debrisID
     self.openable = template.openable or false
@@ -131,16 +130,6 @@ end
 --
 function WorldObject:isFullCover()
     return self.cover == COVER_VALUES.FULL
-end
-
----
--- Returns the WorldObject's energy reduction attribute. This is used to
--- reduce the amount of force a projectile has after passing through this
--- WorldObject.
--- @treturn number The WorldObject's energy reduction value.
---
-function WorldObject:getEnergyReduction()
-    return self.energyReduction
 end
 
 ---

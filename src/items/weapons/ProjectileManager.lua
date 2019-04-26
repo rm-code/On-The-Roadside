@@ -43,19 +43,7 @@ local function hitTile( self, tile, projectile )
         return
     end
 
-    tile:hit( projectile:getDamage() * ( projectile:getEnergy() / 100 ), projectile:getDamageType() )
-end
-
----
--- Reduces the energy of the projectile with slightly randomized values.
--- @tparam  number energy    The current energy.
--- @tparam  number reduction The reduction that should be applied.
--- @treturn number           The modified energy value.
---
-local function reduceProjectileEnergy( energy, reduction )
-    reduction = love.math.random( reduction - 10, reduction + 10 )
-    reduction = Util.clamp( 1, reduction, 100 )
-    return energy - reduction
+    tile:hit( projectile:getDamage(), projectile:getDamageType() )
 end
 
 ---

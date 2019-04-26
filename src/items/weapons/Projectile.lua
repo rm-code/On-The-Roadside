@@ -39,7 +39,6 @@ function Projectile:initialize( character, tiles, damage, damageType, effects )
     self.damageType = damageType
     self.effects = effects
 
-    self.energy = 100
     self.timer = 0
     self.index = 1
     self.tile = character:getTile()
@@ -92,10 +91,6 @@ function Projectile:getDamageType()
     return self.damageType
 end
 
-function Projectile:getEnergy()
-    return self.energy
-end
-
 function Projectile:getTile()
     return self.tile
 end
@@ -114,14 +109,6 @@ end
 
 function Projectile:getHeight()
     return self.tiles[self.index].z
-end
-
--- ------------------------------------------------
--- Setters
--- ------------------------------------------------
-
-function Projectile:setEnergy( energy )
-    self.energy = energy
 end
 
 return Projectile
