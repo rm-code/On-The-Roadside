@@ -8,8 +8,6 @@
 
 local Observable = require( 'src.util.Observable' )
 local Log = require( 'src.util.Log' )
-local Util = require( 'src.util.Util' )
-local Translator = require( 'src.util.Translator' )
 
 -- ------------------------------------------------
 -- Module
