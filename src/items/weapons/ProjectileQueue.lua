@@ -33,8 +33,8 @@ end
 ---
 -- Spawns a new projectile.
 --
-local function spawnProjectile( character, weapon, projectiles, tx, ty, th, index )
-    local path = ProjectilePath.calculate( character, tx, ty, th, weapon, 1 ) -- TODO Amount of shots
+local function spawnProjectile( character, weapon, projectiles, target, index )
+    local path = ProjectilePath.calculate( character, target, weapon, 1 ) -- TODO Amount of shots
     local projectile = Projectile( character, path, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() )
 
     -- Play sound and remove the round from the magazine.
@@ -45,7 +45,7 @@ local function spawnProjectile( character, weapon, projectiles, tx, ty, th, inde
     if weapon:getEffects():spreadsOnShot() then
         for _ = 1, weapon:getEffects():getPellets() do
             index = index + 1
-            local spreadTiles = ProjectilePath.calculate( character, tx, ty, th, weapon, 1 )
+            local spreadTiles = ProjectilePath.calculate( character, target, weapon, 1 )
             projectiles[index] = Projectile( character, spreadTiles, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() )
         end
         return
@@ -66,16 +66,12 @@ end
 -- Creates a new ProjectileQueue.
 --
 -- @tparam Character Character The character who started the attack.
--- @tparam number    tx        The target's x-coordinate.
--- @tparam number    ty        The target's y-coordinate.
--- @tparam number    th        The target's height.
+-- @tparam Tile target The target tile.
 -- @treturn ProjectileQueue A new instance of the ProjectileQueue class.
 --
-function ProjectileQueue:initialize( character, tx, ty, th )
+function ProjectileQueue:initialize( character, target )
     self.character = character
-    self.targetX = tx
-    self.targetY = ty
-    self.targetHeight = th
+    self.target = target
 
     self.weapon = character:getWeapon()
 
@@ -94,7 +90,7 @@ end
 function ProjectileQueue:update( dt )
     self.timer = self.timer - dt
     if self.timer <= 0 and self.numberOfShots > 0 then
-        spawnProjectile( self.character, self.weapon, self.projectiles, self.targetX, self.targetY, self.targetHeight, self.index )
+        spawnProjectile( self.character, self.weapon, self.projectiles, self.target, self.index )
         self.timer = self.weapon:getFiringDelay()
         self.numberOfShots = self.numberOfShots - 1
     end

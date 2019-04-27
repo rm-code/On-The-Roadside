@@ -31,10 +31,7 @@ function RangedAttack:perform()
         return false
     end
 
-    local tx, ty = self.target:getPosition()
-    local th = self.target:getHeight()
-
-    self.projectileManager:register( ProjectileQueue( self.character, tx, ty, th ))
+    self.projectileManager:register( ProjectileQueue( self.character, self.target ))
     return true
 end
 

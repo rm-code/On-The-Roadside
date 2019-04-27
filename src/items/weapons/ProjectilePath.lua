@@ -271,25 +271,23 @@ end
 ---
 -- Creates the path for a particular projectile.
 -- @tparam Character character The character shooting the weapon.
--- @tparam number tx The target's x-coordinate.
--- @tparam number ty The target's y-coordinate.
--- @tparam number th The target's height.
+-- @tparam Tile target The target tile.
 -- @tparam Weapon weapon The used weapon.
 -- @tparam number count Determines how many projectiles have been fired already.
 -- @treturn table A sequence containing all tiles of the projectile's path.
 --
-function ProjectilePath.calculate( character, tx, ty, th, weapon, count )
+function ProjectilePath.calculate( character, target, weapon, count )
     local chanceToHit = character:getShootingSkill()
 
     -- The shot hits its target.
     if love.math.random(100) <= chanceToHit then
         Log.debug( 'Attack hits the target', 'ProjectilePath' )
-        return determineTraversedCoordinates( character, tx, ty )
+        return determineTraversedCoordinates( character, target:getPosition() )
     end
 
     -- The shot misses.
     Log.debug( 'Attack misses the target', 'ProjectilePath' )
-    return determineDeviationCoordinates( character, tx, ty, th, weapon, count )
+    return determineDeviationCoordinates( character, target:getX(), target:getY(), target:getHeight(), weapon, count )
 end
 
 return ProjectilePath;

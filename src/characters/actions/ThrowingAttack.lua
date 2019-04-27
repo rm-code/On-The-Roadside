@@ -26,10 +26,7 @@ function ThrowingAttack:initialize( character, target, projectileManager )
 end
 
 function ThrowingAttack:perform()
-    local tx, ty = self.target:getPosition()
-    local th = self.target:getHeight()
-
-    self.projectileManager:register( ThrownProjectileQueue( self.character, tx, ty, th ))
+    self.projectileManager:register( ThrownProjectileQueue( self.character, self.target ))
     return true
 end
 
