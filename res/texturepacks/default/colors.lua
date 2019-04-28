@@ -222,6 +222,10 @@ return {
     ['shop_balance_positive'] = COLORS.DB11,
     ['shop_balance_negative'] = COLORS.DB27,
 
+    -- UITooltip
+    ['ui_tooltip_text'] = COLORS.DB00,
+    ['ui_tooltip_bg'] = COLORS.DB17,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================

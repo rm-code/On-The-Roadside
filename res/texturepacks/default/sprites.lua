@@ -150,6 +150,9 @@ return {
 
     ['ui_delete'] = 89,
 
+    -- UITooltip
+    ['ui_tooltip_pointer'] = 197,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================

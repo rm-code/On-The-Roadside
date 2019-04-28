@@ -9,7 +9,9 @@
 local Class = require( 'lib.Middleclass' )
 local Bresenham = require( 'lib.Bresenham' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local UITooltip = require( 'src.ui.elements.UITooltip' )
 local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
+local ChanceToHitCalculator = require( 'src.items.weapons.ChanceToHitCalculator' )
 
 -- ------------------------------------------------
 -- Module
@@ -36,6 +38,9 @@ function AttackOverlay:initialize( game, pulser, camera )
     self.attackPath = {}
     self.tileset = TexturePacks.getTileset()
     self.tw, self.th = self.tileset:getTileDimensions()
+
+    self.chanceToHit = 0
+    self.chanceToHitTooltip = UITooltip()
 end
 
 -- ------------------------------------------------
@@ -71,6 +76,21 @@ local function drawLine( self, character, target )
     end)
 end
 
+local function drawChanceToHit( self, character, target )
+    self.chanceToHit = ChanceToHitCalculator.calculate( character, target )
+
+    -- Check if the attack is coming from the east to swap the CTH display to the other side.
+    local direction = character:getX() >= target:getX() and 'left' or 'right'
+
+
+    self.chanceToHitTooltip:setOrigin( target:getX(), target:getY() )
+    self.chanceToHitTooltip:setText( self.chanceToHit .. '%' )
+    self.chanceToHitTooltip:setDirection( direction )
+    -- love.graphics.print( self.chanceToHit .. '%', (target:getX() + offsetX) * self.tw, target:getY() * self.th )
+    self.chanceToHitTooltip:draw()
+    self.chanceToHit = 0
+end
+
 -- ------------------------------------------------
 -- Public Methods
 -- ------------------------------------------------
@@ -100,6 +120,11 @@ function AttackOverlay:generate()
 end
 
 function AttackOverlay:draw()
+    -- Exit early if we aren't in the attack input mode.
+    if not self.game:getState():getInputMode():isInstanceOf( AttackInput ) then
+        return
+    end
+
     for tile, status in pairs( self.attackPath ) do
         local color
         if status == 1 then
@@ -115,6 +140,14 @@ function AttackOverlay:draw()
         self.attackPath[tile] = nil
     end
     TexturePacks.resetColor()
+
+    local cx, cy = self.camera:getMouseWorldGridPosition()
+    local target = self.map:getTileAt( cx, cy )
+    if not target then
+        return
+    end
+
+    drawChanceToHit( self, self.game:getCurrentCharacter(), target )
 end
 
 return AttackOverlay
