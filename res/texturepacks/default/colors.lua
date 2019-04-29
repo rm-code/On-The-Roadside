@@ -226,6 +226,11 @@ return {
     ['ui_tooltip_text'] = COLORS.DB00,
     ['ui_tooltip_bg'] = COLORS.DB17,
 
+    -- Cover indicators
+    ['full_cover'] = COLORS.DB10,
+    ['half_cover'] = COLORS.DB11,
+    ['no_cover'] = COLORS.DB01,
+
     -- ==============================
     -- MAP EDITOR
     -- ==============================

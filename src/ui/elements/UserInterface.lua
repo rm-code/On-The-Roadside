@@ -11,6 +11,7 @@ local Log = require( 'src.util.Log' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UICharacterInfo = require( 'src.ui.elements.UICharacterInfo' )
 local UITileInfo = require( 'src.ui.elements.UITileInfo' )
+local UICoverInfo = require( 'src.ui.elements.UICoverInfo' )
 local UIBackground = require( 'src.ui.elements.UIBackground' )
 local GridHelper = require( 'src.util.GridHelper' )
 local UIMessageLog = require( 'src.ui.elements.UIMessageLog' )
@@ -67,12 +68,14 @@ function UserInterface:initialize( game, camera )
 
     self.background = UIBackground( px, py, rx, ry, w, h )
     self.characterInfo = UICharacterInfo( px, py )
-    self.tileInfo = UITileInfo( px, py, 0, self.characterInfo:getHeight() )
-    self.msgLog = UIMessageLog( px, py, 0, self.characterInfo:getHeight() + self.tileInfo:getHeight() )
+    self.coverInfo = UICoverInfo( px, py, 0, self.characterInfo:getHeight() )
+    self.tileInfo = UITileInfo( px, py, 0, self.characterInfo:getHeight() + self.coverInfo:getHeight() )
+    self.msgLog = UIMessageLog( px, py, 0, self.characterInfo:getHeight() + self.tileInfo:getHeight() + self.coverInfo:getHeight() )
 
     self:addChild( self.background )
     self:addChild( self.characterInfo )
     self:addChild( self.tileInfo )
+    self:addChild( self.coverInfo )
     self:addChild( self.msgLog )
 
     self.mouseX, self.mouseY = 0, 0
@@ -90,6 +93,7 @@ function UserInterface:draw()
     self.background:draw()
     self.characterInfo:draw()
     self.tileInfo:draw()
+    self.coverInfo:draw( self.game, self.mouseX, self.mouseY )
     self.msgLog:draw()
 end
 

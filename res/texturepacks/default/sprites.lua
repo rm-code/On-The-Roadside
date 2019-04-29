@@ -153,6 +153,11 @@ return {
     -- UITooltip
     ['ui_tooltip_pointer'] = 197,
 
+    -- Cover indicators
+    ['full_cover'] = 87,
+    ['half_cover'] = 119,
+    ['no_cover'] = 249,
+
     -- ==============================
     -- Prefab Editor
     -- ==============================
