@@ -15,6 +15,7 @@
 local Class = require( 'lib.Middleclass' )
 local Log = require( 'src.util.Log' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
+local TilePainter = require( 'src.ui.TilePainter' )
 
 -- ------------------------------------------------
 -- Module
@@ -29,22 +30,6 @@ local MapPainter = Class( 'MapPainter' )
 local MAX_SPRITES = 16384 -- Enough sprites for a 128*128 map.
 
 local DIRECTION = require( 'src.constants.DIRECTION' )
-
-local FACTIONS = require( 'src.constants.FACTIONS' )
-local COLORS = {
-    [FACTIONS.ALLIED] = {
-        ACTIVE   = 'allied_active',
-        INACTIVE = 'allied_inactive'
-    },
-    [FACTIONS.ENEMY] = {
-        ACTIVE   = 'enemy_active',
-        INACTIVE = 'enemy_inactive'
-    },
-    [FACTIONS.NEUTRAL] = {
-        ACTIVE   = 'neutral_active',
-        INACTIVE = 'neutral_inactive'
-    },
-}
 
 local CONNECTION_BITMASK = {
     [0]  = 'default',
@@ -97,46 +82,6 @@ local function initSpritebatch( map, spritebatch )
     Log.info( string.format( 'Initialised %d tiles.', spritebatch:getCount() ), 'MapPainter' )
 
     return spriteIndex
-end
-
----
--- Selects a color which to use when a tile is drawn based on its contents.
--- @tparam  Tile        tile                The tile to choose a color for.
--- @tparam  WorldObject worldObject         The worldobject to choose a color for.
--- @tparam  boolean     worldObjectsVisible Wether or not to hide world objects.
--- @tparam  Character   character           A character to choose a color for.
--- @tparam  Faction     faction             The faction to draw for.
--- @treturn table                           A table containing RGBA values.
---
-local function selectTileColor( tile, worldObject, worldObjectsVisible, character, faction )
-    -- If there is a faction we check which tiles are currently seen and highlight
-    -- the active character.
-    if faction then
-        -- Dim tiles hidden from the player.
-        if not tile:isSeenBy( faction:getType() ) then
-            return TexturePacks.getColor( 'tile_unseen' )
-        end
-
-        -- Highlight activated character.
-        if character == faction:getCurrentCharacter() then
-            return TexturePacks.getColor( COLORS[character:getFaction():getType()].ACTIVE )
-        end
-    end
-
-    if character then
-        return TexturePacks.getColor( COLORS[character:getFaction():getType()].INACTIVE )
-    end
-
-    if not tile:getInventory():isEmpty() then
-        local items = tile:getInventory():getItems()
-        return TexturePacks.getColor( items[1]:getID() )
-    end
-
-    if worldObjectsVisible and worldObject then
-        return TexturePacks.getColor( worldObject:getID() )
-    end
-
-    return TexturePacks.getColor( tile:getID() )
 end
 
 ---
@@ -236,7 +181,7 @@ local function updateSpritebatch( spritebatch, spriteIndex, map, faction, worldO
     local tw, th = TexturePacks.getTileDimensions()
     map:iterate( function( x, y, tile, worldObject, character )
         if tile:isDirty() then
-            spritebatch:setColor( selectTileColor( tile, worldObject, worldObjectsVisible, character, faction ))
+            spritebatch:setColor( TilePainter.selectTileColor( tile, worldObject, character, worldObjectsVisible, faction ))
             spritebatch:set( spriteIndex[x][y], selectTileSprite( tile, worldObject, worldObjectsVisible, character, faction ), x * tw, y * th )
             tile:setDirty( false )
         end

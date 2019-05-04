@@ -9,6 +9,7 @@
 local UIElement = require( 'src.ui.elements.UIElement' )
 local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local Translator = require( 'src.util.Translator' )
+local TilePainter = require( 'src.ui.TilePainter' )
 
 -- ------------------------------------------------
 -- Module
@@ -87,6 +88,14 @@ local function drawCharacter( character, tileset, x, y, tw, th )
     TexturePacks.resetColor()
 end
 
+local function drawTarget( tile, game, tileset, x, y, tw, th )
+    local color = TilePainter.selectTileColor( tile, tile:getWorldObject(), tile:getCharacter(), true, game:getPlayerFaction() )
+    local sprite = TexturePacks.getSprite( 'no_cover' )
+    love.graphics.setColor( color )
+    love.graphics.draw( tileset:getSpritesheet(), sprite, x * tw, y * th )
+    TexturePacks.resetColor()
+end
+
 function UICoverInfo:draw( game, mouseX, mouseY )
     TexturePacks.setColor( 'ui_text_dark' )
     love.graphics.draw( self.textObject, (self.ax + TITLE_OFFSET_X) * self.tw, (self.ay + TITLE_OFFSET_Y) * self.th )
@@ -100,7 +109,7 @@ function UICoverInfo:draw( game, mouseX, mouseY )
 
     local target = game:getMap():getTileAt( mouseX, mouseY )
     if target then
-        drawCover( target, self.tileset, self.ax + TARGET_COVER_GRID_OFFSET_X, self.ay + TARGET_COVER_GRID_OFFSET_Y, self.tw, self.th)
+        drawTarget( target, game, self.tileset, self.ax + TARGET_COVER_GRID_OFFSET_X, self.ay + TARGET_COVER_GRID_OFFSET_Y, self.tw, self.th)
     end
 
     for dir, mod in pairs( DIRECTION_MODIFIERS ) do
