@@ -90,7 +90,7 @@ end
 
 local function drawTarget( tile, game, tileset, x, y, tw, th )
     local color = TilePainter.selectTileColor( tile, tile:getWorldObject(), tile:getCharacter(), true, game:getPlayerFaction() )
-    local sprite = TexturePacks.getSprite( 'no_cover' )
+    local sprite = TilePainter.selectTileSprite( tile, tile:getWorldObject(), tile:getCharacter(), true, game:getPlayerFaction() )
     love.graphics.setColor( color )
     love.graphics.draw( tileset:getSpritesheet(), sprite, x * tw, y * th )
     TexturePacks.resetColor()
