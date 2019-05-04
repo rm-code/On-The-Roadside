@@ -93,7 +93,7 @@ function UserInterface:draw()
     self.background:draw()
     self.characterInfo:draw()
     self.tileInfo:draw()
-    self.coverInfo:draw( self.game, self.mouseX, self.mouseY )
+    self.coverInfo:draw()
     self.msgLog:draw()
 end
 
@@ -102,6 +102,7 @@ function UserInterface:update()
 
     self.characterInfo:update( self.game:getState(), self.map, self.camera, self.factions:getFaction():getCurrentCharacter() )
     self.tileInfo:update( self.mouseX, self.mouseY, self.map )
+    self.coverInfo:update( self.mouseX, self.mouseY, self.game )
     self.msgLog:update()
 end
 
