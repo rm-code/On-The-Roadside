@@ -82,11 +82,9 @@ local function drawChanceToHit( self, character, target )
     -- Check if the attack is coming from the east to swap the CTH display to the other side.
     local direction = character:getX() >= target:getX() and 'left' or 'right'
 
-
     self.chanceToHitTooltip:setOrigin( target:getX(), target:getY() )
     self.chanceToHitTooltip:setText( self.chanceToHit .. '%' )
     self.chanceToHitTooltip:setDirection( direction )
-    -- love.graphics.print( self.chanceToHit .. '%', (target:getX() + offsetX) * self.tw, target:getY() * self.th )
     self.chanceToHitTooltip:draw()
     self.chanceToHit = 0
 end
