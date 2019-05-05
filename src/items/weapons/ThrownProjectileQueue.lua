@@ -50,7 +50,7 @@ function ThrownProjectileQueue:initialize( character, tx, ty, th )
     assert( success, "Couldn't remove the item from the character's equipment." )
 
     local tiles = ProjectilePath.calculate( character, tx, ty, th, self.weapon )
-    local projectile = Projectile( character, tiles, self.weapon:getDamage(), self.weapon:getDamageType(), self.weapon:getEffects() )
+    local projectile = Projectile( character, self.weapon, tiles )
     self.index = self.index + 1
     self.projectiles[self.index] = projectile
 

@@ -35,7 +35,7 @@ end
 --
 local function spawnProjectile( character, weapon, projectiles, target, index )
     local path = ProjectilePath.calculate( character, target, weapon, 1 ) -- TODO Amount of shots
-    local projectile = Projectile( character, path, weapon:getDamage(), weapon:getDamageType(), weapon:getEffects() )
+    local projectile = Projectile( character, weapon, path )
 
     -- Play sound and remove the round from the magazine.
     SoundManager.play( weapon:getSound() )

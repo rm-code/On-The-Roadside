@@ -26,23 +26,22 @@ local DEFAULT_SPEED = 30
 
 ---
 -- Initializes a new Projectile object.
--- @tparam Character         character  The character this projectile belongs to.
--- @tparam table             tiles      A sequence containing all tiles this projectile will pass.
--- @tparam number            damage     The damage this projectile deals.
--- @tparam string            damageType The type of damage the tile is hit with.
--- @tparam AmmunitionEffects effects    An object containing different effects associated with ammunition.
+-- @tparam Character character The character this projectile belongs to.
+-- @tparam Weapon    weapon    The weapon this projectile belongs to.
+-- @tparam table     tiles     A sequence containing all tiles this projectile will pass.
 --
-function Projectile:initialize( character, tiles, damage, damageType, effects )
+function Projectile:initialize( character, weapon, tiles )
     self.character = character
     self.tiles = tiles
-    self.damage = damage
-    self.damageType = damageType
-    self.effects = effects
+    self.weapon = weapon
+    self.damage = weapon:getDamage()
+    self.damageType = weapon:getDamageType()
+    self.effects = weapon:getEffects()
 
     self.timer = 0
     self.index = 1
     self.tile = character:getTile()
-    self.speed = effects:hasCustomSpeed() and effects:getCustomSpeed() or DEFAULT_SPEED
+    self.speed = self.effects:hasCustomSpeed() and self.effects:getCustomSpeed() or DEFAULT_SPEED
 end
 
 ---
@@ -77,6 +76,10 @@ end
 
 function Projectile:getCharacter()
     return self.character
+end
+
+function Projectile:getWeapon()
+    return self.weapon
 end
 
 function Projectile:getEffects()
