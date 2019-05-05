@@ -12,6 +12,7 @@ local TexturePacks = require( 'src.ui.texturepacks.TexturePacks' )
 local UITooltip = require( 'src.ui.elements.UITooltip' )
 local AttackInput = require( 'src.turnbased.helpers.AttackInput' )
 local ChanceToHitCalculator = require( 'src.items.weapons.ChanceToHitCalculator' )
+local Util = require( 'src.util.Util' )
 
 -- ------------------------------------------------
 -- Module
@@ -74,6 +75,15 @@ local function drawLine( self, character, target )
         self.attackPath[tile] = status
         return true
     end)
+
+    return status
+end
+
+local function drawAreaOfEffect( self, target, radius, status )
+    local tiles = Util.getTilesInCircle( self.map, target, radius )
+    for i = 1, #tiles do
+        self.attackPath[tiles[i]] = status
+    end
 end
 
 local function drawChanceToHit( self, character, target )
@@ -114,7 +124,11 @@ function AttackOverlay:generate()
         return
     end
 
-    drawLine( self, self.game:getCurrentCharacter(), target )
+    local status = drawLine( self, self.game:getCurrentCharacter(), target )
+
+    if weapon:getDamageType() == 'explosive' then
+        drawAreaOfEffect( self, target, weapon:getAreaOfEffectRadius(), status )
+    end
 end
 
 function AttackOverlay:draw()

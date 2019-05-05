@@ -29,6 +29,7 @@ function RangedWeapon:initialize( template )
     self.currentCapacity = self.maximumCapacity
 
     self.damageType = template.damageType
+    self.areaOfEffectRadius = template.areaOfEffectRadius
     self.effects = AmmunitionEffects( template.effects )
 end
 
@@ -89,6 +90,10 @@ end
 -- TODO integrate into weapon.lua like melee weapons
 function RangedWeapon:getDamageType()
     return self.damageType
+end
+
+function RangedWeapon:getAreaOfEffectRadius()
+    return self.areaOfEffectRadius
 end
 
 function RangedWeapon:getEffects()

@@ -19,7 +19,8 @@ return {
                 name       = "Throw",
                 cost       = 10,
                 attacks    = 1,
-                damageType = 'explosive'
+                damageType = 'explosive',
+                areaOfEffectRadius = 2
             }
         },
         effects = {

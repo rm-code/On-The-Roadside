@@ -29,6 +29,10 @@ function ThrownWeapon:getDamageType()
     return self:getAttackMode().damageType
 end
 
+function ThrownWeapon:getAreaOfEffectRadius()
+    return self:getAttackMode().areaOfEffectRadius
+end
+
 function ThrownWeapon:getEffects()
     return self.effects
 end

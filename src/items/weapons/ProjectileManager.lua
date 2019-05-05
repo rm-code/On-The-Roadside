@@ -7,6 +7,7 @@
 -- ------------------------------------------------
 
 local Observable = require( 'src.util.Observable' )
+local Util = require( 'src.util.Util' )
 local Log = require( 'src.util.Log' )
 
 -- ------------------------------------------------
@@ -32,13 +33,10 @@ local DAMAGE_TYPES = require( 'src.constants.DAMAGE_TYPES' )
 --
 local function hitTile( self, tile, projectile )
     if projectile:getDamageType() == DAMAGE_TYPES.EXPLOSIVE then
-        -- Explosive projectiles explode on the previous tile once they hit an
-        -- indestructible world object. This needs to be done to make sure explosions
-        -- occur on the right side of the world object.
-        tile = projectile:getPreviousTile()
-
-        self:publish( 'CREATE_EXPLOSION', tile, projectile:getDamage(), projectile:getEffects():getBlastRadius() )
-        return
+        local tiles = Util.getTilesInCircle( self.map, tile, projectile:getWeapon():getAreaOfEffectRadius() )
+        for i = 1, #tiles do
+            tiles[i]:hit( projectile:getDamage(), projectile:getDamageType() )
+        end
     end
 
     tile:hit( projectile:getDamage(), projectile:getDamageType() )
