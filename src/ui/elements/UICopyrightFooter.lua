@@ -21,11 +21,15 @@ local UICopyrightFooter = Class( 'UICopyrightFooter' )
 -- ------------------------------------------------
 
 local VERSION_STRING = string.format( 'PRE-ALPHA Version: %s ', getVersion() )
-local COPYRIGHT_STRING = ' © Robert Machmer, 2016-2018. All rights reserved.'
+local COPYRIGHT_STRING = 'Copyright © 2016 - %s Robert Machmer'
 
 -- ------------------------------------------------
 -- Constructor
 -- ------------------------------------------------
+
+function UICopyrightFooter:initialize()
+    self.copyright = string.format( COPYRIGHT_STRING, os.date( "%Y", os.time() ))
+end
 
 function UICopyrightFooter:draw()
     local font = TexturePacks.getFont()
@@ -34,7 +38,7 @@ function UICopyrightFooter:draw()
 
     TexturePacks.setColor( 'ui_text_dim' )
     love.graphics.print( VERSION_STRING, sw*tw - font:measureWidth( VERSION_STRING ), sh*th - font:getGlyphHeight() )
-    love.graphics.print( COPYRIGHT_STRING, 0, sh*th - font:getGlyphHeight() )
+    love.graphics.print( self.copyright, tw, sh*th - font:getGlyphHeight() )
     TexturePacks.resetColor()
 end
 
