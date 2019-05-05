@@ -29,10 +29,9 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function SadisticAIDirector:initialize( factions, states, explosionManager, projectileManager )
+function SadisticAIDirector:initialize( factions, states, projectileManager )
     self.factions = factions
     self.states = states
-    self.explosionManager = explosionManager
     self.projectileManager = projectileManager
 end
 
@@ -51,7 +50,7 @@ function SadisticAIDirector:update()
 
     local success = tickBehaviorTree( tree, character, self.states, self.factions, self.projectileManager )
     if success then
-        self.states:push( 'execution', self.factions, character, self.explosionManager, self.projectileManager )
+        self.states:push( 'execution', self.factions, character, self.projectileManager )
         return
     end
 

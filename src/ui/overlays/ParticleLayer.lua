@@ -33,10 +33,7 @@ end
 -- Public Methods
 -- ------------------------------------------------
 
-function ParticleLayer:initialize( explosionManager, projectileManager )
-    self.explosionManager = explosionManager
-    self.explosionManager:observe( self )
-
+function ParticleLayer:initialize( projectileManager )
     self.projectileManager = projectileManager
     self.projectileManager:observe( self )
 
@@ -45,18 +42,6 @@ function ParticleLayer:initialize( explosionManager, projectileManager )
 end
 
 function ParticleLayer:receive( event, ... )
-    if event == 'EXPLOSION' then
-        local generation = ...
-        for tile, _ in pairs( generation ) do
-            local r = 0.9
-            local g = love.math.random( 0.39, 0.58 )
-            local b = 0
-            local a = love.math.random( 0.78, 0.9 )
-            local fade = math.max( 0.95, love.math.random( 2.5 ))
-            addParticleEffect( self.grid, self.particles, tile:getX(), tile:getY(), r, g, b, a, fade )
-        end
-        return
-    end
     if event == 'PROJECTILE_MOVED' then
         local projectile = ...
         local tile = projectile:getTile()

@@ -11,7 +11,6 @@ local ProceduralMapGenerator = require( 'src.map.procedural.ProceduralMapGenerat
 local MapLoader = require( 'src.map.MapLoader' )
 local Factions = require( 'src.characters.Factions' )
 local ProjectileManager = require( 'src.items.weapons.ProjectileManager' )
-local ExplosionManager = require( 'src.items.weapons.ExplosionManager' )
 local ScreenManager = require( 'lib.screenmanager.ScreenManager' )
 local StateManager = require( 'src.turnbased.StateManager' )
 local SadisticAIDirector = require( 'src.characters.ai.SadisticAIDirector' )
@@ -92,15 +91,12 @@ function CombatState:initialize( savegame )
         end)
     end)
 
-    self.explosionManager = ExplosionManager( self.map )
-
     self.projectileManager = ProjectileManager( self.map )
-    self.projectileManager:observe( self.explosionManager )
 
     self.stateManager = StateManager( self.states )
-    self.stateManager:push( 'planning', self.factions, self.explosionManager, self.projectileManager )
+    self.stateManager:push( 'planning', self.factions, self.projectileManager )
 
-    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager, self.explosionManager, self.projectileManager )
+    self.sadisticAIDirector = SadisticAIDirector( self.factions, self.stateManager, self.projectileManager )
 
     -- Register observations.
     self.map:observe( self )
@@ -164,10 +160,6 @@ end
 
 function CombatState:getMap()
     return self.map
-end
-
-function CombatState:getExplosionManager()
-    return self.explosionManager
 end
 
 function CombatState:getProjectileManager()

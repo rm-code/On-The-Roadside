@@ -32,10 +32,9 @@ function ExecutionState:initialize( stateManager )
     self.actionTimer = 0
 end
 
-function ExecutionState:enter( factions, character, explosionManager, projectileManager )
+function ExecutionState:enter( factions, character, projectileManager )
     self.factions = factions
     self.character = character
-    self.explosionManager = explosionManager
     self.projectileManager = projectileManager
 
     self.delay = character:getFaction():isAIControlled() and AI_DELAY or PLAYER_DELAY
@@ -44,11 +43,6 @@ end
 function ExecutionState:update( dt )
     if not self.projectileManager:isDone() then
         self.projectileManager:update( dt )
-        return
-    end
-
-    if not self.explosionManager:isDone() then
-        self.explosionManager:update( dt )
         return
     end
 
