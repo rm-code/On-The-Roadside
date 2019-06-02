@@ -132,6 +132,7 @@ return {
     -- ==============================
 
     -- Used for drawing the titles in the main menu and options screens.
+    ['ui_title_0'] = COLORS.DB00,
     ['ui_title_1'] = COLORS.DB18,
     ['ui_title_2'] = COLORS.DB17,
     ['ui_title_3'] = COLORS.DB17,

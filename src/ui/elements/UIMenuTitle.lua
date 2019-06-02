@@ -43,7 +43,7 @@ local function createTitle( titleDefinition )
             coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_3' )
             coloredtext[#coloredtext + 1] = w
         else
-            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'tile_unseen' )
+            coloredtext[#coloredtext + 1] = TexturePacks.getColor( 'ui_title_0' )
             coloredtext[#coloredtext + 1] = w
         end
     end
